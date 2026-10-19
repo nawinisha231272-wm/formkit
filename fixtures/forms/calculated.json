@@ -1,0 +1,35 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "qty",
+      "key": "qty",
+      "type": "number",
+      "defaultValue": 2
+    },
+    {
+      "id": "price",
+      "key": "price",
+      "type": "number",
+      "defaultValue": 3
+    },
+    {
+      "id": "total",
+      "key": "total",
+      "type": "number",
+      "calculate": {
+        "expr": [
+          "mul",
+          {
+            "ref": "qty"
+          },
+          {
+            "ref": "price"
+          }
+        ]
+      }
+    }
+  ]
+}

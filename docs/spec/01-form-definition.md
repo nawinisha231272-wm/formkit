@@ -84,3 +84,11 @@ exists now; the function and its test harness exist from M1 so later versions pl
 - field types from each model's `ValueAdapter.jsonSchema(config)`;
 - conditional rules that cannot be expressed become `x-ourform-*` annotations, never silently dropped.
   Checked in tests with Ajv 2020 on good and bad submissions from fixtures.
+
+## M01 validation and migration boundary
+
+The exported meta-schema describes the full 1.0 wire shape; `validateDefinition` adds scoped uniqueness,
+reserved-key, registry, property and reference checks. It accepts unknown values and returns diagnostics
+without throwing for malformed input. `migrate` returns `{ definition, applied, diagnostics }`; consumers
+must check diagnostics before reading definition. Only 1.0 is recognized. Submission schema generation,
+plugin satisfaction and composite/array execution follow their assigned milestones.

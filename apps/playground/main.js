@@ -15,7 +15,13 @@ const views = new Map([
   [ratingField.model.type, ratingField.views],
 ]);
 let schema = structuredClone(feedback);
-let session = engine.createSession(schema);
+function createSession(data = {}) {
+  const result = engine.compile(schema);
+  if (!result.ok)
+    throw new Error(result.diagnostics.map((d) => d.message).join("; "));
+  return engine.createSession(result.form, { data });
+}
+let session = createSession();
 let view = renderForm(document.querySelector("#form"), session, views);
 const target = document.querySelector("#target");
 const properties = document.querySelector("#properties");
@@ -23,8 +29,21 @@ const output = document.querySelector("#output");
 const schemaPanel = document.querySelector("#schema");
 function rebuild() {
   const data = session.getData();
+  const compiled = engine.compile(schema);
+  schemaPanel.textContent = JSON.stringify(schema, null, 2);
+  if (!compiled.ok) {
+    output.textContent = JSON.stringify(
+      { diagnostics: compiled.diagnostics },
+      null,
+      2,
+    );
+    return;
+  }
+  const nextSession = engine.createSession(compiled.form, { data });
+  output.textContent = "";
   view.destroy();
-  session = engine.createSession(schema, data);
+  session.dispose();
+  session = nextSession;
   view = renderForm(
     document.querySelector("#form"),
     session,
@@ -83,9 +102,9 @@ target.addEventListener("change", showProperties);
 document
   .querySelector("#theme")
   .addEventListener("change", (e) => view.setTheme(e.target.value));
-document.querySelector("#validate").addEventListener("click", () => {
+document.querySelector("#validate").addEventListener("click", async () => {
   output.textContent = JSON.stringify(
-    { data: session.getData(), errors: session.validate() },
+    { data: session.getData(), errors: (await session.validate()).errors },
     null,
     2,
   );

@@ -1,0 +1,25 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "lock",
+      "key": "lock",
+      "type": "number",
+      "defaultValue": 1
+    },
+    {
+      "id": "name",
+      "key": "name",
+      "type": "text",
+      "disabledWhen": [
+        "eq",
+        {
+          "ref": "lock"
+        },
+        1
+      ]
+    }
+  ]
+}

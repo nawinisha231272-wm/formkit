@@ -1,0 +1,17 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "name",
+      "key": "name",
+      "type": "text",
+      "calculate": {
+        "expr": {
+          "path": "data.__proto__.polluted"
+        }
+      }
+    }
+  ]
+}

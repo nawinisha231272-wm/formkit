@@ -1,15 +1,16 @@
-export interface FormField {
-  id: string;
-  type: string;
-  key: string;
-  label: string;
-  description?: string;
-  defaultValue?: unknown;
-  validation?: { required?: boolean };
-  properties?: Record<string, unknown>;
-}
-export interface FormDefinition {
-  $formVersion: "1.0";
-  id: string;
-  components: FormField[];
-}
+export type {
+  Expr,
+  ExprOp,
+  ComponentNode,
+  FormField,
+  FormDefinition,
+  ValidationRules,
+  Diagnostic,
+  DefinitionRegistry,
+} from "./types";
+export {
+  formDefinitionSchema,
+  validateDefinition,
+  migrate,
+} from "./validate-definition";
+export { isRecord, isSafeKey, inspectJson } from "./json";

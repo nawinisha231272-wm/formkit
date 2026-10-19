@@ -1,0 +1,19 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "panel",
+      "type": "panel",
+      "components": [
+        {
+          "id": "name",
+          "key": "name",
+          "type": "text",
+          "defaultValue": "Ada"
+        }
+      ]
+    }
+  ]
+}

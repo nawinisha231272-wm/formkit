@@ -1,0 +1,29 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "show",
+      "key": "show",
+      "type": "number",
+      "defaultValue": 1
+    },
+    {
+      "id": "name",
+      "key": "name",
+      "type": "text",
+      "defaultValue": "restored",
+      "validation": {
+        "required": true
+      },
+      "visibleWhen": [
+        "eq",
+        {
+          "ref": "show"
+        },
+        1
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "name",
+      "key": "name",
+      "type": "text",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 5
+      },
+      "defaultValue": "Ada"
+    }
+  ]
+}

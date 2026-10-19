@@ -21,3 +21,21 @@ test("feedback, themes and generated properties", async ({ page }) => {
     ),
   ).toEqual([]);
 });
+
+test("invalid property edits show diagnostics and retain the working form", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByLabel("Name", { exact: true }).fill("Ana");
+  await page.getByRole("button", { name: "4 of 5 stars" }).click();
+  const key = page.getByLabel("Data key", { exact: true });
+  await key.fill("name");
+  await key.press("Tab");
+  await expect(page.locator("#output")).toContainText("duplicate-key");
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("Ana");
+  await key.fill("rating");
+  await key.press("Tab");
+  await page.getByRole("button", { name: "Validate", exact: true }).click();
+  await expect(page.locator("#output")).toContainText('"rating": 4');
+  await expect(page.locator("#output")).toContainText('"errors": []');
+});

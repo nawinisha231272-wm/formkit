@@ -1,0 +1,37 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "a",
+      "key": "a",
+      "type": "number",
+      "calculate": {
+        "expr": {
+          "ref": "b"
+        }
+      }
+    },
+    {
+      "id": "b",
+      "key": "b",
+      "type": "number",
+      "calculate": {
+        "expr": {
+          "ref": "a"
+        }
+      }
+    },
+    {
+      "id": "downstream",
+      "key": "downstream",
+      "type": "number",
+      "calculate": {
+        "expr": {
+          "ref": "a"
+        }
+      }
+    }
+  ]
+}

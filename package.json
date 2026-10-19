@@ -42,7 +42,8 @@
     "@ourform/sdk": "workspace:*",
     "@ourform/components": "workspace:*",
     "@ourform/builder-core": "workspace:*",
-    "@ourform/renderer-dom": "workspace:*"
+    "@ourform/renderer-dom": "workspace:*",
+    "ajv": "8.17.1"
   },
   "size-limit": [
     {

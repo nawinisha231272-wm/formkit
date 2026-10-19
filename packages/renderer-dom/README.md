@@ -14,5 +14,7 @@ view.setTheme("tailwind");
 view.destroy();
 ```
 
+The renderer now consumes compiled session nodes and per-field patches; rendering never calls validation.
+
 Themes are starter presets (`base`, `bootstrap`, `tailwind`). Theme switching currently rebuilds
 controls. Full accessibility, reconciliation and real theme packages arrive in M02–M03.

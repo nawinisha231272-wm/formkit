@@ -73,3 +73,12 @@ These edges form the dependency graph used by the session.
 
 `fromJsonLogic(json) → { expr, diagnostics }` converts the JSONLogic subset used by Form.io simple
 conditionals. Unsupported operators produce diagnostics, never silent changes.
+
+## M01 concrete semantics
+
+ADR-0004 records arities, JSON type comparisons, short-circuit behavior, aggregates, host-function failures
+and override lifetime. Expression paths are parsed once during compilation. `form.mode` is supported;
+row/index paths are diagnosed until M10. The JSONLogic converter supports strict comparisons (`===`,
+`!==`), boolean operations, arithmetic, conditional, membership, concatenation and simple `var` paths
+within these typed expression semantics. Loose equality (`==`, `!=`), variable fallbacks and unknown
+operators return diagnostics. It is a typed conditional subset, not general JSONLogic emulation.

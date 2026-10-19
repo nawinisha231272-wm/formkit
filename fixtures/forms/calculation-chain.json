@@ -1,0 +1,41 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "a",
+      "key": "a",
+      "type": "number",
+      "defaultValue": 2
+    },
+    {
+      "id": "b",
+      "key": "b",
+      "type": "number",
+      "calculate": {
+        "expr": [
+          "add",
+          {
+            "ref": "a"
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "c",
+      "key": "c",
+      "type": "number",
+      "calculate": {
+        "expr": [
+          "mul",
+          {
+            "ref": "b"
+          },
+          2
+        ]
+      }
+    }
+  ]
+}

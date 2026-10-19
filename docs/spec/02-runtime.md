@@ -125,3 +125,17 @@ Error messages are keys (`of.validation.required`, …) with params; text comes 
 
 Built-in order is fixed. Plugins may add processors with `{ phase, before?, after? }` but cannot
 remove or reorder built-ins.
+
+## M01 implementation boundary
+
+ADR-0004 defines exact M01 semantics. `compile` accepts unknown input and returns stable diagnostics.
+`CompiledForm` has frozen `nodes`, `byId`, `byPath` (JSON-encoded Path keys), `order`, `ranks` and
+`dependents` indexes, plus its definition. Session mutations sort only affected ids by precomputed rank.
+`debug.processorRuns` provides per-component counters. Model/value/property contracts remain exported
+from core to keep the dependency direction headless. The transitional `Engine.register/getField/listFields`
+and session `schema/definition` conveniences are retained; session creation requires a compiled form.
+
+Only object scopes and synchronous built-in validation execute in M01. Array scopes, composites, plugin
+requirements and custom validators return explicit diagnostics until their planned milestones. No row
+mutation API or async validator is implemented early. Snapshots are always frozen. Submission validates
+and serializes its invocation snapshot. `validate` computes its result before notifying subscribers.

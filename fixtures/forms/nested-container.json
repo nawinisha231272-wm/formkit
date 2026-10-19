@@ -1,0 +1,20 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "customer",
+      "key": "customer",
+      "type": "container",
+      "components": [
+        {
+          "id": "city",
+          "key": "city",
+          "type": "text",
+          "defaultValue": "Boston"
+        }
+      ]
+    }
+  ]
+}

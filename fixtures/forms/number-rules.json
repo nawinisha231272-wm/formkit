@@ -1,0 +1,17 @@
+{
+  "$formVersion": "1.0",
+  "id": "fixture",
+  "display": "form",
+  "components": [
+    {
+      "id": "age",
+      "key": "age",
+      "type": "number",
+      "validation": {
+        "min": 18,
+        "max": 100
+      },
+      "defaultValue": 30
+    }
+  ]
+}

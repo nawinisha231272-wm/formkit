@@ -12,7 +12,7 @@ This kit now carries the full build specification:
 - `docs/progress.md` — the running log of what is done.
 - `docs/codex-prompts.md` — prompts to drive OpenAI Codex milestone by milestone.
 
-Current development milestone: **M00 — Workspace foundation**. See `docs/progress.md` for verification status.
+Current development milestone: **M01 — Schema and core engine**. See `docs/progress.md` for verification status.
 
 ## Run
 
@@ -36,20 +36,21 @@ Package source lives in `packages/*`; shared forms in `fixtures/forms`; CI in `.
 
 ## Implemented
 
-- Headless engine-scoped component registry and flat form session, independent of the DOM.
-- Simple serializable JSON form definitions with stable IDs and keys.
-- Value normalization, required validation, subscriptions, duplicate-registration checks.
+- Headless per-engine registry, safe compiler, indexed nested object paths and immutable session snapshots.
+- Versioned JSON definitions, Draft 2020-12 meta-schema, diagnostic validation and migration harness.
+- Bounded expression ASTs, dependency graphs, cycle diagnostics and affected-field change processing.
+- Per-field state, value normalization, built-in validation, Promise-based submission, reset and disposal.
 - Public custom `defineField` API and `stringProperty`/`numberProperty`/`booleanProperty` helpers.
 - Text field and Rating field examples, with no inheritance or separate edit form.
 - Automatic editable builder property model generated from definitions.
 - Basic DOM renderer with FieldShell-style label/description/error and three cosmetic theme presets.
-- Client-only demo and three passing Node tests.
+- Client-only Vite demo; Node fixtures/security tests plus Playwright/axe checks in three browsers.
 
 ## Deliberately NOT implemented
 
 - Production builder canvas, drag-drop, undo/redo.
 - Angular/React component bridges, Web Component wrapper, SSR.
-- Nested containers, repeaters, expression AST, dependency tracking, async validation, server-side schema generation.
+- Repeaters, async/custom validation, plugins, composites and submission JSON Schema generation.
 - Full accessible focus management, ARIA invalid/error wiring, multi-value semantics, IME conformance.
 - Complete Bootstrap or Tailwind compatible theme packages (demo presets only).
 - Renderer implementation comparison (VNode vs DOM).

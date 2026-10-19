@@ -1,5 +1,4 @@
-import type { FormField } from "@ourform/schema";
-import type { FormSession } from "@ourform/core";
+import type { CompiledNode, FormSession } from "@ourform/core";
 import type { FieldDefinition } from "@ourform/sdk";
 export type AppearanceTheme = "base" | "bootstrap" | "tailwind";
 export interface FormView {
@@ -12,22 +11,33 @@ export function renderForm(
   views: ReadonlyMap<string, FieldDefinition["views"]>,
   theme: AppearanceTheme = "base",
 ): FormView {
-  const redraw = () => {
+  const elements = new Map<string, HTMLElement>();
+  let redrawing = false;
+  function redraw(): void {
+    redrawing = true;
     root.replaceChildren();
+    elements.clear();
     root.className = `of-root of-theme-${theme}`;
-    for (const field of session.schema.components)
-      root.append(renderField(session, field, views));
-  };
-  const unsubscribe = session.subscribe((event) => {
-    for (const path of event.changedPaths) {
-      const field = session.schema.components.find((f) => f.key === path);
-      if (!field) continue;
-      // Do not replace a focused text input while the user types or composes IME text.
-      const current = root.querySelector(
-        `[data-field-id="${CSS.escape(field.id)}"]`,
-      );
-      if (!current || current.contains(document.activeElement)) continue;
-      current.replaceWith(renderField(session, field, views));
+    for (const entry of session.form.nodes) {
+      const element = renderField(session, entry, views);
+      elements.set(entry.node.id, element);
+      (entry.parentId ? elements.get(entry.parentId)! : root).append(element);
+    }
+    redrawing = false;
+  }
+  const unsubscribe = session.subscribe((patch) => {
+    if (redrawing) return;
+    for (const id of patch.changedFields) {
+      const entry = session.form.byId[id]!;
+      const current = elements.get(id);
+      if (!current) continue;
+      const state = session.getFieldState(id);
+      current.hidden = !state.visible;
+      if (!entry.model.value || current.contains(document.activeElement))
+        continue;
+      const next = renderField(session, entry, views);
+      current.replaceWith(next);
+      elements.set(id, next);
     }
   });
   redraw();
@@ -38,38 +48,50 @@ export function renderForm(
     },
     destroy() {
       unsubscribe();
+      elements.clear();
       root.replaceChildren();
     },
   };
 }
 function renderField(
   session: FormSession,
-  field: FormField,
+  entry: CompiledNode,
   views: ReadonlyMap<string, FieldDefinition["views"]>,
 ): HTMLElement {
+  const field = entry.node;
+  const state = session.getFieldState(field.id);
   const wrapper = document.createElement("div");
   wrapper.className = "of-field";
   wrapper.dataset.fieldId = field.id;
+  wrapper.hidden = !state.visible;
+  if (!entry.model.value) {
+    if (field.label) {
+      const heading = document.createElement("h3");
+      heading.textContent = field.label;
+      wrapper.append(heading);
+    }
+    return wrapper;
+  }
   const label = document.createElement("label");
-  label.textContent = field.label;
+  label.textContent = field.label ?? field.key ?? field.id;
   label.htmlFor = field.id;
   wrapper.append(label);
-  const def = session.definition(field);
   const config: Record<string, unknown> = {};
-  for (const [key, prop] of Object.entries(def.properties ?? {}))
-    config[key] = field.properties?.[key] ?? prop.default;
+  for (const [key, property] of Object.entries(entry.model.properties ?? {}))
+    config[key] = field.properties?.[key] ?? property.default;
   const view = views.get(field.type);
   if (!view) throw new Error(`No portable view: ${field.type}`);
   wrapper.append(
     view.portable({
-      value: session.getValue(field.key),
-      setValue: (next) => session.setValue(field.key, next),
-      onBlur: () => session.markTouched(field.key),
+      value: state.value,
+      setValue: (next) =>
+        session.setValue(state.path, next, { source: "user" }),
+      onBlur: () => session.touch(state.path),
       config,
-      disabled: false,
-      readOnly: false,
+      disabled: state.disabled,
+      readOnly: state.readOnly,
       id: field.id,
-      name: field.key,
+      name: field.key!,
     }),
   );
   if (field.description) {
@@ -77,11 +99,16 @@ function renderField(
     help.textContent = field.description;
     wrapper.append(help);
   }
-  const errors = session.validate().filter((e) => e.path === field.key);
-  if (session.isTouched(field.key) && errors.length) {
+  if (state.errors.length) {
     const message = document.createElement("small");
     message.className = "of-error";
-    message.textContent = errors[0]!.message;
+    message.textContent = state.errors
+      .map((e) =>
+        e.code === "required"
+          ? `${field.label ?? field.key} is required`
+          : e.messageKey,
+      )
+      .join(". ");
     wrapper.append(message);
   }
   return wrapper;
