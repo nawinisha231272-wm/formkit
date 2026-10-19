@@ -80,15 +80,15 @@ export interface DefinitionRegistry {
     | {
         value?: unknown;
         dataScope?: "none" | "object" | "array";
-        properties?: Record<
-          string,
-          {
-            kind: string;
-            min?: number;
-            max?: number;
-            options?: { value: string }[];
-          }
-        >;
+        properties?: Record<string, PropertyDescriptor>;
       }
     | undefined;
+}
+
+export interface PropertyDescriptor {
+  kind: string;
+  default?: unknown;
+  min?: number;
+  max?: number;
+  options?: { value: string; label?: string }[];
 }

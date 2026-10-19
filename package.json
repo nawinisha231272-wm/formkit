@@ -43,7 +43,17 @@
     "@ourform/components": "workspace:*",
     "@ourform/builder-core": "workspace:*",
     "@ourform/renderer-dom": "workspace:*",
-    "ajv": "8.17.1"
+    "ajv": "8.17.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "@angular/core": "20.3.0",
+    "@angular/common": "20.3.0",
+    "@angular/compiler": "20.3.0",
+    "@angular/platform-browser": "20.3.0",
+    "rxjs": "7.8.2",
+    "esbuild": "0.25.12"
   },
   "size-limit": [
     {

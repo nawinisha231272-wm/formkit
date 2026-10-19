@@ -14,3 +14,6 @@ export {
   migrate,
 } from "./validate-definition";
 export { isRecord, isSafeKey, inspectJson } from "./json";
+
+export { validateProperties } from "./properties";
+export type { PropertyDescriptor } from "./types";

@@ -139,3 +139,17 @@ Form definitions now compile safely before session creation. Sessions update onl
 keep immutable nested data snapshots and expose validation/state independently of rendering.
 Use `pnpm install --frozen-lockfile`, `pnpm verify`, then `pnpm dev`. The checklist above is the
 review summary if PR creation remains unavailable.
+
+## M02 plan — 2026-10-19
+
+1. Complete typed metadata, config/default validation, value helpers and shared control props.
+2. Build equivalent Text/Rating VNode and DOM-factory spikes; measure 500-field mount/update/theme,
+   authoring size, SSR and real React/Angular embedding before selecting a representation.
+3. Record ADR-0002 with raw measurements and reproduction instructions; remove the losing spike.
+4. Port four controls, add lifecycle/IME/focus/SSR/type/config tests, keep the playground working.
+5. Run pnpm verify and publish the M02 branch only.
+
+Clarification: the M01 starter test hard-codes Rating's buggy default of zero. M02 expressly requires null,
+so that single expected value must change; core/schema regression tests remain untouched and a required
+unset-Rating test will replace the old accidental acceptance with the specified behavior. No M03 shells,
+theme packages or M04 adapter APIs will be implemented. React/Angular work is limited to measured probes.

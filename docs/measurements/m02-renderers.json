@@ -1,0 +1,85 @@
+{
+  "dom": {
+    "mountMs": 18.300000190734863,
+    "keystrokeMs": 0.0010000014305114747,
+    "themeMs": 14,
+    "samples": {
+      "mounts": [
+        16.800000190734863, 17.40000009536743, 17.40000009536743,
+        17.40000009536743, 17.90000009536743, 18.300000190734863,
+        18.700000286102295, 20.799999713897705, 22.59999990463257,
+        28.200000286102295
+      ],
+      "updates": [
+        0.0004999995231628418, 0.0004999995231628418, 0.0009999990463256836,
+        0.0009999990463256836, 0.0009999990463256836, 0.0010000014305114747,
+        0.0014999985694885253, 0.0014999985694885253, 0.0015000009536743164,
+        0.0015000009536743164
+      ],
+      "themes": [
+        12.799999713897705, 13.199999809265137, 13.200000286102295,
+        13.400000095367432, 13.699999809265137, 14, 14.099999904632568,
+        14.300000190734863, 15.799999713897705, 15.900000095367432
+      ]
+    },
+    "hosts": {
+      "reactMs": 10.600000381469727,
+      "angularMs": 9.5,
+      "react": true,
+      "angular": true,
+      "changeCallbacks": 2
+    },
+    "ssr": "<input id=\"f1\" value=\"\" class=\"base\"><div role=\"group\" aria-label=\"Field 0\"><button type=\"button\" aria-label=\"1 stars\" aria-pressed=\"false\" class=\"base\">☆</button><button type=\"button\" aria-label=\"2 stars\" aria-pressed=\"false\" class=\"base\">☆</button><button type=\"button\" aria-label=\"3 stars\" aria-pressed=\"false\" class=\"base\">☆</button><button type=\"button\" aria-label=\"4 stars\" aria-pressed=\"false\" class=\"base\">☆</button><button type=\"button\" aria-label=\"5 stars\" aria-pressed=\"false\" class=\"base\">☆</button></div>",
+    "ssrBytes": 527,
+    "authoringLines": 64,
+    "bundle": {
+      "rawBytes": 1736,
+      "gzipBytes": 736,
+      "brotliBytes": 608
+    }
+  },
+  "vnode": {
+    "mountMs": 19.299999713897705,
+    "keystrokeMs": 0.0025,
+    "themeMs": 3.6999998092651367,
+    "samples": {
+      "mounts": [
+        17.700000286102295, 17.899999618530273, 18.59999990463257,
+        18.600000381469727, 18.90000009536743, 19.299999713897705, 19.5,
+        19.90000009536743, 20.199999809265137, 24
+      ],
+      "updates": [
+        0.0020000004768371583, 0.0020000004768371583, 0.0025, 0.0025, 0.0025,
+        0.0025, 0.0029999995231628418, 0.0029999995231628418,
+        0.0034999990463256835, 0.004000000953674317
+      ],
+      "themes": [
+        3.3999996185302734, 3.4000000953674316, 3.5, 3.5999999046325684,
+        3.6999998092651367, 3.6999998092651367, 4.400000095367432,
+        4.400000095367432, 5.300000190734863, 5.900000095367432
+      ]
+    },
+    "hosts": {
+      "reactMs": 0.8999996185302734,
+      "angularMs": 0.5,
+      "react": true,
+      "angular": true,
+      "changeCallbacks": 2
+    },
+    "ssr": "<input id=\"f1\" value=\"\" class=\"base\"><div role=\"group\" aria-label=\"Field 0\"><button type=\"button\" aria-label=\"1 stars\" aria-pressed=\"false\" class=\"base\">☆</button><button type=\"button\" aria-label=\"2 stars\" aria-pressed=\"false\" class=\"base\">☆</button><button type=\"button\" aria-label=\"3 stars\" aria-pressed=\"false\" class=\"base\">☆</button><button type=\"button\" aria-label=\"4 stars\" aria-pressed=\"false\" class=\"base\">☆</button><button type=\"button\" aria-label=\"5 stars\" aria-pressed=\"false\" class=\"base\">☆</button></div>",
+    "ssrBytes": 527,
+    "authoringLines": 30,
+    "bundle": {
+      "rawBytes": 2807,
+      "gzipBytes": 1265,
+      "brotliBytes": 1133
+    }
+  },
+  "environment": {
+    "browser": "141.0.7390.37",
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v23.11.0",
+    "method": "12 rounds, 2 warmups, median of 10; 500 mixed Text/Rating; 200 updates on focused Text per round; theme updates all controls and forces layout; host probes include mount/update/input/cleanup"
+  }
+}

@@ -55,3 +55,4 @@ export function defineField<T>(
   const { control, ...model } = definition;
   return { model, views: { portable: control } };
 }
+export type { FieldControlProps, FocusTarget, ShellVariant } from "./contracts";
