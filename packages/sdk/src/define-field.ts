@@ -32,6 +32,7 @@ export function defineField<
   group?: string;
   icon?: string;
   value: ValueAdapter<V>;
+  validators?: readonly string[];
   properties?: P;
   shell?: ShellVariant;
   control: PortableControl<V, ConfigOf<P>>;
@@ -58,6 +59,9 @@ export function defineField<
     title: spec.title,
     kind: "field" as const,
     value: Object.freeze({ ...spec.value }),
+    ...(spec.validators
+      ? { validators: Object.freeze([...spec.validators]) }
+      : {}),
     properties: copy,
     builder,
   });

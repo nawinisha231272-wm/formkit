@@ -230,3 +230,19 @@ require a value adapter for complex props and explicit non-string inference choi
 reject complex emissions without an adapter. NativeRegistrationArgs expresses the typed registration boundary.
 Unsafe prototype/direct HTML-writing property names are rejected. Native callbacks refuse disabled/read-only
 commits, while controls remain responsible for forwarding their supplied state and ARIA to the actual input.
+
+## M06 implemented controls and display composition
+
+ComponentModel/defineField support validators?: readonly string[] referring to engine rules.
+defineDisplay({type,title,properties,control}) composes a non-value field model and none-shell view without
+a submitted key. Portable FieldControlProps.actions optionally supplies submit/reset/emit(name). The host
+renderer owns these operations; no session is recreated by controls. englishMessages is the shared frozen
+English catalog and defaultMessage retains the existing helper API and message aliases.
+
+Tier 1 named exports: textareaField, emailField, passwordField, radioField, selectField, hiddenField,
+contentField and buttonField, in addition to Text/Number/Checkbox and unchanged Rating. builtinFields is
+the shared frozen default registration list. Radio/Select expose options metadata with unique nonempty
+string values; empty is the unselected sentinel. Hidden is a normal value-producing hidden input.
+Button action/text/event properties select submit/reset/custom events. Content html is rendered through
+sanitizeContent into allow-listed VNodes, never raw HTML. Its supported subset/limits/protocols are in
+ADR-0008; it is not a general HTML5 parser or an HTML-string sanitizer for other sinks.

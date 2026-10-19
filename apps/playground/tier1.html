@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OurForm — Tier 1 fields</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Tier 1 fields and validation</h1>
+      <p>
+        Portable controls, client validation and JSON Schema for your own
+        backend.
+      </p>
+      <p>
+        <a href="/">Playground</a> · <a href="builder.html">Mini builder</a> ·
+        <a href="?host=dom">DOM</a> · <a href="?host=react">React</a> ·
+        <a href="?host=angular">Angular</a> ·
+        <a href="?host=dom&amp;locale=es">Español</a>
+      </p>
+      <div class="toolbar">
+        <label for="tier-theme">Theme</label
+        ><select id="tier-theme">
+          <option value="base">Base</option>
+          <option value="bootstrap4">Bootstrap 4</option>
+          <option value="bootstrap5">Bootstrap 5</option>
+          <option value="tailwind">Tailwind</option></select
+        ><label for="tier-mode">Appearance</label
+        ><select id="tier-mode">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="high-contrast">High contrast</option>
+        </select>
+      </div>
+      <p id="host-name"></p>
+      <div class="columns">
+        <section aria-labelledby="demo-title">
+          <h2 id="demo-title">Team registration</h2>
+          <div id="host"></div>
+          <h3>Submission / action</h3>
+          <pre
+            id="tier-result"
+            tabindex="0"
+            role="region"
+            aria-label="Submission result"
+          ></pre>
+          <p>Try taken@example.com to see the host-provided async validator.</p>
+        </section>
+        <section aria-labelledby="schema-title">
+          <h2 id="schema-title">Submission JSON Schema</h2>
+          <pre
+            id="tier-schema"
+            tabindex="0"
+            role="region"
+            aria-label="Submission JSON Schema"
+          ></pre>
+          <p>
+            The SDK validates locally. Customers can use the headless validation
+            package in Node; no request is sent by the SDK.
+          </p>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="./tier1.ts"></script>
+  </body>
+</html>

@@ -101,6 +101,9 @@ function validateDefinitionInternal(
         node.visibleWhen,
         node.disabledWhen,
         node.calculate?.expr,
+        ...(node.validation?.custom ?? []).flatMap((rule) =>
+          Object.values(rule.args ?? {}),
+        ),
       ])
         if (expr !== undefined) expressions(expr, node.id);
       if (registry && model)

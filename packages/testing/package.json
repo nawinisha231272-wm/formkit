@@ -29,7 +29,8 @@
     "@ourform/theme-base": "workspace:*",
     "@ourform/theme-bootstrap5": "workspace:*",
     "@ourform/theme-tailwind": "workspace:*",
-    "@ourform/theme-bootstrap4": "workspace:*"
+    "@ourform/theme-bootstrap4": "workspace:*",
+    "@ourform/validation": "workspace:*"
   },
   "peerDependencies": {
     "@playwright/test": "1.56.1",

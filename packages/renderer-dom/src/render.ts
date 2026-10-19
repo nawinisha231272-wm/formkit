@@ -28,6 +28,11 @@ export interface RenderOptions extends ThemeOptions {
   adapter?: string;
   nativeHost?: NativeHost;
   onSubmit?: (result: Awaited<ReturnType<FormSession["submit"]>>) => void;
+  onAction?: (event: {
+    name: string;
+    componentId: string;
+    data: unknown;
+  }) => void;
   theme?: Theme | string;
   idPrefix?: string;
   presentation?: Readonly<Record<string, FieldPresentation>>;
@@ -59,7 +64,10 @@ function mountForm(
   const document = root.ownerDocument;
   const instance = `of-${Array.from(globalThis.crypto.getRandomValues(new Uint32Array(4)), (part) => part.toString(16)).join("-")}`;
   const prefix = options.idPrefix ?? `${instance}-`;
-  const t = options.t ?? defaultMessage;
+  const t =
+    options.t ??
+    ((key: string, params?: Record<string, unknown>) =>
+      session.localize(key, params, defaultMessage));
   let theme = options.theme ?? "base";
   let mode = options.themeMode ?? "light";
   let destroyed = false;
@@ -132,9 +140,14 @@ function mountForm(
       }
     summary.append(heading, list);
     summary.hidden = !list.children.length;
-    live.textContent = list.children.length
-      ? t("of.errorCount", { count: list.children.length })
-      : t("of.noErrors");
+    summary.setAttribute("aria-label", t("of.errorSummary"));
+    live.textContent = session.form.nodes.some(
+      (entry) => session.getFieldState(entry.node.id).pending,
+    )
+      ? t("of.validation.pending")
+      : list.children.length
+        ? t("of.errorCount", { count: list.children.length })
+        : t("of.noErrors");
   };
   const onSummaryClick = (event: Event): void => {
     const target = event.target as Element | null;
@@ -164,6 +177,8 @@ function mountForm(
               field.ref,
               options.presentation?.[id],
               t,
+              actions(id),
+              blur(id),
             ),
           );
           field.native?.update();
@@ -171,18 +186,58 @@ function mountForm(
       }
       updateSummary();
       if (!submitted)
-        live.textContent = session.form.nodes
-          .flatMap((entry) => fieldErrors(session, entry, t))
-          .join(". ");
+        live.textContent = session.form.nodes.some(
+          (entry) => session.getFieldState(entry.node.id).pending,
+        )
+          ? t("of.validation.pending")
+          : session.form.nodes
+              .flatMap((entry) => fieldErrors(session, entry, t))
+              .join(". ");
     } finally {
       updating = false;
     }
+  };
+  // A blur can remove errors above the pointer target between down/up. Touch after
+  // the activation completes so validation layout never cancels the user's click.
+  const pointers = new Set<number>();
+  const deferredTouches = new Set<string>();
+  let blurTimer: ReturnType<typeof setTimeout> | undefined;
+  const flushTouches = () => {
+    if (destroyed) return;
+    const ids = [...deferredTouches];
+    deferredTouches.clear();
+    for (const id of ids) session.touch(session.form.byId[id]!.path);
+  };
+  const pointerDown = (event: Event) =>
+    pointers.add((event as PointerEvent).pointerId);
+  const pointerEnd = (event: Event) => {
+    if (!pointers.delete((event as PointerEvent).pointerId) || pointers.size)
+      return;
+    clearTimeout(blurTimer);
+    blurTimer = setTimeout(flushTouches, 0);
+  };
+  const windowBlur = () => {
+    pointers.clear();
+    clearTimeout(blurTimer);
+    blurTimer = setTimeout(flushTouches, 0);
+  };
+  const blur = (id: string) => () => {
+    if (!session.form.byId[id]!.model.value) return;
+    if (pointers.size) deferredTouches.add(id);
+    else session.touch(session.form.byId[id]!.path);
   };
   let unsubscribe = () => {};
   const destroy = (): void => {
     if (destroyed) return;
     destroyed = true;
     unsubscribe();
+    clearTimeout(blurTimer);
+    deferredTouches.clear();
+    pointers.clear();
+    root.removeEventListener("pointerdown", pointerDown, true);
+    document.removeEventListener("pointerup", pointerEnd, true);
+    document.removeEventListener("pointercancel", pointerEnd, true);
+    document.defaultView?.removeEventListener("blur", windowBlur);
     summary.removeEventListener("click", onSummaryClick);
     root.removeEventListener("submit", onSubmit);
     for (const field of fields.values()) {
@@ -209,6 +264,25 @@ function mountForm(
     }
     return result;
   };
+  const actions = (componentId: string) => ({
+    submit: () => {
+      void submit();
+    },
+    reset: () => {
+      clearTimeout(blurTimer);
+      deferredTouches.clear();
+      submitted = false;
+      summary.hidden = true;
+      session.reset();
+    },
+    emit: (name: string) => {
+      const detail = { name, componentId, data: session.getData() };
+      options.onAction?.(detail);
+      root.dispatchEvent(
+        new CustomEvent("of-action", { detail, bubbles: true, composed: true }),
+      );
+    },
+  });
   const onSubmit = (event: Event): void => {
     event.preventDefault();
     void submit();
@@ -217,9 +291,10 @@ function mountForm(
     applyTheme();
     for (const entry of session.form.nodes) {
       const source = options.views.get(entry.node.type);
-      const resolved = entry.model.value
-        ? resolveView(entry.node.type, source, options.adapter ?? "dom")
-        : undefined;
+      const resolved =
+        entry.model.value || source?.portable || source?.native
+          ? resolveView(entry.node.type, source, options.adapter ?? "dom")
+          : undefined;
       if (resolved && typeof resolved !== "function" && !options.nativeHost)
         throw new Error(
           `no-view: Native host required for ${entry.node.type} in adapter ${options.adapter ?? "dom"}`,
@@ -259,6 +334,8 @@ function mountForm(
           field.ref,
           options.presentation?.[entry.node.id],
           t,
+          actions(entry.node.id),
+          blur(entry.node.id),
         ),
       );
       fields.set(entry.node.id, field);
@@ -269,6 +346,10 @@ function mountForm(
     root.append(live);
     summary.addEventListener("click", onSummaryClick);
     root.addEventListener("submit", onSubmit);
+    root.addEventListener("pointerdown", pointerDown, true);
+    document.addEventListener("pointerup", pointerEnd, true);
+    document.addEventListener("pointercancel", pointerEnd, true);
+    document.defaultView?.addEventListener("blur", windowBlur);
     unsubscribe = session.subscribe((patch) => {
       patch.changedFields.forEach((id) => pending.add(id));
       flush();
@@ -333,7 +414,8 @@ export function renderToString(
       `${instance}-`,
       () => {},
       options.presentation?.[entry.node.id],
-      options.t,
+      options.t ??
+        ((key, params) => session.localize(key, params, defaultMessage)),
     );
     const html = renderVNodeToString(shell);
     // Nested containers append already-escaped rendered child markup, never definition HTML.

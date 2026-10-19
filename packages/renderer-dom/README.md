@@ -48,3 +48,11 @@ owns compile/session/mount/subscriptions/disposal for adapters. It installs defa
 must be provided explicitly (the adapters supply built-ins). syncData writes changed compiled leaf paths.
 
 M05 includes Bootstrap 4 and 5 in host/legacy preset defaults; low-level mount can register bootstrap4Theme explicitly. The bootstrap alias remains Bootstrap 5. Optional node.ariaLabel overrides accessible naming while retaining the visible label; placeholder is forwarded to controls.
+
+M06 renders non-value portable Content/Button views, supplies control actions and forwards custom
+HostOptions.onAction events ({name, componentId, data}) plus bubbling of-action DOM events. Submit actions
+share summary/focus/callback handling; reset uses the same session. Localization defaults to the engine
+provider with the English SDK catalog fallback; the existing t callback and of.required alias remain valid.
+Async validators expose aria-busy and a pending description through the shared shell/live region.
+Pointer-triggered blur touches are deferred until activation completes to prevent validation layout
+changes from canceling clicks; keyboard blur stays immediate. Listeners and queued work are cleaned up.

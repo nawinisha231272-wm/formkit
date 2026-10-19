@@ -533,3 +533,111 @@ READMEs and the changeset describe the public contracts and proof boundaries. Gi
 M05 implementation and verification are complete. docs/phase0-report.md recommends GO to Phase 1 after
 human review. No architectural blocker remains for that proof, with the documented memory/preview/draft
 limits. **Stop here: AGENTS.md and M05 explicitly require human sign-off before M06.** M06 has not begun.
+
+## M06 — Validation package and Tier 1 fields
+
+The user's instruction to proceed after the M05 report authorizes Phase 1. Plan: add a headless
+validation facade and submission JSON Schema, shared custom/async validators with cancellation and
+pending state, localization, then the Tier 1 controls and reusable cross-host conformance coverage.
+Add fixtures and a playground demo, retain all four themes including Bootstrap 4/5, run complete
+verification with per-package core/validation coverage, and document API decisions/evidence.
+Risks: async races must never publish stale errors; server validation must reject malformed payloads;
+schema generation must retain annotations for runtime-only conditions and custom rules; Content must
+use an allow-list without writing untrusted HTML. This branch stacks on verified M05 (671e5e5), as prior
+milestone branches are still unmerged. No layouts/arrays or other later-milestone features are planned.
+
+### Built
+
+- Headless @ourform/validation with compileForm and validateSubmission, sharing the session's exact
+  rules in customer Node and browsers. Untrusted payloads are checked before host validators: unsafe
+  JSON, extra keys, malformed scopes, coercions, missing required defaults and forged calculations fail.
+  Custom serialized values, including null, retain their normalize/serialize round-trip contract.
+- Draft 2020-12 toSubmissionSchema with scoped objects, adapter hints, static required/bounds/patterns,
+  email/options and Unicode code-point lengths. Every valid legacy definition has explicit good/bad
+  submission companions, alongside the new Tier 1 registration fixture.
+- Per-engine custom validator registry alongside existing host functions; compiled argument dependencies,
+  actual AbortSignal, pending state, cancellation and stale-result protection. Reset, disposal, hiding,
+  newer validation and dependency changes abort obsolete runs, even if the provider ignores its signal.
+  Superseded async submissions fail closed. Host failures become stable validation errors.
+- Localization provider and shared English message catalog, retaining existing renderer translations.
+  Textarea, Email, Password, Radio, Select, Hidden, Content and Button join Text, Number and Checkbox.
+  Content renders a bounded allow-list to safe VNodes; submit/reset/custom buttons reuse host/session
+  behavior. Non-value controls require no dummy data keys. All adapters share the built-in registry,
+  which also makes the builder discover the new control metadata automatically.
+- Reusable component conformance kit and /tier1.html demo with actual DOM, React and Angular hosts,
+  host-provided async email validation, Spanish overrides, JSON Schema/submission output, and all four
+  themes. Bootstrap 4 and Bootstrap 5 remain independent themes alongside base and Tailwind.
+
+### Decisions, findings and limits
+
+ADR-0008 and the package READMEs/specs define the new contracts. There is no new external runtime
+dependency; Ajv remains development-only. Core/validation still compile without the DOM library and
+import no Node runtime module. Development Node types describe the shared AbortSignal globals.
+Dynamic visibility/validation, calculations and custom rules remain explicit x-ourform-\* annotations;
+bare Ajv does not execute them. Arbitrary custom adapter emptiness/domain semantics require appropriate
+adapter schema hints and model validators. Content supports the documented markup subset; it is not
+a general HTML5 parser or an HTML-string sanitizer for other sinks. Host providers own I/O and timeouts.
+
+Real radio clicks exposed blur validation removing error rows between pointer down and activation.
+The renderer now defers pointer-driven touches until activation ends, retains immediate keyboard blur,
+and cleans up its listeners/timers. Reset clears queued touches, preserving freshly reset field state;
+the cross-host conformance test resets directly from a focused input and checks every touched flag.
+Select values are installed after their options. Theme action-button
+styling applies only to direct action controls, so transparent containers cannot recolor nested Rating
+buttons. Tests retain real clicks and existing assertions. Rating remains unchanged at 29 authoring
+lines. No existing visual baseline, test assertion or pixel threshold was relaxed or regenerated.
+Schema review also caught an Email field's explicit host pattern being overwritten by the built-in
+email constraint. Both now remain in the schema; a regression compares Ajv/runtime results for a valid
+address, another domain and malformed syntax. The previous successful full run was repeated after
+these final fixes; an intermediate run was deliberately interrupted to rebuild the corrected schema.
+
+### Acceptance evidence
+
+- PASS — browser/Node parity for every fixture: tier1.spec.ts `all shared fixtures yield byte-equivalent
+validation results in browser and customer Node` compares complete compile diagnostics and validation
+  results across legacy definitions/default data, all explicit legacy good/bad companions, and Tier 1
+  samples. All three browsers pass. Headless `every legacy fixture compiles/diagnoses consistently;
+canonical data yields identical session/submission results` separately compares session/facade results.
+- PASS — generated JSON Schema: `explicit good/bad data companions for every legacy fixture pass/fail
+both SDK and Ajv` covers all 16 valid legacy definitions; `Tier 1 generated schema accepts all good samples
+and rejects every bad sample in Ajv and runtime` covers registration. Ajv uses Draft 2020-12. Nested
+  required scopes, optional empties, Unicode lengths, isolated schema snapshots, custom serialization,
+  null empties and combined explicit/email patterns have independent regressions.
+- PASS — all Tier 1 fields in all three hosts: shared checkComponentConformance executes unchanged in
+  actual DOM, React and Angular under `every Tier 1 field passes shared conformance, actions and reset`.
+  It fills/submits every value type, checks Hidden/Content, validation summary/focus, custom action and
+  reset, including untouched state after resetting a focused control. axe runs in base, Bootstrap 4,
+  Bootstrap 5 and Tailwind. Separate per-host tests cover read-only/disabled controls, pending async
+  results, stale signals, unmount/listener cleanup and theme identity/focus/caret preservation.
+- PASS — safe Content: components unit `Content uses a bounded allow-list of tags and anchor attributes,
+never raw HTML` covers the attack corpus; `Content strips executable markup and unsafe URLs in the real
+DOM` checks each host for absent executable nodes/events/javascript URLs, retained safe links and no
+  executed script flag, in all three browsers.
+- PASS — custom/async registries, cancellation and localization: 12 core async-validation tests cover
+  pending, superseded submit, ignored signals, reset/dispose/hiding, compiled argument dependencies,
+  host failures/malformed results, registry isolation/diagnostics, localization and safe catalog lookup.
+  Existing host-function expression tests remain unchanged. Browser Spanish-provider and cross-host
+  async tests verify rendered behavior; customer Node providers are covered by validation tests.
+- PASS — validation line coverage 99.15%; core 98.57%. Each package independently enforces at least 90%
+  through Vitest coverage thresholds. No threshold was lowered and no test was weakened/skipped/deleted.
+- PASS — full pinned verification:
+  `CI=true npx --offline --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify` exits 0.
+  Lint/format, all 20 builds, strict checks including Angular 21's TypeScript 5.9 check, 150 unit tests,
+  267 browser cases and all 14 size budgets pass. The 60 existing PNG baselines remain unchanged.
+  Frozen-lockfile installation also passes. This is local macOS evidence, not a remote Linux CI claim.
+- PASS — Brotli sizes: schema 4.18 kB, core 8.9 kB, SDK 3.16 kB, components 2.81 kB, renderer 7.23 kB,
+  builder-core 4 kB, element 1.47 kB, React 1.39 kB, Angular 2.36 kB, validation 1.05 kB (30 kB each);
+  base 1.08 kB, Bootstrap 4 1.27 kB, Bootstrap 5 1.26 kB, Tailwind 1.17 kB (10 kB each).
+
+### Review summary — M06: Validation package and Tier 1 fields
+
+Customer Node and browser validation now share canonical submission checks and cancellable validators.
+Static submission schemas and the complete Tier 1 field set are available through public packages,
+with localization, safe Content, portable actions and all four themes. /tier1.html demonstrates actual
+DOM/React/Angular hosts and host-provided async validation without backend calls. Package READMEs,
+updated specs, ADR-0008 and the changeset describe the public contracts and static-schema/Content limits.
+The acceptance checklist above is the review body. Git transport works, but `gh auth status` reports no
+authenticated host, so this summary substitutes for a PR. The branch remains stacked on unmerged M05.
+
+M06 is complete. No open contract question remains for this scope. M07 — Layouts and production adapters
+has not begun; its Phase 1 gate will require a separate report and human review.

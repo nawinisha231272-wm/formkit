@@ -6,12 +6,7 @@ import type {
 } from "@ourform/renderer-dom";
 import { registerNativeField, mapNativeProps } from "@ourform/sdk";
 import type { NativeFieldOptions } from "@ourform/sdk";
-import {
-  textField,
-  numberField,
-  checkboxField,
-  ratingField,
-} from "@ourform/components";
+import { builtinFields } from "@ourform/components";
 export type { FormController, HostOptions } from "@ourform/renderer-dom";
 export function registerElementField<V = string>(
   type: string,
@@ -20,7 +15,7 @@ export function registerElementField<V = string>(
 ) {
   return registerNativeField("element", type, component, options);
 }
-const builtins = [textField, numberField, checkboxField, ratingField];
+const builtins = builtinFields;
 const nativeHost: NativeHost = {
   mount(slot, view, initial) {
     const element =

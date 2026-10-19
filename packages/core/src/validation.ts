@@ -18,9 +18,15 @@ export function validateValue(
     return errors;
   }
   if (typeof value === "string") {
-    if (rules.minLength !== undefined && value.length < rules.minLength)
+    if (
+      rules.minLength !== undefined &&
+      Array.from(value).length < rules.minLength
+    )
       add("minLength", { min: rules.minLength });
-    if (rules.maxLength !== undefined && value.length > rules.maxLength)
+    if (
+      rules.maxLength !== undefined &&
+      Array.from(value).length > rules.maxLength
+    )
       add("maxLength", { max: rules.maxLength });
     if (entry.pattern && !entry.pattern.test(value))
       add("pattern", { pattern: rules.pattern });

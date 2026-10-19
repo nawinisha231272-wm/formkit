@@ -1,0 +1,21 @@
+[
+  {
+    "name": "A",
+    "email": "invalid",
+    "password": "short",
+    "age": 17,
+    "contact": "fax",
+    "team": "other",
+    "accept": false
+  },
+  { "email": "ana@example.com" },
+  {
+    "name": "  ",
+    "email": "ana@example.com",
+    "password": "test-password",
+    "age": 30,
+    "contact": "email",
+    "team": "engineering",
+    "accept": true
+  }
+]

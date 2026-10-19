@@ -1,0 +1,11 @@
+{
+  "name": "Ana Rivera",
+  "bio": "Building useful forms",
+  "email": "ana@example.com",
+  "password": "test-password",
+  "age": 30,
+  "contact": "email",
+  "team": "engineering",
+  "accept": true,
+  "tracking": "web"
+}

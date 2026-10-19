@@ -1,10 +1,5 @@
 import { createEngine } from "@ourform/core";
-import {
-  textField,
-  numberField,
-  checkboxField,
-  ratingField,
-} from "@ourform/components";
+import { builtinFields } from "@ourform/components";
 import {
   createBuilder,
   AddComponent,
@@ -19,11 +14,8 @@ import type { FormDefinition, ThemeMode } from "@ourform/sdk";
 import feedback from "../../fixtures/forms/feedback.json";
 import { employeeFields } from "../vanilla-example/src/employee-fields";
 
-const engine = createEngine()
-  .register(textField.model)
-  .register(numberField.model)
-  .register(checkboxField.model)
-  .register(ratingField.model);
+const engine = createEngine();
+for (const field of builtinFields) engine.register(field.model);
 for (const field of employeeFields) engine.register(field.model);
 const builder = createBuilder(engine, feedback as FormDefinition);
 const element = <T extends HTMLElement>(id: string) =>

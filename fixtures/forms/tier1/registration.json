@@ -1,0 +1,109 @@
+{
+  "$formVersion": "1.0",
+  "id": "registration",
+  "title": "Team registration",
+  "display": "form",
+  "settings": { "validateOn": "blur" },
+  "components": [
+    {
+      "id": "intro",
+      "type": "content",
+      "properties": {
+        "html": "<p>Join the <strong>OurForm team</strong>. All data stays in your app.</p>"
+      }
+    },
+    {
+      "id": "name",
+      "type": "text",
+      "key": "name",
+      "label": "Full name",
+      "validation": { "required": true, "minLength": 2 }
+    },
+    {
+      "id": "bio",
+      "type": "textarea",
+      "key": "bio",
+      "label": "About you",
+      "validation": { "maxLength": 200 }
+    },
+    {
+      "id": "email",
+      "type": "email",
+      "key": "email",
+      "label": "Email address",
+      "validation": { "required": true }
+    },
+    {
+      "id": "password",
+      "type": "password",
+      "key": "password",
+      "label": "Password",
+      "validation": { "required": true, "minLength": 8 }
+    },
+    {
+      "id": "age",
+      "type": "number",
+      "key": "age",
+      "label": "Age",
+      "validation": { "required": true, "min": 18, "max": 100 }
+    },
+    {
+      "id": "contact",
+      "type": "radio",
+      "key": "contact",
+      "label": "Preferred contact",
+      "properties": {
+        "options": [
+          { "value": "email", "label": "Email" },
+          { "value": "phone", "label": "Phone" }
+        ]
+      },
+      "validation": { "required": true }
+    },
+    {
+      "id": "team",
+      "type": "select",
+      "key": "team",
+      "label": "Team",
+      "properties": {
+        "options": [
+          { "value": "engineering", "label": "Engineering" },
+          { "value": "design", "label": "Design" }
+        ]
+      },
+      "validation": { "required": true }
+    },
+    {
+      "id": "accept",
+      "type": "checkbox",
+      "key": "accept",
+      "label": "Accept terms",
+      "validation": { "required": true }
+    },
+    {
+      "id": "tracking",
+      "type": "hidden",
+      "key": "tracking",
+      "defaultValue": "web"
+    },
+    {
+      "id": "send",
+      "type": "button",
+      "properties": { "action": "submit", "text": "Send registration" }
+    },
+    {
+      "id": "reset",
+      "type": "button",
+      "properties": { "action": "reset", "text": "Clear registration" }
+    },
+    {
+      "id": "custom",
+      "type": "button",
+      "properties": {
+        "action": "custom",
+        "text": "Save draft",
+        "event": "save-draft"
+      }
+    }
+  ]
+}

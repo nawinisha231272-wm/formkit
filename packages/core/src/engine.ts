@@ -1,3 +1,5 @@
+import { builtinValidators } from "./validators";
+import type { CompiledValidator, Providers, ValidatorMap } from "./validators";
 import { migrate, validateDefinition } from "@ourform/schema";
 import type { ComponentNode } from "@ourform/schema";
 import type { ComponentModel } from "./model";
@@ -24,6 +26,9 @@ export class Registry {
         ...model,
         ...(model.value ? { value: Object.freeze({ ...model.value }) } : {}),
         ...(model.properties ? { properties: snapshot(model.properties) } : {}),
+        ...(model.validators
+          ? { validators: Object.freeze([...model.validators]) }
+          : {}),
       }) as ComponentModel,
     );
     return this;
@@ -35,11 +40,32 @@ export class Registry {
     return [...this.#models.values()];
   }
 }
+export interface EngineOptions {
+  functions?: FunctionMap;
+  validators?: ValidatorMap;
+  providers?: Providers;
+}
 export class Engine {
   readonly registry = new Registry();
   readonly functions: FunctionMap;
+  readonly validators: Readonly<ValidatorMap>;
+  readonly providers: Readonly<Providers>;
   #forms = new WeakSet<CompiledForm>();
-  constructor(options: { functions?: FunctionMap } = {}) {
+  constructor(options: EngineOptions = {}) {
+    this.providers = Object.freeze({ ...options.providers });
+    for (const name of Object.keys(options.validators ?? {}))
+      if (
+        Object.hasOwn(builtinValidators, name) ||
+        ["__proto__", "prototype", "constructor"].includes(name)
+      )
+        throw new Error(`Reserved validator name: ${name}`);
+    this.validators = Object.freeze(
+      Object.fromEntries(
+        Object.entries({ ...builtinValidators, ...options.validators }).map(
+          ([name, validator]) => [name, Object.freeze({ ...validator })],
+        ),
+      ),
+    );
     this.functions = Object.freeze(
       Object.fromEntries(
         Object.entries(options.functions ?? {}).map(([key, fn]) => [
@@ -115,12 +141,6 @@ export class Engine {
             "Only value components may calculate.",
             node.id,
           );
-        if (node.validation?.custom?.length)
-          error(
-            "unsupported-validator",
-            "Custom validators require M06.",
-            node.id,
-          );
         const path = Object.freeze(
           node.key ? [...scope, node.key] : [...scope],
         );
@@ -129,6 +149,7 @@ export class Engine {
           model,
           path,
           expressions: {},
+          validators: [],
           ...(parentId === undefined ? {} : { parentId }),
           ...(node.validation?.pattern === undefined
             ? {}
@@ -192,6 +213,55 @@ export class Engine {
       (entry as { expressions: CompiledNode["expressions"] }).expressions =
         Object.freeze(expressions);
     }
+    for (const entry of nodes) {
+      const compiledValidators: CompiledValidator[] = [];
+      const rules = [
+        ...(entry.model.validators ?? []).map((validator) => ({ validator })),
+        ...(entry.node.validation?.custom ?? []),
+      ];
+      for (const rule of rules) {
+        const validator = Object.hasOwn(this.validators, rule.validator)
+          ? this.validators[rule.validator]
+          : undefined;
+        if (!validator) {
+          error(
+            "unsupported-validator",
+            `Unknown validator: ${rule.validator}`,
+            entry.node.id,
+          );
+          continue;
+        }
+        const args: Record<string, import("./expressions").CompiledExpression> =
+          {};
+        for (const [key, expr] of Object.entries(
+          "args" in rule ? (rule.args ?? {}) : {},
+        )) {
+          const result = compileExpression(expr, {
+            byRef: (id) => (byId[id] ? dependenciesFor(byId[id]) : undefined),
+            byPath: (path) =>
+              byPath[pathKey(path)]
+                ? dependenciesFor(byPath[pathKey(path)]!)
+                : undefined,
+            functions: this.functions,
+          });
+          diagnostics.push(
+            ...result.diagnostics.map((d) => ({
+              ...d,
+              componentId: entry.node.id,
+            })),
+          );
+          if (result.expression) {
+            args[key] = result.expression;
+            for (const source of result.expression.dependencies)
+              if (source !== entry.node.id)
+                dependents[source]!.push(entry.node.id);
+          }
+        }
+        compiledValidators.push({ name: rule.validator, validator, args });
+      }
+      (entry as { validators: readonly CompiledValidator[] }).validators =
+        compiledValidators;
+    }
     for (const id of Object.keys(dependents))
       dependents[id] = [...new Set(dependents[id])];
     const graph = orderGraph(
@@ -216,14 +286,21 @@ export class Engine {
   }
   createSession(
     form: CompiledForm,
-    options: { data?: unknown; mode?: "edit" | "readOnly" } = {},
+    options: {
+      data?: unknown;
+      mode?: "edit" | "readOnly";
+      providers?: Providers;
+    } = {},
   ): FormSession {
     if (!this.#forms.has(form))
       throw new Error(
         "Compiled form must belong to this engine. Call compile first.",
       );
-    return new FormSession(form, options);
+    return new FormSession(form, {
+      ...options,
+      providers: options.providers ?? this.providers,
+    });
   }
 }
-export const createEngine = (options?: { functions?: FunctionMap }): Engine =>
+export const createEngine = (options?: EngineOptions): Engine =>
   new Engine(options);

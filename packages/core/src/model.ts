@@ -45,6 +45,7 @@ export interface ComponentModel<T = unknown> {
   kind?: "field" | "layout" | "composite";
   dataScope?: "none" | "object" | "array";
   value?: ValueAdapter<T>;
+  validators?: readonly string[];
   properties?: PropertyMap;
   builder?: { title: string; group: string; icon?: string; order?: number };
 }

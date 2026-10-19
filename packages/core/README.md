@@ -66,3 +66,21 @@ Other public types: `ComponentModel`, `ValueAdapter`, property metadata types, `
 
 Custom/async validation, plugins, composites and repeaters remain later milestones. They are explicitly
 diagnosed rather than partially executed. Full SDK metadata/value helpers arrive in M02.
+
+## M06 custom and async validation
+
+createEngine({ validators, providers, functions }) owns frozen per-engine registries. Model validators
+apply by name; node.validation.custom adds { validator, args? } with expression arguments. Unknown names
+return unsupported-validator. The built-in email/options names are reserved. A Validator has
+validate(value, context) returning null, FieldError, FieldError[] or a Promise. Context includes frozen
+data/config/args, path/componentId, AbortSignal and providers. Empty values skip custom rules; required
+handles emptiness. Host failures/malformed results become unavailable errors.
+
+New runs, value/dependency changes, hiding, reset and dispose cancel older async work. pending is true
+while waiting; late results cannot write state. Canceled validate/submit waiters settle with aborted
+errors. Providers own I/O and timeouts. Core itself never calls a network endpoint.
+
+providers.localization(key, params, locale) may return text or undefined. session.localize uses the
+frozen englishMessages/englishMessage catalog as fallback (or a supplied fallback). Locale comes from
+form settings. Built-in length rules count Unicode code points, matching JSON Schema. Node types are
+build-time only; core still compiles without DOM and runs in both Node 22 and browsers.

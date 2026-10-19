@@ -21,10 +21,15 @@ export function fieldErrors(
   t: typeof defaultMessage,
 ): string[] {
   return session.getFieldState(entry.node.id).errors.map((error) =>
-    t(error.code === "required" ? "of.required" : error.messageKey, {
-      ...error.params,
-      label: entry.node.label ?? entry.node.key ?? entry.node.id,
-    }),
+    t(
+      error.code === "required" && error.messageKey === "of.validation.required"
+        ? "of.required"
+        : error.messageKey,
+      {
+        ...error.params,
+        label: entry.node.label ?? entry.node.key ?? entry.node.id,
+      },
+    ),
   );
 }
 export function shellVNode(
@@ -36,6 +41,8 @@ export function shellVNode(
   focusRef: (target: FocusTarget | null) => void,
   presentation: FieldPresentation = {},
   t: typeof defaultMessage = defaultMessage,
+  actions?: { submit(): void; reset(): void; emit(name: string): void },
+  onBlur?: () => void,
 ): VNode {
   const state = session.getFieldState(entry.node.id);
   const view = views.get(entry.node.type);
@@ -67,7 +74,7 @@ export function shellVNode(
       .map(([key, value]) => `${key}:${value}`)
       .join(";"),
   };
-  if (!entry.model.value)
+  if (!entry.model.value && !view?.portable)
     return h(
       "div",
       rootProps,
@@ -83,6 +90,7 @@ export function shellVNode(
   const described = [
     entry.node.description ? `${id}_description` : "",
     presentation.help ? `${id}_help` : "",
+    state.pending ? `${id}_pending` : "",
     errors.length ? `${id}_error` : "",
     variant === "group" && state.required ? `${id}_required` : "",
   ]
@@ -90,9 +98,17 @@ export function shellVNode(
     .join(" ");
   const control = view.portable({
     value: state.value,
-    setValue: (next) => session.setValue(state.path, next, { source: "user" }),
-    onBlur: () => session.touch(state.path),
+    setValue: (next) => {
+      if (entry.model.value)
+        session.setValue(state.path, next, { source: "user" });
+    },
+    onBlur:
+      onBlur ??
+      (() => {
+        if (entry.model.value) session.touch(state.path);
+      }),
     config: config.config,
+    ...(actions ? { actions } : {}),
     ...(entry.node.placeholder === undefined
       ? {}
       : { placeholder: entry.node.placeholder }),
@@ -182,6 +198,16 @@ export function shellVNode(
       entry.node.description,
     ),
     controlWrapper,
+    h(
+      "small",
+      {
+        key: "pending",
+        id: `${id}_pending`,
+        class: cl("help"),
+        hidden: !state.pending,
+      },
+      t("of.validation.pending"),
+    ),
     variant === "inline" ? labelNode : null,
     h(
       "small",

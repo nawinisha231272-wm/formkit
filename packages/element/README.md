@@ -36,3 +36,7 @@ Methods: submit(), validate(), reset(data?), focusField(id). controller exposes 
 Disconnect disposes the mount/session; reconnect preserves the latest data. Schema/engine/fields/readOnly
 changes rebuild deliberately; data/theme changes update in place. Use setData on the returned controller
 for changed-leaf controlled updates. Duplicate tag registrations throw. No plugin API is implied by fields.
+
+M06 registers all Tier 1 builtinFields automatically. Configure custom/async validation and localization
+on the supplied engine. HostOptions.onAction and composed, bubbling of-action DOM events expose custom
+button actions (including across the custom element's Shadow DOM boundary).

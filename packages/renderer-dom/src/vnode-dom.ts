@@ -118,6 +118,8 @@ function make(node: VNode | string): Unit {
   }
   unit.children = node.children.map(make);
   for (const child of unit.children) el.appendChild(child.el);
+  if (el instanceof HTMLSelectElement)
+    attribute(unit, "value", node.props.value, undefined);
   return unit;
 }
 function release(unit: Unit): void {
@@ -212,6 +214,8 @@ function patch(unit: Unit, next: VNode | string): Unit {
       );
   }
   unit.children = children;
+  if (unit.el instanceof HTMLSelectElement)
+    attribute(unit, "value", next.props.value, undefined);
   return unit;
 }
 export function mountVNode(node: VNode): {

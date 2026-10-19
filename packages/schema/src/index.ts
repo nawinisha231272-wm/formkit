@@ -17,3 +17,6 @@ export { isRecord, isSafeKey, inspectJson } from "./json";
 
 export { validateProperties } from "./properties";
 export type { PropertyDescriptor } from "./types";
+
+export { toSubmissionSchema, emailPattern } from "./submission-schema";
+export type { JSONSchema, SubmissionSchemaSource } from "./submission-schema";

@@ -12,8 +12,12 @@ export default defineConfig({
     ],
     coverage: {
       provider: "v8",
-      include: ["packages/core/src/**/*.ts"],
-      thresholds: { lines: 90 },
+      include: ["packages/core/src/**/*.ts", "packages/validation/src/**/*.ts"],
+      thresholds: {
+        lines: 90,
+        "packages/core/src/**": { lines: 90 },
+        "packages/validation/src/**": { lines: 90 },
+      },
     },
   },
 });

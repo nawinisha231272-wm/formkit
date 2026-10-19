@@ -93,3 +93,22 @@ reserved-key, registry, property and reference checks. It accepts unknown values
 without throwing for malformed input. `migrate` returns `{ definition, applied, diagnostics }`; consumers
 must check diagnostics before reading definition. Only 1.0 is recognized. Submission schema generation,
 plugin satisfaction and composite/array execution follow their assigned milestones.
+
+## M06 implemented submission schema
+
+schema exports toSubmissionSchema(SubmissionSchemaSource), JSONSchema and emailPattern. CompiledForm
+structurally satisfies the generator input; schema never imports core. validation re-exports the generator.
+Draft 2020-12 output includes object scopes, adapter submission type hints, unconditional required/empty
+constraints, scalar bounds/patterns and static email/option rules. Optional empty values bypass ordinary
+rules as in sessions. Unknown submission keys are disallowed. Serialize is applied to empty-value hints.
+
+Visibility-dependent validation, calculations, disabled conditions and host/custom rules are explicit
+x-ourform-\* annotations. Static validators cannot execute those annotations; use validateSubmission for
+runtime logic. Arbitrary adapter domain rules require model validators and appropriate jsonSchema hints.
+Unsafe/non-JSON adapter schemas and unsafe/row paths are rejected. Arrays executing repeater rows remain M10.
+
+@ourform/validation exports compileForm(engine, unknown) → CompileResult and
+validateSubmission(compiled, submission, {providers?}) → Promise<ValidationResult>. It checks safe/canonical
+serialized data and scope/key structure before using the shared session pipeline. Missing visible required
+fields, coercions and forged calculations fail; custom values must round-trip normalize/serialize. It
+sends nothing and imports no renderer. See ADR-0008 and fixtures/submissions for explicit good/bad samples.

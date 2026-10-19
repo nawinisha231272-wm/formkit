@@ -101,3 +101,11 @@ Schema/engine/fields/readOnly changes deliberately rebuild with current data ret
 retain controls. Native fields are client-rendered in M04; no native SSR/hydration support is promised.
 The same fixture lives in fixtures/forms/native/host-feedback.json (native registrations are required),
 and checkHostConformance compares full submitted results/error sets plus normalized accessible leaf controls.
+
+## M06 Tier 1 host behavior
+
+All three adapters use the same builtinFields list. Value, readOnly/disabled, async pending/errors,
+localization and portable submit/reset/custom actions are checked by a shared Tier 1 conformance suite.
+Providers/validators/functions live on the engine. Custom actions use HostOptions.onAction and composed
+bubbling of-action events; React forwards the latest callback, Angular can configure it through
+provideOurForm, and events cross the element wrapper's Shadow DOM boundary.

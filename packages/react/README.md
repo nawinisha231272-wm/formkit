@@ -35,3 +35,7 @@ or the context form for readiness. `useField(path)` subscribes to immutable Fiel
 before readiness/for an unknown field. Schema/engine/fields/readOnly changes rebuild with data retained.
 Theme/mode/data updates preserve DOM identity, focus and caret. StrictMode cleanup is exercised by the example.
 Native fields are client-rendered; SSR hydration and React 18 support are not claimed by M04.
+
+M06 registers builtinFields (including all Tier 1 controls) automatically. FormProps.onAction receives
+portable custom button actions and uses the latest callback after a parent rerender. Validation and
+localization providers are configured on the supplied engine.

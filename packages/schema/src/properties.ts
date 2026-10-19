@@ -42,10 +42,16 @@ export function validateProperties(
         case "options":
           valid =
             Array.isArray(value) &&
+            new Set(
+              value.map((option) =>
+                isRecord(option) ? option.value : undefined,
+              ),
+            ).size === value.length &&
             value.every(
               (o) =>
                 isRecord(o) &&
                 typeof o.value === "string" &&
+                o.value.length > 0 &&
                 typeof o.label === "string" &&
                 Object.keys(o).every((k) => ["value", "label"].includes(k)),
             );

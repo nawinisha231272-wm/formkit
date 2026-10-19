@@ -1,3 +1,7 @@
+import { runCustomValidators } from "./validators";
+import type { Providers } from "./validators";
+import type { FieldError } from "./types";
+import { englishMessage } from "./messages";
 import { isRecord } from "@ourform/schema";
 import type { ComponentNode } from "@ourform/schema";
 import type {
@@ -28,11 +32,18 @@ export class FormSession {
   #listeners = new Set<(patch: StatePatch) => void>();
   #overrides = new Set<string>();
   #disposed = false;
+  #runs = new Map<string, AbortController>();
+  readonly providers: Readonly<Providers>;
   readonly mode: "edit" | "readOnly";
   constructor(
     readonly form: CompiledForm,
-    options: { data?: unknown; mode?: "edit" | "readOnly" } = {},
+    options: {
+      data?: unknown;
+      mode?: "edit" | "readOnly";
+      providers?: Providers;
+    } = {},
   ) {
+    this.providers = Object.freeze({ ...options.providers });
     this.mode = options.mode ?? "edit";
     this.initialize(options.data ?? {});
   }
@@ -53,6 +64,7 @@ export class FormSession {
   private initialize(input: unknown): void {
     const data = snapshot(input);
     if (!isRecord(data)) throw new Error("Initial data must be an object.");
+    this.cancelAll();
     this.#data = Object.freeze({});
     this.#states.clear();
     this.#overrides.clear();
@@ -147,13 +159,15 @@ export class FormSession {
     )
       this.#data = writePath(this.#data, entry.path, value);
     const timing = this.schema.settings?.validateOn ?? "blur";
-    const errors = !visible
-      ? []
+    this.#runs.get(id)?.abort();
+    this.#runs.delete(id);
+    const validation = !visible
+      ? { errors: [], pending: false }
       : forceValidation ||
           timing === "change" ||
           (timing === "blur" && old.touched)
-        ? validateValue(entry, value)
-        : old.errors;
+        ? this.validateEntry(entry, value)
+        : { errors: old.errors, pending: false };
     this.#states.set(
       id,
       freeze({
@@ -162,7 +176,8 @@ export class FormSession {
         visible,
         disabled,
         dirty: initial ? false : old.dirty,
-        errors,
+        errors: validation.errors,
+        pending: validation.pending,
       }),
     );
   }
@@ -258,6 +273,7 @@ export class FormSession {
         !Object.is(previous, after.value) ||
         before.visible !== after.visible ||
         before.disabled !== after.disabled ||
+        before.pending !== after.pending ||
         JSON.stringify(before.errors) !== JSON.stringify(after.errors)
       )
         changed.push(id);
@@ -271,16 +287,18 @@ export class FormSession {
     this.assertActive();
     const entry = this.entry(input);
     const state = this.#states.get(entry.node.id)!;
+    const validation = !state.visible
+      ? { errors: [], pending: false }
+      : this.schema.settings?.validateOn !== "submit"
+        ? this.validateEntry(entry, readPath(this.#data, entry.path))
+        : { errors: state.errors, pending: state.pending };
     this.#states.set(
       entry.node.id,
       freeze({
         ...state,
         touched: true,
-        errors: !state.visible
-          ? []
-          : this.schema.settings?.validateOn !== "submit"
-            ? validateValue(entry, readPath(this.#data, entry.path))
-            : state.errors,
+        errors: validation.errors,
+        pending: validation.pending,
       }),
     );
     this.emit([entry.node.id]);
@@ -289,28 +307,125 @@ export class FormSession {
     options: { paths?: PathInput[] } = {},
   ): Promise<ValidationResult> {
     this.assertActive();
-    const entries = options.paths
+    const requested = options.paths
       ? options.paths.map((p) => this.entry(p))
       : this.form.nodes;
-    for (const entry of entries) {
+    const entries = [
+      ...new Map(requested.map((entry) => [entry.node.id, entry])).values(),
+    ];
+    const runs = entries.map((entry) => {
       const state = this.#states.get(entry.node.id)!;
+      const result = state.visible
+        ? this.validateEntry(entry, readPath(this.#data, entry.path))
+        : { errors: [], pending: false };
       this.#states.set(
         entry.node.id,
-        freeze({
-          ...state,
-          errors: state.visible
-            ? validateValue(entry, readPath(this.#data, entry.path))
-            : [],
-        }),
+        freeze({ ...state, errors: result.errors, pending: result.pending }),
       );
-    }
-    const errors: ValidationResult["errors"] = [];
-    for (const entry of entries)
-      for (const error of this.#states.get(entry.node.id)!.errors)
-        errors.push({ path: entry.path, componentId: entry.node.id, error });
-    const result = freeze({ valid: errors.length === 0, errors });
+      return {
+        entry,
+        errors: result.errors,
+        wait: "wait" in result ? result.wait : undefined,
+      };
+    });
+    const collect = (results: FieldError[][]): ValidationResult =>
+      freeze({
+        valid: results.every((errors) => errors.length === 0),
+        errors: runs.flatMap(({ entry }, i) =>
+          results[i]!.map((error) => ({
+            path: entry.path,
+            componentId: entry.node.id,
+            error,
+          })),
+        ),
+      });
+    // Capture synchronous results before notifying re-entrant subscribers (M01 contract).
+    const immediate = collect(runs.map((r) => r.errors));
     this.emit([...new Set(entries.map((e) => e.node.id))]);
-    return result;
+    if (!runs.some((r) => r.wait)) return immediate;
+    return collect(await Promise.all(runs.map((r) => r.wait ?? r.errors)));
+  }
+  private validateEntry(
+    entry: CompiledNode,
+    value: unknown,
+  ): { errors: FieldError[]; pending: boolean; wait?: Promise<FieldError[]> } {
+    const id = entry.node.id;
+    this.#runs.get(id)?.abort();
+    this.#runs.delete(id);
+    const errors = validateValue(entry, value);
+    if (
+      !entry.model.value ||
+      entry.model.value.isEmpty(value) ||
+      !entry.validators.length
+    )
+      return { errors, pending: false };
+    const controller = new AbortController();
+    const data = this.#data;
+    const config = Object.freeze(
+      Object.fromEntries(
+        Object.entries(entry.model.properties ?? {}).map(([key, p]) => [
+          key,
+          Object.hasOwn(entry.node.properties ?? {}, key)
+            ? entry.node.properties![key]
+            : p.default,
+        ]),
+      ),
+    );
+    const custom = runCustomValidators(
+      entry.validators,
+      value,
+      {
+        componentId: id,
+        path: entry.path,
+        data,
+        config,
+        signal: controller.signal,
+        providers: this.providers,
+      },
+      {
+        getRef: (ref) => readPath(data, this.form.byId[ref]!.path),
+        getPath: (path) => readPath(data, path),
+        mode: this.mode,
+      },
+    );
+    if (!custom.pending)
+      return { errors: [...errors, ...custom.errors], pending: false };
+    this.#runs.set(id, controller);
+    const wait = custom.pending.then((customErrors) => {
+      const result = freeze([...errors, ...customErrors]);
+      if (
+        !this.#disposed &&
+        this.#runs.get(id) === controller &&
+        !controller.signal.aborted
+      ) {
+        this.#runs.delete(id);
+        const state = this.#states.get(id)!;
+        this.#states.set(
+          id,
+          freeze({ ...state, pending: false, errors: result }),
+        );
+        this.emit([id]);
+      }
+      return result;
+    });
+    return { errors: [...errors, ...custom.errors], pending: true, wait };
+  }
+  private cancelAll(): void {
+    for (const run of this.#runs.values()) run.abort();
+    this.#runs.clear();
+  }
+  localize(
+    key: string,
+    params: Record<string, unknown> = {},
+    fallback: typeof englishMessage = englishMessage,
+  ): string {
+    return (
+      this.providers.localization?.(
+        key,
+        params,
+        this.schema.settings?.locale ?? "en",
+      ) ?? fallback(key, params)
+    );
   }
   async submit(): Promise<SubmitResult> {
     const submittedData = this.#data;
@@ -341,6 +456,7 @@ export class FormSession {
     };
   }
   dispose(): void {
+    this.cancelAll();
     this.#listeners.clear();
     this.#overrides.clear();
     this.#disposed = true;

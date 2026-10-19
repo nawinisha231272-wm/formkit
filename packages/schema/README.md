@@ -43,3 +43,12 @@ and the SDK config resolver. It validates all seven metadata kinds and number bo
 The internal shape walker is shared by definition and expression-property validation without importing core.
 
 M05 adds optional ComponentNode.ariaLabel (string) for a shared-shell accessible name override. The visible label is retained; meta remains uninterpreted host metadata.
+
+M06 exports toSubmissionSchema(compiled), JSONSchema and the structural SubmissionSchemaSource type.
+The generator depends on no core import. It emits Draft 2020-12 submission objects, static value/rule/
+required constraints and x-ourform-\* annotations for runtime logic. It preserves optional empty-value
+semantics and rejects unsafe schema paths. Host adapters provide JSON submission type hints via jsonSchema.
+See @ourform/validation for shared runtime validation and ADR-0008 for annotation boundaries.
+Static options metadata now rejects duplicate/empty values, preserving stable keys and the empty sentinel.
+
+emailPattern is the shared Tier 1 email rule source used by core and JSON Schema output.

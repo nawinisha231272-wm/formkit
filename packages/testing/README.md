@@ -26,3 +26,9 @@ compares the samples. Custom-native fixtures are separated from core-only fixtur
 host registrations. Those original core fixture checks remain unchanged.
 
 M05 adds bootstrap4 to themeNames and the conformance factory alongside bootstrap5, base and tailwind. Both Bootstrap versions have independent real-stylesheet browser checks.
+
+M06 exports createConformanceEngine(options?) for Node/browser fixture checks (all built-ins plus the
+existing headless object/transparent test scopes). The Playwright entry exports checkComponentConformance
+(page, {root?, result?, themeSelect?}), covering Tier 1 values, errors/ARIA, hidden data, submission and axe.
+With themeSelect it runs axe for base/Bootstrap 4/Bootstrap 5/Tailwind. Real DOM/React/Angular wrappers use
+the same suite; host-specific async/readonly/disabled/lifecycle tests complement it.

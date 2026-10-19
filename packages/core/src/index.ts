@@ -30,3 +30,14 @@ export type {
   FunctionMap,
   HostFunction,
 } from "./types";
+
+export type { EngineOptions } from "./engine";
+export type {
+  Providers,
+  Validator,
+  ValidatorMap,
+  ValidatorContext,
+  ValidatorResult,
+} from "./validators";
+export { emailPattern } from "./validators";
+export { englishMessages, englishMessage } from "./messages";

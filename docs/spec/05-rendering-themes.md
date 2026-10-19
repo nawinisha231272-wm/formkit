@@ -163,3 +163,12 @@ This applies to native and portable controls. node.placeholder is forwarded thro
 controlAttributes. Low-level mount requires explicit preset registration; host controllers and the legacy
 renderForm wrapper include Bootstrap 4/5 and Tailwind. Actual framework stylesheet compatibility is
 tested with 4.6.2 and 5.3.8 independently; loading both global framework stylesheets together is not covered.
+
+M06 renders portable non-value views alongside layout containers, supplies portable actions and emits
+composed bubbling of-action events with {name,componentId,data}, plus optional onAction callbacks. Async
+validation forwards pending to aria-busy, a field description and the existing single live region.
+Renderer-owned pointer tracking defers blur touches until activation ends; keyboard blur is immediate.
+Queued touches/timers/listeners are removed on unmount. This prevents error layout changes canceling clicks.
+Select values are set after options are installed; all themes exclude radios/hidden controls from text
+input sizing and include select/textarea/radio/action styles. Existing t callbacks retain of.required;
+engine localization providers and the English catalog supply the default path.

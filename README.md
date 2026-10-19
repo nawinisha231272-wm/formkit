@@ -1,4 +1,4 @@
-# OurForm — Phase 0 Engineering Spike
+# OurForm — Form SDK Engineering Prototype
 
 **Status:** experimental proof, NOT a production release. Name and npm namespace are placeholders. It is self-hosted, without a server or network-based licensing check.
 
@@ -12,7 +12,7 @@ This kit now carries the full build specification:
 - `docs/progress.md` — the running log of what is done.
 - `docs/codex-prompts.md` — prompts to drive OpenAI Codex milestone by milestone.
 
-Current development milestone: **M05 — Mini builder and Phase 0 gate**. See `docs/progress.md` for verification status.
+Current development milestone: **M06 — Validation package and Tier 1 fields**. See `docs/progress.md` for verification status.
 
 ## Run
 
@@ -40,8 +40,10 @@ Package source lives in `packages/*`; shared forms in `fixtures/forms`; CI in `.
 - Versioned JSON definitions, Draft 2020-12 meta-schema, diagnostic validation and migration harness.
 - Bounded expression ASTs, dependency graphs, cycle diagnostics and affected-field change processing.
 - Per-field state, value normalization, built-in validation, Promise-based submission, reset and disposal.
+- Shared browser/Node validation, submission JSON Schema, cancellable custom/async rules and localization.
 - Public custom `defineField` API and `stringProperty`/`numberProperty`/`booleanProperty` helpers.
 - Text, Number, Checkbox and nullable Rating controls, typed metadata and generated property editors.
+- Tier 1 Textarea, Email, Password, Radio, Select, Hidden, safe Content and action Button controls.
 - A measured VNode renderer with in-place keyed updates, cleanup, composition handling and static SSR.
 - Headless command builder with undo/redo, JSON Patch, discovered palette and generated property panels.
 - Accessible field/group/inline/cell/none shells, focus navigation, submit error summary and one live region.
@@ -54,22 +56,22 @@ Package source lives in `packages/*`; shared forms in `fixtures/forms`; CI in `.
 
 - Production builder canvas and drag-drop (M05 includes basic command undo/redo).
 - SSR hydration and React 18 compatibility.
-- Repeaters, async/custom validation, plugins, composites and submission JSON Schema generation.
+- Repeaters, plugins and composites (async/custom validation and submission JSON Schema arrived in M06).
 - Multi-value controls, grid/wizard semantics and exhaustive real OS IME conformance.
 - Commercial licensing and distribution.
 
 Phase 0 remains experimental. DOM shells, keyed control lifecycle, static SSR and automated accessibility
-checks are implemented. Framework adapters now have cross-host conformance coverage. The mini builder is available at /builder.html; Phase 0 requires human gate review before M06.
+checks are implemented. Framework adapters now have cross-host conformance coverage. The mini builder is available at /builder.html. The user authorized Phase 1 after the Phase 0 gate report.
 
 ## Next development gates
 
-1. M05: human review of docs/phase0-report.md before M06.
-2. Later milestones add runtime/validation, full builder, packaging and production readiness.
+1. M07: layouts and production adapters, with the Phase 1A gate.
+2. Later milestones add advanced data/controls, the full builder, packaging and production readiness.
 
 ## Commercial constraints retained
 
 - Customer hosts its own app and owns form data; no service operated by us is required to render or validate in the browser.
-- Optional backend-side validation is customer-run, using our core or standard JSON Schema when added.
+- Optional backend-side validation is customer-run, using @ourform/validation or generated JSON Schema for static constraints.
 - Pricing, OEM redistribution, watermark scope, and paid/open runtime model are deferred commercial decisions; they do not block the architecture experiment.
 
 ## Host adapter examples (M04)
@@ -104,3 +106,15 @@ or CDN is required. The legacy bootstrap alias still means Bootstrap 5.
 Offline build proof on macOS (after dependency/toolchain installation): sh scripts/verify-offline.sh.
 It denies all network operations and forces every build. Browser tests separately exercise offline
 editing, native controls, validation and submission. See ADR-0007 for boundaries and the gate report.
+
+## Validation and Tier 1 fields (M06)
+
+Open [the Tier 1 demo](http://127.0.0.1:4173/tier1.html) for Text/Textarea/Number/Email/Password/Checkbox/
+Radio/Select/Hidden/Content/Button. Choose DOM, React or Angular and any of the four themes. Try
+`taken@example.com` for the host-provided async rule, and the Spanish link for localization fallback.
+The page displays submission JSON Schema and performs no backend request.
+
+@ourform/validation offers customer Node validation with the same rules as the browser. It rejects
+malformed/coerced/extra data and awaits custom validators. Schemas assert static rules and annotate
+runtime conditions/custom validators. Content uses a bounded allow-list of safe VNodes instead of raw
+HTML. See ADR-0008 and package READMEs for exact API/serialization/annotation boundaries.

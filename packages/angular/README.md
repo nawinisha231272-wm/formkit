@@ -42,3 +42,7 @@ createComponent receives both the host EnvironmentInjector and element injector,
 works. Outputs, CVA callbacks and attached views are released on teardown. Controlled data is diffed by
 compiled leaf paths; echoed values do not reset validation/touched state. Theme/data retain controls.
 Use fields/provider registrations owned by this application; there is no mutable global registry.
+
+M06 registers all Tier 1 builtinFields automatically. Configure validation/localization providers on
+an engine, and custom action callbacks with provideOurForm({onAction}); bubbling of-action DOM events
+also expose portable custom button actions. Shared conformance covers the new controls in this wrapper.

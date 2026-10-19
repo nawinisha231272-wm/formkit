@@ -26,12 +26,7 @@ import type {
   NativeRegistrationArgs,
   RegisteredField,
 } from "@ourform/sdk";
-import {
-  textField,
-  numberField,
-  checkboxField,
-  ratingField,
-} from "@ourform/components";
+import { builtinFields } from "@ourform/components";
 const emptyFields: readonly RegisteredField[] = [];
 const Environment = createContext<{
   engine?: Engine;
@@ -128,11 +123,12 @@ export const Form = forwardRef<FormController, FormProps>(
           current.current.defaultData ??
           {},
         ...(engine ? { engine } : {}),
-        fields: [textField, numberField, checkboxField, ratingField, ...fields],
+        fields: [...builtinFields, ...fields],
         adapter: "react",
         nativeHost,
         onChange: (patch) => current.current.onChange?.(patch),
         onSubmit: (result) => current.current.onSubmit?.(result),
+        onAction: (event) => current.current.onAction?.(event),
       });
       controller.current = next;
       setHandle(next);

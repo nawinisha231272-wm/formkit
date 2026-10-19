@@ -101,3 +101,56 @@ export function checkHostConformance(
     );
   }
 }
+
+/** Tier 1 client contract, exercised unchanged through actual DOM/React/Angular adapters. */
+export async function checkComponentConformance(
+  page: Page,
+  options: { root?: string; result?: string; themeSelect?: string } = {},
+): Promise<void> {
+  const root = page.locator(options.root ?? "#host");
+  await root
+    .getByRole("button", { name: "Send registration", exact: true })
+    .click();
+  await expect(
+    root.getByRole("region", { name: "Please correct these errors" }),
+  ).toBeFocused();
+  await root.getByLabel("Full name", { exact: true }).fill("Ana Rivera");
+  await root
+    .getByLabel("About you", { exact: true })
+    .fill("Building useful forms");
+  const email = root.getByLabel("Email address", { exact: true });
+  await email.fill("invalid");
+  await email.press("Tab");
+  await expect(email).toHaveAttribute("aria-invalid", "true");
+  await email.fill("ana@example.com");
+  await email.press("Tab");
+  await root.getByLabel("Password", { exact: true }).fill("test-password");
+  await expect(root.getByLabel("Password", { exact: true })).toHaveAttribute(
+    "type",
+    "password",
+  );
+  await root.getByLabel("Age", { exact: true }).fill("30");
+  await root.getByRole("radio", { name: "Email", exact: true }).check();
+  await root.getByLabel("Team", { exact: true }).selectOption("engineering");
+  await root.getByLabel("Accept terms", { exact: true }).check();
+  await expect(root.locator('input[type="hidden"]')).toHaveValue("web");
+  await expect(root).toContainText("OurForm team");
+  await root
+    .getByRole("button", { name: "Send registration", exact: true })
+    .click();
+  await expect(page.locator(options.result ?? "#tier-result")).toContainText(
+    '"ok": true',
+  );
+  for (const theme of options.themeSelect
+    ? ["base", "bootstrap4", "bootstrap5", "tailwind"]
+    : [null]) {
+    if (theme && options.themeSelect)
+      await page.locator(options.themeSelect).selectOption(theme);
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(
+      results.violations.filter((v) =>
+        ["serious", "critical"].includes(v.impact ?? ""),
+      ),
+    ).toEqual([]);
+  }
+}

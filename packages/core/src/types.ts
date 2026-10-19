@@ -4,6 +4,7 @@ import type {
   FormDefinition,
 } from "@ourform/schema";
 import type { ComponentModel } from "./model";
+import type { CompiledValidator } from "./validators";
 import type { CompiledExpression } from "./expressions";
 export type Path = readonly (string | { row: string })[];
 export type PathInput = Path | string;
@@ -55,6 +56,7 @@ export interface CompiledNode {
     >
   >;
   pattern?: RegExp;
+  validators: readonly CompiledValidator[];
 }
 export interface CompiledForm {
   definition: FormDefinition;

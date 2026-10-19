@@ -139,3 +139,24 @@ Only object scopes and synchronous built-in validation execute in M01. Array sco
 requirements and custom validators return explicit diagnostics until their planned milestones. No row
 mutation API or async validator is implemented early. Snapshots are always frozen. Submission validates
 and serializes its invocation snapshot. `validate` computes its result before notifying subscribers.
+
+## M06 validation and provider contract (ADR-0008)
+
+EngineOptions now includes validators: ValidatorMap and providers: Providers, alongside functions.
+Each validator exposes validate(value, context) → null | FieldError | readonly FieldError[] | Promise
+of that result. Context contains componentId/path, frozen invocation data/config/args, an AbortSignal
+and host providers. ComponentModel.validators names default rules; node.validation.custom names rules
+and expression args. Unknown names retain unsupported-validator diagnostics. Built-in email/options
+names are reserved; host registries are per engine. Argument dependencies revalidate affected fields;
+self references are permitted, cross-field graph cycles are diagnosed.
+
+Pending is true for async work. Changes/new validation/reset/hiding/dispose abort older runs, race
+uncooperative hosts and prevent stale state writes. Canceled validate/submit waiters return aborted
+errors; exceptions/rejections/malformed results return unavailable errors. Optional empties skip custom
+rules. Duplicate validation paths start only one run. Synchronous notification/snapshot contracts remain.
+Hosts own provider I/O/timeouts; packages make no network call. AbortSignal is supported by Node 22 and
+browsers; headless packages compile with ES2022/Node development types and no DOM lib.
+
+Providers.localization(key, params, locale) returns text or undefined. session.localize resolves it with
+an English catalog fallback; renderer t remains compatible. Validation strings remain keys/parameters.
+String length rules count Unicode code points (not UTF-16 code units), matching JSON Schema.

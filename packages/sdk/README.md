@@ -77,3 +77,8 @@ blurProp/disabledProp/readOnlyProp/mapChange/value. mapNativeProps creates the s
 disabled/read-only changes cannot commit. Prototype and direct HTML-writing property mappings are rejected.
 
 M05 adds optional FieldControlProps.placeholder, forwarded by controlAttributes (except group controls) and mapNativeProps. defaultMessage supplies generated base builder labels.
+
+M06 adds defineField.validators (registered model rule names), defineDisplay for non-value controls,
+optional FieldControlProps.actions (submit/reset/emit) and the shared englishMessages catalog. defineDisplay
+uses the same metadata/view composition but omits the model value adapter, so no data key is required.
+Readonly actions are disabled by the supplied controls; renderer callbacks own session operations.

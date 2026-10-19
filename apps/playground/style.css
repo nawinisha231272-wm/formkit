@@ -16,7 +16,8 @@ h1 {
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
-.columns > div {
+.columns > div,
+.columns > section {
   background: white;
   border: 1px solid #dfe5ef;
   border-radius: 12px;

@@ -18,7 +18,10 @@
     "@ourform/theme-bootstrap5": "workspace:*",
     "@ourform/theme-tailwind": "workspace:*",
     "@ourform/theme-bootstrap4": "workspace:*",
-    "@ourform/element": "workspace:*"
+    "@ourform/element": "workspace:*",
+    "@ourform/validation": "workspace:*",
+    "@ourform/react": "workspace:*",
+    "@ourform/angular": "workspace:*"
   },
   "devDependencies": {
     "@ourform/testing": "workspace:*",
