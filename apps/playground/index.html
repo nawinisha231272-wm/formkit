@@ -18,8 +18,19 @@
         <label for="theme">Theme</label
         ><select id="theme">
           <option value="base">Base</option>
-          <option value="bootstrap">Bootstrap-inspired</option>
-          <option value="tailwind">Tailwind-inspired</option>
+          <option value="bootstrap5">Bootstrap 5</option>
+          <option value="tailwind">Tailwind</option>
+        </select>
+        <label for="mode">Appearance</label
+        ><select id="mode">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="high-contrast">High contrast</option>
+        </select>
+        <label for="direction">Direction</label
+        ><select id="direction">
+          <option value="ltr">Left to right</option>
+          <option value="rtl">Right to left</option>
         </select>
       </div>
       <section class="columns">
@@ -27,6 +38,7 @@
           <h2>Form renderer</h2>
           <div id="form"></div>
           <button id="validate">Validate</button>
+          <button id="submit">Submit</button>
           <pre
             id="output"
             tabindex="0"

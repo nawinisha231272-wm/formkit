@@ -1,30 +1,39 @@
 # @ourform/renderer-dom
 
-The M02 renderer mounts portable VNode controls once and updates fields named in StatePatch.
-It reads FieldState; mounting, typing and theme switching never call session.validate().
-
 ```ts
-import { renderForm, renderToString } from "@ourform/renderer-dom";
-const view = renderForm(root, session, views, "base");
-view.setTheme("tailwind");
-view.focus("component-id");
-const html = renderToString(session, { views, theme: "base" }); // also runs in Node
-view.destroy(); // leaves session ownership with the host
+import { mount } from "@ourform/renderer-dom";
+import { tailwindTheme } from "@ourform/theme-tailwind";
+const view = mount(root, session, {
+  engine,
+  views: new Map([
+    [textField.model.type, textField.views],
+    [ratingField.model.type, ratingField.views],
+  ]),
+  themes: [tailwindTheme],
+  theme: "tailwind",
+  mode: "dark",
+  presentation: { name: { help: "Shown on your receipt" } },
+});
+view.setTheme("base"); // updates classes/tokens in place
+view.setMode("high-contrast");
+view.focus("name");
+const result = await view.submit(); // failed submissions focus a linked error summary
+view.unmount(); // destroy() alias; session lifetime remains host-owned
 ```
 
-Views maps component types to field.views from defineField. The transitional explicit map is engine-scoped
-by the host; no global view registry is added. FormView has setTheme/focus/destroy. Themes are still cosmetic
-base/bootstrap/tailwind presets. Full mount engine options and FieldShell variants/theme packages arrive in M03.
+Explicit registries are per mount; engine models stay headless. The base theme ships as the
+renderer default; other names must be registered in `themes`. `Theme` objects also work directly.
+`appTheme`, `formTheme`, `componentThemes` apply token/class/mode overrides in that order.
+Custom CSS must scope its selectors with `.of-root`; it is trusted host code. No theme makes network calls.
+`themeMode` is light/dark/high-contrast. Use `dir=rtl` on the root for RTL.
 
-mountVNode(vnode) is the low-level host-slot primitive: it returns el, update(next) and destroy().
-Matching tag/key identities preserve elements. Keyed child reorders preserve focus/caret; replacing a
-focused node's tag throws. Event listeners dispatch current props, and refs/listeners are released once.
-During composition, value writes are deferred and intermediate input events are ignored; compositionend
-commits the current user input before further updates. Actual OS IME conformance remains part of later hardening.
+Shell hints travel with `defineField().views`. Field, group (fieldset/legend), inline, cell and none
+share anatomy and translated shell messages (`t`). `presentation[id]` accepts help/prefix/suffix
+and `cellLabel` (combined column/row context). Group focus falls back to the first enabled control.
+A single polite region announces validation. `session.submit()` alone is headless; use `view.submit()`
+or a bubbling native submit event for summary/focus behavior. Mounted roots do not add a submit button.
 
-renderToString shares the control VNodes and safely escapes output. It emits static HTML without event
-handlers or hydration; client apps can mount afresh. SSR uses no browser globals. Nested object/layout nodes
-are supported. Shell selection is retained as SDK metadata; full group/inline/cell rendering is M03 scope.
-
-The development probe page checks production controls in React 19.2 and Angular 20.3, plus cleanup,
-focused updates, composition events and four-field accessibility. It is not a public framework adapter.
+`renderToString(session, { views, theme?, themes?, idPrefix?, ...overrides })` shares the shells without
+browser globals. Give each SSR form a distinct safe `idPrefix` (default `of-ssr`); SSR is static, not hydration.
+New DOM mounts generate unique ids unless `idPrefix` is supplied. The M02 `renderForm` compatibility
+wrapper keeps raw ids and supports all three shipped theme names; use `mount` for scoped ids, registered themes and submit integration.

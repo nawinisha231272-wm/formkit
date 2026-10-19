@@ -1,3 +1,5 @@
+import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
+import { tailwindTheme } from "@ourform/theme-tailwind";
 import "@angular/compiler";
 import {
   Component,
@@ -17,7 +19,7 @@ import {
   checkboxField,
   ratingField,
 } from "@ourform/components";
-import { renderForm, mountVNode } from "@ourform/renderer-dom";
+import { mount, mountVNode } from "@ourform/renderer-dom";
 import { h, defaultMessage, type FieldControlProps } from "@ourform/sdk";
 const e = createEngine()
   .register(textField.model)
@@ -63,7 +65,12 @@ const views = new Map([
   [checkboxField.model.type, checkboxField.views],
   [ratingField.model.type, ratingField.views],
 ]);
-const view = renderForm(document.querySelector("#form")!, session, views);
+const view = mount(document.querySelector("#form")!, session, {
+  engine: e,
+  views,
+  themes: [bootstrap5Theme, tailwindTheme],
+  idPrefix: "",
+});
 export const sdk = {
   session,
   view,

@@ -12,7 +12,7 @@ This kit now carries the full build specification:
 - `docs/progress.md` — the running log of what is done.
 - `docs/codex-prompts.md` — prompts to drive OpenAI Codex milestone by milestone.
 
-Current development milestone: **M02 — SDK contracts and renderer decision**. See `docs/progress.md` for verification status.
+Current development milestone: **M03 — FieldShell, accessibility and themes**. See `docs/progress.md` for verification status.
 
 ## Run
 
@@ -44,28 +44,28 @@ Package source lives in `packages/*`; shared forms in `fixtures/forms`; CI in `.
 - Text, Number, Checkbox and nullable Rating controls, typed metadata and generated property editors.
 - A measured VNode renderer with in-place keyed updates, cleanup, composition handling and static SSR.
 - Automatic editable builder property model generated from definitions.
-- Basic DOM renderer with FieldShell-style label/description/error and three cosmetic theme presets.
+- Accessible field/group/inline/cell/none shells, focus navigation, submit error summary and one live region.
+- Three compiled themes (base, Bootstrap 5, Tailwind), isolated per form, with dark/high-contrast/RTL support.
+- A development theme conformance kit with reusable Playwright/axe assertions and PNG baselines.
 - Client-only Vite demo; Node fixtures/security tests plus Playwright/axe checks in three browsers.
 
 ## Deliberately NOT implemented
 
 - Production builder canvas, drag-drop, undo/redo.
-- Angular/React component bridges, Web Component wrapper, SSR.
+- Angular/React native component bridges, Web Component wrapper and SSR hydration.
 - Repeaters, async/custom validation, plugins, composites and submission JSON Schema generation.
-- Full accessible focus management, ARIA invalid/error wiring, multi-value semantics, IME conformance.
-- Complete Bootstrap or Tailwind compatible theme packages (demo presets only).
-- Full FieldShell variants and production theme packages (M03); native adapter APIs (M04).
+- Multi-value controls, grid/wizard semantics and exhaustive real OS IME conformance.
+- Native adapter APIs (M04).
 - Commercial licensing and distribution.
 
-Do not label Phase 0 passed. The current DOM renderer avoids replacing focused controls, but still needs a robust reconciliation lifecycle and proper accessibility tests. This is scaffolding for the Phase-0 experiments, not the final implementation.
+Phase 0 remains experimental. DOM shells, keyed control lifecycle, static SSR and automated accessibility
+checks are implemented. Framework-native adapters and the mini-builder/gate review remain ahead.
 
 ## Next development gates
 
-1. Define full SDK value/control contract, including focus, blur, composition, shell variants and multi-value adapters.
-2. React-native bridge for existing `EmployeeLookup` and equivalent Angular bridge.
-3. Alternate tiny VNode renderer proof and score against DOM runtime.
-4. Builder property metadata generator with type-safe config validation, stable schema mutation commands.
-5. Accessibility and cross-framework conformance suite; then decide whether to continue this implementation or replace it.
+1. M04: native component registration and Web Component, React and Angular host adapters.
+2. M05: mini builder and human review of the Phase 0 architecture proof.
+3. Later milestones add runtime/validation, full builder, packaging and production readiness.
 
 ## Commercial constraints retained
 

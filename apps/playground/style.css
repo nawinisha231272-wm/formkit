@@ -31,9 +31,9 @@ h2 {
   align-items: center;
   margin: 22px 0;
 }
-button,
-select,
-input {
+button:not(.of-control),
+select:not(.of-control),
+input:not(.of-control) {
   font: inherit;
   padding: 8px;
   border: 1px solid #a9b7c8;
@@ -41,44 +41,6 @@ input {
 }
 button {
   cursor: pointer;
-}
-.of-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 12px 0;
-}
-.of-field label {
-  font-weight: 600;
-}
-.of-field button {
-  margin-right: 5px;
-  color: #a87400;
-  background: white;
-}
-.of-error {
-  color: #ba1c24;
-}
-.of-theme-bootstrap input {
-  border: 1px solid #86a4cc;
-  border-radius: 6px;
-  padding: 11px;
-}
-.of-theme-bootstrap button {
-  border-radius: 7px;
-  color: #0d6efd;
-}
-.of-theme-tailwind input {
-  border: 1px solid #596bc6;
-  border-radius: 9px;
-  padding: 12px;
-  box-shadow: 0 1px 2px #a5b4fc55;
-}
-.of-theme-tailwind button {
-  border: 0;
-  border-radius: 8px;
-  background: #ede9fe;
-  color: #6941c6;
 }
 .property {
   display: flex;

@@ -21,7 +21,7 @@ export interface FieldDefinition<
   };
   properties: P;
   shell: ShellVariant;
-  views: { portable: PortableControl };
+  views: { portable: PortableControl; shell?: ShellVariant };
 }
 export function defineField<
   V,
@@ -66,6 +66,7 @@ export function defineField<
     properties: copy,
     shell: spec.shell ?? "field",
     views: Object.freeze({
+      shell: spec.shell ?? "field",
       portable: (props: FieldControlProps<unknown, Record<string, unknown>>) =>
         spec.control(props as FieldControlProps<V, ConfigOf<P>>),
     }),
@@ -81,6 +82,8 @@ export function controlAttributes<V, C>(
     "aria-labelledby": p.a11y.labelledBy,
     "aria-describedby": p.a11y.describedBy,
     "aria-invalid": String(p.state.invalid),
+    "aria-busy": String(p.state.pending),
+    "aria-readonly": role === "group" ? undefined : String(p.state.readOnly),
     "aria-required": role === "group" ? undefined : String(p.state.required),
     ...(role ? { role } : {}),
     disabled: p.state.disabled,

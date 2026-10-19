@@ -8,21 +8,40 @@ Status: normative. Packages: `@ourform/renderer-dom`, `@ourform/theme-*`.
 export function mount(
   root: Element,
   session: FormSession,
-  options: {
-    engine: Engine;
-    theme?: Theme | string;
-    adapter?: string; // adapter default 'dom'
-    mode?: "render" | "design"; // design = builder canvas
-  },
-): {
-  setTheme(theme: Theme | string): void;
-  focus(componentId: string, rowId?: string): void;
-  unmount(): void;
-};
+  options: RenderOptions & { engine: Engine },
+): FormView;
 
+export interface RenderOptions extends ThemeOptions {
+  views: ReadonlyMap<string, FieldDefinition["views"]>;
+  theme?: Theme | string;
+  idPrefix?: string;
+  presentation?: Readonly<Record<string, FieldPresentation>>;
+  t?: (key: string, params?: Record<string, unknown>) => string;
+}
+export interface ThemeOptions {
+  themes?: readonly Theme[];
+  themeMode?: "light" | "dark" | "high-contrast";
+  appTheme?: ThemeOverride;
+  formTheme?: ThemeOverride;
+  componentThemes?: Readonly<Record<string, ThemeOverride>>;
+}
+export interface FieldPresentation {
+  help?: string;
+  prefix?: string;
+  suffix?: string;
+  cellLabel?: string; // combined column and stable row context
+}
+export interface FormView {
+  setTheme(theme: Theme | string): void;
+  setMode(mode: "light" | "dark" | "high-contrast"): void;
+  focus(componentId: string): void;
+  submit(): ReturnType<FormSession["submit"]>;
+  unmount(): void;
+  destroy(): void; // M02 alias
+}
 export function renderToString(
   session: FormSession,
-  options: { engine: Engine; theme?: Theme | string },
+  options: RenderOptions,
 ): string;
 ```
 
@@ -110,3 +129,29 @@ The low-level mountVNode lifecycle also supports development host probes. Theme 
 in place. Static SSR shares control output without browser globals; it currently accepts explicit
 `{ views, theme? }` alongside the session. The normative engine-based mount API, shell variants and
 complete themes remain M03 work. Focus/caret, composition event, cleanup and SSR tests cover M02 behavior.
+
+## M03 shell/theme runtime (ADR-0005)
+
+The explicit view registry carries each definition's shell hint. The engine remains headless and
+mount rejects sessions from another engine. Native `adapter` selection belongs to M04; builder
+render/design mode and row-specific focus arrive with their owning milestones. `themeMode` is
+reserved for color/contrast appearance and does not occupy the future renderer mode option.
+
+Each mount owns a style element and a random instance selector, with generated unique control ids.
+SSR is static and uses a safe `idPrefix` (default `of-ssr`); hosts must choose distinct prefixes for
+multiple SSR forms. The M02 `renderForm` wrapper retains its raw ids and three shipped theme aliases.
+
+Field/group/inline/cell/none shells share DOM/SSR generation. A group's label text is inside a legend;
+required text is linked as its accessible description because group does not support aria-required.
+A cell uses an invisible label with host-supplied column/row context. None leaves labeling to child
+controls; a headless layout container renders its optional heading and child shells.
+
+`view.submit()` and native submit events within the mount root trigger summary/focus behavior;
+`session.submit()` remains a headless operation. Summary links use focusRef, falling back to a group's
+first enabled interactive descendant. Only the single form live region announces validation changes.
+
+Theme inheritance and overrides are explicit per mount, with duplicate/missing/cyclic registrations
+rejected. ThemeOverride contains tokens, classes and optional modes. CSS is trusted host code scoped
+using `.of-root`; it must not use unscoped selectors. Token declarations reject rule/HTML delimiters.
+The renderer depends on shipped presets (types-only SDK dependencies), as allowed by ADR-0005.
+The theme conformance package tests M03 features; multi-value/grid/wizard cases await implementation.

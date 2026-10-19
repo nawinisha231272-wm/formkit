@@ -19,6 +19,9 @@
   "dependencies": {
     "@ourform/schema": "workspace:*",
     "@ourform/core": "workspace:*",
-    "@ourform/sdk": "workspace:*"
+    "@ourform/sdk": "workspace:*",
+    "@ourform/theme-base": "workspace:*",
+    "@ourform/theme-bootstrap5": "workspace:*",
+    "@ourform/theme-tailwind": "workspace:*"
   }
 }

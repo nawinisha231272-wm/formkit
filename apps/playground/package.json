@@ -9,10 +9,17 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ourform/core": "workspace:*",
-    "@ourform/sdk": "workspace:*",
+    "@ourform/builder-core": "workspace:*",
     "@ourform/components": "workspace:*",
+    "@ourform/core": "workspace:*",
     "@ourform/renderer-dom": "workspace:*",
-    "@ourform/builder-core": "workspace:*"
+    "@ourform/sdk": "workspace:*",
+    "@ourform/theme-base": "workspace:*",
+    "@ourform/theme-bootstrap5": "workspace:*",
+    "@ourform/theme-tailwind": "workspace:*"
+  },
+  "devDependencies": {
+    "@ourform/testing": "workspace:*",
+    "bootstrap": "5.3.8"
   }
 }

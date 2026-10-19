@@ -1,0 +1,192 @@
+import type { CompiledNode, FormSession } from "@ourform/core";
+import { defaultMessage, h, resolveConfig } from "@ourform/sdk";
+import type {
+  FieldDefinition,
+  FocusTarget,
+  VNode,
+  ShellVariant,
+} from "@ourform/sdk";
+import type { ResolvedTheme } from "./theme";
+export type Views = ReadonlyMap<string, FieldDefinition["views"]>;
+export interface FieldPresentation {
+  help?: string;
+  prefix?: string;
+  suffix?: string;
+  /** Accessible cell name, including column heading and stable row label. */
+  cellLabel?: string;
+}
+export function fieldErrors(
+  session: FormSession,
+  entry: CompiledNode,
+  t: typeof defaultMessage,
+): string[] {
+  return session.getFieldState(entry.node.id).errors.map((error) =>
+    t(error.code === "required" ? "of.required" : error.messageKey, {
+      ...error.params,
+      label: entry.node.label ?? entry.node.key ?? entry.node.id,
+    }),
+  );
+}
+export function shellVNode(
+  session: FormSession,
+  entry: CompiledNode,
+  views: Views,
+  theme: ResolvedTheme,
+  prefix: string,
+  focusRef: (target: FocusTarget | null) => void,
+  presentation: FieldPresentation = {},
+  t: typeof defaultMessage = defaultMessage,
+): VNode {
+  const state = session.getFieldState(entry.node.id);
+  const view = views.get(entry.node.type);
+  const variant: ShellVariant = entry.model.value
+    ? (view?.shell ?? "field")
+    : "none";
+  const id = `${prefix}${entry.node.id}`;
+  const cl = (part: Parameters<ResolvedTheme["classFor"]>[1]) =>
+    theme.classFor(variant, part);
+  const label =
+    presentation.cellLabel ??
+    entry.node.label ??
+    entry.node.key ??
+    entry.node.id;
+  const rootProps = {
+    key: entry.node.id,
+    "data-field-id": entry.node.id,
+    "data-of-shell": variant,
+    "data-of-pending": String(state.pending),
+    "data-of-readonly": String(state.readOnly),
+    "data-of-disabled": String(state.disabled),
+    hidden: !state.visible,
+    class: cl("root"),
+    style: Object.entries(theme.tokens)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(";"),
+  };
+  if (!entry.model.value)
+    return h(
+      "div",
+      rootProps,
+      entry.node.label ? h("h3", null, entry.node.label) : null,
+    );
+  if (!view) throw new Error(`No portable view: ${entry.node.type}`);
+  const config = resolveConfig(
+    entry.model.properties ?? {},
+    entry.node.properties ?? {},
+  );
+  if (!config.ok) throw new Error("Compiled config is invalid.");
+  const errors = fieldErrors(session, entry, t);
+  const described = [
+    entry.node.description ? `${id}_description` : "",
+    presentation.help ? `${id}_help` : "",
+    errors.length ? `${id}_error` : "",
+    variant === "group" && state.required ? `${id}_required` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const control = view.portable({
+    value: state.value,
+    setValue: (next) => session.setValue(state.path, next, { source: "user" }),
+    onBlur: () => session.touch(state.path),
+    config: config.config,
+    state: {
+      disabled: state.disabled,
+      readOnly: state.readOnly,
+      invalid: !!errors.length,
+      pending: state.pending,
+      required: state.required,
+    },
+    a11y: {
+      id,
+      name: entry.node.key ?? entry.node.id,
+      labelledBy: `${id}_label`,
+      ...(described ? { describedBy: described } : {}),
+      ...(errors.length ? { errorId: `${id}_error` } : {}),
+    },
+    focusRef,
+    theme: { classFor: (part) => cl(part as Parameters<typeof cl>[0]) },
+    t,
+  });
+  if (variant === "none") return h("div", rootProps, control);
+  const labelNode = h(
+    variant === "group" ? "legend" : "label",
+    {
+      key: "label",
+      ...(variant === "group" ? {} : { for: id }),
+      class: cl("label"),
+    },
+    h("span", { id: `${id}_label` }, label),
+    h(
+      "span",
+      {
+        key: "required",
+        id: `${id}_required`,
+        "aria-hidden": "true",
+        class: cl("required"),
+        hidden: !state.required,
+      },
+      ` ${t("of.requiredMarker")}`,
+    ),
+  );
+  const controlWrapper = h(
+    "div",
+    { key: "wrapper", class: cl("controlWrapper") },
+    h(
+      "span",
+      { key: "prefix", class: cl("prefix"), hidden: !presentation.prefix },
+      presentation.prefix,
+    ),
+    control,
+    h(
+      "span",
+      { key: "suffix", class: cl("suffix"), hidden: !presentation.suffix },
+      presentation.suffix,
+    ),
+  );
+  return h(
+    variant === "group" ? "fieldset" : "div",
+    {
+      ...rootProps,
+      ...(variant === "group"
+        ? {
+            "aria-labelledby": `${id}_label`,
+            "aria-describedby": described || undefined,
+            disabled: state.disabled,
+          }
+        : {}),
+    },
+    variant !== "inline" ? labelNode : null,
+    h(
+      "small",
+      {
+        key: "description",
+        id: `${id}_description`,
+        class: cl("description"),
+        hidden: !entry.node.description,
+      },
+      entry.node.description,
+    ),
+    controlWrapper,
+    variant === "inline" ? labelNode : null,
+    h(
+      "small",
+      {
+        key: "help",
+        id: `${id}_help`,
+        class: cl("help"),
+        hidden: !presentation.help,
+      },
+      presentation.help,
+    ),
+    h(
+      "ul",
+      {
+        key: "errors",
+        id: `${id}_error`,
+        class: cl("errors"),
+        hidden: !errors.length,
+      },
+      errors.map((error, i) => h("li", { key: i, class: cl("error") }, error)),
+    ),
+  );
+}

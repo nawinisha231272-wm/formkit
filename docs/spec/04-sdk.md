@@ -203,3 +203,12 @@ See [WAI-ARIA group](https://www.w3.org/TR/wai-aria-1.2/#group).
 `numberValue({ empty: null })` and `booleanValue()` normalize empty values consistently. The transitional
 M01 zero-valued Rating default is retired. A single starter assertion updates accordingly; core/schema
 regression tests remain unchanged. Field authoring examples now return VNodes rather than HTMLElements.
+
+## M03 additions
+
+`defineField().views` includes the optional `shell` hint alongside `portable`, preserving it in an
+explicit renderer registry. SDK exports Theme, ThemeOverride, ThemeMode and FieldPart types.
+`controlAttributes` includes pending (`aria-busy`) and read-only state; group mode omits unsupported
+aria-readonly/aria-required. FieldShell supplies required announcements from the group legend.
+English shell and synchronous-validation messages are available through defaultMessage; a renderer
+`t` option translates them. No wire-schema theme or presentation properties are added.

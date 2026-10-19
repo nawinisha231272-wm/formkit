@@ -47,6 +47,18 @@ importers:
       '@ourform/sdk':
         specifier: workspace:*
         version: link:packages/sdk
+      '@ourform/testing':
+        specifier: workspace:*
+        version: link:packages/testing
+      '@ourform/theme-base':
+        specifier: workspace:*
+        version: link:packages/theme-base
+      '@ourform/theme-bootstrap5':
+        specifier: workspace:*
+        version: link:packages/theme-bootstrap5
+      '@ourform/theme-tailwind':
+        specifier: workspace:*
+        version: link:packages/theme-tailwind
       '@playwright/test':
         specifier: 1.56.1
         version: 1.56.1
@@ -68,6 +80,9 @@ importers:
       ajv:
         specifier: 8.17.1
         version: 8.17.1
+      bootstrap:
+        specifier: 5.3.8
+        version: 5.3.8(@popperjs/core@2.11.8)
       esbuild:
         specifier: 0.25.12
         version: 0.25.12
@@ -128,6 +143,22 @@ importers:
       '@ourform/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
+      '@ourform/theme-base':
+        specifier: workspace:*
+        version: link:../../packages/theme-base
+      '@ourform/theme-bootstrap5':
+        specifier: workspace:*
+        version: link:../../packages/theme-bootstrap5
+      '@ourform/theme-tailwind':
+        specifier: workspace:*
+        version: link:../../packages/theme-tailwind
+    devDependencies:
+      '@ourform/testing':
+        specifier: workspace:*
+        version: link:../../packages/testing
+      bootstrap:
+        specifier: 5.3.8
+        version: 5.3.8(@popperjs/core@2.11.8)
 
   packages/builder-core:
     dependencies:
@@ -161,6 +192,15 @@ importers:
       '@ourform/sdk':
         specifier: workspace:*
         version: link:../sdk
+      '@ourform/theme-base':
+        specifier: workspace:*
+        version: link:../theme-base
+      '@ourform/theme-bootstrap5':
+        specifier: workspace:*
+        version: link:../theme-bootstrap5
+      '@ourform/theme-tailwind':
+        specifier: workspace:*
+        version: link:../theme-tailwind
 
   packages/schema: {}
 
@@ -172,6 +212,57 @@ importers:
       '@ourform/schema':
         specifier: workspace:*
         version: link:../schema
+
+  packages/testing:
+    dependencies:
+      '@axe-core/playwright':
+        specifier: 4.10.2
+        version: 4.10.2(playwright-core@1.56.1)
+      '@ourform/components':
+        specifier: workspace:*
+        version: link:../components
+      '@ourform/core':
+        specifier: workspace:*
+        version: link:../core
+      '@ourform/renderer-dom':
+        specifier: workspace:*
+        version: link:../renderer-dom
+      '@ourform/schema':
+        specifier: workspace:*
+        version: link:../schema
+      '@ourform/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      '@ourform/theme-base':
+        specifier: workspace:*
+        version: link:../theme-base
+      '@ourform/theme-bootstrap5':
+        specifier: workspace:*
+        version: link:../theme-bootstrap5
+      '@ourform/theme-tailwind':
+        specifier: workspace:*
+        version: link:../theme-tailwind
+      '@playwright/test':
+        specifier: 1.56.1
+        version: 1.56.1
+
+  packages/theme-base:
+    dependencies:
+      '@ourform/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+
+  packages/theme-bootstrap5:
+    dependencies:
+      '@ourform/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+
+  packages/theme-tailwind:
+    dependencies:
+      '@ourform/sdk':
+        specifier: workspace:*
+        version: link:../sdk
 
 packages:
 
@@ -571,6 +662,9 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  '@popperjs/core@2.11.8':
+    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+
   '@rollup/rollup-android-arm-eabi@4.64.10':
     resolution: {integrity: sha512-oJ9ZfVIZjSjts0ZIYA48+5T0vurE5fQfX/Liad2U52Y6EN99x/OCdjGGuKMDP6jSk2i2lY6jwwA3X0drEc4PBg==}
     cpu: [arm]
@@ -898,6 +992,11 @@ packages:
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
+
+  bootstrap@5.3.8:
+    resolution: {integrity: sha512-HP1SZDqaLDPwsNiqRqi5NcP0SSXciX2s9E+RyqJIIqGo+vJeN5AJVM98CXmW/Wux0nQ5L7jeWUdplCEf0Ee+tg==}
+    peerDependencies:
+      '@popperjs/core': ^2.11.8
 
   brace-expansion@1.1.21:
     resolution: {integrity: sha512-9zeA+KLZNNzglF2TPKRQEDyx6Yby7daAkuy8MiPzpXPsYDWi/DRM8jmwUDxokQjYqBpv5DgPiwD4h4ZZSy1Ujw==}
@@ -2354,6 +2453,8 @@ snapshots:
     dependencies:
       playwright: 1.56.1
 
+  '@popperjs/core@2.11.8': {}
+
   '@rollup/rollup-android-arm-eabi@4.64.10':
     optional: true
 
@@ -2674,6 +2775,10 @@ snapshots:
   better-path-resolve@1.0.0:
     dependencies:
       is-windows: 1.0.2
+
+  bootstrap@5.3.8(@popperjs/core@2.11.8):
+    dependencies:
+      '@popperjs/core': 2.11.8
 
   brace-expansion@1.1.21:
     dependencies:

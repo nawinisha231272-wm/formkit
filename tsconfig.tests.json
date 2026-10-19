@@ -9,6 +9,7 @@
     "packages/*/tests/**/*.ts",
     "vitest.config.ts",
     "playwright.config.ts",
-    "apps/playground/sdk-probe.ts"
+    "apps/playground/sdk-probe.ts",
+    "apps/playground/theme-probe.ts"
   ]
 }

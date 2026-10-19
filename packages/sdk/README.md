@@ -28,7 +28,7 @@ const field = defineField({
 // engine.register(field.model); views.set(field.model.type, field.views);
 ```
 
-`defineField` returns frozen `{ model, properties, shell, views: { portable } }`. Its author callback
+`defineField` returns frozen `{ model, properties, shell, views: { portable, shell } }`. Its author callback
 infers both the value type and `ConfigOf<typeof properties>`. `model` contains only headless data/value
 contracts, kind, and builder metadata. Default shell is field; default builder group is Fields.
 A heterogeneous view registry erases value/config types after author-side checking and runtime config validation.
@@ -37,7 +37,7 @@ A heterogeneous view registry erases value/config types after author-side checki
 invalid, pending, required), a11y ids, focusRef, theme.classFor and t. `controlAttributes` returns shared
 input ARIA/state/ref props; pass the optional 'group' role for grouped buttons to omit aria-required,
 which that role does not support. Required is still available in state and enforced by core validation.
-Full group shells and required announcements are M03 work. ShellVariant is metadata in M02.
+The renderer uses views.shell for FieldShell selection, including group legends and required announcements.
 
 `stringValue()` uses blank text as empty, `numberValue({ empty: null })` normalizes invalid/nonfinite or
 blank input to null, and `booleanValue()` uses false as empty. Each isEmpty recognizes its own empty().
@@ -55,9 +55,13 @@ Children flatten arrays; null/boolean children are omitted. Keys must be unique 
 Host function handlers use lowercase event props (oninput, onchange, onclick, onblur). ref receives
 an HTMLElement or null on release. Unsafe attributes, executable string events and unsupported URLs are rejected.
 `renderVNodeToString` escapes text/attributes and omits refs/events/keys; `escapeHtml` is the shared escaper.
-`defaultMessage` supplies the initial Rating English defaults and falls back to the message key.
+`defaultMessage` supplies the Rating, shell and synchronous validation English defaults and falls back to the message key.
 Full localization and composite/plugin/native registration APIs arrive in later milestones.
 
 Types re-exported: ComponentModel, ValueAdapter, PropertyDefinition, PropertyMap, PropertyKind,
 PropertyGroup, ConfigOf, FormDefinition, FormField, Expr, FieldControlProps, FocusTarget, ShellVariant,
 FieldDefinition and PortableControl. The DOM lifecycle lives in @ourform/renderer-dom, not field authors' code.
+
+M03 exports `Theme`, `ThemeOverride`, `ThemeMode` and `FieldPart` types. Themes specify tokens,
+variant/part classes, compiled scoped CSS and dark/high-contrast token overrides. Field overrides
+contain tokens, classes and modes. Theme runtime and explicit per-mount registration live in renderer-dom.

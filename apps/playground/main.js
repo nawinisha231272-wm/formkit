@@ -7,7 +7,7 @@ import {
   numberField,
   checkboxField,
 } from "@ourform/components";
-import { renderForm } from "@ourform/renderer-dom";
+import { mount } from "@ourform/renderer-dom";
 import {
   applyEditorProperty,
   getEditorProperties,
@@ -24,6 +24,18 @@ const views = new Map([
   [numberField.model.type, numberField.views],
   [checkboxField.model.type, checkboxField.views],
 ]);
+import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
+import { tailwindTheme } from "@ourform/theme-tailwind";
+const themes = [bootstrap5Theme, tailwindTheme];
+function renderForm(root, session, views, theme = "base") {
+  return mount(root, session, {
+    engine,
+    views,
+    themes,
+    theme,
+    themeMode: document.querySelector("#mode").value,
+  });
+}
 let schema = structuredClone(feedback);
 if (new URLSearchParams(location.search).has("sdk"))
   schema.components.push(
@@ -132,3 +144,16 @@ document.querySelector("#validate").addEventListener("click", async () => {
 });
 schemaPanel.textContent = JSON.stringify(schema, null, 2);
 showProperties();
+
+document
+  .querySelector("#mode")
+  .addEventListener("change", (e) => view.setMode(e.target.value));
+document
+  .querySelector("#direction")
+  .addEventListener(
+    "change",
+    (e) => (document.querySelector("#form").dir = e.target.value),
+  );
+document.querySelector("#submit").addEventListener("click", async () => {
+  output.textContent = JSON.stringify(await view.submit(), null, 2);
+});

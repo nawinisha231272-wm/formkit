@@ -219,3 +219,95 @@ Field authors now return typed VNodes, with metadata driving config validation a
 Four controls share the same contract, update in place and support static SSR. Rating's required bug is fixed.
 Run `pnpm install --frozen-lockfile`, `pnpm verify`, then `pnpm dev`; use the SDK demo link for all controls.
 The acceptance checklist above is the review summary if an authenticated PR cannot be created.
+
+## M03 plan — shells, accessibility and themes
+
+1. Add theme contracts and three compiled presets; document explicit per-mount view/theme registration.
+2. Share shell output between DOM/SSR; wire accessible names, descriptions, errors, focus and submit summary.
+3. Add scoped token/class resolution and modes without replacing controls, plus playground controls.
+4. Add the testing package, state/keyboard/axe/visual checks and run full verification.
+
+Risks: nested control focus, cross-form CSS isolation and screenshot portability. M04 bridges and future
+wizard/repeater behavior stay outside this milestone. M02 is published but not merged: this branch stacks
+on the verified M02 branch, as before.
+
+## M03 — FieldShell, accessibility and themes
+
+### Built
+
+- Shared DOM/SSR shell generation for field, group (fieldset/legend), inline, cell and none.
+  Description, help, prefix/suffix, required, errors and host-provided cell names use common anatomy.
+- Scoped ids, labels, described-by/invalid/required/busy/read-only attributes, group required description,
+  a single polite live region, failed-submit summary and focus links through focusRef/group fallback.
+  `mount` verifies engine ownership; `view.submit`, native submit, setMode and unmount are available.
+- Explicit per-mount view/theme registries and base → inherited preset → application → form → component
+  resolution. Tokens, classes and dark/high-contrast modes update in place; ids and CSS are isolated by mount.
+- Three compiled preset packages with no external production dependency or host CSS scanner requirement.
+  Bootstrap 5 fallback includes coexistence rules for checkbox layout and visible error messages.
+- `@ourform/testing` supplies browser fixtures/matrices plus a separate `/playwright` assertion entry point.
+  Playwright and axe are optional pinned development peers. Bootstrap 5.3.8 is development-only and used
+  to test its actual stylesheet; its JavaScript is not imported into the product.
+- Playground theme, appearance, direction and submit controls; conformance route at `/theme-probe.html`.
+  SDK/renderer READMEs, normative contracts, ADR-0005 and changeset document the public API.
+
+### Decisions and limitations
+
+ADR-0005 records explicit view registration alongside the headless engine and the narrow renderer →
+shipped-presets import allowance (preset → SDK types only, no runtime cycle). Legacy renderForm retains
+raw ids and its theme names; new mounts generate isolated ids. Static SSR needs a distinct idPrefix per
+form on a shared page. Themes are trusted host CSS scoped with `.of-root`, not executable schema data.
+
+Theme appearance uses `themeMode`; native adapter selection and renderer design mode remain with their
+own milestones. Multi-value, grids, wizards and async work have no implementations to exercise yet.
+Tests preserve every current FieldState and data snapshot, including dirty/touched/errors/pending flags;
+this is not a claim about future wizard/row/async implementations. Real OS IME coverage remains broader
+than the synthetic regression checks. The browser suite uses Safari's native Option-Tab on macOS for
+keyboard traversal, as documented in [Apple's keyboard shortcuts](https://support.apple.com/guide/safari/keyboard-shortcuts-and-gestures-cpsh003/mac).
+
+The 39 PNG baselines cover three themes/modes, read-only states and the actual Bootstrap stylesheet in
+three browsers. They were generated/reviewed on macOS with a 2% pixel tolerance for font rasterization;
+Linux CI results still require the remote run. DOM/axe/state assertions run independently of pixel checks.
+Core/schema and Rating source remain unchanged from M02. No native bridges or builder canvas were added.
+
+M03 stacks on verified M02, since there is still no merged main branch. GitHub CLI authentication is
+unavailable (`gh auth status`); the acceptance checklist below serves as the PR review summary.
+
+### Acceptance evidence
+
+- PASS — all three themes/light+dark have zero serious/critical axe violations in the playground:
+  `base|bootstrap5|tailwind light|dark: playground axe and unchanged Rating` in all three browsers.
+  The package's `checkThemeConformance` also scans the invalid/disabled/focused/hovered fixture in
+  light, dark and high-contrast/RTL modes.
+- PASS — typing continues at the retained caret after switching through all themes:
+  `theme switches preserve typing, focus, caret, field identity and all current session state` checks
+  stable DOM identity, focus, selection, data and every FieldState, then types `abcXd` at position 3.
+  Existing composition/unrelated-control/cleanup regressions continue to pass.
+- PASS — Rating has a fieldset/legend accessible name and a required/error description:
+  `checkThemeConformance` asserts name `Rating`, description `Rating is required (required)`, and
+  focus navigation to its first enabled button. Axe scans the same DOM. `git diff b12f7f3 --
+packages/components/src/rating.ts` is empty; its original 29-line SDK definition remains unchanged.
+- PASS — unchanged Rating renders/selects correctly in all presets; the shared fixture's nine
+  theme/mode scenarios plus read-only scenarios compare reviewed PNGs in Chromium/Firefox/WebKit.
+  `Bootstrap preset works with the real Bootstrap 5 stylesheet installed` additionally checks actual
+  Bootstrap CSS, visible errors, a working checkbox and its position within the shell.
+- PASS — `keyboard-only feedback completion and submission` traverses the real document keyboard
+  order, enters a name, selects four stars, and submits successfully in all three browsers.
+- PASS — `failed native submission focuses summary; its links focus through focusRef`, plus the
+  two-mount isolation and M02 compatibility/unmount cases, verify navigation and cleanup.
+- PASS — `CI=true npx pnpm@10.10.0 verify`: lint/format, builds, strict typechecks, 103 Node tests,
+  98.59% core line coverage, 102 browser cases, 39 PNG comparisons and all nine size budgets.
+  `npx pnpm@10.10.0 install --frozen-lockfile` also passes. No test was skipped/deleted and no
+  threshold was relaxed. The read-only fixture now explicitly blurs and waits for invalid state
+  before photographing it; hover checks wait for Bootstrap's real CSS transition to finish.
+- PASS — Brotli sizes: schema 3.04 kB, core 6.63 kB, SDK 2.47 kB, components 828 B,
+  renderer-dom 5.42 kB, builder-core 459 B (30 kB each); base 989 B, Bootstrap 5 1.17 kB,
+  Tailwind 1.07 kB (new 10 kB preset budgets). Existing budgets remain unchanged.
+
+### Review summary — M03: FieldShell, accessibility and themes
+
+Field authors now receive accessible shells and theme parts automatically. Three compiled themes
+support scoped, state-preserving theme/mode switching; failed submissions link errors to focus targets.
+The development conformance package supplies reusable assertions and fixtures, with the acceptance
+checks above as the PR checklist. Run frozen install and `pnpm verify`; `pnpm dev` opens the updated
+playground. Static SSR, registration/override rules and compatibility are documented in ADR-0005.
+M03 is complete. M04 native bridges and host adapters are next and have not been started.

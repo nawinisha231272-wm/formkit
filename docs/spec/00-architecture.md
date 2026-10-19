@@ -38,7 +38,7 @@ side packages: @ourform/licensing (offline keys), @ourform/testing (conformance)
 | validation              | schema, core                                                |
 | sdk                     | schema, core                                                |
 | components              | sdk (and its re-exports)                                    |
-| renderer-dom            | schema, core, sdk                                           |
+| renderer-dom            | schema, core, sdk, theme-\* presets (ADR-0005)              |
 | theme-\*                | sdk (types only)                                            |
 | builder-core            | schema, core, sdk                                           |
 | builder                 | builder-core, renderer-dom, sdk, core, schema               |

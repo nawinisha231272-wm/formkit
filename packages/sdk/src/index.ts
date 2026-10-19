@@ -26,3 +26,5 @@ export { h, renderVNodeToString, escapeHtml } from "./vnode";
 export type { VNode, VNodeChild, VNodeProps, VNodeAttribute } from "./vnode";
 
 export { defaultMessage } from "./messages";
+
+export type { Theme, ThemeOverride, ThemeMode, FieldPart } from "./theme";

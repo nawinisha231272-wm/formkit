@@ -1,108 +1,133 @@
-import type { CompiledNode, FormSession } from "@ourform/core";
-import {
-  resolveConfig,
-  renderVNodeToString,
-  escapeHtml,
-  defaultMessage,
-} from "@ourform/sdk";
-import type {
-  FieldDefinition,
-  FieldControlProps,
-  FocusTarget,
-} from "@ourform/sdk";
+import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
+import { tailwindTheme } from "@ourform/theme-tailwind";
+import type { Engine, FormSession } from "@ourform/core";
+import { defaultMessage, escapeHtml, renderVNodeToString } from "@ourform/sdk";
+import type { FocusTarget, Theme, ThemeMode } from "@ourform/sdk";
+import { fieldErrors, shellVNode } from "./shell";
+import type { FieldPresentation, Views } from "./shell";
+import { resolveTheme, themeStyle } from "./theme";
+import type { ThemeOptions } from "./theme";
 import { mountVNode } from "./vnode-dom";
 export { mountVNode } from "./vnode-dom";
-export type AppearanceTheme = "base" | "bootstrap" | "tailwind";
+export { resolveTheme } from "./theme";
+export type { ThemeOptions, ResolvedTheme } from "./theme";
+export type { FieldPresentation, Views } from "./shell";
+export type AppearanceTheme = "base" | "bootstrap" | "bootstrap5" | "tailwind";
+export interface RenderOptions extends ThemeOptions {
+  views: Views;
+  theme?: Theme | string;
+  idPrefix?: string;
+  presentation?: Readonly<Record<string, FieldPresentation>>;
+  t?: typeof defaultMessage;
+}
 export interface FormView {
-  setTheme(theme: AppearanceTheme): void;
+  setTheme(theme: Theme | string): void;
+  setMode(mode: ThemeMode): void;
   focus(componentId: string): void;
+  submit(): ReturnType<FormSession["submit"]>;
   destroy(): void;
+  unmount(): void;
 }
-type Views = ReadonlyMap<string, FieldDefinition["views"]>;
-interface MountedField {
-  wrapper: HTMLElement;
-  label: HTMLLabelElement | null;
-  error: HTMLElement | null;
-  control: ReturnType<typeof mountVNode> | null;
-  target: FocusTarget | null;
-  focusRef: (target: FocusTarget | null) => void;
-}
-function controlProps(
+export function mount(
+  root: Element,
   session: FormSession,
-  entry: CompiledNode,
-  theme: AppearanceTheme,
-  focusRef: (target: FocusTarget | null) => void,
-): FieldControlProps<unknown, Record<string, unknown>> {
-  const state = session.getFieldState(entry.node.id);
-  const result = resolveConfig(
-    entry.model.properties ?? {},
-    entry.node.properties ?? {},
-  );
-  if (!result.ok) throw new Error("Compiled config is invalid.");
-  const described = [
-    entry.node.description ? `${entry.node.id}_description` : null,
-    state.errors.length ? `${entry.node.id}_error` : null,
-  ]
-    .filter(Boolean)
-    .join(" ");
-  return {
-    value: state.value,
-    setValue: (next) => session.setValue(state.path, next, { source: "user" }),
-    onBlur: () => session.touch(state.path),
-    config: result.config,
-    state: {
-      disabled: state.disabled,
-      readOnly: state.readOnly,
-      invalid: state.errors.length > 0,
-      pending: state.pending,
-      required: state.required,
-    },
-    a11y: {
-      id: entry.node.id,
-      name: entry.node.key!,
-      labelledBy: `${entry.node.id}_label`,
-      ...(described ? { describedBy: described } : {}),
-      ...(state.errors.length ? { errorId: `${entry.node.id}_error` } : {}),
-    },
-    focusRef,
-    theme: {
-      classFor: (part) =>
-        part === "control" ? `of-control of-control-${theme}` : "",
-    },
-    t: defaultMessage,
-  };
-}
-export function renderForm(
-  root: HTMLElement,
-  session: FormSession,
-  views: Views,
-  theme: AppearanceTheme = "base",
+  options: RenderOptions & { engine: Engine },
 ): FormView {
-  const fields = new Map<string, MountedField>();
+  for (const entry of session.form.nodes)
+    if (options.engine.getField(entry.node.type) !== entry.model)
+      throw new Error("Session and renderer must use the same engine.");
+  return mountForm(root, session, options);
+}
+function mountForm(
+  root: Element,
+  session: FormSession,
+  options: RenderOptions,
+): FormView {
+  const document = root.ownerDocument;
+  const instance = `of-${Array.from(globalThis.crypto.getRandomValues(new Uint32Array(4)), (part) => part.toString(16)).join("-")}`;
+  const prefix = options.idPrefix ?? `${instance}-`;
+  const t = options.t ?? defaultMessage;
+  let theme = options.theme ?? "base";
+  let mode = options.themeMode ?? "light";
   let destroyed = false;
+  let submitted = false;
   let updating = false;
   const pending = new Set<string>();
-  const update = (id: string): void => {
-    const entry = session.form.byId[id]!;
-    const field = fields.get(id)!;
-    const state = session.getFieldState(id);
-    field.wrapper.hidden = !state.visible;
-    if (field.error) {
-      field.error.textContent = state.errors
-        .map((e) =>
-          e.code === "required"
-            ? `${entry.node.label ?? entry.node.key} is required`
-            : e.messageKey,
-        )
-        .join(". ");
-      field.error.hidden = !state.errors.length;
+  const fields = new Map<
+    string,
+    {
+      unit: ReturnType<typeof mountVNode>;
+      target: FocusTarget | null;
+      ref: (target: FocusTarget | null) => void;
     }
-    if (field.control)
-      field.control.update(
-        views
-          .get(entry.node.type)!
-          .portable(controlProps(session, entry, theme, field.focusRef)),
-      );
+  >();
+  const style = document.createElement("style");
+  const summary = document.createElement("div");
+  summary.className = "of-summary";
+  summary.tabIndex = -1;
+  summary.hidden = true;
+  summary.setAttribute("role", "region");
+  summary.setAttribute("aria-label", t("of.errorSummary"));
+  const live = document.createElement("div");
+  live.className = "of-sr-only";
+  live.setAttribute("aria-live", "polite");
+  live.setAttribute("aria-atomic", "true");
+  const originalClass = root.getAttribute("class");
+  const originalAttributes = [
+    "data-of-theme",
+    "data-of-mode",
+    "data-of-instance",
+  ].map((key) => [key, root.getAttribute(key)] as const);
+  root.classList.add("of-root");
+  root.setAttribute("data-of-instance", instance);
+  root.replaceChildren(style, summary);
+  const themeOptions = () => ({ ...options, themeMode: mode });
+  const applyTheme = (): void => {
+    const resolved = resolveTheme(theme, themeOptions());
+    root.setAttribute("data-of-theme", resolved.name);
+    root.setAttribute("data-of-mode", mode);
+    style.textContent = themeStyle(resolved, instance);
+  };
+  const focus = (id: string): void => {
+    const field = fields.get(id);
+    if (!field) throw new Error(`Unknown component id: ${id}`);
+    field.target?.focus();
+    if (!field.unit.el.contains(document.activeElement))
+      field.unit.el
+        .querySelector<HTMLElement>(
+          'input:not(:disabled),button:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex="0"]',
+        )
+        ?.focus();
+  };
+  const updateSummary = (): void => {
+    if (!submitted) return;
+    summary.replaceChildren();
+    const heading = document.createElement("h3");
+    heading.textContent = t("of.errorSummary");
+    const list = document.createElement("ul");
+    for (const entry of session.form.nodes)
+      for (const message of fieldErrors(session, entry, t)) {
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `#${prefix}${entry.node.id}`;
+        link.dataset.focusId = entry.node.id;
+        link.textContent = message;
+        item.append(link);
+        list.append(item);
+      }
+    summary.append(heading, list);
+    summary.hidden = !list.children.length;
+    live.textContent = list.children.length
+      ? t("of.errorCount", { count: list.children.length })
+      : t("of.noErrors");
+  };
+  const onSummaryClick = (event: Event): void => {
+    const target = event.target as Element | null;
+    const link = target?.closest<HTMLAnchorElement>("a[data-focus-id]");
+    if (link) {
+      event.preventDefault();
+      focus(link.dataset.focusId!);
+    }
   };
   const flush = (): void => {
     if (updating || destroyed) return;
@@ -111,132 +136,168 @@ export function renderForm(
       while (pending.size) {
         const ids = [...pending];
         pending.clear();
-        for (const id of ids) update(id);
+        for (const id of ids) {
+          const entry = session.form.byId[id]!;
+          const field = fields.get(id)!;
+          field.unit.update(
+            shellVNode(
+              session,
+              entry,
+              options.views,
+              resolveTheme(theme, themeOptions(), id),
+              prefix,
+              field.ref,
+              options.presentation?.[id],
+              t,
+            ),
+          );
+        }
       }
+      updateSummary();
+      if (!submitted)
+        live.textContent = session.form.nodes
+          .flatMap((entry) => fieldErrors(session, entry, t))
+          .join(". ");
     } finally {
       updating = false;
     }
   };
+  let unsubscribe = () => {};
+  const destroy = (): void => {
+    if (destroyed) return;
+    destroyed = true;
+    unsubscribe();
+    summary.removeEventListener("click", onSummaryClick);
+    root.removeEventListener("submit", onSubmit);
+    for (const field of fields.values()) field.unit.destroy();
+    fields.clear();
+    pending.clear();
+    root.replaceChildren();
+    if (originalClass === null) root.removeAttribute("class");
+    else root.setAttribute("class", originalClass);
+    for (const [key, value] of originalAttributes)
+      if (value === null) root.removeAttribute(key);
+      else root.setAttribute(key, value);
+  };
+  const submit = async (): ReturnType<FormSession["submit"]> => {
+    if (destroyed) throw new Error("Form view is destroyed.");
+    submitted = true;
+    const result = await session.submit();
+    if (!destroyed) {
+      updateSummary();
+      if (!result.ok) summary.focus();
+    }
+    return result;
+  };
+  const onSubmit = (event: Event): void => {
+    event.preventDefault();
+    void submit();
+  };
   try {
-    root.className = `of-root of-theme-${theme}`;
+    applyTheme();
     for (const entry of session.form.nodes) {
-      const wrapper = document.createElement("div");
-      wrapper.className = "of-field";
-      wrapper.dataset.fieldId = entry.node.id;
-      const field: MountedField = {
-        wrapper,
-        label: null,
-        error: null,
-        control: null,
-        target: null,
-        focusRef: (target) => {
+      const field = {
+        unit: null as unknown as ReturnType<typeof mountVNode>,
+        target: null as FocusTarget | null,
+        ref: (target: FocusTarget | null) => {
           field.target = target;
         },
       };
-      fields.set(entry.node.id, field);
-      if (entry.model.value) {
-        const view = views.get(entry.node.type);
-        if (!view) throw new Error(`No portable view: ${entry.node.type}`);
-        const label = document.createElement("label");
-        label.id = `${entry.node.id}_label`;
-        label.htmlFor = entry.node.id;
-        label.textContent = entry.node.label ?? entry.node.key ?? entry.node.id;
-        wrapper.append(label);
-        field.label = label;
-        const control = mountVNode(
-          view.portable(controlProps(session, entry, theme, field.focusRef)),
-        );
-        wrapper.append(control.el);
-        field.control = control;
-        if (entry.node.description) {
-          const description = document.createElement("small");
-          description.id = `${entry.node.id}_description`;
-          description.textContent = entry.node.description;
-          wrapper.append(description);
-        }
-        const error = document.createElement("small");
-        error.id = `${entry.node.id}_error`;
-        error.className = "of-error";
-        wrapper.append(error);
-        field.error = error;
-      } else if (entry.node.label) {
-        const heading = document.createElement("h3");
-        heading.textContent = entry.node.label;
-        wrapper.append(heading);
-      }
-      wrapper.hidden = !session.getFieldState(entry.node.id).visible;
-      (entry.parentId ? fields.get(entry.parentId)!.wrapper : root).append(
-        wrapper,
+      field.unit = mountVNode(
+        shellVNode(
+          session,
+          entry,
+          options.views,
+          resolveTheme(theme, themeOptions(), entry.node.id),
+          prefix,
+          field.ref,
+          options.presentation?.[entry.node.id],
+          t,
+        ),
       );
-      pending.add(entry.node.id);
+      fields.set(entry.node.id, field);
+      (entry.parentId ? fields.get(entry.parentId)!.unit.el : root).append(
+        field.unit.el,
+      );
     }
-    flush();
+    root.append(live);
+    summary.addEventListener("click", onSummaryClick);
+    root.addEventListener("submit", onSubmit);
+    unsubscribe = session.subscribe((patch) => {
+      patch.changedFields.forEach((id) => pending.add(id));
+      flush();
+    });
   } catch (error) {
-    for (const field of fields.values()) field.control?.destroy();
-    root.replaceChildren();
+    destroy();
     throw error;
   }
-  const unsubscribe = session.subscribe((patch) => {
-    patch.changedFields.forEach((id) => pending.add(id));
+  const refresh = (): void => {
+    if (destroyed) throw new Error("Form view is destroyed.");
+    applyTheme();
+    fields.forEach((_field, id) => pending.add(id));
     flush();
-  });
+  };
   return {
     setTheme(next) {
-      if (destroyed) throw new Error("Form view is destroyed.");
+      resolveTheme(next, themeOptions());
       theme = next;
-      root.className = `of-root of-theme-${theme}`;
-      for (const id of fields.keys()) pending.add(id);
-      flush();
+      refresh();
     },
-    focus(id) {
-      const field = fields.get(id);
-      if (!field) throw new Error(`Unknown component id: ${id}`);
-      field.target?.focus();
+    setMode(next) {
+      mode = next;
+      refresh();
     },
-    destroy() {
-      if (destroyed) return;
-      destroyed = true;
-      unsubscribe();
-      for (const field of fields.values()) field.control?.destroy();
-      fields.clear();
-      pending.clear();
-      root.replaceChildren();
-    },
+    focus,
+    submit,
+    destroy,
+    unmount: destroy,
   };
+}
+/** M02 compatibility entry point; new integrations use mount with an engine and explicit view registry. */
+export function renderForm(
+  root: HTMLElement,
+  session: FormSession,
+  views: Views,
+  theme: AppearanceTheme = "base",
+): FormView {
+  return mountForm(root, session, {
+    views,
+    theme,
+    themes: [bootstrap5Theme, tailwindTheme],
+    idPrefix: "",
+  });
 }
 export function renderToString(
   session: FormSession,
-  options: { views: Views; theme?: AppearanceTheme },
+  options: RenderOptions,
 ): string {
-  const theme = options.theme ?? "base";
-  const children = new Map<string | undefined, CompiledNode[]>();
-  for (const entry of session.form.nodes) {
-    const list = children.get(entry.parentId) ?? [];
-    list.push(entry);
-    children.set(entry.parentId, list);
-  }
-  const render = (entry: CompiledNode): string => {
-    const state = session.getFieldState(entry.node.id);
-    const label = escapeHtml(
-      entry.node.label ?? entry.node.key ?? entry.node.id,
+  const instance = options.idPrefix ?? "of-ssr";
+  if (!/^[a-zA-Z0-9_-]+$/.test(instance))
+    throw new Error(
+      "SSR idPrefix must contain letters, digits, underscores or hyphens.",
     );
-    let body = entry.model.value
-      ? `<label id="${escapeHtml(entry.node.id)}_label" for="${escapeHtml(entry.node.id)}">${label}</label>`
-      : entry.node.label
-        ? `<h3>${label}</h3>`
-        : "";
-    if (entry.model.value) {
-      const view = options.views.get(entry.node.type);
-      if (!view) throw new Error(`No portable view: ${entry.node.type}`);
-      body += renderVNodeToString(
-        view.portable(controlProps(session, entry, theme, () => {})),
-      );
-      if (entry.node.description)
-        body += `<small id="${escapeHtml(entry.node.id)}_description">${escapeHtml(entry.node.description)}</small>`;
-      if (state.errors.length)
-        body += `<small id="${escapeHtml(entry.node.id)}_error">${state.errors.map((e) => escapeHtml(e.code === "required" ? `${entry.node.label ?? entry.node.key} is required` : e.messageKey)).join(". ")}</small>`;
-    }
-    return `<div class="of-field" data-field-id="${escapeHtml(entry.node.id)}"${state.visible ? "" : " hidden"}>${body}${(children.get(entry.node.id) ?? []).map(render).join("")}</div>`;
-  };
-  return `<div class="of-root of-theme-${theme}">${(children.get(undefined) ?? []).map(render).join("")}</div>`;
+  const resolved = resolveTheme(options.theme, options);
+  const children = new Map<string | undefined, string[]>();
+  for (const entry of [...session.form.nodes].reverse()) {
+    const shell = shellVNode(
+      session,
+      entry,
+      options.views,
+      resolveTheme(options.theme, options, entry.node.id),
+      `${instance}-`,
+      () => {},
+      options.presentation?.[entry.node.id],
+      options.t,
+    );
+    const html = renderVNodeToString(shell);
+    // Nested containers append already-escaped rendered child markup, never definition HTML.
+    const nested = html.replace(
+      /<\/(div|fieldset)>$/,
+      (closing) => `${(children.get(entry.node.id) ?? []).join("")}${closing}`,
+    );
+    const siblings = children.get(entry.parentId) ?? [];
+    siblings.unshift(nested);
+    children.set(entry.parentId, siblings);
+  }
+  return `<div class="of-root" data-of-theme="${escapeHtml(resolved.name)}" data-of-mode="${escapeHtml(options.themeMode ?? "light")}" data-of-instance="${instance}"><style>${themeStyle(resolved, instance)}</style>${(children.get(undefined) ?? []).join("")}<div class="of-sr-only" aria-live="polite" aria-atomic="true"></div></div>`;
 }
