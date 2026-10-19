@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OurForm Phase 0</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>OurForm — Phase 0 proof</h1>
+      <p>
+        Self-hosted, no backend. Edit the rating to see state and automatically
+        generated builder properties.
+      </p>
+      <div class="toolbar">
+        <label for="theme">Theme</label
+        ><select id="theme">
+          <option value="base">Base</option>
+          <option value="bootstrap">Bootstrap-inspired</option>
+          <option value="tailwind">Tailwind-inspired</option>
+        </select>
+      </div>
+      <section class="columns">
+        <div>
+          <h2>Form renderer</h2>
+          <div id="form"></div>
+          <button id="validate">Validate</button>
+          <pre
+            id="output"
+            tabindex="0"
+            role="region"
+            aria-label="Validation output"
+          ></pre>
+        </div>
+        <div>
+          <h2>Generated builder properties</h2>
+          <label for="target">Selected component</label
+          ><select id="target"></select>
+          <div id="properties"></div>
+          <h3>Current JSON definition</h3>
+          <pre
+            id="schema"
+            tabindex="0"
+            role="region"
+            aria-label="Current JSON definition"
+          ></pre>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

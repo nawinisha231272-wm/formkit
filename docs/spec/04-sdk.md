@@ -1,0 +1,187 @@
+# 04 — Component SDK
+
+Status: normative for M2–M8. Packages: `@ourform/sdk` (contracts, definers), models consumed by `@ourform/core`.
+
+## Goal
+
+A developer adding a basic field writes only the control. Label, description, help, errors,
+required marker, ARIA wiring, theming, validation wiring, builder palette entry and property panel
+come from the library.
+
+## Customer paths
+
+| Path                            | API                                                                                                                         | Code the customer writes                                        |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| A. Configure                    | `definePreset(type, { base, defaults, title })`                                                                             | None                                                            |
+| A. Assemble                     | `defineComposite({ type, title, components, dataScope })`                                                                   | None                                                            |
+| B. Register an existing control | `registerNativeField(adapter, type, Component, opts?)` (+ `registerReactField`, `provideFormField`, `registerElementField`) | One line if conventional; value adapter if the value is complex |
+| C. New portable field           | `defineField({ type, value, properties, control })`                                                                         | The control                                                     |
+| Advanced                        | `defineLayout`, custom `shell`, custom property `editor`                                                                    | Layout / editor views                                           |
+| Package                         | `definePlugin({...})`                                                                                                       | Packaging only                                                  |
+
+## Model (headless)
+
+```ts
+export interface ComponentModel<V = unknown, C = Record<string, unknown>> {
+  type: string;
+  kind: "field" | "layout" | "composite";
+  value?: ValueAdapter<V>;
+  properties: PropertyMap; // generates ConfigOf<P>, defaults, validation, builder panel
+  dataScope?: "none" | "object" | "array";
+  expand?: (node: ComponentNode) => ComponentNode[]; // composites
+  validators?: string[]; // names of registered validators always applied
+  builder: { title: string; group: string; icon?: string; order?: number };
+}
+
+export interface ValueAdapter<V> {
+  empty(): V;
+  normalize(input: unknown): V;
+  isEmpty(value: V): boolean;
+  equals?(a: V, b: V): boolean; // default Object.is
+  serialize?(value: V): unknown; // default identity
+  jsonSchema?(config: unknown): object; // contributes to submission JSON Schema
+}
+// helpers: stringValue(), numberValue({ empty: null }), booleanValue(), arrayValue(item), objectValue({...})
+```
+
+Rule: an "empty" value must be recognised by `isEmpty`. (Starter-kit bug: Rating used `0` as empty
+while `isEmpty(0)` was false, so a required Rating passed. Rating's empty is `null`.)
+
+## Property metadata
+
+```ts
+export interface PropertyDefinition<T> {
+  kind:
+    | "string"
+    | "number"
+    | "boolean"
+    | "select"
+    | "expr"
+    | "options"
+    | "json";
+  label: string; // message key or literal
+  group:
+    | "Display"
+    | "Data"
+    | "Validation"
+    | "Conditional"
+    | "Layout"
+    | "Accessibility"
+    | (string & {});
+  default: T;
+  min?: number;
+  max?: number;
+  options?: { value: string; label: string }[];
+  description?: string;
+  visibleWhen?: Expr; // evaluated against the component's own config in the builder
+  editor?: string; // id of a registered custom property editor (escape hatch)
+}
+export type PropertyMap = Record<string, PropertyDefinition<unknown>>;
+export type ConfigOf<P extends PropertyMap> = {
+  [K in keyof P]: P[K] extends PropertyDefinition<infer T> ? T : never;
+};
+// helpers: stringProperty, numberProperty, booleanProperty, selectProperty, exprProperty, optionsProperty, jsonProperty
+```
+
+From one `properties` map the SDK derives: the TypeScript config type, defaults, runtime config
+validation (diagnostic `invalid-property`), the builder property panel, and docs tables.
+
+## Portable field
+
+```ts
+export function defineField<V, P extends PropertyMap>(spec: {
+  type: string;
+  title: string;
+  group?: string;
+  icon?: string;
+  value: ValueAdapter<V>;
+  properties?: P;
+  shell?: ShellVariant; // 'field' (default) | 'group' | 'inline' | 'cell' | 'none'
+  control: PortableControl<V, ConfigOf<P>>; // representation fixed by ADR-0002 in M2
+}): FieldDefinition<V, ConfigOf<P>>; // { model: ComponentModel, views: { portable } }
+
+export interface FieldControlProps<V, C> {
+  value: V;
+  setValue(next: V): void;
+  onBlur(): void;
+  config: Readonly<C>;
+  state: {
+    disabled: boolean;
+    readOnly: boolean;
+    invalid: boolean;
+    pending: boolean;
+    required: boolean;
+  };
+  a11y: {
+    id: string;
+    name: string;
+    labelledBy: string;
+    describedBy?: string;
+    errorId?: string;
+  };
+  focusRef(target: FocusTarget | null): void;
+  theme: { classFor(part: string): string };
+  t(key: string, params?: Record<string, unknown>): string;
+}
+```
+
+Multi-value controls receive `V = T[]` plus `addItem(value?)` and `removeItem(index)`.
+The control must spread `a11y.id`, `aria-labelledby`, `aria-describedby`, `aria-invalid` and
+`aria-required` (from `state`) onto its focusable element, or onto its group root for `group` shells.
+
+## Shell variants
+
+| Variant  | Use                                  | Semantics                                                  |
+| -------- | ------------------------------------ | ---------------------------------------------------------- |
+| `field`  | text, number, date, rating\*, lookup | `<label for>` + control + description + errors             |
+| `group`  | radio group, checkbox group, rating  | `<fieldset>` + `<legend>`                                  |
+| `inline` | single checkbox, switch              | control then label                                         |
+| `cell`   | inside DataGrid rows                 | no visible label; accessible name from column header + row |
+| `none`   | composites, layouts                  | children manage their own shells                           |
+
+A shell owns presentation and accessibility, never data.
+
+## Native bridges
+
+Conventions (override with `{ valueProp, changeProp, blurProp, disabledProp, value: ValueAdapter }`):
+
+| Host          | Value in                            | Change out                                    | Also passed                                                      |
+| ------------- | ----------------------------------- | --------------------------------------------- | ---------------------------------------------------------------- |
+| React         | `value`                             | `onValueChange(next)`                         | `onBlur`, `disabled`, `readOnly`, `id`, `name`, `aria-*`         |
+| Angular       | `value` input (decorator or signal) | `valueChange` output                          | `disabled`, `readOnly`, `id`; ControlValueAccessor also accepted |
+| Web Component | `.value` property                   | `value-change` CustomEvent (`detail` = value) | `.disabled`, `.readOnly`, native `blur`                          |
+
+If no model is given, the bridge infers one: `stringValue()` unless `opts.value` is provided.
+Inference is only valid for string, number, boolean and arrays of those; anything else requires
+`opts.value`. Document this limit; do not promise one-line registration for complex widgets.
+
+## Override resolution
+
+For type T in adapter A: native view for A → renderer-pack view for A → portable view →
+compile/mount error `no-view` naming T and A. Resolved once at mount.
+
+## Plugins
+
+```ts
+export function definePlugin(spec: {
+  id: string;
+  version: string;
+  engine: string; // engine = semver range of @ourform/core
+  components?: (FieldDefinition | ComponentModel)[];
+  themes?: Theme[];
+  validators?: ValidatorMap;
+  functions?: FunctionMap;
+  dataSources?: DataSourceMap;
+  requires?: { plugin: string; version: string }[];
+}): Plugin;
+```
+
+Install validates version ranges and conflicts (throws on duplicate type). A form whose
+`requires` is unsatisfied fails compile with `missing-plugin`.
+
+## SDK acceptance scenarios (automated tests by M8)
+
+A. Portable Rating in < 30 lines of meaningful code. B. Conventional React control: 1 statement.
+C. Unusual React control: registration + small mapping. D. Rating appears and is editable in the
+builder with zero builder code. E. Switching base → bootstrap5 → tailwind needs zero Rating changes.
+F. Portable Rating renders in Angular with zero changes.

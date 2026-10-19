@@ -1,0 +1,107 @@
+:root {
+  font: 16px system-ui;
+  color: #17232b;
+  background: #f5f7fb;
+}
+main {
+  max-width: 1050px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+h1 {
+  font-size: 1.8rem;
+}
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.columns > div {
+  background: white;
+  border: 1px solid #dfe5ef;
+  border-radius: 12px;
+  padding: 20px;
+}
+h2 {
+  font-size: 1.1rem;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 22px 0;
+}
+button,
+select,
+input {
+  font: inherit;
+  padding: 8px;
+  border: 1px solid #a9b7c8;
+  border-radius: 6px;
+}
+button {
+  cursor: pointer;
+}
+.of-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+.of-field label {
+  font-weight: 600;
+}
+.of-field button {
+  margin-right: 5px;
+  color: #a87400;
+  background: white;
+}
+.of-error {
+  color: #ba1c24;
+}
+.of-theme-bootstrap input {
+  border: 1px solid #86a4cc;
+  border-radius: 6px;
+  padding: 11px;
+}
+.of-theme-bootstrap button {
+  border-radius: 7px;
+  color: #0d6efd;
+}
+.of-theme-tailwind input {
+  border: 1px solid #596bc6;
+  border-radius: 9px;
+  padding: 12px;
+  box-shadow: 0 1px 2px #a5b4fc55;
+}
+.of-theme-tailwind button {
+  border: 0;
+  border-radius: 8px;
+  background: #ede9fe;
+  color: #6941c6;
+}
+.property {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  gap: 10px;
+}
+.property input {
+  max-width: 155px;
+}
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  background: #f4f6fb;
+  padding: 12px;
+  border-radius: 7px;
+  max-height: 340px;
+  overflow: auto;
+}
+@media (max-width: 700px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}

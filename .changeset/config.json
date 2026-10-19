@@ -1,0 +1,20 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [
+    [
+      "@ourform/schema",
+      "@ourform/core",
+      "@ourform/sdk",
+      "@ourform/components",
+      "@ourform/renderer-dom",
+      "@ourform/builder-core"
+    ]
+  ],
+  "linked": [],
+  "access": "restricted",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": ["@ourform/playground"]
+}

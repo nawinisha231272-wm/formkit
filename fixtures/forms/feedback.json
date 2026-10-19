@@ -1,0 +1,24 @@
+{
+  "$formVersion": "1.0",
+  "id": "feedback",
+  "components": [
+    {
+      "id": "cmp_name",
+      "type": "text",
+      "key": "name",
+      "label": "Name",
+      "validation": {
+        "required": true
+      }
+    },
+    {
+      "id": "cmp_rating",
+      "type": "rating",
+      "key": "rating",
+      "label": "Customer rating",
+      "properties": {
+        "max": 5
+      }
+    }
+  ]
+}
