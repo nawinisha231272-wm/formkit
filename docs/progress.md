@@ -421,3 +421,115 @@ The checklist above is the PR acceptance summary. Build with Node 22.22.3/pnpm 1
 start an example on ports 4181–4184; the playground links to the primary examples. ADR-0006 and package
 READMEs describe registration/inference, framework support and client-rendering limits. M04 is complete.
 M05 mini builder and Phase 0 gate is next; it has not been started and requires human review when built.
+
+## M05 — Mini builder and Phase 0 gate (implementation complete; review pending)
+
+Plan: implement immutable headless AddComponent/UpdateProperty/RemoveComponent commands, inverses,
+JSON patches and undo/redo; discover the palette and generated property panels from engine metadata.
+Add a simple list-based playground builder with Rating and the existing native EmployeeLookup,
+live preview and JSON. Add Bootstrap 4 alongside Bootstrap 5 at the user's explicit request, with
+compiled fallback and real framework stylesheet checks. Run the complete Phase 0 acceptance suite,
+offline build/runtime checks and size measurements; write the gate report and stop before M06.
+Risks: command rejection must not corrupt history, builder edits must preserve valid schema, existing
+native/framework regressions and visual baselines must remain valid, and the phase gate requires review.
+This branch stacks on verified M04 because the earlier milestone branches have not been merged.
+
+### Built
+
+- Headless createBuilder with immutable snapshots, selection, AddComponent/UpdateProperty/RemoveComponent,
+  inverses, undo/redo, diagnostic rejection, registry-discovered palettes and generated grouped panels.
+- RFC 6902 definition patches: component add/remove/replace and root replace for exact history replay.
+  Seeded randomized command sequences independently replay patches and verify every undo/redo snapshot.
+  Key generation accounts for transparent layouts/object scopes even in unresolved-reference drafts.
+- Mini builder at /builder.html: grouped palette, selectable list, generated generic editors, live native
+  preview, JSON and latest patch, undo/redo/removal, responsive chrome and all four theme choices.
+- Existing native EmployeeLookup extracted from the vanilla example into a shared module. It and Rating
+  register through normal field descriptors/metadata; no component-specific builder UI exists. The native
+  searchPlaceholder property demonstrates automatically generated editing with an observable preview change.
+- New Bootstrap 4 preset beside Bootstrap 5, base and Tailwind. Both Bootstrap presets include compiled
+  fallback CSS and are checked against real, independently loaded framework stylesheets (4.6.2/5.3.8).
+  No framework JS is loaded or added to library runtime dependencies. Bootstrap's npm package auto-installs
+  jQuery/Popper peers for the development stylesheet dependency only; these are not imported by the preset.
+- New optional ariaLabel wire property keeps meta uninterpreted; shared shells preserve visible labels and
+  forward accessible overrides to portable/native controls. Standard placeholder is forwarded through SDK
+  control props. Neither change rewrites Rating. SDK defaults cover generated base property labels.
+- macOS OS-enforced offline build proof, including an explicit outbound TCP denial check. All 19 package
+  scripts run without Turbo caching; browser tests separately go offline and exercise native editing,
+  theme switching, client validation and submission.
+
+### Decisions, findings and limits
+
+ADR-0007 and the updated specs document the M05 contract. Hidden aliases visibleWhen=false; clearing it
+removes that expression. Custom editor ids are metadata only, expressions/options use generic JSON text,
+layout width is stored for later layout rendering. Full builder UI/drag-drop/other commands remain M09.
+History stores unbounded before/after snapshots for this proof; production memory bounds belong to M09.
+Schema edits recreate preview sessions with current data, resetting transient touched/errors; theme/mode
+changes retain session and DOM state. Unresolved-reference drafts cannot preview until repaired or undone.
+The compiler reports reference problems before deeper graph diagnostics; repair references to expose any
+additional compile issues. This remains a strict engine boundary, with no rendering of invalid drafts.
+
+The first axe run found an ARIA label on the empty preview output pre without a region role; roles were
+added rather than suppressing the rule. Explicit null JSON property values are retained in generated
+editors. Clearing absent nested properties is a history no-op. Duplicate/reserved keys, bad expression
+input and invalid metadata edits remain rejected. No core or Rating source or existing PNG was changed.
+The 21 new Bootstrap 4 PNGs were reviewed across all three browsers; the existing 39 remain unchanged.
+
+Turbo could not spawn jobs under macOS's deny-network policy. The offline proof therefore runs every
+package's same build script directly using pnpm's dependency order, bypassing Turbo/cache; ordinary verify
+still exercises Turbo. Dependency installation requires cached/local packages for the offline proof.
+No licensing service exists in Phase 0. This verifies independence from network licensing, not production
+commercial licensing functionality. Remote Linux CI and branch merges remain separate from local checks.
+
+### Acceptance evidence
+
+- PASS — same JSON renders in vanilla, React and Angular: hosts.spec.ts test `all hosts return identical
+data/errors and equivalent accessible field semantics` compares full data/error sets and normalized
+  accessible controls across vanilla, React 19, Angular 22 and Angular 21. Each host also submits the shared
+  fixture with conventional and object native controls. Existing host tests remain unchanged.
+- PASS — composition-only custom Rating: SDK test `Rating stays under thirty meaningful authoring lines`
+  counts 29 lines, and Rating's source remains unchanged from the earlier proof.
+- PASS — native React receives value/blur/disabled state: its `native change/blur, disabled state, context
+and stable controlled updates` case plus readOnly/caret/unmount cases, under real portals/StrictMode.
+- PASS — native Angular equivalent: the same host tests exercise actual Angular 22/21 runtimes, component
+  DI, outputs and the object ControlValueAccessor. The framework examples and their assertions are retained.
+- PASS — automatic palette: unit `palette and property groups discover arbitrary native metadata, options
+and visibility without global registration`; browser `registry palette and generated Rating/native editors
+drive JSON, preview, patches and history` discovers Rating and EmployeeLookup.
+- PASS — automatic custom property editors: those tests edit Rating's max and native searchPlaceholder,
+  assert native value/touched/disabled and exact preview changes. No field-specific builder editor exists.
+  `generated JSON editors retain explicit null values rather than substituting defaults` covers null JSON.
+- PASS — base/Bootstrap 4/Bootstrap 5/Tailwind with unchanged Rating: four-theme conformance/axe/snapshot
+  matrix, real Bootstrap 4 CSS in light/dark/high-contrast, and retained real Bootstrap 5 CSS case.
+  The new 21 PNGs were deliberately created/reviewed; no existing PNG or pixel threshold was changed.
+- PASS — themes preserve state: `theme switches preserve typing, focus, caret, field identity and all
+current session state` includes Bootstrap 4; builder `all preview themes preserve focused native typing,
+caret and complete session state` includes both Bootstrap versions; native host caret regressions pass.
+- PASS — backend-free client validation: `offline runtime: native builder editing and client validation/
+submission need no backend or licensing endpoint` exercises required failure and successful submission
+  with native data while offline. All three browsers pass. `base placeholder, required validation and
+hidden editors affect the shared preview` covers base authoring controls.
+- PASS — offline build/runtime: `sh scripts/verify-offline.sh` returns success, logs outbound TCP blocked
+  (EPERM) and builds all 19 package scripts with all network operations denied. The browser offline test
+  additionally rejects external requests and asserts no external request attempt occurred.
+- PASS — pinned full verification:
+  `CI=true npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify`.
+  Lint/format, all 19 builds, strict checks (including Angular 21's TS 5.9 check), 123 unit tests,
+  98.59% core line coverage, 216 browser cases and 13 size budgets pass. Frozen-lockfile install passes.
+  Randomized command testing uses 25 seeds × 50 commands with independent JSON Patch replay and exact
+  undo/redo comparisons. Invalid/rejected edits preserve history and subscriptions. New draft-key/no-op
+  regressions cover the final API review fixes. No test was weakened, skipped or deleted.
+- PASS — current Brotli sizes (limits unchanged): schema 3.06 kB, core 6.63 kB, SDK 3.54 kB,
+  components 828 B, renderer 6.68 kB, builder-core 4 kB, element 1.5 kB, React 1.4 kB, Angular 2.38 kB
+  (30 kB budgets); base 989 B, Bootstrap 4 1.19 kB, Bootstrap 5 1.17 kB, Tailwind 1.07 kB (10 kB each).
+
+### Review summary — M05: Mini builder and Phase 0 gate
+
+The mini builder proves model discovery, generated panels, native preview, commands and exact history.
+Bootstrap 4 is now an independent shipped theme alongside Bootstrap 5. Open /builder.html after starting
+pnpm dev, add/edit Rating and EmployeeLookup, switch themes and inspect JSON/patches. ADR-0007, package
+READMEs and the changeset describe the public contracts and proof boundaries. Git transport works;
+`gh auth status` reports no authenticated host, so this summary substitutes for a PR.
+
+M05 implementation and verification are complete. docs/phase0-report.md recommends GO to Phase 1 after
+human review. No architectural blocker remains for that proof, with the documented memory/preview/draft
+limits. **Stop here: AGENTS.md and M05 explicitly require human sign-off before M06.** M06 has not begun.

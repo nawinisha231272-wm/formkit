@@ -239,6 +239,9 @@
         },
         "meta": {
           "type": "object"
+        },
+        "ariaLabel": {
+          "type": "string"
         }
       },
       "required": ["id", "type"],

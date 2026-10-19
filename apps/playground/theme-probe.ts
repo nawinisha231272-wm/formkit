@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+import bootstrap4Css from "bootstrap4/dist/css/bootstrap.min.css?raw";
 import bootstrapCss from "bootstrap/dist/css/bootstrap.min.css?raw";
 import { renderForm } from "@ourform/renderer-dom";
 import { createThemeConformance } from "@ourform/testing";
@@ -6,7 +7,8 @@ import type { ThemeMode } from "@ourform/sdk";
 const query = new URLSearchParams(location.search);
 if (query.has("bootstrap")) {
   const framework = document.createElement("style");
-  framework.textContent = bootstrapCss;
+  framework.textContent =
+    query.get("bootstrap") === "4" ? bootstrap4Css : bootstrapCss;
   document.head.append(framework);
 }
 const fixture = createThemeConformance(document.querySelector("#form")!, {

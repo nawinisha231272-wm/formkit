@@ -1,3 +1,4 @@
+import { bootstrap4Theme } from "@ourform/theme-bootstrap4";
 import { defaultMessage } from "@ourform/sdk";
 import feedback from "../../fixtures/forms/feedback.json";
 import { createEngine } from "@ourform/core";
@@ -26,7 +27,7 @@ const views = new Map([
 ]);
 import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
 import { tailwindTheme } from "@ourform/theme-tailwind";
-const themes = [bootstrap5Theme, tailwindTheme];
+const themes = [bootstrap4Theme, bootstrap5Theme, tailwindTheme];
 function renderForm(root, session, views, theme = "base") {
   return mount(root, session, {
     engine,

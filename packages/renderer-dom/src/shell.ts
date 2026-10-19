@@ -50,6 +50,10 @@ export function shellVNode(
     entry.node.label ??
     entry.node.key ??
     entry.node.id;
+  const accessibleLabel =
+    typeof entry.node.ariaLabel === "string" && entry.node.ariaLabel
+      ? entry.node.ariaLabel
+      : undefined;
   const rootProps = {
     key: entry.node.id,
     "data-field-id": entry.node.id,
@@ -89,6 +93,9 @@ export function shellVNode(
     setValue: (next) => session.setValue(state.path, next, { source: "user" }),
     onBlur: () => session.touch(state.path),
     config: config.config,
+    ...(entry.node.placeholder === undefined
+      ? {}
+      : { placeholder: entry.node.placeholder }),
     state: {
       disabled: state.disabled,
       readOnly: state.readOnly,
@@ -115,7 +122,15 @@ export function shellVNode(
       ...(variant === "group" ? {} : { for: id }),
       class: cl("label"),
     },
-    h("span", { id: `${id}_label` }, label),
+    h(
+      "span",
+      {
+        id: `${id}_label`,
+        ...(accessibleLabel ? { class: "of-sr-only" } : {}),
+      },
+      accessibleLabel ?? label,
+    ),
+    accessibleLabel ? h("span", { "aria-hidden": "true" }, label) : null,
     h(
       "span",
       {

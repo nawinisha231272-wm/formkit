@@ -1,5 +1,16 @@
 import type { FormField } from "@ourform/schema";
 import type { ComponentModel, PropertyDefinition } from "@ourform/core";
+export { createBuilder } from "./builder";
+export type { Builder, PaletteGroup } from "./builder";
+export { AddComponent, RemoveComponent, UpdateProperty } from "./commands";
+export type {
+  BuilderState,
+  BuilderContext,
+  Command,
+  CommandResult,
+  JsonPatchOp,
+} from "./commands";
+export type { PanelProperty, PropertyPanelModel } from "./property-panel";
 export interface EditorProperty {
   key: string;
   kind: string;

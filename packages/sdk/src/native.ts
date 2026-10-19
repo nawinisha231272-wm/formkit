@@ -155,6 +155,7 @@ export function mapNativeProps(
 ): Record<string, unknown> {
   return {
     ...p.config,
+    ...(p.placeholder === undefined ? {} : { placeholder: p.placeholder }),
     [view.mapping.valueProp]: p.value,
     [view.mapping.changeProp]: (...args: unknown[]) => {
       if (!p.state.disabled && !p.state.readOnly)

@@ -65,6 +65,9 @@ importers:
       '@ourform/theme-base':
         specifier: workspace:*
         version: link:packages/theme-base
+      '@ourform/theme-bootstrap4':
+        specifier: workspace:*
+        version: link:packages/theme-bootstrap4
       '@ourform/theme-bootstrap5':
         specifier: workspace:*
         version: link:packages/theme-bootstrap5
@@ -95,6 +98,9 @@ importers:
       bootstrap:
         specifier: 5.3.8
         version: 5.3.8(@popperjs/core@2.11.8)
+      bootstrap4:
+        specifier: npm:bootstrap@4.6.2
+        version: bootstrap@4.6.2(jquery@3.7.1)(popper.js@1.16.1)
       esbuild:
         specifier: 0.25.12
         version: 0.25.12
@@ -219,6 +225,9 @@ importers:
       '@ourform/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@ourform/element':
+        specifier: workspace:*
+        version: link:../../packages/element
       '@ourform/renderer-dom':
         specifier: workspace:*
         version: link:../../packages/renderer-dom
@@ -228,6 +237,9 @@ importers:
       '@ourform/theme-base':
         specifier: workspace:*
         version: link:../../packages/theme-base
+      '@ourform/theme-bootstrap4':
+        specifier: workspace:*
+        version: link:../../packages/theme-bootstrap4
       '@ourform/theme-bootstrap5':
         specifier: workspace:*
         version: link:../../packages/theme-bootstrap5
@@ -241,6 +253,9 @@ importers:
       bootstrap:
         specifier: 5.3.8
         version: 5.3.8(@popperjs/core@2.11.8)
+      bootstrap4:
+        specifier: npm:bootstrap@4.6.2
+        version: bootstrap@4.6.2(jquery@3.7.1)(popper.js@1.16.1)
 
   apps/react-example:
     dependencies:
@@ -398,6 +413,9 @@ importers:
       '@ourform/theme-base':
         specifier: workspace:*
         version: link:../theme-base
+      '@ourform/theme-bootstrap4':
+        specifier: workspace:*
+        version: link:../theme-bootstrap4
       '@ourform/theme-bootstrap5':
         specifier: workspace:*
         version: link:../theme-bootstrap5
@@ -439,6 +457,9 @@ importers:
       '@ourform/theme-base':
         specifier: workspace:*
         version: link:../theme-base
+      '@ourform/theme-bootstrap4':
+        specifier: workspace:*
+        version: link:../theme-bootstrap4
       '@ourform/theme-bootstrap5':
         specifier: workspace:*
         version: link:../theme-bootstrap5
@@ -450,6 +471,12 @@ importers:
         version: 1.56.1
 
   packages/theme-base:
+    dependencies:
+      '@ourform/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+
+  packages/theme-bootstrap4:
     dependencies:
       '@ourform/sdk':
         specifier: workspace:*
@@ -1728,6 +1755,13 @@ packages:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
 
+  bootstrap@4.6.2:
+    resolution: {integrity: sha512-51Bbp/Uxr9aTuy6ca/8FbFloBUJZLHwnhTcnjIeRn2suQWsWzcuJhGjKDB5eppVte/8oCdOL3VuwxvZDUggwGQ==}
+    deprecated: This version of Bootstrap is no longer supported. Please upgrade to the latest version.
+    peerDependencies:
+      jquery: 1.9.1 - 3
+      popper.js: ^1.16.1
+
   bootstrap@5.3.8:
     resolution: {integrity: sha512-HP1SZDqaLDPwsNiqRqi5NcP0SSXciX2s9E+RyqJIIqGo+vJeN5AJVM98CXmW/Wux0nQ5L7jeWUdplCEf0Ee+tg==}
     peerDependencies:
@@ -2273,6 +2307,9 @@ packages:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
 
+  jquery@3.7.1:
+    resolution: {integrity: sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==}
+
   js-tokens@10.0.0:
     resolution: {integrity: sha512-lM/UBzQmfJRo9ABXbPWemivdCW8V2G8FHaHdypQaIy523snUjog0W71ayWXTjiR+ixeMyVHN2XcpnTd/liPg/Q==}
 
@@ -2604,6 +2641,10 @@ packages:
     resolution: {integrity: sha512-1hXbJG/nDyXc/qbY1z3ueCziPiJF48T2+Igkn7VoFJMYY33Kc8LFyO8qTKDVZX+5VnGIv6tH9WbR7mzph4FcOQ==}
     engines: {node: '>=18.12'}
     hasBin: true
+
+  popper.js@1.16.1:
+    resolution: {integrity: sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==}
+    deprecated: You can find the new Popper v2 at @popperjs/core, this package is dedicated to the legacy v1
 
   postcss-load-config@6.0.1:
     resolution: {integrity: sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==}
@@ -4387,6 +4428,11 @@ snapshots:
     dependencies:
       is-windows: 1.0.2
 
+  bootstrap@4.6.2(jquery@3.7.1)(popper.js@1.16.1):
+    dependencies:
+      jquery: 3.7.1
+      popper.js: 1.16.1
+
   bootstrap@5.3.8(@popperjs/core@2.11.8):
     dependencies:
       '@popperjs/core': 2.11.8
@@ -4926,6 +4972,8 @@ snapshots:
 
   joycon@3.1.1: {}
 
+  jquery@3.7.1: {}
+
   js-tokens@10.0.0: {}
 
   js-tokens@9.0.1: {}
@@ -5247,6 +5295,8 @@ snapshots:
       fsevents: 2.3.2
 
   pnpm@10.10.0: {}
+
+  popper.js@1.16.1: {}
 
   postcss-load-config@6.0.1(jiti@2.7.0)(postcss@8.5.30):
     dependencies:

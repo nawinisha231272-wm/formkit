@@ -25,6 +25,7 @@ export interface ComponentNode {
   label?: string;
   description?: string;
   placeholder?: string;
+  ariaLabel?: string; // accessible name override; visible label remains unchanged (M05)
   defaultValue?: unknown;
   validation?: ValidationRules;
   visibleWhen?: Expr;

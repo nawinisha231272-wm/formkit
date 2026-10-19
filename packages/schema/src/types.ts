@@ -48,6 +48,7 @@ export interface ComponentNode {
   label?: string;
   description?: string;
   placeholder?: string;
+  ariaLabel?: string;
   defaultValue?: unknown;
   validation?: ValidationRules;
   visibleWhen?: Expr;

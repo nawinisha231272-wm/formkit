@@ -7,6 +7,7 @@ export interface FieldControlProps<V, C> {
   setValue(next: V): void;
   onBlur(): void;
   config: Readonly<C>;
+  placeholder?: string;
   state: {
     disabled: boolean;
     readOnly: boolean;

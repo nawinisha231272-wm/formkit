@@ -118,6 +118,8 @@ export interface Theme {
 - Themes to ship: `base` (semantic, minimal CSS), `bootstrap5` (class map onto Bootstrap 5 classes,
   works with or without Bootstrap CSS loaded via compiled fallback), `tailwind` (compiled CSS
   shipped in the package; must not depend on the host's Tailwind scanner).
+  M05 adds `bootstrap4` as an explicit compatibility preset at the user's request (ADR-0007).
+  It has Bootstrap 4 class mapping and compiled fallback; the legacy `bootstrap` alias remains Bootstrap 5.
 - Every theme passes the theme conformance suite: all states, validation, disabled, read-only,
   focus, hover, multi-value, nested grid, wizard, RTL, dark and high-contrast.
 
@@ -155,3 +157,9 @@ rejected. ThemeOverride contains tokens, classes and optional modes. CSS is trus
 using `.of-root`; it must not use unscoped selectors. Token declarations reject rule/HTML delimiters.
 The renderer depends on shipped presets (types-only SDK dependencies), as allowed by ADR-0005.
 The theme conformance package tests M03 features; multi-value/grid/wizard cases await implementation.
+
+M05: optional node.ariaLabel overrides the labelled-by target's text while retaining the visible label.
+This applies to native and portable controls. node.placeholder is forwarded through control props and
+controlAttributes. Low-level mount requires explicit preset registration; host controllers and the legacy
+renderForm wrapper include Bootstrap 4/5 and Tailwind. Actual framework stylesheet compatibility is
+tested with 4.6.2 and 5.3.8 independently; loading both global framework stylesheets together is not covered.

@@ -46,3 +46,5 @@ createFormHost(fields, engine?) builds isolated engine/view maps. Portable/nativ
 when they share its model; conflicting models or duplicate views throw. createFormController(root, options)
 owns compile/session/mount/subscriptions/disposal for adapters. It installs default theme presets; fields
 must be provided explicitly (the adapters supply built-ins). syncData writes changed compiled leaf paths.
+
+M05 includes Bootstrap 4 and 5 in host/legacy preset defaults; low-level mount can register bootstrap4Theme explicitly. The bootstrap alias remains Bootstrap 5. Optional node.ariaLabel overrides accessible naming while retaining the visible label; placeholder is forwarded to controls.

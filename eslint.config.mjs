@@ -12,6 +12,7 @@ const allowed = {
     "core",
     "sdk",
     "theme-base",
+    "theme-bootstrap4",
     "theme-bootstrap5",
     "theme-tailwind",
   ],

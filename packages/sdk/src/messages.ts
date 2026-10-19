@@ -2,6 +2,29 @@ export function defaultMessage(
   key: string,
   params: Record<string, unknown> = {},
 ): string {
+  const builderLabels: Record<string, string> = {
+    label: "Label",
+    description: "Description",
+    placeholder: "Placeholder",
+    hidden: "Hidden",
+    key: "Data key",
+    defaultValue: "Default value",
+    clearOnHide: "Clear on hide",
+    "validation.required": "Required",
+    "validation.minLength": "Minimum length",
+    "validation.maxLength": "Maximum length",
+    "validation.pattern": "Pattern",
+    "validation.min": "Minimum",
+    "validation.max": "Maximum",
+    "validation.minItems": "Minimum items",
+    "validation.maxItems": "Maximum items",
+    visibleWhen: "Visible when",
+    disabledWhen: "Disabled when",
+    "layout.width": "Width",
+    ariaLabel: "Accessible label",
+  };
+  if (key.startsWith("of.builder.")) return builderLabels[key.slice(11)] ?? key;
+  if (key === "of.employee.searchPlaceholder") return "Search placeholder";
   if (key === "of.ratingMax") return "Number of stars";
   if (key === "of.rating.allowHalf") return "Allow half stars";
   if (key === "of.rating.stars")

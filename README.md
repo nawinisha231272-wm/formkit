@@ -12,7 +12,7 @@ This kit now carries the full build specification:
 - `docs/progress.md` — the running log of what is done.
 - `docs/codex-prompts.md` — prompts to drive OpenAI Codex milestone by milestone.
 
-Current development milestone: **M04 — Native bridges and host adapters**. See `docs/progress.md` for verification status.
+Current development milestone: **M05 — Mini builder and Phase 0 gate**. See `docs/progress.md` for verification status.
 
 ## Run
 
@@ -43,27 +43,27 @@ Package source lives in `packages/*`; shared forms in `fixtures/forms`; CI in `.
 - Public custom `defineField` API and `stringProperty`/`numberProperty`/`booleanProperty` helpers.
 - Text, Number, Checkbox and nullable Rating controls, typed metadata and generated property editors.
 - A measured VNode renderer with in-place keyed updates, cleanup, composition handling and static SSR.
-- Automatic editable builder property model generated from definitions.
+- Headless command builder with undo/redo, JSON Patch, discovered palette and generated property panels.
 - Accessible field/group/inline/cell/none shells, focus navigation, submit error summary and one live region.
-- Three compiled themes (base, Bootstrap 5, Tailwind), isolated per form, with dark/high-contrast/RTL support.
+- Four compiled themes (base, Bootstrap 4, Bootstrap 5, Tailwind), isolated per form, with dark/high-contrast/RTL support.
 - A development theme conformance kit with reusable Playwright/axe assertions and PNG baselines.
 - Native field descriptors, vanilla/Web Component, React 19 portal and Angular 22/21 DI/CVA adapters.
 - Client-only Vite demo; Node fixtures/security tests plus Playwright/axe checks in three browsers.
 
 ## Deliberately NOT implemented
 
-- Production builder canvas, drag-drop, undo/redo.
+- Production builder canvas and drag-drop (M05 includes basic command undo/redo).
 - SSR hydration and React 18 compatibility.
 - Repeaters, async/custom validation, plugins, composites and submission JSON Schema generation.
 - Multi-value controls, grid/wizard semantics and exhaustive real OS IME conformance.
 - Commercial licensing and distribution.
 
 Phase 0 remains experimental. DOM shells, keyed control lifecycle, static SSR and automated accessibility
-checks are implemented. Framework adapters now have cross-host conformance coverage. The mini-builder/gate review remains ahead.
+checks are implemented. Framework adapters now have cross-host conformance coverage. The mini builder is available at /builder.html; Phase 0 requires human gate review before M06.
 
 ## Next development gates
 
-1. M05: mini builder and human review of the Phase 0 architecture proof.
+1. M05: human review of docs/phase0-report.md before M06.
 2. Later milestones add runtime/validation, full builder, packaging and production readiness.
 
 ## Commercial constraints retained
@@ -88,3 +88,19 @@ JIT for their Vite bootstrap; the library itself is built by ng-packagr for prod
 The root TypeScript 6 toolchain supports Angular 22; the Angular 21 compatibility app checks with 5.9.3.
 On a machine with a different Node version, prefix commands with
 `npx --yes --package=node@22.22.3 --package=pnpm@10.10.0` (for example, append `pnpm verify`).
+
+## Mini builder and themes (M05)
+
+Open [the mini builder](http://127.0.0.1:4173/builder.html) after pnpm dev. Add fields from the
+registry palette, select a list entry, edit generated properties, undo/redo and submit the live preview.
+Rating and the existing native EmployeeLookup require no component-specific builder UI. JSON and
+RFC 6902 patches are visible. Schema edits preserve preview data but rebuild transient session state.
+Theme changes preserve session, focus/caret and data.
+
+Choose Base, Bootstrap 4, Bootstrap 5 or Tailwind. Both Bootstrap presets ship compiled fallback CSS;
+optional real framework CSS is checked separately at versions 4.6.2 and 5.3.8. No framework JavaScript
+or CDN is required. The legacy bootstrap alias still means Bootstrap 5.
+
+Offline build proof on macOS (after dependency/toolchain installation): sh scripts/verify-offline.sh.
+It denies all network operations and forces every build. Browser tests separately exercise offline
+editing, native controls, validation and submission. See ADR-0007 for boundaries and the gate report.

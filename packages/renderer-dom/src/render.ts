@@ -1,3 +1,4 @@
+import { bootstrap4Theme } from "@ourform/theme-bootstrap4";
 import { resolveView, nativeSlot } from "./native";
 import type { NativeHost } from "./native";
 export { resolveView } from "./native";
@@ -16,7 +17,12 @@ export { mountVNode } from "./vnode-dom";
 export { resolveTheme } from "./theme";
 export type { ThemeOptions, ResolvedTheme } from "./theme";
 export type { FieldPresentation, Views } from "./shell";
-export type AppearanceTheme = "base" | "bootstrap" | "bootstrap5" | "tailwind";
+export type AppearanceTheme =
+  | "base"
+  | "bootstrap"
+  | "bootstrap4"
+  | "bootstrap5"
+  | "tailwind";
 export interface RenderOptions extends ThemeOptions {
   views: Views;
   adapter?: string;
@@ -303,7 +309,7 @@ export function renderForm(
   return mountForm(root, session, {
     views,
     theme,
-    themes: [bootstrap5Theme, tailwindTheme],
+    themes: [bootstrap4Theme, bootstrap5Theme, tailwindTheme],
     idPrefix: "",
   });
 }

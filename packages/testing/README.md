@@ -24,3 +24,5 @@ validation errors and normalized accessible-control semantics. tests/e2e/hosts.s
 fixtures/forms/native/host-feedback.json in vanilla, React, Angular 22 and Angular 21 examples, then
 compares the samples. Custom-native fixtures are separated from core-only fixtures because they require
 host registrations. Those original core fixture checks remain unchanged.
+
+M05 adds bootstrap4 to themeNames and the conformance factory alongside bootstrap5, base and tailwind. Both Bootstrap versions have independent real-stylesheet browser checks.

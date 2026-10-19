@@ -75,3 +75,5 @@ is explicitly string and object emissions are rejected without an adapter. React
 this boundary in their typed signatures. Options include model/title/properties/shell, valueProp/changeProp/
 blurProp/disabledProp/readOnlyProp/mapChange/value. mapNativeProps creates the standard state/ARIA callbacks;
 disabled/read-only changes cannot commit. Prototype and direct HTML-writing property mappings are rejected.
+
+M05 adds optional FieldControlProps.placeholder, forwarded by controlAttributes (except group controls) and mapNativeProps. defaultMessage supplies generated base builder labels.

@@ -62,7 +62,9 @@
     "@ourform/element": "workspace:*",
     "@ourform/react": "workspace:*",
     "@ourform/angular": "workspace:*",
-    "@angular/forms": "22.2.3"
+    "@angular/forms": "22.2.3",
+    "@ourform/theme-bootstrap4": "workspace:*",
+    "bootstrap4": "npm:bootstrap@4.6.2"
   },
   "size-limit": [
     {
@@ -124,6 +126,11 @@
       "name": "angular",
       "path": "packages/angular/dist/fesm2022/ourform-angular.mjs",
       "limit": "30 kB"
+    },
+    {
+      "name": "theme-bootstrap4",
+      "path": "packages/theme-bootstrap4/dist/index.js",
+      "limit": "10 kB"
     }
   ]
 }

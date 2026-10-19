@@ -69,7 +69,7 @@ test("theme switches preserve typing, focus, caret, field identity and all curre
       ),
     );
     const data = JSON.stringify(window.themeProbe.session.getData());
-    for (const theme of ["bootstrap5", "tailwind", "base"]) {
+    for (const theme of ["bootstrap4", "bootstrap5", "tailwind", "base"]) {
       window.themeProbe.view.setTheme(theme);
       window.themeProbe.view.setMode("dark");
     }
@@ -252,3 +252,32 @@ test("Bootstrap preset works with the real Bootstrap 5 stylesheet installed", as
   });
   expect(within).toBe(true);
 });
+
+for (const mode of ["light", "dark", "high-contrast"])
+  test(`Bootstrap 4 ${mode} with real framework CSS`, async ({ page }) => {
+    await page.goto(
+      `/theme-probe.html?theme=bootstrap4&bootstrap=4&mode=${mode}`,
+    );
+    await page.waitForFunction(() => !!window.themeProbe);
+    await checkThemeConformance(page, {
+      snapshot: `bootstrap4-host-css-${mode}.png`,
+    });
+    await expect(page.locator('[data-field-id="name"]')).toHaveClass(
+      /form-group/,
+    );
+    await expect(
+      page.locator('[data-field-id="name"] .of-errors'),
+    ).toBeVisible();
+    const checkbox = page.getByLabel("Accept", { exact: true });
+    await checkbox.check();
+    await expect(checkbox).toBeChecked();
+    expect(
+      await checkbox.evaluate((el) => {
+        const field = el
+          .closest('[data-field-id="accept"]')!
+          .getBoundingClientRect();
+        const box = el.getBoundingClientRect();
+        return box.left >= field.left && box.right <= field.right;
+      }),
+    ).toBe(true);
+  });

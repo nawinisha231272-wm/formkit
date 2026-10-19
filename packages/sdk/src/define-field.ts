@@ -88,6 +88,9 @@ export function controlAttributes<V, C>(
     ...(role ? { role } : {}),
     disabled: p.state.disabled,
     readOnly: p.state.readOnly,
+    ...(role || p.placeholder === undefined
+      ? {}
+      : { placeholder: p.placeholder }),
     ref: (element: HTMLElement | null) => p.focusRef(element),
   };
 }

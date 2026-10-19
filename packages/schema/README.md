@@ -41,3 +41,5 @@ Types: `FormDefinition`, `ComponentNode` (`FormField` alias), `ValidationRules`,
 M02 adds `PropertyDescriptor` and `validateProperties(metadata, overrides)`, shared by engine compilation
 and the SDK config resolver. It validates all seven metadata kinds and number bounds/select membership.
 The internal shape walker is shared by definition and expression-property validation without importing core.
+
+M05 adds optional ComponentNode.ariaLabel (string) for a shared-shell accessible name override. The visible label is retained; meta remains uninterpreted host metadata.

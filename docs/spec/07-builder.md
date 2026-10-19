@@ -69,3 +69,30 @@ label, group, value, options?, min?, max?, editor?, visible }`.
 - JSON view (read/write with diagnostics), preview (live session with sample data), diagnostics list.
 - Events: `of-schema-change` with `{ definition, patch }`.
 - The builder chrome has fixed styles of its own and never inherits the edited form's theme.
+
+## M05 implemented boundary (ADR-0007)
+
+M05 ships createBuilder plus AddComponent(type, { parentId?, index? }),
+UpdateProperty(componentId, key, value) and RemoveComponent(componentId). The other command types
+and reusable builder UI remain M09. select(id | null) publishes an empty patch without history.
+State and history arrays are immutable. dispatch returns diagnostics and rejects errors atomically.
+Remove allows an unresolved-reference draft with dangling-ref warnings; it cannot render until repaired.
+Key edits warn stale-path for unresolved data paths. Ordinary invalid references are rejected.
+
+JsonPatchOp supports add/replace/remove against the definition. Updates replace the component;
+undo/redo use internal RestoreSnapshot commands with a root replace operation. Redo restores the
+successful after-snapshot, including generated ids. This is intentionally unbounded snapshot history
+for Phase 0; optimize/bound it in M09. Command invert(before) restores the exact definition and selection.
+
+PaletteGroup is { name, components: [{ type, title, order, icon? }] }; missing builder metadata falls
+back to model title and Fields group. PropertyPanelModel is { componentId, groups: [{ name, properties }] }.
+PanelProperty is the entry shape above. Model keys are properties.<name>; base keys match wire paths.
+hidden aliases visibleWhen: false (clearing removes it), accessibility uses optional ariaLabel, and
+clearOnHide defaults true. Validation editors use the value adapter's empty/type hints. Model visibleWhen
+evaluates against config (property refs or data.<property> paths). Custom editor identifiers are retained;
+the mini UI uses generic kind editors, including JSON text for expressions/options/JSON. Layout width is
+stored for later layout support. The original starter property helpers remain compatible.
+
+The playground builder is a list canvas with generated panels, read-only JSON/patch views and native
+preview. Schema edits retain data but recreate the preview session, resetting transient state. Theme
+changes retain the same session/DOM. No drag/drop, moves, duplicate or expression-row UI ships in M05.

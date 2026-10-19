@@ -1,3 +1,4 @@
+import { bootstrap4Theme } from "@ourform/theme-bootstrap4";
 import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
 import { tailwindTheme } from "@ourform/theme-tailwind";
 import { createEngine } from "@ourform/core";
@@ -109,7 +110,11 @@ export function createFormController(
   try {
     view = mount(root, session, {
       ...options,
-      themes: options.themes ?? [bootstrap5Theme, tailwindTheme],
+      themes: options.themes ?? [
+        bootstrap4Theme,
+        bootstrap5Theme,
+        tailwindTheme,
+      ],
       engine,
       views,
     });

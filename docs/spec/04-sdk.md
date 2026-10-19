@@ -2,6 +2,10 @@
 
 Status: normative for M2–M8. Packages: `@ourform/sdk` (contracts, definers), models consumed by `@ourform/core`.
 
+M05 adds optional FieldControlProps.placeholder, sourced from the node. controlAttributes forwards it
+for field controls (omitted for group controls); mapNativeProps forwards it to native components.
+defaultMessage includes base builder property labels and the example EmployeeLookup property label.
+
 ## Goal
 
 A developer adding a basic field writes only the control. Label, description, help, errors,

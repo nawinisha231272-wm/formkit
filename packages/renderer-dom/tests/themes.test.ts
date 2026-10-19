@@ -1,3 +1,4 @@
+import { bootstrap4Theme } from "@ourform/theme-bootstrap4";
 import { test, expect } from "vitest";
 import { createEngine } from "@ourform/core";
 import { textField, ratingField, checkboxField } from "@ourform/components";
@@ -64,7 +65,7 @@ test("registries reject duplicates, cycles and missing themes, with no state sha
     "cannot close",
   );
 });
-test.each([baseTheme, bootstrap5Theme, tailwindTheme])(
+test.each([baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme])(
   "$name ships required tokens, compiled scoped CSS and readable modes",
   (theme) => {
     const required = [

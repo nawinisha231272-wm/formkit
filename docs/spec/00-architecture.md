@@ -80,3 +80,5 @@ ADR-0001 records the foundation split: schema owns starter form types; core owns
 model, property and value contracts; SDK `defineField` returns `{ model, views: { portable } }`.
 Register the model with the engine and pass a view map separately to the starter DOM renderer.
 The full compile/session API and renderer mount contract arrive in M01–M03.
+
+M05 (ADR-0007) extends the renderer preset dependency exception to theme-bootstrap4; theme packages still import SDK types only.
