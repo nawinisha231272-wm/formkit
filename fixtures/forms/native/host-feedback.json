@@ -1,0 +1,42 @@
+{
+  "$formVersion": "1.0",
+  "id": "host-feedback",
+  "display": "form",
+  "components": [
+    {
+      "id": "name",
+      "key": "name",
+      "type": "text",
+      "label": "Name",
+      "validation": { "required": true }
+    },
+    {
+      "id": "employee",
+      "key": "employee",
+      "type": "employee",
+      "label": "Employee",
+      "description": "Search the local employee directory",
+      "validation": { "required": true },
+      "disabledWhen": ["eq", { "ref": "locked" }, true]
+    },
+    {
+      "id": "manager",
+      "key": "manager",
+      "type": "employeeObject",
+      "label": "Manager"
+    },
+    {
+      "id": "rating",
+      "key": "rating",
+      "type": "rating",
+      "label": "Rating",
+      "properties": { "max": 5 }
+    },
+    {
+      "id": "locked",
+      "key": "locked",
+      "type": "checkbox",
+      "label": "Lock employee"
+    }
+  ]
+}

@@ -67,3 +67,37 @@ bootstrapApplication(App, { providers: [provideOurForm({ plugins: [...] }),
 
 `@ourform/testing` runs the same fixtures in vanilla, React and Angular example apps and asserts
 identical submitted data, identical error sets and equivalent accessibility trees.
+
+## M04 implementation contracts (ADR-0006)
+
+Registration calls return descriptors installed in a host-owned `fields` array or Angular multi-provider;
+there is no default global registry. Each adapter supplies the four portable built-ins. Use an existing
+model when adding a native view to a portable type; duplicates for the same type/adapter and incompatible
+models throw. Explicit registration metadata is not a plugin system; `plugins` is deferred to its milestone.
+
+`@ourform/element` renderForm returns FormController with engine/session/view, submit/validate/reset/
+focusField/setData/destroy. Custom elements additionally accept fields; ready includes the session.
+The `shadow` attribute is read at connection. Disconnect disposes; reconnect preserves data. New custom
+roots must forward required/ARIA to their internal supported control; required is a property rather than
+an unsupported aria-required attribute on an unknown custom-root role.
+
+React Form adds fields/themeMode/onReady, a FormController ref and optional children inside its form
+context. useForm()/useField() are nullable before readiness; useForm(ref) reads the imperative current
+handle and does not subscribe to ref-object mutations. Native portals retain the host React context.
+React 19 is tested; React 18 is not a supported claim in M04. Fields/schema/engine should have stable identities.
+
+Angular OurFormComponent adds defaultData/themeMode/engine/fields and ready/changed outputs. `dataChange`
+retains the template-friendly data-only contract; `changed` carries `{data,changedPaths}` as StatePatch.
+Its controller readiness is backed by a signal, with OnPush and zoneless bootstrap. Native setInput supports
+input aliases and signal metadata; the examples exercise conventional inputs and an object CVA. CVA writes
+are limited to changed values, preserving editing during blur/state/theme updates. A CVA with no readOnly
+input uses its disabled API for read-only mode. The host's element injector is passed alongside its
+EnvironmentInjector, preserving component-local services. All attached views/output subscriptions/CVA
+callbacks are released on teardown. ng-packagr builds Angular 22 partial compilation; Angular 21 has a
+separate runtime example and TypeScript 5.9 compatibility check.
+
+Controlled inputs are full data snapshots; only changed compiled leaves are written, with echo no-ops.
+Schema/engine/fields/readOnly changes deliberately rebuild with current data retained. Theme/data changes
+retain controls. Native fields are client-rendered in M04; no native SSR/hydration support is promised.
+The same fixture lives in fixtures/forms/native/host-feedback.json (native registrations are required),
+and checkHostConformance compares full submitted results/error sets plus normalized accessible leaf controls.

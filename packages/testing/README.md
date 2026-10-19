@@ -18,3 +18,9 @@ run these assertions for every theme and color mode, with 39 reviewed PNG baseli
 
 The optional playground `?bootstrap` probe loads the real pinned Bootstrap 5.3.8 stylesheet.
 Its three browser snapshots verify coexistence; normal snapshots verify the compiled fallback alone.
+
+M04 adds checkHostConformance(samples) to the Playwright entry point. It compares full submissions,
+validation errors and normalized accessible-control semantics. tests/e2e/hosts.spec.ts drives the same
+fixtures/forms/native/host-feedback.json in vanilla, React, Angular 22 and Angular 21 examples, then
+compares the samples. Custom-native fixtures are separated from core-only fixtures because they require
+host registrations. Those original core fixture checks remain unchanged.

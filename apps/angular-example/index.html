@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>OurForm angular-example</title>
+    <style>
+      body {
+        font: 16px system-ui;
+        margin: 0;
+        background: #f1f5f9;
+      }
+      main {
+        max-width: 660px;
+        margin: 24px auto;
+        padding: 12px;
+      }
+      button {
+        font: inherit;
+        margin: 4px;
+        padding: 6px;
+      }
+      [data-host-context] {
+        display: block;
+        font-size: 12px;
+      }
+      pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>angular-example</h1>
+      <div id="app">
+        <div id="form"></div>
+        <button id="submit">Submit</button>
+        <pre id="result"></pre>
+      </div>
+    </main>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

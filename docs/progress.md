@@ -311,3 +311,113 @@ The development conformance package supplies reusable assertions and fixtures, w
 checks above as the PR checklist. Run frozen install and `pnpm verify`; `pnpm dev` opens the updated
 playground. Static SSR, registration/override rules and compatibility are documented in ADR-0005.
 M03 is complete. M04 native bridges and host adapters are next and have not been started.
+
+## M04 plan — native bridges and host adapters
+
+1. Add native descriptors, conventional mappings, safe primitive inference and renderer-owned control slots.
+2. Add shared host lifecycle/controlled-data synchronization, then vanilla/Web Component and React adapters.
+3. Build the Angular standalone adapter with ng-packagr, host DI and conventional/CVA control support.
+4. Add one shared fixture and three real example apps, including native id/object EmployeeLookup controls.
+5. Verify cross-host data/errors, context/DI, state, cleanup and all existing checks; publish this milestone only.
+
+Risks: portal ownership/StrictMode cleanup, Angular version/toolchain compatibility and controlled echo loops.
+Angular 22 is current and 21 previous (official release/compatibility references checked). The Angular package
+uses its supported compiler/TypeScript toolchain; Node 22.22.3 is the reproducible verification runtime.
+React 19 is the supported target; React 18 is not claimed without a separate compatibility run.
+This branch stacks on verified M03 (still unmerged), matching the existing milestone branch workflow.
+
+## M04 — Native bridges and host adapters
+
+### Built
+
+- Framework-neutral native descriptors, conventional/override prop mappings, explicit runtime primitive
+  choices, complex-value adapters and type checks. No implicit global model/view registry exists.
+- Opaque native control slots share M03 shells, ARIA/error/focus handling and in-place themes. Native →
+  pack → portable resolution is fixed at mount, with type/adapter names in missing-view errors.
+- Shared host compilation/session/subscription lifecycle and controlled changed-leaf synchronization.
+  Native and imperative submits share the result callback; identical controlled echoes do no work.
+- `@ourform/element`: vanilla helper, native property/CustomEvent bridge, explicit configurable custom tag,
+  light/Shadow DOM, ready/change/submit events, imperative methods and data-preserving reconnect.
+- `@ourform/react`: Form/provider/hooks, actual React portals (with stable field keys), host context,
+  controlled/uncontrolled modes and React 19 StrictMode lifecycle. Inputs accept current callbacks.
+- `@ourform/angular`: standalone OnPush wrapper, signal-backed readiness, multi-provider registration,
+  host element/environment injectors, setInput/output metadata and CVA callbacks with changed-value writes.
+  ng-packagr emits partial-compiled FESM/declarations. All examples bootstrap without zone.js.
+- Shared native fixture and vanilla/React/Angular examples, plus an Angular 21 compatibility example.
+  Each has native EmployeeLookup id and object variants; Angular's object widget exercises CVA.
+  `checkHostConformance` compares complete results/errors and normalized accessible control semantics.
+- Root toolchain updated to Angular 22.2.3, ng-packagr 22.2.4, TypeScript 6.0.2 and compatible ESLint
+  TypeScript parser. Angular 21.2.25 also has its own TypeScript 5.9.3 check. CI pins Node 22.22.3.
+
+### Decisions and limitations
+
+ADR-0006 documents descriptor registration, host-owned registries, opaque control slots and lifetimes.
+React/Angular types reject object controls without an adapter. JavaScript cannot inspect erased prop
+shapes: string is the runtime default, and non-string inference choices are explicit (number/boolean/
+primitive-array). Object emissions without a value adapter fail with a clear message. A native view can
+augment a portable type by sharing its model; conflicting models/duplicate adapter views throw.
+
+Angular 22/21 are the current/previous majors in the official release table checked during this milestone:
+[releases](https://angular.dev/reference/releases), [toolchain compatibility](https://angular.dev/reference/versions).
+Both actual runtime versions are asserted in browser tests. ng-packagr builds the Angular library; the
+plain Vite examples intentionally import JIT for their example components. The production library does
+not import the compiler. Example JIT bundles produce Vite's size advisory; library budgets are separate.
+Angular's only added non-framework production runtime dependency is tslib 2.8.1 for compiler helpers.
+React/Angular/RxJS are peers. Angular tooling and compatibility/example frameworks are development tools.
+
+React 19 is tested; React 18 is not claimed. `useForm()` is nullable before readiness; `useForm(ref)` reads
+its current imperative handle without subscribing to ref mutations (prefer onReady/context for readiness).
+Native fields are client-rendered; native SSR/hydration, plugin resolution and builder UI remain deferred.
+Native controls own their internal ARIA/state implementation. CVA read-only falls back to disabled when
+no readOnly input exists; the supplied examples implement state forwarding. Framework Shadow DOM control
+internals beyond the documented focus/ARIA conventions are not an exhaustive certification claim.
+
+The shared fixture is under fixtures/forms/native because core-only fixture tests do not register native
+models. Those original fixtures/tests and Rating source remain unchanged. M03's 39 visual baselines and
+pixel thresholds remain unchanged. Verification here is local macOS; remote Linux CI remains a separate run.
+This branch stacks on verified M03 (no merged main yet). Git transport works, while `gh auth status` is
+unauthenticated; the acceptance/review summary below substitutes for a PR. M05 has not been started.
+
+### Acceptance evidence
+
+- PASS — `all hosts return identical data/errors and equivalent accessible field semantics` compares
+  full submissions, full initial error sets and normalized native input semantics in vanilla, React,
+  Angular 22 and Angular 21. Each host's `same fixture, errors, native id/object values and submitted
+data` also selects id/object employees, rates feedback, asserts exact data and runs axe with zero
+  serious/critical violations. The Angular pages assert the actual 22.x/21.x runtime version.
+- PASS — per-host `native change/blur, disabled state, context and stable controlled updates` checks
+  touched state, disabled propagation, external value updates, stable focus and hook state. `readOnly
+props prevent native changes` checks both conventional and object-valued controls. The Angular object
+  control exercises CVA; its changed-value writes preserve search input during blur updates.
+- PASS — conventional registrations are single statements in all examples: registerElementField,
+  registerReactField and provideFormField for employee; only the object variants add a value adapter.
+  SDK mapping tests also cover unusual event signatures/prop names and complex-value runtime guards.
+- PASS — `primitive models normalize values and enforce the complex-value adapter boundary`, plus
+  React/Angular @ts-expect-error checks and the working object examples. Typed non-string registrations
+  require explicit valueType/value choices. Unsafe native property mappings are also rejected.
+- PASS — React's native Lookup reads `React host context` through a real createPortal. The per-host
+  state/context test asserts it; the example runs inside StrictMode and exercises useForm/useField.
+- PASS — both Angular versions' native Lookup reads `Angular host context` from a component-local
+  provider, proving host element DI alongside the EnvironmentInjector. Both examples are zoneless.
+- PASS — all four hosts' `native typing and caret survive theme changes`; all four unmount cases;
+  custom-element light/shadow property/event/method/reconnect cases. Existing M03 IME/focus/lifecycle
+  regressions remain unchanged and pass. View precedence, model sharing/duplicate rejection, controlled
+  echo no-ops and Node-safe element import have unit coverage.
+- PASS — exact reproducible command:
+  `CI=true npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify`.
+  Lint/format, all builds (including ng-packagr), strict checks (including TS 5.9 Angular 21), 112 Node
+  tests, 98.59% core line coverage, 171 browser cases in three browsers and all 12 size budgets pass.
+  Frozen-lockfile installation also passes. No test was skipped/deleted, core regression was changed,
+  visual baseline was regenerated or threshold was relaxed during this milestone.
+- PASS — Brotli sizes: schema 3.04 kB, core 6.63 kB, SDK 3.3 kB, components 828 B,
+  renderer-dom 6.58 kB, builder-core 459 B; element 1.5 kB, React 1.4 kB, Angular 2.38 kB
+  (30 kB each). Presets remain base 989 B, Bootstrap 1.17 kB, Tailwind 1.07 kB (10 kB each).
+
+### Review summary — M04: Native bridges and host adapters
+
+Native controls now share the existing shells/session while retaining React context and Angular host DI.
+The three adapters and examples support controlled updates, state forwarding, submission and cleanup.
+The checklist above is the PR acceptance summary. Build with Node 22.22.3/pnpm 10.10.0, run verify, then
+start an example on ports 4181–4184; the playground links to the primary examples. ADR-0006 and package
+READMEs describe registration/inference, framework support and client-rendering limits. M04 is complete.
+M05 mini builder and Phase 0 gate is next; it has not been started and requires human review when built.

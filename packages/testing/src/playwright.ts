@@ -76,3 +76,28 @@ export async function checkReadOnlyTheme(
       maxDiffPixelRatio: 0.02,
     });
 }
+
+export interface HostConformanceSample {
+  host: string;
+  submission: unknown;
+  errors: unknown;
+  controls: unknown;
+}
+/** Compare the shared fixture's submission, complete validation errors and normalized control semantics. */
+export function checkHostConformance(
+  samples: readonly HostConformanceSample[],
+): void {
+  expect(samples.length).toBeGreaterThan(1);
+  const first = samples[0]!;
+  for (const sample of samples.slice(1)) {
+    expect(sample.submission, `${sample.host} submitted data`).toEqual(
+      first.submission,
+    );
+    expect(sample.errors, `${sample.host} validation errors`).toEqual(
+      first.errors,
+    );
+    expect(sample.controls, `${sample.host} accessible controls`).toEqual(
+      first.controls,
+    );
+  }
+}

@@ -28,3 +28,11 @@ export type { VNode, VNodeChild, VNodeProps, VNodeAttribute } from "./vnode";
 export { defaultMessage } from "./messages";
 
 export type { Theme, ThemeOverride, ThemeMode, FieldPart } from "./theme";
+export { registerNativeField, mapNativeProps } from "./native";
+export type {
+  NativeFieldOptions,
+  NativeView,
+  ComponentViews,
+  RegisteredField,
+} from "./native";
+export type { NativeRegistrationArgs, PrimitiveNativeValue } from "./native";

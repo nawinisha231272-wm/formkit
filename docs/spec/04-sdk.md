@@ -212,3 +212,17 @@ explicit renderer registry. SDK exports Theme, ThemeOverride, ThemeMode and Fiel
 aria-readonly/aria-required. FieldShell supplies required announcements from the group legend.
 English shell and synchronous-validation messages are available through defaultMessage; a renderer
 `t` option translates them. No wire-schema theme or presentation properties are added.
+
+## M04 native registration
+
+registerNativeField returns a RegisteredField descriptor with a headless model and ComponentViews.
+ComponentViews selects native[adapter] → packs[adapter] → portable. Native views carry the host component
+and mapping metadata; renderer-owned opaque slots are mounted by a NativeHost lifecycle (mount/update/destroy).
+Default mapping is value and the framework's conventional change/blur/disabled/readOnly props. mapChange
+extracts unusual event payloads. The generic model is string by default; valueType explicitly chooses
+number (nullable empty), boolean or primitive-array. Object-valued controls require a ValueAdapter.
+Types erased by JavaScript cannot be inspected to infer runtime values. React/Angular typed wrappers
+require a value adapter for complex props and explicit non-string inference choices. Runtime value guards
+reject complex emissions without an adapter. NativeRegistrationArgs expresses the typed registration boundary.
+Unsafe prototype/direct HTML-writing property names are rejected. Native callbacks refuse disabled/read-only
+commits, while controls remain responsible for forwarding their supplied state and ARIA to the actual input.

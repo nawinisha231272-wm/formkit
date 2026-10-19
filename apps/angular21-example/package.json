@@ -1,0 +1,26 @@
+{
+  "name": "@ourform/angular21-example",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --host 127.0.0.1 --port 4184 --strictPort",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ourform/sdk": "workspace:*",
+    "@ourform/core": "workspace:*",
+    "@ourform/renderer-dom": "workspace:*",
+    "@ourform/angular": "workspace:*",
+    "@angular/core": "21.2.25",
+    "@angular/common": "21.2.25",
+    "@angular/compiler": "21.2.25",
+    "@angular/forms": "21.2.25",
+    "@angular/platform-browser": "21.2.25",
+    "rxjs": "7.8.2"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

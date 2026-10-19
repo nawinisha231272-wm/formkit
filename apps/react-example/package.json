@@ -1,0 +1,20 @@
+{
+  "name": "@ourform/react-example",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --host 127.0.0.1 --port 4182 --strictPort",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ourform/sdk": "workspace:*",
+    "@ourform/core": "workspace:*",
+    "@ourform/renderer-dom": "workspace:*",
+    "@ourform/react": "workspace:*",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {}
+}

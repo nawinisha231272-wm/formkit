@@ -1,0 +1,13 @@
+{
+  "dest": "dist",
+  "lib": {
+    "entryFile": "src/index.ts"
+  },
+  "allowedNonPeerDependencies": [
+    "@ourform/core",
+    "@ourform/schema",
+    "@ourform/sdk",
+    "@ourform/renderer-dom",
+    "@ourform/components"
+  ]
+}

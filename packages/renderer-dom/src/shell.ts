@@ -1,13 +1,13 @@
 import type { CompiledNode, FormSession } from "@ourform/core";
 import { defaultMessage, h, resolveConfig } from "@ourform/sdk";
 import type {
-  FieldDefinition,
+  ComponentViews,
   FocusTarget,
   VNode,
   ShellVariant,
 } from "@ourform/sdk";
 import type { ResolvedTheme } from "./theme";
-export type Views = ReadonlyMap<string, FieldDefinition["views"]>;
+export type Views = ReadonlyMap<string, ComponentViews>;
 export interface FieldPresentation {
   help?: string;
   prefix?: string;
@@ -69,7 +69,7 @@ export function shellVNode(
       rootProps,
       entry.node.label ? h("h3", null, entry.node.label) : null,
     );
-  if (!view) throw new Error(`No portable view: ${entry.node.type}`);
+  if (!view?.portable) throw new Error(`No portable view: ${entry.node.type}`);
   const config = resolveConfig(
     entry.model.properties ?? {},
     entry.node.properties ?? {},

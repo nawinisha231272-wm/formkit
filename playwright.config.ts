@@ -9,9 +9,21 @@ export default defineConfig({
     { name: "firefox", use: { ...devices["Desktop Firefox"] } },
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
   ],
-  webServer: {
-    command: "pnpm --filter @ourform/playground dev",
-    url: "http://127.0.0.1:4173",
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: [
+    {
+      command: "pnpm --filter @ourform/playground dev",
+      url: "http://127.0.0.1:4173",
+      reuseExistingServer: !process.env.CI,
+    },
+    ...[
+      "vanilla-example",
+      "react-example",
+      "angular-example",
+      "angular21-example",
+    ].map((name, index) => ({
+      command: `pnpm --filter @ourform/${name} dev`,
+      url: `http://127.0.0.1:${4181 + index}`,
+      reuseExistingServer: !process.env.CI,
+    })),
+  ],
 });

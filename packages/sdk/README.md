@@ -65,3 +65,13 @@ FieldDefinition and PortableControl. The DOM lifecycle lives in @ourform/rendere
 M03 exports `Theme`, `ThemeOverride`, `ThemeMode` and `FieldPart` types. Themes specify tokens,
 variant/part classes, compiled scoped CSS and dark/high-contrast token overrides. Field overrides
 contain tokens, classes and modes. Theme runtime and explicit per-mount registration live in renderer-dom.
+
+M04 adds registerNativeField(adapter, type, Component, options), returning a RegisteredField descriptor.
+Install it in a host's fields array; no global registration occurs. ComponentViews has optional native,
+packs and portable views. Native selection uses native → pack → portable for the selected adapter.
+Conventional string registration needs no options; valueType selects number/boolean/primitive-array.
+Object values require a ValueAdapter. Runtime TypeScript prop inference is impossible; default inference
+is explicitly string and object emissions are rejected without an adapter. React/Angular wrappers enforce
+this boundary in their typed signatures. Options include model/title/properties/shell, valueProp/changeProp/
+blurProp/disabledProp/readOnlyProp/mapChange/value. mapNativeProps creates the standard state/ARIA callbacks;
+disabled/read-only changes cannot commit. Prototype and direct HTML-writing property mappings are rejected.

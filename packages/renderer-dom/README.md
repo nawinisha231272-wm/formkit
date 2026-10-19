@@ -37,3 +37,12 @@ or a bubbling native submit event for summary/focus behavior. Mounted roots do n
 browser globals. Give each SSR form a distinct safe `idPrefix` (default `of-ssr`); SSR is static, not hydration.
 New DOM mounts generate unique ids unless `idPrefix` is supplied. The M02 `renderForm` compatibility
 wrapper keeps raw ids and supports all three shipped theme names; use `mount` for scoped ids, registered themes and submit integration.
+
+M04 adds adapter/nativeHost to mount options. NativeHost mounts an opaque control slot and returns
+update/destroy; the renderer continues to own FieldShell and focus/error wiring. resolveView chooses native,
+then pack, then portable once per field, or throws no-view with type and adapter. onSubmit receives native
+and imperative submission results. Native SSR is not supplied by these client adapters; portable SSR remains.
+createFormHost(fields, engine?) builds isolated engine/view maps. Portable/native views can share a type
+when they share its model; conflicting models or duplicate views throw. createFormController(root, options)
+owns compile/session/mount/subscriptions/disposal for adapters. It installs default theme presets; fields
+must be provided explicitly (the adapters supply built-ins). syncData writes changed compiled leaf paths.
