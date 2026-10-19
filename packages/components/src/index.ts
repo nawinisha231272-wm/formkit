@@ -40,3 +40,16 @@ export const builtinFields: readonly RegisteredField[] = Object.freeze([
   contentField,
   buttonField,
 ]);
+
+export {
+  panelLayout,
+  columnsLayout,
+  fieldsetLayout,
+  containerLayout,
+  builtinLayouts,
+} from "./layouts";
+import { builtinLayouts } from "./layouts";
+export const builtinComponents: readonly RegisteredField[] = Object.freeze([
+  ...builtinFields,
+  ...builtinLayouts,
+]);

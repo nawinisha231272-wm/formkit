@@ -32,3 +32,7 @@ existing headless object/transparent test scopes). The Playwright entry exports 
 (page, {root?, result?, themeSelect?}), covering Tier 1 values, errors/ARIA, hidden data, submission and axe.
 With themeSelect it runs axe for base/Bootstrap 4/Bootstrap 5/Tailwind. Real DOM/React/Angular wrappers use
 the same suite; host-specific async/readonly/disabled/lifecycle tests complement it.
+
+M07: createConformanceEngine installs builtinComponents, including the shipped transparent layouts
+and object Container. The onboarding host suite reuses the same 40-value fixture for controlled,
+uncontrolled, read-only, summary/reset, all themes, SSR/remount and the offline production-sample gate.

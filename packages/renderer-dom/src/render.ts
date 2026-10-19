@@ -43,6 +43,7 @@ export interface FormView {
   setMode(mode: ThemeMode): void;
   focus(componentId: string): void;
   submit(): ReturnType<FormSession["submit"]>;
+  reset(data?: unknown): void;
   destroy(): void;
   unmount(): void;
 }
@@ -264,17 +265,19 @@ function mountForm(
     }
     return result;
   };
+  const reset = (data?: unknown) => {
+    if (destroyed) throw new Error("Form view is destroyed.");
+    clearTimeout(blurTimer);
+    deferredTouches.clear();
+    submitted = false;
+    summary.hidden = true;
+    session.reset(data);
+  };
   const actions = (componentId: string) => ({
     submit: () => {
       void submit();
     },
-    reset: () => {
-      clearTimeout(blurTimer);
-      deferredTouches.clear();
-      submitted = false;
-      summary.hidden = true;
-      session.reset();
-    },
+    reset: () => reset(),
     emit: (name: string) => {
       const detail = { name, componentId, data: session.getData() };
       options.onAction?.(detail);
@@ -376,6 +379,7 @@ function mountForm(
     },
     focus,
     submit,
+    reset,
     destroy,
     unmount: destroy,
   };
@@ -420,7 +424,7 @@ export function renderToString(
     const html = renderVNodeToString(shell);
     // Nested containers append already-escaped rendered child markup, never definition HTML.
     const nested = html.replace(
-      /<\/(div|fieldset)>$/,
+      /<\/(div|fieldset|section)>$/,
       (closing) => `${(children.get(entry.node.id) ?? []).join("")}${closing}`,
     );
     const siblings = children.get(entry.parentId) ?? [];

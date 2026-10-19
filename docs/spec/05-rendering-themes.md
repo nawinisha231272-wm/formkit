@@ -172,3 +172,11 @@ Queued touches/timers/listeners are removed on unmount. This prevents error layo
 Select values are set after options are installed; all themes exclude radios/hidden controls from text
 input sizing and include select/textarea/radio/action styles. Existing t callbacks retain of.required;
 engine localization providers and the English catalog supply the default path.
+
+## M07 layouts and remount
+
+Panel/Columns/Fieldset/Container have independent child units and semantic DOM/SSR roots. Layout width
+sets a child's 1–12 grid span under Columns (default 12); up to 640px viewport width columns stack.
+Base layout styles are inherited by Bootstrap 4/5 and Tailwind. Theme/parent updates preserve children,
+focus, caret and session state. Static portable SSR is replaced on client mount, with no hydration.
+FormView.reset(data?) clears submitted/summary state and pending blur touches before session.reset.

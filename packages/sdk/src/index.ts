@@ -39,3 +39,6 @@ export type { NativeRegistrationArgs, PrimitiveNativeValue } from "./native";
 
 export { defineDisplay } from "./define-display";
 export { englishMessages } from "@ourform/core";
+
+export { defineLayout } from "./define-layout";
+export type { LayoutView } from "./native";

@@ -15,7 +15,17 @@ import {
   provideFormField,
 } from "@ourform/angular";
 import type { FormController } from "@ourform/renderer-dom";
-import schema from "../../../fixtures/forms/native/host-feedback.json";
+import nativeSchema from "../../../fixtures/forms/native/host-feedback.json";
+import onboardingSchema from "../../../fixtures/forms/onboarding/customer.json";
+import onboardingData from "../../../fixtures/forms/onboarding/customer.data.json";
+const query = new URLSearchParams(location.search);
+const schema = query.has("onboarding") ? onboardingSchema : nativeSchema;
+const initialData =
+  query.has("readonly") && query.has("onboarding")
+    ? onboardingData
+    : query.has("onboarding")
+      ? { preferences: { reference: "web-onboarding" } }
+      : {};
 import { employees, employeeValue } from "../../vanilla-example/src/data";
 import type { Employee } from "../../vanilla-example/src/data";
 const HOST_CONTEXT = new InjectionToken<string>("Example host context");
@@ -121,7 +131,9 @@ Component({ selector: "employee-object", standalone: true, inputs, template })(
 );
 class App {
   schema = schema;
-  data: unknown = {};
+  data: unknown = initialData;
+  defaultData = initialData;
+  controlled = !query.has("uncontrolled");
   result = "";
   readOnly = new URLSearchParams(location.search).has("readonly");
   form: FormController | undefined;
@@ -146,7 +158,7 @@ Component({
   imports: [OurFormComponent],
   providers: [{ provide: HOST_CONTEXT, useValue: "Angular host context" }],
   template:
-    '<our-form [schema]="schema" [data]="data" [readOnly]="readOnly" (dataChange)="data=$event" (ready)="ready($event)" (submitted)="submitted($event)" /><button id="submit" (click)="submit()">Submit</button><pre id="result">{{result}}</pre>',
+    '<our-form [schema]="schema" [data]="controlled ? data : undefined" [defaultData]="defaultData" [readOnly]="readOnly" (dataChange)="data=$event" (ready)="ready($event)" (submitted)="submitted($event)" /><button id="submit" (click)="submit()">Submit</button><pre id="result">{{result}}</pre>',
 })(App);
 const host = document.createElement("host-app");
 document.querySelector("#app")!.replaceChildren(host);

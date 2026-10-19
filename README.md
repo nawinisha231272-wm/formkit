@@ -12,7 +12,7 @@ This kit now carries the full build specification:
 - `docs/progress.md` — the running log of what is done.
 - `docs/codex-prompts.md` — prompts to drive OpenAI Codex milestone by milestone.
 
-Current development milestone: **M06 — Validation package and Tier 1 fields**. See `docs/progress.md` for verification status.
+Current development milestone: **M07 — Layouts and production adapters**. See `docs/progress.md` for verification status.
 
 ## Run
 
@@ -65,7 +65,7 @@ checks are implemented. Framework adapters now have cross-host conformance cover
 
 ## Next development gates
 
-1. M07: layouts and production adapters, with the Phase 1A gate.
+1. M07 closes with the Phase 1 runtime gate report and human review.
 2. Later milestones add advanced data/controls, the full builder, packaging and production readiness.
 
 ## Commercial constraints retained
@@ -118,3 +118,15 @@ The page displays submission JSON Schema and performs no backend request.
 malformed/coerced/extra data and awaits custom validators. Schemas assert static rules and annotate
 runtime conditions/custom validators. Content uses a bounded allow-list of safe VNodes instead of raw
 HTML. See ADR-0008 and package READMEs for exact API/serialization/annotation boundaries.
+
+## Layouts and production foundation (M07)
+
+Open [customer onboarding](http://127.0.0.1:4173/onboarding.html) for 40 fields, Panel/Columns/Fieldset/
+Container, nested data, all four themes, static server HTML and a fresh interactive client mount. Each
+host example also supports `?onboarding`, `&uncontrolled`, and `&readonly`. Bootstrap 4 and 5 remain
+independent choices. Public reset clears the summary and touched state. Web Components accept observed
+schema/data JSON plus theme/read-only attributes; invalid attributes emit of-error.
+
+After pnpm build, `pnpm --filter @ourform/benchmarks dev` opens the 100/500/1,000-field performance app
+on port 4190. `pnpm benchmark:check` enforces the stored 500-field baseline with a 20% limit; the command
+is part of pnpm verify/CI. See docs/performance and ADR-0009 for measurements and platform limits.

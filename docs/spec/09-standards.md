@@ -22,3 +22,10 @@ Status: normative. `pnpm verify` enforces most of these.
 | Docs          | Package README per package; spec updated with contract changes; ADRs in `docs/adr`                                                                                                                              |
 | Git           | Conventional commits; branch per milestone `mNN-slug`; PR body lists acceptance criteria PASS/FAIL                                                                                                              |
 | CI            | GitHub Actions: frozen install → lint → typecheck → build → test → e2e → size; bench on main                                                                                                                    |
+
+M07 performance gate: apps/benchmarks measures actual 100/500/1,000-field compile/mount/25-edit/two-mode
+workloads. Three warm-ups and 15 measured samples produce medians in docs/performance/m07-baseline.json.
+`pnpm benchmark:check` rejects any 500-field timing >20% above that baseline; pnpm verify/CI run it with
+one Chromium worker after correctness tests. `pnpm benchmark:record` explicitly records a new measured
+artifact for review. Reports include platform/browser; absolute timing sensitivity and local/remote
+proof boundaries are documented in ADR-0009. Repeater/grid benchmarks await M10.

@@ -1,4 +1,4 @@
-import { createFormController } from "@ourform/renderer-dom";
+import { createFormController, createFormHost } from "@ourform/renderer-dom";
 import type {
   FormController,
   HostOptions,
@@ -6,7 +6,7 @@ import type {
 } from "@ourform/renderer-dom";
 import { registerNativeField, mapNativeProps } from "@ourform/sdk";
 import type { NativeFieldOptions } from "@ourform/sdk";
-import { builtinFields } from "@ourform/components";
+import { builtinComponents } from "@ourform/components";
 export type { FormController, HostOptions } from "@ourform/renderer-dom";
 export function registerElementField<V = string>(
   type: string,
@@ -15,7 +15,7 @@ export function registerElementField<V = string>(
 ) {
   return registerNativeField("element", type, component, options);
 }
-const builtins = builtinFields;
+const builtins = builtinComponents;
 const nativeHost: NativeHost = {
   mount(slot, view, initial) {
     const element =
@@ -96,6 +96,38 @@ export function defineOurFormElement(
   if (customElements.get(tag))
     throw new Error(`Custom element already registered: ${tag}`);
   class OurForm extends HTMLElement implements OurFormElement {
+    static get observedAttributes() {
+      return ["schema", "data", "theme", "read-only"];
+    }
+    attributeChangedCallback(
+      name: string,
+      old: string | null,
+      value: string | null,
+    ) {
+      if (old === value || this.#reflecting) return;
+      try {
+        if (name === "theme") this.theme = value ?? "base";
+        else if (name === "read-only") this.readOnly = value !== null;
+        else if (name === "data")
+          this.data = value === null ? {} : JSON.parse(value);
+        else this.schema = value === null ? undefined : JSON.parse(value);
+      } catch (error) {
+        this.reportError(error);
+      }
+    }
+    private reportError(error: unknown) {
+      this.dispatchEvent(
+        new CustomEvent("of-error", {
+          detail: {
+            message:
+              error instanceof Error ? error.message : "Invalid form attribute",
+          },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    }
+    #reflecting = false;
     #schema: unknown;
     #data: unknown = {};
     #theme: HostOptions["theme"] = "base";
@@ -110,22 +142,36 @@ export function defineOurFormElement(
       return this.#schema;
     }
     set schema(value: unknown) {
+      const previous = this.#schema;
       this.#schema = value;
-      this.rebuild();
+      try {
+        this.rebuild();
+      } catch (error) {
+        this.#schema = previous;
+        throw error;
+      }
     }
     get data() {
       return this.#controller?.session.getData() ?? this.#data;
     }
     set data(value: unknown) {
-      this.#data = value;
       this.#controller?.setData(value);
+      this.#data = value;
     }
     get theme() {
       return this.#theme;
     }
     set theme(value: HostOptions["theme"]) {
+      if (this.#theme === value) return;
+      this.#controller?.view.setTheme(value ?? "base");
       this.#theme = value;
-      if (value) this.#controller?.view.setTheme(value);
+      this.#reflecting = true;
+      try {
+        if (typeof value === "string") this.setAttribute("theme", value);
+        else this.removeAttribute("theme");
+      } finally {
+        this.#reflecting = false;
+      }
     }
     get engine() {
       return this.#engine;
@@ -141,6 +187,7 @@ export function defineOurFormElement(
       if (this.#readOnly === value) return;
       this.#data = this.data;
       this.#readOnly = value;
+      this.toggleAttribute("read-only", value);
       this.rebuild();
     }
     get fields() {
@@ -151,7 +198,11 @@ export function defineOurFormElement(
       this.rebuild();
     }
     connectedCallback() {
-      this.rebuild();
+      try {
+        this.rebuild();
+      } catch (error) {
+        this.reportError(error);
+      }
     }
     disconnectedCallback() {
       this.#data = this.data;
@@ -159,7 +210,25 @@ export function defineOurFormElement(
       this.#controller = undefined;
     }
     private rebuild() {
-      if (!this.isConnected || !this.#schema) return;
+      if (!this.isConnected) return;
+      if (this.#schema == null) {
+        this.#data = this.data;
+        this.#controller?.destroy();
+        this.#controller = undefined;
+        (this.shadowRoot ?? this).replaceChildren();
+        return;
+      }
+      const preflight = createFormHost(
+        [...builtins, ...this.#fields],
+        this.#engine,
+      ).engine.compile(this.#schema);
+      if (!preflight.ok)
+        throw new Error(
+          preflight.diagnostics
+            .map((d) => `${d.code}: ${d.message}`)
+            .join("; "),
+        );
+      this.#data = this.data;
       this.#controller?.destroy();
       const root = this.hasAttribute("shadow")
         ? (this.shadowRoot ?? this.attachShadow({ mode: "open" }))

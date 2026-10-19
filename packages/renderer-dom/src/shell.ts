@@ -70,10 +70,50 @@ export function shellVNode(
     "data-of-disabled": String(state.disabled),
     hidden: !state.visible,
     class: cl("root"),
-    style: Object.entries(theme.tokens)
+    style: Object.entries({
+      ...theme.tokens,
+      "--of-column-span": String(entry.node.layout?.width ?? 12),
+    })
       .map(([key, value]) => `${key}:${value}`)
       .join(";"),
   };
+  if (view?.layout) {
+    const layout = view.layout;
+    const heading = entry.node.label
+      ? h(
+          layout.tag === "fieldset" ? "legend" : "h3",
+          { key: "heading", id: `${id}_label`, class: "of-layout-title" },
+          entry.node.label,
+        )
+      : null;
+    return h(
+      layout.tag,
+      {
+        ...rootProps,
+        id,
+        class: `${cl("root")} of-layout of-${entry.node.type}${layout.columns ? " of-columns" : ""}`,
+        ...(entry.node.label && layout.tag !== "fieldset"
+          ? { "aria-labelledby": `${id}_label` }
+          : {}),
+        ...(entry.node.label && layout.tag === "div" ? { role: "group" } : {}),
+        ...(entry.node.description
+          ? { "aria-describedby": `${id}_description` }
+          : {}),
+      },
+      heading,
+      entry.node.description
+        ? h(
+            "p",
+            {
+              key: "description",
+              id: `${id}_description`,
+              class: "of-description",
+            },
+            entry.node.description,
+          )
+        : null,
+    );
+  }
   if (!entry.model.value && !view?.portable)
     return h(
       "div",

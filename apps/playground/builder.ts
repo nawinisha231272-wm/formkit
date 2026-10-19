@@ -1,5 +1,5 @@
 import { createEngine } from "@ourform/core";
-import { builtinFields } from "@ourform/components";
+import { builtinComponents } from "@ourform/components";
 import {
   createBuilder,
   AddComponent,
@@ -15,7 +15,7 @@ import feedback from "../../fixtures/forms/feedback.json";
 import { employeeFields } from "../vanilla-example/src/employee-fields";
 
 const engine = createEngine();
-for (const field of builtinFields) engine.register(field.model);
+for (const field of builtinComponents) engine.register(field.model);
 for (const field of employeeFields) engine.register(field.model);
 const builder = createBuilder(engine, feedback as FormDefinition);
 const element = <T extends HTMLElement>(id: string) =>

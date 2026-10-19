@@ -49,7 +49,11 @@ export function createFormHost(
           throw new Error(`Duplicate ${key} view: ${type} in ${adapter}`);
     const existing = engine.getField(type);
     if (!existing) engine.register(field.model);
-    else if (existing.value?.normalize !== field.model.value?.normalize)
+    else if (
+      existing.value?.normalize !== field.model.value?.normalize ||
+      (existing.kind ?? "field") !== (field.model.kind ?? "field") ||
+      (existing.dataScope ?? "none") !== (field.model.dataScope ?? "none")
+    )
       throw new Error(`Conflicting engine model: ${type}`);
     views.set(
       type,
@@ -130,7 +134,7 @@ export function createFormController(
     view,
     submit: () => view.submit(),
     validate: () => session.validate(),
-    reset: (data) => session.reset(data),
+    reset: (data) => view.reset(data),
     focusField: (id) => view.focus(id),
     setData: (data) => syncData(session, data),
     destroy() {

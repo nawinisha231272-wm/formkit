@@ -38,7 +38,7 @@ import type {
   NativeRegistrationArgs,
   RegisteredField,
 } from "@ourform/sdk";
-import { builtinFields } from "@ourform/components";
+import { builtinComponents } from "@ourform/components";
 import type { StatePatch, SubmitResult } from "@ourform/core";
 export const OUR_FORM_OPTIONS = new InjectionToken<Partial<HostOptions>>(
   "OurForm options",
@@ -269,7 +269,7 @@ export class OurFormComponent implements AfterViewInit, OnChanges, OnDestroy {
           readOnly: this.readOnly ?? this.#options.readOnly ?? false,
           ...(this.engine ? { engine: this.engine } : {}),
           fields: [
-            ...builtinFields,
+            ...builtinComponents,
             ...(this.#options.fields ?? []),
             ...this.#provided,
             ...this.fields,

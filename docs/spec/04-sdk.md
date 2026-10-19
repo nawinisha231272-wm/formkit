@@ -246,3 +246,12 @@ string values; empty is the unselected sentinel. Hidden is a normal value-produc
 Button action/text/event properties select submit/reset/custom events. Content html is rendered through
 sanitizeContent into allow-listed VNodes, never raw HTML. Its supported subset/limits/protocols are in
 ADR-0008; it is not a general HTML5 parser or an HTML-string sanitizer for other sinks.
+
+## M07 layouts (ADR-0009)
+
+`defineLayout({type,title,dataScope?,tag?,columns?,properties?})` returns a RegisteredField with a
+non-value kind=layout model and a frozen LayoutView. dataScope is none (default) or object; tag is
+div (default), section or fieldset; columns defaults false. Layout properties use normal generated
+metadata. The renderer owns child mounting into the layout root, after its heading/description.
+Built-in descriptors: panelLayout, columnsLayout, fieldsetLayout, containerLayout; builtinLayouts
+and builtinComponents join the compatible M06 builtinFields export.

@@ -12,7 +12,14 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
-      - run: pnpm verify
+      - name: Verify correctness, accessibility and the 500-field performance budget
+        run: pnpm verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-results
+          path: benchmark-results/
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

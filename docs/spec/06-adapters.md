@@ -109,3 +109,17 @@ localization and portable submit/reset/custom actions are checked by a shared Ti
 Providers/validators/functions live on the engine. Custom actions use HostOptions.onAction and composed
 bubbling of-action events; React forwards the latest callback, Angular can configure it through
 provideOurForm, and events cross the element wrapper's Shadow DOM boundary.
+
+## M07 production foundation
+
+Adapters install builtinComponents, including four layouts. Controlled/uncontrolled examples share the
+40-value customer onboarding fixture, rapid-typing and read-only tests. Public reset methods clear the
+renderer summary and touched state through FormView.reset. The element observes schema/data JSON and
+theme/read-only attributes; string theme/readOnly properties reflect their corresponding attributes.
+Malformed attributes emit composed of-error ({message}) and do not throw out of attribute callbacks.
+Object schema/data/engine/fields and Theme properties remain available; no schema URL is fetched.
+Static portable SSR can be replaced by a fresh client mount. Native SSR/hydration remains unsupported.
+
+Invalid schema/appearance updates retain the last valid property. Removing the schema attribute clears
+the mounted form; setting schema again remounts with retained data. Initial connection errors also emit
+of-error. Object Theme properties remove the string theme attribute without callback recursion.

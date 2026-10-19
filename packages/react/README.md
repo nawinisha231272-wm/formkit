@@ -39,3 +39,17 @@ Native fields are client-rendered; SSR hydration and React 18 support are not cl
 M06 registers builtinFields (including all Tier 1 controls) automatically. FormProps.onAction receives
 portable custom button actions and uses the latest callback after a parent rerender. Validation and
 localization providers are configured on the supplied engine.
+
+M07 runnable onboarding example: `pnpm --filter @ourform/react-example dev`, then open
+`http://127.0.0.1:4182/?onboarding` (controlled) or append `&uncontrolled` / `&readonly`.
+All 40 values, nested scopes and Panel/Columns/Fieldset/Container are shared with the other hosts.
+
+```tsx
+const [data, setData] = useState({});
+<Form schema={definition} data={data} onChange={p => setData(p.data)} />
+<Form schema={definition} defaultData={initialData} />
+```
+
+Keep schema/fields/engine identities stable. Controlled full snapshots are diffed per leaf, preserving
+controls/caret on echoes; rapid typing is tested. defaultData initializes an uncontrolled mount;
+subsequent edits belong to its session. ref.current.reset() also clears the error summary.

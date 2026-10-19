@@ -641,3 +641,143 @@ authenticated host, so this summary substitutes for a PR. The branch remains sta
 
 M06 is complete. No open contract question remains for this scope. M07 — Layouts and production adapters
 has not begun; its Phase 1 gate will require a separate report and human review.
+
+## M07 — Layouts and production adapters
+
+Plan: add SDK-composed Panel/Columns/Fieldset/Container layouts with semantic DOM/SSR and 12-column
+widths; strengthen controlled/uncontrolled adapter and element attribute/property synchronization;
+share a realistic 40-value customer onboarding fixture across examples; exercise read-only, summary,
+reset and static SSR/client remount; add the 100/500/1,000-field benchmark app and a measured 500-field
+baseline with a strict 20% CI regression check. Retain all four themes and existing visual baselines.
+Run full verification and the offline sample-app proof, document APIs/decisions and the Phase 1 gate,
+then stop for review. Risks: layout refresh must retain child DOM/focus, controlled echoes must not
+overwrite rapid typing, attributes must not reenter setters, and timing measurements need repeatable
+sampling with explicit platform limits. This branch stacks on verified M06 (2bd5755); prior branches
+remain unmerged. No wizard/tabs/arrays or later-milestone work is included.
+
+### Built
+
+- Public composition-based defineLayout plus Panel, Columns, Fieldset and object-scoped Container.
+  Independent child units survive parent/theme updates; semantic section/legend/group headings share
+  escaped DOM/SSR generation. A 12-track responsive grid consumes node.layout.width and stacks at 640px.
+  Base layout CSS is inherited by Bootstrap 4, Bootstrap 5 and Tailwind. builtinFields remains compatible;
+  builtinLayouts/builtinComponents provide explicit expanded registries for hosts and the builder.
+- Shared realistic customer onboarding: 40 value controls across contact/company/address/preferences,
+  nested object data, static options, required rules, numeric bounds, Hidden defaults and action buttons.
+  Vanilla, React, Angular 22 and Angular 21 examples expose ?onboarding, uncontrolled and read-only modes.
+- Renderer-aware public reset clears summary/submitted state and deferred blur touches. Element attributes
+  observe schema/data JSON, theme and read-only; property reflection preserves editing on theme changes.
+  Invalid schema/appearance input retains the last valid property and emits of-error; schema removal
+  clears the controller, with data retained for a later mount. Disconnect/reconnect retains data.
+- Static portable SSR in the built playground onboarding HTML, followed by an explicit fresh client
+  mount. Production preview checks JS-disabled readability, duplicate-free remount and offline editing,
+  validation, both Bootstrap themes, submission and reset. Native control SSR/hydration remains deferred.
+- Separate benchmarks app with 100/500/1,000 real controls, 25 dependent calculations and forced layout.
+  Recorded 15-sample medians after three warm-ups. A separate one-worker Chromium gate checks every
+  500-field metric against baseline ×1.20; verify/CI includes it and uploads benchmark reports.
+
+### Findings and decisions
+
+ADR-0009 documents APIs and proof limits. SSR initially appended child markup only for div/fieldset;
+semantic section roots now retain all children, with a 54-unit/40-value fixture regression and a real
+JS-disabled production-page check. Named div layouts use role=group for a valid accessible name.
+Host compatibility checks kind/dataScope as well as normalization identity, preventing conflicting
+non-value layout registrations. Invalid attribute updates are transactional for schema/appearance;
+later read-only changes and remount remain usable after a rejected input.
+
+An initial randomized builder timeout occurred while builds/browser/unit checks ran concurrently;
+verification was sequenced without changing its timeout or assertions. A development-server import
+error during package rebuild was likewise removed by sequencing builds before browser checks. Final
+review corrections interrupted intermediate verification; the complete suite is rerun on the final tree.
+No external runtime dependency was added. Existing visual baselines and test thresholds are retained.
+The first full browser matrix passed 313/315 cases; two new Firefox cases exceeded the default test
+time while performing four complete 40-field axe scans. These theme cases are now parameterized into
+separate tests, retaining every state/data/focus/caret/axe assertion and the original time limits.
+No axe rule, timeout, assertion or visual baseline was relaxed to resolve it.
+
+### Acceptance evidence
+
+- PASS — 40-field fixture filled/validated/submitted in all hosts: onboarding.spec.ts cases
+  `<host> <mode>: 40-field onboarding, rapid typing, scoped submit and public reset` run in vanilla,
+  React, Angular 22 and Angular 21, in all three browsers. Exact submitted nested data matches the shared
+  customer.data.json. They verify failed-submit summary focus, successful submit and public reset state.
+  The vanilla host is imperative; controlled/uncontrolled ownership is exercised in React/Angular.
+- PASS — controlled data without lost keystrokes: those cases type with delay 0, assert the complete
+  typed value, then submit the full fixture. Both React/Angular ownership modes pass. Each host/theme's
+  separate read-only case preserves data, focused input identity and caret and runs axe with no serious
+  or critical violation. Existing native controlled/portal/DI/CVA/IME tests remain unchanged.
+- PASS — layouts: `40-field onboarding uses transparent layouts, an object container and consistent
+escaped semantic SSR` asserts 40 value nodes, all 54 rendered component units, four object keys and
+  customer Node validation. `defineLayout composes frozen per-definition metadata without a value
+adapter`, conflicting-scope registration and escaped named-group tests cover the public API. Browser
+  `responsive columns retain document order and child identity on resize and theme updates` checks
+  12-column placement, mobile stacking, focused DOM identity, retained value and no horizontal overflow.
+- PASS — element property/attribute sync: `custom element attributes/properties sync data, theme and
+read-only without losing reconnect state` covers initial JSON/appearance attributes, rapid editing,
+  incoming data, reflected theme/readOnly, caret, reconnect, JSON/compile/theme rejection without
+  poisoning the valid properties, continued use after rejection, reset, schema removal and remount.
+- PASS — SSR/remount: `built static SSR is readable without JS and client remount replaces it without
+duplicate controls` loads the actual production HTML with JS disabled, checks labels/legend, then
+  checks a fresh interactive mount with one control per id and one form live region. Node SSR tests
+  retain the section/fieldset hierarchy, escaped labels and every child. Native-view SSR is not claimed.
+- PASS — recorded 500-field baseline and >20% CI rejection: docs/performance/m07-baseline.json records
+  actual 100/500/1,000-control medians (3 warm-ups, 15 samples each). `performance budget accepts the
+20% boundary and rejects each metric beyond it` tests the exact boundary, each over-budget metric and
+  non-finite input. The one-worker `measured 100/500/1000-field baseline and strict 500-field performance
+budget` gate passes, including 650 affected processors, count, focus/identity and cleanup assertions.
+  pnpm verify/CI runs the gate; the workflow uploads benchmark JSON. Check never rewrites the baseline.
+- PASS — offline production sample gate: `Phase 1 gate: built onboarding edits, themes, validates,
+submits and resets with networking disabled` loads built package/app output, disables networking,
+  checks failed validation/focus, fills all 40 values, switches Bootstrap 4 → 5, submits exact nested
+  data and resets, without an external request. All three browsers pass. `sh scripts/verify-offline.sh`
+  separately logs outbound TCP denied by OS policy (EPERM), bypasses Turbo caches and successfully
+  builds every one of the 21 package/app scripts under macOS network denial.
+- PASS — full pinned verification:
+  `CI=true npx --offline --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify` exits 0.
+  Lint/format, 21 builds, strict checks including Angular 21's TypeScript 5.9 check, 155 unit tests,
+  core 98.57% / validation 99.15% line coverage, 351 browser cases, 14 size budgets and the separate
+  performance gate pass. Frozen-lockfile offline installation passes. All 60 prior PNGs and their
+  thresholds remain unchanged. No original test was deleted, skipped or weakened; Rating is unchanged.
+- PASS — API documentation: package READMEs provide runnable layout/SSR/host examples, with playground
+  and benchmark commands. ADR-0009, specs 04/05/06/09 and the changeset document the final contracts.
+
+### Phase 1 gate report — M07
+
+Recommendation: **GO to M08 after human review.** M07 implementation and local verification are complete.
+The shared form runs end to end in vanilla, React and Angular with only customer-owned code/data. It
+retains accessible validation/focus/reset behavior, nested object scopes, read-only controls and all four
+themes. Production HTML supports static portable SSR and a fresh client mount; the built sample runs
+offline. No external runtime dependency, telemetry, backend or network licensing path was introduced.
+
+Measured Chromium medians on darwin-arm64, milliseconds:
+
+| 500-field workload              | Stored baseline | Final verify | 20% ceiling |
+| ------------------------------- | --------------: | -----------: | ----------: |
+| Compile                         |            4.50 |         4.40 |        5.40 |
+| Mount + layout                  |           37.20 |        36.40 |       44.64 |
+| 25 edits + layout               |           99.60 |        99.50 |      119.52 |
+| Two appearance changes + layout |           62.90 |        62.50 |       75.48 |
+
+Each edit reaches exactly 26 fields, for 650 processors per batch, at all three measured sizes. The
+stored 100/1,000-field numbers and complete measurement method are in docs/performance and ADR-0009.
+Absolute timing depends on hardware/OS/browser/load/power. The initial baseline is local macOS evidence;
+remote Linux CI results are not claimed. No baseline was inflated or regenerated after check failure.
+
+Scope limits remain explicit: experimental 0.x packages, React 19 with Angular 22/21, portable-only
+static SSR and client remount (no native SSR/hydration), no wizard/tabs/repeaters, no commercial licensing
+implementation and no production release claim. Those limits belong to later milestones. Branches remain
+stacked and unmerged. No open contract question or architectural blocker remains within M07's scope.
+
+Brotli sizes: schema 4.18 kB, core 8.9 kB, SDK 3.28 kB, components 2.96 kB, renderer 7.49 kB,
+builder-core 4 kB, element 1.9 kB, React 1.39 kB, Angular 2.36 kB, validation 1.05 kB (30 kB limits);
+base 1.23 kB, Bootstrap 4 1.27 kB, Bootstrap 5 1.26 kB, Tailwind 1.17 kB (10 kB limits).
+
+### Review summary — M07: Layouts and production adapters
+
+Semantic, responsive layouts and consistent adapter behavior now support the complete 40-value
+onboarding flow. Review /onboarding.html and each host's ?onboarding/ownership/read-only variants,
+then the benchmark report and acceptance checklist above. The checklist is the review body; public
+contracts and boundaries are in ADR-0009, package READMEs/specs and the changeset. Git transport works,
+but `gh auth status` still reports no authenticated host, so this summary substitutes for a PR.
+
+**Stop for human review, as AGENTS.md and M07 require. M08 has not begun.**

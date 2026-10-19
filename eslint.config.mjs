@@ -71,6 +71,7 @@ export default [
       "**/.turbo/**",
       "test-results/**",
       "playwright-report/**",
+      "benchmark-results/**",
     ],
   },
   js.configs.recommended,

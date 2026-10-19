@@ -1,0 +1,17 @@
+{
+  "name": "@ourform/benchmarks",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --host 127.0.0.1 --port 4190 --strictPort",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ourform/core": "workspace:*",
+    "@ourform/components": "workspace:*",
+    "@ourform/renderer-dom": "workspace:*",
+    "@ourform/sdk": "workspace:*"
+  }
+}

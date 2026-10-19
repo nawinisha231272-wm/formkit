@@ -40,3 +40,24 @@ for changed-leaf controlled updates. Duplicate tag registrations throw. No plugi
 M06 registers all Tier 1 builtinFields automatically. Configure custom/async validation and localization
 on the supplied engine. HostOptions.onAction and composed, bubbling of-action DOM events expose custom
 button actions (including across the custom element's Shadow DOM boundary).
+
+M07: layouts are included by default. Example: `pnpm --filter @ourform/vanilla-example dev`, then open
+`http://127.0.0.1:4181/?onboarding`. The same 40-field fixture supports read-only, summary and reset.
+
+```html
+<our-form
+  theme="bootstrap4"
+  read-only
+  schema='{"$formVersion":"1.0","id":"sample","display":"form","components":[{"id":"name","type":"text","key":"name","label":"Name"}]}'
+  data='{"name":"Ana"}'
+></our-form>
+```
+
+Call defineOurFormElement() once before using the tag. schema/data JSON attributes and theme/read-only
+are observed; string theme and readOnly properties reflect attributes. Boolean attributes use presence,
+so remove read-only to enable editing. Object properties remain supported. Invalid attribute JSON/compile
+emits composed of-error ({message}); malformed JSON preserves the current form. No URLs are fetched.
+Imperative reset() clears the renderer summary and touched state. Disconnect/reconnect preserves data.
+Invalid schema/theme updates retain the previous valid property. Removing schema clears the mounted
+form; setting it again remounts with preserved data. Initial connection failures also emit of-error.
+Custom Theme objects remove the string attribute and remain property-owned.

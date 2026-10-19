@@ -46,3 +46,15 @@ Use fields/provider registrations owned by this application; there is no mutable
 M06 registers all Tier 1 builtinFields automatically. Configure validation/localization providers on
 an engine, and custom action callbacks with provideOurForm({onAction}); bubbling of-action DOM events
 also expose portable custom button actions. Shared conformance covers the new controls in this wrapper.
+
+M07 runnable onboarding example: `pnpm --filter @ourform/angular-example dev`, then open
+`http://127.0.0.1:4183/?onboarding` (controlled) or append `&uncontrolled` / `&readonly`.
+The Angular 21 compatibility example uses port 4184. Both run the shared 40-value fixture and layouts.
+
+```html
+<our-form [schema]="definition" [data]="data" (dataChange)="data=$event" />
+<our-form [schema]="definition" [defaultData]="initialData" />
+```
+
+Controlled input is a complete snapshot; unchanged leaves are no-ops. Uncontrolled defaultData is read
+at mount. Rapid typing, read-only data, theme/child identity and public reset summary behavior are tested.

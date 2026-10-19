@@ -82,3 +82,8 @@ M06 adds defineField.validators (registered model rule names), defineDisplay for
 optional FieldControlProps.actions (submit/reset/emit) and the shared englishMessages catalog. defineDisplay
 uses the same metadata/view composition but omits the model value adapter, so no data key is required.
 Readonly actions are disabled by the supplied controls; renderer callbacks own session operations.
+
+M07: `defineLayout({ type: 'acme.section', title: 'Section', tag: 'section', dataScope: 'none' })`
+returns frozen model/layout-view metadata. The renderer independently owns child mounts. tag supports
+div/section/fieldset, columns enables a 12-track grid, and dataScope supports none/object. Optional
+properties use the same helpers/generated builder panels. No value adapter or raw HTML slot is needed.

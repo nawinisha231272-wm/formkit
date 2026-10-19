@@ -1,0 +1,675 @@
+{
+  "$formVersion": "1.0",
+  "id": "customer-onboarding",
+  "title": "Customer onboarding",
+  "display": "form",
+  "settings": {
+    "validateOn": "blur"
+  },
+  "components": [
+    {
+      "id": "contact-panel",
+      "type": "panel",
+      "label": "Contact",
+      "components": [
+        {
+          "id": "contact-data",
+          "type": "container",
+          "key": "contact",
+          "components": [
+            {
+              "id": "contact-columns",
+              "type": "columns",
+              "components": [
+                {
+                  "id": "contact-firstName",
+                  "type": "text",
+                  "key": "firstName",
+                  "label": "First name",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "contact-lastName",
+                  "type": "text",
+                  "key": "lastName",
+                  "label": "Last name",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "contact-email",
+                  "type": "email",
+                  "key": "email",
+                  "label": "Work email",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "contact-phone",
+                  "type": "text",
+                  "key": "phone",
+                  "label": "Phone",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "contact-jobTitle",
+                  "type": "text",
+                  "key": "jobTitle",
+                  "label": "Job title",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "contact-department",
+                  "type": "text",
+                  "key": "department",
+                  "label": "Department",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "contact-preferredName",
+                  "type": "text",
+                  "key": "preferredName",
+                  "label": "Preferred name",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "contact-language",
+                  "type": "select",
+                  "key": "language",
+                  "label": "Preferred language",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  },
+                  "properties": {
+                    "options": [
+                      {
+                        "value": "en",
+                        "label": "English"
+                      },
+                      {
+                        "value": "es",
+                        "label": "Spanish"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "contact-contactMethod",
+                  "type": "radio",
+                  "key": "contactMethod",
+                  "label": "Preferred contact method",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  },
+                  "properties": {
+                    "options": [
+                      {
+                        "value": "email",
+                        "label": "Email"
+                      },
+                      {
+                        "value": "phone",
+                        "label": "Phone"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "contact-consent",
+                  "type": "checkbox",
+                  "key": "consent",
+                  "label": "Contact consent",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 12
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "company-panel",
+      "type": "panel",
+      "label": "Company",
+      "components": [
+        {
+          "id": "company-data",
+          "type": "container",
+          "key": "company",
+          "components": [
+            {
+              "id": "company-columns",
+              "type": "columns",
+              "components": [
+                {
+                  "id": "company-legalName",
+                  "type": "text",
+                  "key": "legalName",
+                  "label": "Legal company name",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "company-tradingName",
+                  "type": "text",
+                  "key": "tradingName",
+                  "label": "Trading name",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "company-registration",
+                  "type": "text",
+                  "key": "registration",
+                  "label": "Registration number",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "company-taxId",
+                  "type": "text",
+                  "key": "taxId",
+                  "label": "Tax identifier",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "company-website",
+                  "type": "text",
+                  "key": "website",
+                  "label": "Company website",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "company-industry",
+                  "type": "select",
+                  "key": "industry",
+                  "label": "Industry",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  },
+                  "properties": {
+                    "options": [
+                      {
+                        "value": "technology",
+                        "label": "Technology"
+                      },
+                      {
+                        "value": "services",
+                        "label": "Services"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "company-employees",
+                  "type": "number",
+                  "key": "employees",
+                  "label": "Employee count",
+                  "validation": {
+                    "required": true,
+                    "min": 1
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "company-founded",
+                  "type": "number",
+                  "key": "founded",
+                  "label": "Year founded",
+                  "validation": {
+                    "required": true,
+                    "min": 1
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "company-description",
+                  "type": "textarea",
+                  "key": "description",
+                  "label": "Business description",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 12
+                  }
+                },
+                {
+                  "id": "company-referral",
+                  "type": "text",
+                  "key": "referral",
+                  "label": "How did you hear about us",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "address-panel",
+      "type": "fieldset",
+      "label": "Address",
+      "components": [
+        {
+          "id": "address-data",
+          "type": "container",
+          "key": "address",
+          "components": [
+            {
+              "id": "address-columns",
+              "type": "columns",
+              "components": [
+                {
+                  "id": "address-line1",
+                  "type": "text",
+                  "key": "line1",
+                  "label": "Street address",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "address-line2",
+                  "type": "text",
+                  "key": "line2",
+                  "label": "Address line 2",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "address-city",
+                  "type": "text",
+                  "key": "city",
+                  "label": "City",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "address-region",
+                  "type": "text",
+                  "key": "region",
+                  "label": "State or province",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "address-postal",
+                  "type": "text",
+                  "key": "postal",
+                  "label": "Postal code",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "address-country",
+                  "type": "select",
+                  "key": "country",
+                  "label": "Country",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  },
+                  "properties": {
+                    "options": [
+                      {
+                        "value": "us",
+                        "label": "United States"
+                      },
+                      {
+                        "value": "ca",
+                        "label": "Canada"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "address-billingName",
+                  "type": "text",
+                  "key": "billingName",
+                  "label": "Billing contact name",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "address-billingEmail",
+                  "type": "email",
+                  "key": "billingEmail",
+                  "label": "Billing email",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "address-billingPhone",
+                  "type": "text",
+                  "key": "billingPhone",
+                  "label": "Billing phone",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "address-purchaseOrder",
+                  "type": "text",
+                  "key": "purchaseOrder",
+                  "label": "Purchase order reference",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "preferences-panel",
+      "type": "panel",
+      "label": "Preferences",
+      "components": [
+        {
+          "id": "preferences-data",
+          "type": "container",
+          "key": "preferences",
+          "components": [
+            {
+              "id": "preferences-columns",
+              "type": "columns",
+              "components": [
+                {
+                  "id": "preferences-plan",
+                  "type": "select",
+                  "key": "plan",
+                  "label": "Service plan",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  },
+                  "properties": {
+                    "options": [
+                      {
+                        "value": "team",
+                        "label": "Team"
+                      },
+                      {
+                        "value": "business",
+                        "label": "Business"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "preferences-seats",
+                  "type": "number",
+                  "key": "seats",
+                  "label": "Requested seats",
+                  "validation": {
+                    "required": true,
+                    "min": 1
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "preferences-startDate",
+                  "type": "text",
+                  "key": "startDate",
+                  "label": "Preferred start date",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "preferences-timezone",
+                  "type": "text",
+                  "key": "timezone",
+                  "label": "Time zone",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  }
+                },
+                {
+                  "id": "preferences-currency",
+                  "type": "select",
+                  "key": "currency",
+                  "label": "Billing currency",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  },
+                  "properties": {
+                    "options": [
+                      {
+                        "value": "usd",
+                        "label": "USD"
+                      },
+                      {
+                        "value": "eur",
+                        "label": "EUR"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "preferences-frequency",
+                  "type": "radio",
+                  "key": "frequency",
+                  "label": "Billing frequency",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 6
+                  },
+                  "properties": {
+                    "options": [
+                      {
+                        "value": "monthly",
+                        "label": "Monthly"
+                      },
+                      {
+                        "value": "annual",
+                        "label": "Annual"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "preferences-requirements",
+                  "type": "textarea",
+                  "key": "requirements",
+                  "label": "Implementation requirements",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 12
+                  }
+                },
+                {
+                  "id": "preferences-accessibility",
+                  "type": "textarea",
+                  "key": "accessibility",
+                  "label": "Accessibility requirements",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 12
+                  }
+                },
+                {
+                  "id": "preferences-terms",
+                  "type": "checkbox",
+                  "key": "terms",
+                  "label": "Accept service terms",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 12
+                  }
+                },
+                {
+                  "id": "preferences-reference",
+                  "type": "hidden",
+                  "key": "reference",
+                  "label": "Internal customer reference",
+                  "validation": {
+                    "required": true
+                  },
+                  "layout": {
+                    "width": 12
+                  },
+                  "defaultValue": "web-onboarding"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "send",
+      "type": "button",
+      "properties": {
+        "action": "submit",
+        "text": "Submit onboarding"
+      }
+    },
+    {
+      "id": "reset",
+      "type": "button",
+      "properties": {
+        "action": "reset",
+        "text": "Reset onboarding"
+      }
+    }
+  ]
+}

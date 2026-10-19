@@ -9,9 +9,11 @@
     "packages/*/tests/**/*.ts",
     "vitest.config.ts",
     "playwright.config.ts",
+    "playwright.bench.config.ts",
     "apps/playground/sdk-probe.ts",
     "apps/playground/theme-probe.ts",
     "apps/playground/builder.ts",
-    "apps/playground/tier1.ts"
+    "apps/playground/tier1.ts",
+    "apps/playground/onboarding.ts"
   ]
 }

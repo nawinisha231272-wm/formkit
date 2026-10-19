@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OurForm · Customer onboarding</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Customer onboarding</h1>
+      <p>40 fields, nested data and responsive layouts.</p>
+      <nav aria-label="Examples">
+        <a href="/">Playground</a> ·
+        <a href="http://127.0.0.1:4181/?onboarding">Vanilla</a> ·
+        <a href="http://127.0.0.1:4182/?onboarding">React</a> ·
+        <a href="http://127.0.0.1:4183/?onboarding">Angular</a>
+      </nav>
+    </header>
+    <main>
+      <label
+        >Theme
+        <select id="onboarding-theme">
+          <option value="base">Base</option>
+          <option value="bootstrap4">Bootstrap 4</option>
+          <option value="bootstrap5">Bootstrap 5</option>
+          <option value="tailwind">Tailwind</option>
+        </select></label
+      >
+      <p id="render-status">
+        Server-rendered form. Enable JavaScript to edit and submit.
+      </p>
+      <div id="onboarding-form"><!--ourform-ssr--></div>
+      <h2>Submission</h2>
+      <pre id="onboarding-result" aria-live="polite"></pre>
+    </main>
+    <script type="module" src="/onboarding.ts"></script>
+  </body>
+</html>

@@ -217,6 +217,21 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
+  apps/benchmarks:
+    dependencies:
+      '@ourform/components':
+        specifier: workspace:*
+        version: link:../../packages/components
+      '@ourform/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@ourform/renderer-dom':
+        specifier: workspace:*
+        version: link:../../packages/renderer-dom
+      '@ourform/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
+
   apps/playground:
     dependencies:
       '@ourform/angular':

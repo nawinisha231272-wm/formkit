@@ -5,5 +5,11 @@
     "checkJs": false,
     "lib": ["ES2022", "DOM"]
   },
-  "include": ["main.js", "builder.ts", "vite.config.ts", "tier1.ts"]
+  "include": [
+    "main.js",
+    "builder.ts",
+    "vite.config.ts",
+    "tier1.ts",
+    "onboarding.ts"
+  ]
 }

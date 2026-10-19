@@ -56,3 +56,28 @@ provider with the English SDK catalog fallback; the existing t callback and of.r
 Async validators expose aria-busy and a pending description through the shared shell/live region.
 Pointer-triggered blur touches are deferred until activation completes to prevent validation layout
 changes from canceling clicks; keyboard blur stays immediate. Listeners and queued work are cleaned up.
+
+M07 layouts share semantic DOM/static SSR shells and preserve independently keyed children on parent
+and theme updates. FormView.reset(data?) clears summary/submitted and deferred blur state, then resets
+the session. Mount replaces any existing SSR markup; hydration and native-view SSR are not implemented.
+
+```ts
+import { createEngine } from "@ourform/core";
+import { builtinComponents } from "@ourform/components";
+import { renderToString, mount } from "@ourform/renderer-dom";
+const engine = createEngine();
+for (const component of builtinComponents) engine.register(component.model);
+const compiled = engine.compile(definition);
+if (!compiled.ok) throw new Error("Invalid definition");
+const session = engine.createSession(compiled.form);
+const views = new Map(builtinComponents.map((c) => [c.model.type, c.views]));
+const html = renderToString(session, { views }); // server; escape-safe portable output
+// Client: create its own session from the same definition/data, then replace server markup:
+const view = mount(document.querySelector("#form")!, session, {
+  engine,
+  views,
+});
+view.reset();
+```
+
+`pnpm dev` → `/onboarding.html` demonstrates built-package server output and client remount.

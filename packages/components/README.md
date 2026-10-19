@@ -31,3 +31,33 @@ reset or a host custom action. Content's html property is converted to an allow-
 retained, with explicit http/https/mailto/tel protocols. Active embedded subtrees/events/styles/media are
 dropped. Source/nesting limits are 100,000 characters/64 levels. sanitizeContent returns a safe VNode,
 not a sanitized HTML string for arbitrary HTML sinks. See ADR-0008 for details and limits.
+
+M07 exports panelLayout, columnsLayout, fieldsetLayout and containerLayout. builtinLayouts contains
+these four descriptors; builtinComponents combines them with the compatible builtinFields list.
+Panel/Fieldset/Columns are data-transparent; Container nests values under its key. Example definition:
+
+```json
+{
+  "id": "details",
+  "type": "panel",
+  "label": "Details",
+  "components": [
+    {
+      "id": "columns",
+      "type": "columns",
+      "components": [
+        {
+          "id": "name",
+          "type": "text",
+          "key": "name",
+          "label": "Name",
+          "layout": { "width": 6 }
+        }
+      ]
+    }
+  ]
+}
+```
+
+Run `pnpm dev` and open `/onboarding.html` for the 40-field fixture. All four themes share responsive
+12-column sizing (width 1–12, default 12), stacking at viewport widths up to 640px.

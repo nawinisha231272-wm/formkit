@@ -26,7 +26,12 @@ export interface NativeView {
   >;
   mapChange?: (...args: unknown[]) => unknown;
 }
+export interface LayoutView {
+  tag: "div" | "section" | "fieldset";
+  columns?: boolean;
+}
 export interface ComponentViews {
+  layout?: Readonly<LayoutView>;
   shell?: ShellVariant;
   portable?: PortableControl;
   native?: Readonly<Record<string, NativeView>>;

@@ -1,0 +1,50 @@
+{
+  "contact": {
+    "firstName": "Ana",
+    "lastName": "Rivera",
+    "email": "ana@example.com",
+    "phone": "555-0100",
+    "jobTitle": "Operations lead",
+    "department": "Operations",
+    "preferredName": "Ana",
+    "language": "en",
+    "contactMethod": "email",
+    "consent": true
+  },
+  "company": {
+    "legalName": "Rivera Studio LLC",
+    "tradingName": "Rivera Studio",
+    "registration": "RS-1001",
+    "taxId": "TEST-2026",
+    "website": "https://example.com",
+    "industry": "technology",
+    "employees": 42,
+    "founded": 2019,
+    "description": "Design and engineering services",
+    "referral": "Partner referral"
+  },
+  "address": {
+    "line1": "123 Example Street",
+    "line2": "Suite 200",
+    "city": "Boston",
+    "region": "Massachusetts",
+    "postal": "02110",
+    "country": "us",
+    "billingName": "Sam Rivera",
+    "billingEmail": "billing@example.com",
+    "billingPhone": "555-0101",
+    "purchaseOrder": "PO-2026-01"
+  },
+  "preferences": {
+    "plan": "team",
+    "seats": 12,
+    "startDate": "2026-11-01",
+    "timezone": "America/New_York",
+    "currency": "usd",
+    "frequency": "monthly",
+    "requirements": "Import existing customer records",
+    "accessibility": "Keyboard navigation and high contrast",
+    "terms": true,
+    "reference": "web-onboarding"
+  }
+}

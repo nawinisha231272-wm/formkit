@@ -16,7 +16,17 @@ import {
   useForm,
 } from "@ourform/react";
 import type { FormController } from "@ourform/renderer-dom";
-import schema from "../../../fixtures/forms/native/host-feedback.json";
+import nativeSchema from "../../../fixtures/forms/native/host-feedback.json";
+import onboardingSchema from "../../../fixtures/forms/onboarding/customer.json";
+import onboardingData from "../../../fixtures/forms/onboarding/customer.data.json";
+const query = new URLSearchParams(location.search);
+const schema = query.has("onboarding") ? onboardingSchema : nativeSchema;
+const initialData =
+  query.has("readonly") && query.has("onboarding")
+    ? onboardingData
+    : query.has("onboarding")
+      ? { preferences: { reference: "web-onboarding" } }
+      : {};
 import { employees, employeeValue } from "../../vanilla-example/src/data";
 import type { Employee } from "../../vanilla-example/src/data";
 const HostContext = createContext("missing-context");
@@ -112,7 +122,7 @@ function Inspector() {
 }
 function App() {
   const ref = useRef<FormController>(null);
-  const [data, setData] = useState<unknown>({});
+  const [data, setData] = useState<unknown>(initialData);
   const [result, setResult] = useState<unknown>();
   return el(
     HostContext.Provider,
@@ -125,7 +135,8 @@ function App() {
         {
           ref,
           schema,
-          data,
+          data: query.has("uncontrolled") ? undefined : data,
+          defaultData: initialData,
           readOnly: new URLSearchParams(location.search).has("readonly"),
           onChange: (patch) => setData(patch.data),
           onSubmit: setResult,

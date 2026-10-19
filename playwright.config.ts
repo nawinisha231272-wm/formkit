@@ -11,6 +11,11 @@ export default defineConfig({
   ],
   webServer: [
     {
+      command: "pnpm --filter @ourform/playground preview",
+      url: "http://127.0.0.1:4174",
+      reuseExistingServer: !process.env.CI,
+    },
+    {
       command: "pnpm --filter @ourform/playground dev",
       url: "http://127.0.0.1:4173",
       reuseExistingServer: !process.env.CI,
