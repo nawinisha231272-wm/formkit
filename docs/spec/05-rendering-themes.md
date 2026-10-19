@@ -101,3 +101,12 @@ export interface Theme {
   shipped in the package; must not depend on the host's Tailwind scanner).
 - Every theme passes the theme conformance suite: all states, validation, disabled, read-only,
   focus, hover, multi-value, nested grid, wizard, RTL, dark and high-contrast.
+
+## M02 renderer selection
+
+ADR-0002 selects VNodes with a small keyed DOM patcher. Each mounted field updates from FieldState,
+including focused controls; no render-time whole-form validation or control replacement occurs.
+The low-level mountVNode lifecycle also supports development host probes. Theme presets update classes
+in place. Static SSR shares control output without browser globals; it currently accepts explicit
+`{ views, theme? }` alongside the session. The normative engine-based mount API, shell variants and
+complete themes remain M03 work. Focus/caret, composition event, cleanup and SSR tests cover M02 behavior.

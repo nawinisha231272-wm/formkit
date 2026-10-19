@@ -12,7 +12,7 @@ This kit now carries the full build specification:
 - `docs/progress.md` — the running log of what is done.
 - `docs/codex-prompts.md` — prompts to drive OpenAI Codex milestone by milestone.
 
-Current development milestone: **M01 — Schema and core engine**. See `docs/progress.md` for verification status.
+Current development milestone: **M02 — SDK contracts and renderer decision**. See `docs/progress.md` for verification status.
 
 ## Run
 
@@ -31,7 +31,7 @@ Commands: `pnpm build` (Turbo + tsup/Vite), `pnpm typecheck`, `pnpm lint`, `pnpm
 `pnpm test` (Vitest + core coverage), `pnpm test:e2e` (three browsers + axe), `pnpm size`,
 and `pnpm changeset`. `pnpm verify` runs every required check. Tool versions are pinned locally.
 
-The playground demonstrates Text, Rating, theme presets and generated property editors.
+The playground demonstrates Text, Rating, theme presets and generated property editors. Use its SDK link (`/?sdk`) to add Number and Checkbox. ADR-0002 records the renderer measurements.
 Package source lives in `packages/*`; shared forms in `fixtures/forms`; CI in `.github/workflows`.
 
 ## Implemented
@@ -41,7 +41,8 @@ Package source lives in `packages/*`; shared forms in `fixtures/forms`; CI in `.
 - Bounded expression ASTs, dependency graphs, cycle diagnostics and affected-field change processing.
 - Per-field state, value normalization, built-in validation, Promise-based submission, reset and disposal.
 - Public custom `defineField` API and `stringProperty`/`numberProperty`/`booleanProperty` helpers.
-- Text field and Rating field examples, with no inheritance or separate edit form.
+- Text, Number, Checkbox and nullable Rating controls, typed metadata and generated property editors.
+- A measured VNode renderer with in-place keyed updates, cleanup, composition handling and static SSR.
 - Automatic editable builder property model generated from definitions.
 - Basic DOM renderer with FieldShell-style label/description/error and three cosmetic theme presets.
 - Client-only Vite demo; Node fixtures/security tests plus Playwright/axe checks in three browsers.
@@ -53,7 +54,7 @@ Package source lives in `packages/*`; shared forms in `fixtures/forms`; CI in `.
 - Repeaters, async/custom validation, plugins, composites and submission JSON Schema generation.
 - Full accessible focus management, ARIA invalid/error wiring, multi-value semantics, IME conformance.
 - Complete Bootstrap or Tailwind compatible theme packages (demo presets only).
-- Renderer implementation comparison (VNode vs DOM).
+- Full FieldShell variants and production theme packages (M03); native adapter APIs (M04).
 - Commercial licensing and distribution.
 
 Do not label Phase 0 passed. The current DOM renderer avoids replacing focused controls, but still needs a robust reconciliation lifecycle and proper accessibility tests. This is scaffolding for the Phase-0 experiments, not the final implementation.

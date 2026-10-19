@@ -10,7 +10,8 @@ deviations from spec, open questions.
   with TypeScript 5.8). See the "Starter kit review" in the build specification for the nine known issues.
 - **M00 complete** — clean installation and full verification pass.
 - **M01 complete** — frozen install and full verification pass.
-- Next milestone: **M02 — SDK contracts and renderer decision**.
+- **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
+- Next milestone: **M03 — FieldShell, accessibility and themes**.
 
 ## Open questions
 
@@ -153,3 +154,68 @@ Clarification: the M01 starter test hard-codes Rating's buggy default of zero. M
 so that single expected value must change; core/schema regression tests remain untouched and a required
 unset-Rating test will replace the old accidental acceptance with the specified behavior. No M03 shells,
 theme packages or M04 adapter APIs will be implemented. React/Angular work is limited to measured probes.
+
+## M02 — SDK contracts and renderer decision
+
+### Built
+
+- Typed FieldControlProps, ConfigOf, consistent string/nullable-number/boolean value helpers,
+  seven property helpers and frozen config resolution from shared metadata validation.
+- defineField returns a frozen headless model, builder metadata, properties, shell metadata and
+  portable view. Group metadata stays separate from control authoring; no handwritten Rating editor.
+- Two actual candidate implementations measured in Chromium: 500 mixed Text/Rating controls,
+  focused updates, all-control theme switches, source/bundle size, SSR and real React/Angular probes.
+  ADR-0002 selects VNodes with the full tradeoff table and reproduction checkpoint `0f00f17`.
+  Both comparison spikes are removed from the final working tree; history retains reproducible source.
+- Text, Number, Checkbox and nullable Rating use h() controls. Rating supports max/allowHalf metadata
+  and required validation fails for unset/null. Its complete definition is 29 meaningful lines.
+- Keyed in-place DOM updates, focus/caret retention, current event callbacks, ref/listener cleanup,
+  composition buffering, static escaped SSR and per-field patch updates without render-time validation.
+- Playground SDK demo (`/?sdk`) adds Number/Checkbox; development host/lifecycle page checks production
+  controls inside React 19.2 and Angular 20.3. Those frameworks/compiler and esbuild are dev dependencies
+  for probes/measurement. No external runtime dependencies or public native bridge APIs were added.
+
+### Acceptance evidence
+
+- PASS — Rating <30 meaningful lines: `Rating stays under thirty meaningful authoring lines` counts 29;
+  ADR-0002 documents the exact counting method and includes metadata/control without hidden Rating helpers.
+- PASS — required Rating with no selection: `required unset Rating fails validation and typed metadata drives defaults`.
+- PASS — ADR-0002 contains measured mount/update/theme, authoring, React/Angular effort, SSR and bundle results,
+  raw samples and a clear selection. Both hosts verify value updates, callback delivery and cleanup.
+- PASS — `expectTypeOf<ConfigOf<typeof ratingField.properties>>()` proves `{ max: number; allowHalf: boolean }`.
+- PASS — parameterized invalid-property tests cover wrong number/boolean kinds, min/max bounds and unknown keys;
+  all metadata helper kinds/defaults/override copying are also checked.
+- DEVIATION — the literal “all M1 tests unchanged” conflicts with M02's required null-empty Rating fix.
+  `git diff 378e063 -- packages/core/tests packages/schema/tests` is empty. All 83 existing regression cases
+  still pass; the sole starter default assertion changes zero to null. A new required-unset test verifies
+  the corrected contract. No test was skipped/deleted or weakened to preserve the old bug.
+- PASS — `CI=true npx pnpm@10.10.0 verify`: strict builds/typechecks, lint/format, 95 Node unit tests,
+  98.59% core line coverage, 27 browser cases across Chromium/Firefox/WebKit, all six size budgets.
+- PASS — browser cases prove stable focused/unrelated controls, caret-preserving themes/keyed reorder,
+  composition input handling, form/control cleanup, real host mounting and zero serious/critical axe
+  findings in both feedback and the four-control probe. Rendering never calls session.validate().
+- PASS — size-limit: schema 3.04 kB, core 6.63 kB, SDK 2.25 kB, components 828 B,
+  renderer-dom 3.21 kB, builder-core 459 B Brotli (30 kB budget each).
+
+### Decisions and limitations
+
+ADR-0002 records the representation and the original microbenchmark's scope/limits. DOM factories had
+faster isolated props updates/SSR; VNodes reduced author code and theme work with comparable mount cost.
+The production patcher adds safety/lifecycle handling beyond the measured minimal spikes; final sizes
+are recorded above. Framework single-run cold/warm timings are descriptive and are not scored.
+
+The four-control axe scan exposed aria-required=true on a group role. controlAttributes' group mode now
+omits the unsupported attribute, keeping required in control state/core validation. Full required
+announcements, group/inline/cell shells, keyboard conformance and real theme packages remain M03.
+Synthetic composition events pass in all browsers; this is not a claim of exhaustive real OS IME coverage.
+
+M02 starts from the verified M01 branch because the repository still has no main branch. PR creation
+remains unavailable through the unauthenticated GitHub CLI / connector; Git transport publishes the branch.
+M03 has not been started.
+
+### Review summary — M02: SDK contracts and renderer decision
+
+Field authors now return typed VNodes, with metadata driving config validation and property editors.
+Four controls share the same contract, update in place and support static SSR. Rating's required bug is fixed.
+Run `pnpm install --frozen-lockfile`, `pnpm verify`, then `pnpm dev`; use the SDK demo link for all controls.
+The acceptance checklist above is the review summary if an authenticated PR cannot be created.

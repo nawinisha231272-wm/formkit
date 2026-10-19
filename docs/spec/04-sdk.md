@@ -185,3 +185,21 @@ A. Portable Rating in < 30 lines of meaningful code. B. Conventional React contr
 C. Unusual React control: registration + small mapping. D. Rating appears and is editable in the
 builder with zero builder code. E. Switching base → bootstrap5 → tailwind needs zero Rating changes.
 F. Portable Rating renders in Angular with zero changes.
+
+## M02 implementation decision
+
+ADR-0002 selects h() VNodes for PortableControl and records the comparison and contract details.
+`defineField` returns model, views and typed properties metadata; model's builder metadata is headless.
+`ConfigOf` is exported from core and re-exported by sdk. Metadata helper groups default to Display;
+resolveConfig and core compilation share schema's validateProperties routine. All seven property helpers
+are present; array/object value helpers, plugins, composites and native adapters remain later milestones.
+
+`controlAttributes(props, role?)` handles refs, ids and state attributes. For role='group' it omits
+aria-required, which the group role does not support; state.required and required validation remain intact.
+The M03 shell will provide the complete required announcement and group semantics. This corrects the
+blanket “spread aria-required onto every group” instruction above; supported roles determine ARIA validity.
+See [WAI-ARIA group](https://www.w3.org/TR/wai-aria-1.2/#group).
+
+`numberValue({ empty: null })` and `booleanValue()` normalize empty values consistently. The transitional
+M01 zero-valued Rating default is retired. A single starter assertion updates accordingly; core/schema
+regression tests remain unchanged. Field authoring examples now return VNodes rather than HTMLElements.

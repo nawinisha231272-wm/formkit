@@ -17,7 +17,7 @@ test("registry, defaults, validation, subscriptions", async () => {
   assert.ok(compiled.ok);
   const session = engine.createSession(compiled.form);
   const changes: import("@ourform/core").Path[][] = [];
-  assert.deepEqual(session.getData(), { name: "", rating: 0 });
+  assert.deepEqual(session.getData(), { name: "", rating: null });
   assert.equal((await session.validate()).errors.length, 1);
   session.subscribe((e) => changes.push(e.changedPaths));
   session.setValue("name", "Ana");

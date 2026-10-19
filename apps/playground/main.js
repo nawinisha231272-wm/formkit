@@ -1,6 +1,12 @@
+import { defaultMessage } from "@ourform/sdk";
 import feedback from "../../fixtures/forms/feedback.json";
 import { createEngine } from "@ourform/core";
-import { ratingField, textField } from "@ourform/components";
+import {
+  ratingField,
+  textField,
+  numberField,
+  checkboxField,
+} from "@ourform/components";
 import { renderForm } from "@ourform/renderer-dom";
 import {
   applyEditorProperty,
@@ -9,12 +15,27 @@ import {
 
 const engine = createEngine()
   .register(textField.model)
-  .register(ratingField.model);
+  .register(ratingField.model)
+  .register(numberField.model)
+  .register(checkboxField.model);
 const views = new Map([
   [textField.model.type, textField.views],
   [ratingField.model.type, ratingField.views],
+  [numberField.model.type, numberField.views],
+  [checkboxField.model.type, checkboxField.views],
 ]);
 let schema = structuredClone(feedback);
+if (new URLSearchParams(location.search).has("sdk"))
+  schema.components.push(
+    { id: "cmp_age", key: "age", type: "number", label: "Age" },
+    {
+      id: "cmp_accept",
+      key: "accept",
+      type: "checkbox",
+      label: "Accept terms",
+    },
+  );
+
 function createSession(data = {}) {
   const result = engine.compile(schema);
   if (!result.ok)
@@ -60,7 +81,7 @@ function showProperties() {
   for (const p of getEditorProperties(field, engine.getField(field.type))) {
     const row = document.createElement("label");
     row.className = "property";
-    row.textContent = p.label;
+    row.textContent = defaultMessage(p.label);
     const input = document.createElement("input");
     input.type =
       p.kind === "boolean"

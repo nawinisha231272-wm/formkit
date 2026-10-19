@@ -37,3 +37,7 @@ They are exported to let core preserve identical safety checks without an import
 
 Types: `FormDefinition`, `ComponentNode` (`FormField` alias), `ValidationRules`, `Expr`, `ExprOp`,
 `Diagnostic`, `DefinitionRegistry`. Submission JSON Schema generation is scheduled for M06.
+
+M02 adds `PropertyDescriptor` and `validateProperties(metadata, overrides)`, shared by engine compilation
+and the SDK config resolver. It validates all seven metadata kinds and number bounds/select membership.
+The internal shape walker is shared by definition and expression-property validation without importing core.
