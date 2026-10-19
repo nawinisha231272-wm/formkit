@@ -214,7 +214,7 @@ declare global {
 window.runComparison = async () => {
   const result: Record<string, unknown> = {};
   for (const candidate of ["dom", "vnode"] as const) {
-    const performance = await performanceRun(candidate);
+    const timings = await performanceRun(candidate);
     const host = await hosts(candidate);
     const text = props(1);
     const rating = props(0);
@@ -250,7 +250,7 @@ window.runComparison = async () => {
     }
     result[candidate] = {
       ssrPairMs: (performance.now() - ssrStart) / 500,
-      ...performance,
+      ...timings,
       hosts: host,
       ssr,
       ssrBytes: new TextEncoder().encode(ssr).length,
