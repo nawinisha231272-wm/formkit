@@ -3,7 +3,9 @@
 A Theme contains a name, optional parent, CSS tokens, shell/part classes, optional CSS and dark/high-
 contrast token overrides. Theme packages import SDK types only and carry no component or framework
 runtime. Start with `ourform create-theme acme-theme` (see the component guide for local packed kits).
-The scaffold's field is a preview sample, while `theme` is the exported theme descriptor.
+The scaffold's field is a preview sample, while `theme` is the exported theme descriptor. Its preview
+registers your theme, adds it to the theme selector and browser-tests the authored class, alongside
+the four supported preset conformance cases. `pnpm builder` opens the preview and generated editors.
 
 ```ts
 import type { Theme } from "@ourform/sdk";

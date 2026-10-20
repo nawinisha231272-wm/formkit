@@ -1,0 +1,21 @@
+{
+  "$formVersion": "1.0",
+  "id": "protected-writes",
+  "display": "form",
+  "components": [
+    {
+      "id": "name",
+      "type": "text",
+      "key": "name",
+      "label": "Name",
+      "defaultValue": "stored",
+      "disabledWhen": ["eq", { "ref": "locked" }, true]
+    },
+    {
+      "id": "locked",
+      "type": "checkbox",
+      "key": "locked",
+      "label": "Lock field"
+    }
+  ]
+}

@@ -148,3 +148,5 @@ export {
   componentTestEngine,
 } from "./authoring";
 export type { RenderComponentOptions } from "./authoring";
+
+export { mountComponentBuilder } from "./component-builder";

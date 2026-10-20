@@ -43,6 +43,7 @@ export default defineConfig({
         "sdk-probe.html",
         "theme-probe.html",
         "sdk-extensions.html",
+        "authoring.html",
       ],
     },
   },

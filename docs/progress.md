@@ -21,6 +21,41 @@ deviations from spec, open questions.
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
 
+## M08 author rehearsal corrections — 2026-10-20 (in progress)
+
+The Slider exercise is AI-assisted rehearsal only, never independent M08 gate evidence.
+Plan: restore protected controls through a core refresh patch without data/processor changes; test
+core and every host; simplify the Slider; complete provisioning, numeric/i18n examples, typed fixtures,
+scaffolded browser/axe/visual checks and a metadata-driven mini builder/editor assertion helper.
+Commit/push every deliverable, prove the guide from a fresh clone of the pushed branch, then rehearse
+with a different component and record remaining gaps. Run full pinned verification and initial CI.
+The user explicitly authorizes merging the delivery PR after green CI while keeping M08 open for the
+independent human report; this supersedes the earlier draft-only delivery restriction. Do not mark
+ADR-0003 accepted, tag m08-done, claim the gate passed or begin M09.
+
+### Correction checkpoint before fresh-clone proof
+
+- PASS — core protected-write tests cover disabled/read-only/hidden user writes: stored data and
+  state identity are unchanged, no processors run, and a target-only refresh patch restores the
+  control. API writes still work. Direct DOM, vanilla, React, Angular 21/22 and Web Component
+  light/shadow hosts are covered by `protected-writes.spec.ts` and `authoring.spec.ts` (48 cases).
+- PASS — full Quantity example is compiled and its exact guide snippet is checked by
+  `tests/author-guide.test.ts`, including typed English fallback and translated output.
+- PASS — new Slider/Quantity images: 12 darwin-arm64 and 12 linux-x64, all four themes and all
+  three browsers. Linux recording and comparison ran in the official digest-pinned Playwright
+  1.56.1 image; existing 168 PNG files are unchanged. No pixel threshold changed.
+- Slider source: original 51 physical / 50 nonblank lines; simplified 46 physical / 45 nonblank.
+  Excluding imports, comments, blanks and punctuation-only lines: 35 → 28 meaningful lines.
+  Original source/report are retained in `docs/rehearsals/`; the new source is
+  `apps/docs/examples/slider.ts`. Native range still displays its minimum while the model is null;
+  key/pointer handlers retain the first-interaction commit, and reset clears the model.
+- Initial focused browser run: 42 passed, six React fixture cases failed because controlled
+  `data={}` correctly overrode the schema default with empty data. The protected fixture now
+  supplies explicit stored initial data, and tests assert it before mutation. All 48 cases then
+  pass. No production behavior or threshold was changed to hide this fixture error.
+
+Fresh clone and different-component rehearsal results will be recorded after pushing this checkpoint.
+
 ## Pre-M08 CI redesign and decisions — 2026-10-20
 
 User decisions (supersede the earlier open questions and wall-clock PR hard gate):
@@ -156,7 +191,7 @@ attempt 1. The prerequisite correction is complete.
 | ADR-0003 freezes SDK 0.x export list                | PENDING human gate review  | `docs/adr/0003-sdk-0x-api-freeze.md` and exact `docs/api/sdk-0.x.json`; `SDK 0.x export inventory matches ADR-0003` checks declared and built runtime exports. Proposed until independent exercise/review.                                                                                                           |
 | Full pinned verify                                  | PASS                       | `CI=true pnpm verify`, Node 22.22.3 / pnpm 10.10.0: lint, 22 builds, 37 typecheck tasks, 183 unit tests, 384 browser cases, all size budgets and five deterministic count cases. Core lines 95.14%; validation 99.25%. CLI budget includes every emitted JS chunk; its final tightened size check is recorded below. |
 
-Gate recommendation: **NO-GO** until actual independent author evidence and human review. M08 can be reviewed as a draft; do not merge it or start M09 before those gate requirements.
+Gate recommendation: **NO-GO** until actual independent author evidence and human review. The later author-rehearsal correction request explicitly authorizes merging tested M08 implementation delivery; it does not pass the gate, accept ADR-0003 or authorize M09.
 
 Final automated evidence — full pinned verify exits zero (`/tmp/m08-full-pinned-verify.log`). All
 183 unit tests include the actual built CLI/fresh scaffold proof; all 384 browser cases include 27 SDK

@@ -284,3 +284,18 @@ Every new component must pass conformance and visuals in base, Bootstrap 4, Boot
 
 The exact proposed SDK 0.x named export freeze is docs/api/sdk-0.x.json / ADR-0003. The external
 guide-only developer exercise and M08 human gate review are required before that freeze is accepted.
+
+## M08 rehearsal corrections (ADR-0012)
+
+Portable controls may call setValue directly; core rejects protected user writes and the renderer
+restores stored value/checked properties without replacing the control. Keep forwarding supplied
+state/ARIA. The typed t(key,params?) contract is unchanged; apps/docs shows a complete numeric field
+with component-owned typed English defaults and host translations.
+
+The scaffold provides exact Node/pnpm metadata and .nvmrc, a preview, Playwright/axe, four-theme browser
+verification, a mini builder command, and exact digest-pinned Linux visual commands. Test fixtures use
+node.validation.required, node.disabledWhen, and top-level readOnly. @ourform/testing adds
+mountComponentBuilder; @ourform/testing/playwright adds checkPropertyEditors and PropertyEditorCase.
+The helper requires observable preview assertions for every generated custom properties.\* editor.
+Missing baselines produce explicitly unapproved evidence; recording, comparison and review remain
+explicit. Existing visual/count/correctness thresholds are unchanged. AI rehearsals do not pass M08.

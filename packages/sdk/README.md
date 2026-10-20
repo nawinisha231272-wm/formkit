@@ -105,3 +105,8 @@ Data sources are customer-owned providers, with no automatic requests. Installat
 fixed at creation. Native views are packaged as RegisteredField descriptors; raw headless models are
 also accepted. See [component author guide](../../apps/docs/component-author-guide.md),
 [theme author guide](../../apps/docs/theme-author-guide.md) and ADR-0003 for the proposed 0.x freeze.
+
+M08 author correction: portable controls can call setValue directly. Core rejects protected user
+writes and refreshes only the attempted field from stored state, without changing data/processors.
+API writes keep working. See the complete Quantity numeric/typed-English-default example and real
+required/disabled/top-level-readOnly fixtures in apps/docs/component-author-guide.md (ADR-0012).

@@ -99,3 +99,8 @@ limits above 64 levels / 10,000 expanded nodes. The original wire definition is 
 defineComposite handles stable instance ids and local reference rebasing. See spec 04 and ADR-0003.
 The pinned semver runtime dependency implements the standard npm range grammar; no custom parser or
 network request is used.
+
+Protected user-sourced setValue now emits a refresh-only StatePatch for that field: changedPaths=[],
+unchanged data/state and no normalization/validation/dependent processing. Renderers restore the live
+control from stored state. Default/API writes continue normally; equal API writes still emit nothing.
+See ADR-0012. Read-only is a session/host mode; disabled comes from disabledWhen (including parents).

@@ -1,3 +1,4 @@
+import protectedSchema from "../../../fixtures/forms/native/protected-writes.json";
 import "@angular/compiler";
 import {
   Component,
@@ -19,9 +20,14 @@ import nativeSchema from "../../../fixtures/forms/native/host-feedback.json";
 import onboardingSchema from "../../../fixtures/forms/onboarding/customer.json";
 import onboardingData from "../../../fixtures/forms/onboarding/customer.data.json";
 const query = new URLSearchParams(location.search);
-const schema = query.has("onboarding") ? onboardingSchema : nativeSchema;
-const initialData =
-  query.has("readonly") && query.has("onboarding")
+const schema = query.has("protected")
+  ? protectedSchema
+  : query.has("onboarding")
+    ? onboardingSchema
+    : nativeSchema;
+const initialData = query.has("protected")
+  ? { name: "stored", locked: false }
+  : query.has("readonly") && query.has("onboarding")
     ? onboardingData
     : query.has("onboarding")
       ? { preferences: { reference: "web-onboarding" } }

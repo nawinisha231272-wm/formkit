@@ -1,152 +1,270 @@
 # Component author guide
 
-Use Node 22.22.3 and pnpm 10.10.0. A field has a headless model and a control view. The library supplies
-the label, description, required/error announcements, state, generated builder editors and themes.
-Write the control with public SDK APIs; do not import another package's source files.
+This guide is the complete development path for the unpublished M08 SDK. The AI-assisted rehearsals
+are preparation only. The M08 gate still needs an independent human author report and review.
 
-## Start with a project
+## 1. Start from the pushed branch
 
-After the matching 0.0.1 packages are published, install `@ourform/cli@0.0.1` in your tooling
-workspace, then run:
+Use a fresh checkout; no working-tree overlay or files from another checkout are required:
 
 ```sh
-pnpm exec ourform create-component acme-note
-cd acme-note
-pnpm install
-pnpm verify
+git clone --branch m08-sdk-complete --single-branch https://github.com/nawinisha231272-wm/formkit.git formkit
+cd formkit
+git rev-parse HEAD
+git status --porcelain
 ```
 
-During SDK development the packages are unpublished. From the SDK checkout, build and pack the
-local kit, then generate without editing any output:
+The last command must be empty. The guide, CLI source, scaffold templates and test kit are committed
+on this branch. Build outputs are ignored and are created by the next steps.
+
+## 2. Provision the exact tools and generate a project
+
+Requires Git and an existing npm/npx installation for bootstrap. This shell helper provisions both
+pinned executables for every command, including scripts they launch; global Node/pnpm defaults do
+not need changing:
 
 ```sh
-pnpm build
-pnpm sdk:pack /tmp/ourform-sdk-kit
-node packages/cli/dist/cli.js create-component acme-note --directory /tmp/acme-note --local-packages /tmp/ourform-sdk-kit
-cd /tmp/acme-note
-pnpm install
-pnpm verify
+ofrun() { npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 "$@"; }
+ofrun node --version
+ofrun pnpm --version
+ofrun pnpm install --frozen-lockfile
+ofrun pnpm build
+ofrun pnpm sdk:pack "$PWD/../ourform-sdk-kit"
+ofrun node packages/cli/dist/cli.js create-component acme-note --directory ../acme-note --local-packages "$PWD/../ourform-sdk-kit"
+cd ../acme-note
+ofrun pnpm install
+ofrun pnpm exec playwright install chromium firefox webkit
+ofrun pnpm verify
 ```
 
-`create-plugin` and `create-theme` use the same arguments. The theme scaffold includes a preview field;
-the plugin scaffold includes a packaged field. The generator refuses existing directories, writes a
-standalone pnpm workspace and never installs or sends data itself. Commit the generated lockfile after
-installation and use frozen installs afterwards. Tools and bundler overrides are pinned in the output.
+Expected tool versions: v22.22.3 and 10.10.0. Keep the shell helper in the same shell when changing
+directories. On a Linux host needing browser system libraries, use `ofrun pnpm exec playwright install
+--with-deps chromium firefox webkit` with the host's normal package-install privileges, or use the
+pinned Docker commands below. The bootstrap and initial dependency install need registry access;
+runtime forms and the generator itself make no network call.
 
-## Write only the control
+Both checkout and scaffold have `.nvmrc` containing 22.22.3. If nvm is already installed, `nvm install`
+and `nvm use` select that file. The generated package also pins `packageManager: pnpm@10.10.0`,
+`engines.node: 22.22.3`, `engines.pnpm: 10.10.0`, with engine-strict enabled. The ofrun path works
+without nvm/Corepack/global installs. Commit the generated pnpm-lock.yaml; subsequent installs use
+`ofrun pnpm install --frozen-lockfile`. The integration suite also proves a frozen/offline reinstall.
+
+`create-theme` and `create-plugin` take the same arguments. A theme includes a preview field; a plugin
+packages its field. The generator refuses an existing target. The local kit provides all twelve
+unpublished public dependencies. After matching SDK packages are published, install
+`@ourform/cli@0.0.1` and omit --local-packages. The kit and generated file overrides must remain at
+their chosen paths during development; regenerate a project when relocating its kit.
+
+## 3. Write a complete numeric field
+
+Replace src/index.ts with this Quantity field (a number input, with empty = null). All imports,
+property helpers, defaults, events, theme classes and ARIA forwarding are included. The same source
+is compiled and browser-tested in the SDK's authoring fixture.
 
 ```ts
-import { defineField, stringValue, h, controlAttributes } from "@ourform/sdk";
-export const note = defineField({
-  type: "acme.note",
-  title: "Note",
-  value: stringValue(),
+import {
+  defineField,
+  numberValue,
+  numberProperty,
+  booleanProperty,
+  controlAttributes,
+  h,
+} from "@ourform/sdk";
+import type { FieldControlProps } from "@ourform/sdk";
+
+const english = { "acme.quantity.unset": "Not set" } as const;
+type Translate = FieldControlProps<number | null, Record<string, unknown>>["t"];
+function message(t: Translate, key: keyof typeof english): string {
+  const translated = t(key);
+  return translated === key ? english[key] : translated;
+}
+export const field = defineField({
+  type: "acme-quantity",
+  title: "Quantity",
+  value: numberValue({ empty: null }),
+  properties: {
+    min: numberProperty({ label: "Minimum", default: 0 }),
+    max: numberProperty({ label: "Maximum", default: 100 }),
+    step: numberProperty({ label: "Step", default: 1, min: 0.01 }),
+    showValue: booleanProperty({ label: "Show value", default: true }),
+  },
   control: (p) =>
-    h("input", {
-      ...controlAttributes(p),
-      value: p.value,
-      class: p.theme.classFor("control"),
-      oninput: (event: Event) =>
-        p.setValue((event.target as HTMLInputElement).value),
-      onblur: p.onBlur,
-    }),
+    h(
+      "div",
+      {},
+      h("input", {
+        ...controlAttributes(p),
+        type: "number",
+        value: p.value ?? "",
+        min: p.config.min,
+        max: p.config.max,
+        step: p.config.step,
+        class: p.theme.classFor("control"),
+        oninput: (event: Event) => {
+          const value = (event.target as HTMLInputElement).valueAsNumber;
+          p.setValue(Number.isFinite(value) ? value : null);
+        },
+        onblur: p.onBlur,
+      }),
+      p.config.showValue
+        ? h(
+            "output",
+            {},
+            p.value === null
+              ? message(p.t, "acme.quantity.unset")
+              : String(p.value),
+          )
+        : null,
+    ),
 });
 ```
 
-Use lowercase VNode events. Forward the supplied state and ARIA/ref attributes to the actual input;
-call onBlur and setValue. Read config and state; do not mutate them. Never call session.validate from
-a control. For a grouped Rating, use shell="group", controlAttributes(p,"group") and accessible
-buttons; the outer fieldset/legend supplies the group label and required announcement.
+min/max/step configure the input. Put business range validation in the fixture's node.validation
+(e.g. `{required:true,min:0,max:100}`), so canonical Node validation enforces it too. Zero is a valid
+number; null is empty. An input event is typed Event; cast its target inside the handler. Forward
+controlAttributes and onBlur. The core handles read-only/disabled user writes and restores the DOM
+value; the control needs no protection guard or manual restoration.
 
-Properties such as numberProperty generate config types, defaults, diagnostics and builder editors.
-Labels may be message keys; translate control strings with p.t. The empty value must satisfy isEmpty;
-Rating uses null, preserving 0 as a valid number. Complex values require an explicit ValueAdapter with
-canonical normalize/serialize, equality when needed and a JSON Schema hint. Built-in primitive helpers
-are stringValue, numberValue and booleanValue; array/repeater helpers remain M10.
+The portable control works in DOM, React, Angular and Web Component hosts. Register field.model and
+field.views together through the host's fields array, or package descriptors with definePlugin.
+Never import another package's source or invoke whole-form validation from a control.
 
-Register `note.model` with your engine and `note.views` under its type in the renderer's view map, or
-pass `fields:[note]` to createFormController/Form. The builder reads the same engine registry:
-no palette or property-panel extension is needed. Existing customer wire definitions retain stable ids.
+## 4. Translate control text with an English default
 
-## Configure and assemble
+The typed Quantity example above uses `FieldControlProps<...>["t"]` as Translate. The signature is
+`t(key: string, params?: Record<string, unknown>): string`. Keep a typed English dictionary in the
+component and use it when t returns the unknown key, as message() demonstrates. Hosts supply
+translations through renderer t or engine providers.localization; known shell/validation keys retain
+the SDK's English catalog. The example's output says "Not set" without a provider and uses a supplied
+translation for acme.quantity.unset. No English string is passed as t's second argument.
+
+## 5. Use the generated browser harness
+
+The scaffold includes index.html, preview.ts, a separate Vitest include pattern, Playwright config
+(Chromium/Firefox/WebKit), axe and browser/component.spec.ts. `ofrun pnpm dev` shows the live control,
+required/disabled/read-only toggles, all four themes, Submit/Reset and the mini builder. `pnpm verify`
+runs build, strict typecheck, Node tests and this browser suite.
+
+After authoring a different control, update its value/interaction samples and metadata-editor cases
+in the generated tests. Keep the assertions for validation, state, identity, keyboard, cleanup and
+accessibility. The starter browser case always checks names/descriptions, required errors, values,
+reset, protected writes, API writes and zero serious/critical axe violations in all four themes.
+
+New projects have no approved image baseline. The sample captures explicitly UNAPPROVED screenshots
+and logs `visual baseline missing: evidence captured, comparison pending explicit record/review`.
+Functional/a11y assertions still run. Record a fresh platform folder with `ofrun pnpm visual:record`,
+inspect the images, and commit the reviewed baselines. That command records and then compares; it
+refuses to overwrite an existing platform folder. Later verify runs compare existing images at the
+same 0.02 maximum pixel ratio. A passing first verify with unapproved images is not visual approval.
+Before shipping a new component, review comparisons in base, Bootstrap 4, Bootstrap 5 and Tailwind.
+
+## 6. Use the correct fixture shape
+
+renderComponent supplies type automatically. node is a partial ComponentNode without type. Required
+is node.validation.required, disabled is a disabledWhen expression, and readOnly is a host option:
 
 ```ts
-import { definePreset, defineComposite } from "@ourform/sdk";
-import { ratingField } from "@ourform/components";
-const quickRating = definePreset("acme.quick-rating", {
-  base: ratingField,
-  title: "Quick rating",
-  defaults: { max: 3 },
-});
-const address = defineComposite({
-  type: "acme.address",
-  title: "Address",
-  dataScope: "object",
-  components: [
-    { id: "street", type: "text", key: "street", label: "Street" },
-    { id: "city", type: "text", key: "city", label: "City" },
-    { id: "postal", type: "text", key: "postal", label: "Postal code" },
-    { id: "country", type: "text", key: "country", label: "Country" },
-  ],
-});
+import { renderComponent } from "@ourform/testing";
+import type { RenderComponentOptions } from "@ourform/testing";
+import { field } from "./src/index";
+const options = {
+  host: document.getElementById("fixture")!,
+  theme: "bootstrap4",
+  node: { validation: { required: true }, disabledWhen: ["eq", 1, 1] },
+  readOnly: true,
+  data: { value: 10 },
+} satisfies RenderComponentOptions;
+const fixture = renderComponent(field, options);
+fixture.session.setValue("value", 20, { source: "api" });
+fixture.destroy();
 ```
 
-Preset defaults apply to property metadata, and node.properties can override them. Value adapters,
-validators and views are shared; the base is unchanged. A preset needs a distinct type.
-Register the composite and all child types. An instance `{id:"billing",type:"acme.address",key:"billing"}`
-submits `billing.street` etc. Default scope is object; scope none keeps children in their parent's data
-scope. Generated ids are `billing/street`, etc. Internal runtime visibility/calculation/validation refs are rebased; properties/meta/default values stay opaque. External refs and
-absolute path expressions remain unchanged. The wire definition stays compact. Instance components
-cannot override registered children; cycles, invalid output and generated id/key collisions are errors.
-Nested composites are supported with bounded expansion (64 levels, 10,000 components).
-Use defineLayout for child-owning layouts editable in the wire definition; composite children are fixed.
+Use separate empty hosts, or destroy before reusing a host. For a required-only case omit disabledWhen
+and readOnly; for disabled-only use node.disabledWhen; for read-only-only set readOnly:true at the top.
+There is no node.readOnly/node.readonly. These are real engine/host fixtures; no control-state wrapper
+is needed. node overrides label/key/properties, data uses the actual field key (value by default),
+fields supplies composite dependencies, engine supplies custom validators/providers, and
+adapter/nativeHost select native views. The returned controller supports submit/reset/focus/destroy.
 
-## Existing controls and plugins
+## 7. See it in the builder and assert every property editor
 
-For a conventional React control: `registerReactField("acme.lookup", EmployeeLookup)` is the complete
-registration. An unusual control can set valueProp/changeProp/blurProp/disabledProp and mapChange.
-Complex object values need an adapter; TypeScript types cannot be inferred at runtime. Angular uses
-provideFormField, Web Components registerElementField. Portable controls need no changes between hosts.
-The `/sdk-extensions.html` page has conventional and unusual React examples; the standard Angular
-example renders the identical shipped portable Rating.
+```sh
+ofrun pnpm builder
+```
+
+The command opens the generated preview with the component registered. Click its Add button. The
+palette and editors come from the real builder-core metadata; edits dispatch UpdateProperty and
+rebuild the preview. This author fixture is not the M09 full builder product.
+
+The generated browser test calls checkPropertyEditors from @ourform/testing/playwright. For Quantity,
+replace its sample cases with these, after clicking "Add Quantity":
 
 ```ts
-import { definePlugin } from "@ourform/sdk";
-import { createEngine } from "@ourform/core";
-const plugin = definePlugin({
-  id: "acme.fields",
-  version: "1.0.0",
-  engine: "^0.0.1",
-  components: [note, address],
-});
-const engine = createEngine({ plugins: [plugin] });
+await checkPropertyEditors(page, [
+  {
+    key: "min",
+    value: 5,
+    verify: async (preview) => {
+      await expect(preview.locator("input")).toHaveAttribute("min", "5");
+    },
+  },
+  {
+    key: "max",
+    value: 50,
+    verify: async (preview) => {
+      await expect(preview.locator("input")).toHaveAttribute("max", "50");
+    },
+  },
+  {
+    key: "step",
+    value: 5,
+    verify: async (preview) => {
+      await expect(preview.locator("input")).toHaveAttribute("step", "5");
+    },
+  },
+  {
+    key: "showValue",
+    value: false,
+    verify: async (preview) => {
+      await expect(preview.locator("output")).toHaveCount(0);
+    },
+  },
+]);
 ```
 
-Installation checks full npm semver ranges against core and other installed plugins; order does not
-matter. Duplicate plugin ids/types/themes/functions/validators/data-source names throw. Register child
-types too. Plugin functions/validators merge with host registries; dataSources are customer-owned
-providers available as providers.dataSources. No network call is made by installation. Remote data
-source UI/controls remain M11. Plugins are fixed at engine creation; use a new engine to change the set.
-Core keeps models and plugin version metadata; hosts receive the plugin's component views and themes
-explicitly. Form requires entries fail compile with missing-plugin when absent or version-incompatible.
+Import test/expect from @playwright/test and checkPropertyEditors from @ourform/testing/playwright.
+The helper requires exactly one case per generated component-specific properties.\* editor, edits
+its actual number/checkbox/select/JSON/text control, and awaits its observable preview assertion.
+Missing, duplicate or extra cases fail. Label/base editors are already covered by the SDK's builder
+suite; this helper prevents custom property metadata from being merely listed but never exercised.
+For a standalone custom harness, mountComponentBuilder(field,{host:emptyElement,theme:"base"}) creates
+this mini builder. Its return value exposes builder, preview and destroy. No custom edit forms are needed.
 
-## Test before shipping
+## 8. Generate Linux screenshots in the exact pinned image
 
-The generated Node suite runs checkValueAdapter, checkValidation and checkBuilderRoundTrip from
-@ourform/testing. They throw on failed invariants, and cover empty/canonical values, expected validation
-codes, palette discovery/generated editing and byte-identical undo/redo.
+Docker is needed for this step. The scaffold's playwright-container.json pins:
 
-In a real browser use `renderComponent(note,{host:emptyElement,theme:"bootstrap4"})`. The returned
-controller exposes engine/session/view, focusField, submit/reset and destroy. node/data/fields overrides
-allow required, disabled, read-only and composite fixtures. engine supplies custom validators/providers; adapter/nativeHost opt into native views.
-Destroy the controller after each test. The host must be empty; it is caller-owned and retained.
+```text
+mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a
+```
 
-Run keyboard, name/description/error, pending/invalid/read-only, reset/focus/identity and axe checks.
-Every new component must pass base, Bootstrap 4, Bootstrap 5 and Tailwind conformance and visual
-comparisons. Generate Linux images inside the digest-pinned Playwright image matching 1.56.1; keep
-platform images separate. Never regenerate existing baselines to make a failure disappear. Run
-`pnpm verify`; wall-clock investigation is separate with `pnpm benchmark:check`.
+```sh
+ofrun pnpm visual:linux:record
+ofrun pnpm visual:linux:check
+```
 
-For the M08 independent exercise, a developer outside implementation should use this guide alone to
-build one component, run its checks and report their name, commands/results, time and any unclear steps.
-That human evidence is required before the SDK gate can be marked GO.
+The script runs linux/amd64, installs frozen dependencies and uses Node 22.22.3 / pnpm 10.10.0 inside
+the official Playwright 1.56.1 image. Source and the selected local SDK kit are read-only mounts;
+Linux dependencies/builds are disposable. It generates only a fresh Linux baseline folder, compares
+with updates disabled, and copies images back only after success. Review and commit browser/**screenshots**.
+The snapshot path includes linux-x64 or darwin-arm64 and browser; platforms are never compared.
+Existing images are never automatically replaced. Root SDK author fixtures use
+`sh scripts/linux-visuals.sh record author` and `sh scripts/linux-visuals.sh check author` from the SDK checkout.
+
+## Human trial and gate
+
+A developer outside implementation must use this guide alone to build one component and report their
+name, exact checkout commit, commands/results, elapsed time and confusing steps. AI-assisted Slider
+and color rehearsals do not satisfy that requirement. M08 stays open until the actual report and
+human review; no M09 implementation is included. Timing investigation uses standalone
+pnpm benchmark:check in the SDK, outside verify.

@@ -170,3 +170,11 @@ session. Providers and calculations observe the filtered data in strip mode. Cal
 ValidationResult does not contain sanitized data. Adapter-owned values are opaque to scope filtering.
 Known scope/type/required/calculation constraints are unchanged. Invalid option strings are programmer
 errors; invalid submitted data still returns diagnostics. Browser and customer Node behavior is identical.
+
+## M08 protected user edits (ADR-0012)
+
+User-sourced setValue on a disabled, read-only or hidden field leaves data, field state, validation and
+processor counters unchanged. It emits one refresh StatePatch: changedFields contains only that field,
+changedPaths is empty, and data is the same stored snapshot. Renderers restore the control's live value
+from state without replacing its DOM node. Default/API-sourced writes continue to work. Equal API writes
+still emit nothing. This closes optimistic-control restoration without adding guards to field authors.

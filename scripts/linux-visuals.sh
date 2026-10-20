@@ -11,8 +11,9 @@ visual_suite=${2:-themes}
 case "$visual_mode" in record|check) ;; *) echo "Usage: sh scripts/linux-visuals.sh [record|check]" >&2; exit 2;; esac
 case "$visual_suite" in
   themes) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
+  author) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/authoring.spec.ts ;;
   sdk) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts ;;
-  *) echo "Usage: sh scripts/linux-visuals.sh [record|check] [themes|sdk]" >&2; exit 2;;
+  *) echo "Usage: sh scripts/linux-visuals.sh [record|check] [themes|sdk|author]" >&2; exit 2;;
 esac
 mkdir -p "$visual_snapshot_dir"
 if [ "$visual_mode" = record ] && [ -n "$(find "$visual_snapshot_dir" -name '*.png' -print -quit)" ]; then
@@ -38,6 +39,7 @@ npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm build
 visual_filter="conformance states and visual snapshot|read-only prevents text, checkbox and Rating edits|Bootstrap preset works with the real Bootstrap 5 stylesheet installed|Bootstrap 4 .* with real framework CSS"
 visual_file=tests/e2e/themes.spec.ts
 if [ "$OURFORM_VISUAL_SUITE" = sdk ]; then visual_file=tests/e2e/sdk-extensions.spec.ts; visual_filter="SDK composites/presets"; fi
+if [ "$OURFORM_VISUAL_SUITE" = author ]; then visual_file=tests/e2e/authoring.spec.ts; visual_filter="authoring:"; fi
 : > /results/generation.log
 : > /results/themes.log
 set +e

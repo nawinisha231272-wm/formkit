@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Authoring fixtures</title>
+  </head>
+  <body>
+    <main>
+      <h1>Authoring fixtures</h1>
+      <label
+        >Theme
+        <select id="theme">
+          <option>base</option>
+          <option>bootstrap4</option>
+          <option>bootstrap5</option>
+          <option>tailwind</option>
+        </select></label
+      ><label><input id="read-only" type="checkbox" />Read only</label
+      ><label><input id="disabled" type="checkbox" />Disabled</label>
+      <div id="author-fixtures">
+        <h2>Slider</h2>
+        <div id="slider"></div>
+        <h2>Quantity</h2>
+        <div id="quantity"></div>
+      </div>
+      <h2>Quantity mini builder</h2>
+      <div id="builder"></div>
+    </main>
+    <script type="module" src="/authoring.ts"></script>
+  </body>
+</html>

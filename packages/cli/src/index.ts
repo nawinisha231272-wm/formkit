@@ -1,3 +1,4 @@
+import { browserFiles } from "./browser-template";
 import { mkdir, readdir, writeFile, rm } from "node:fs/promises";
 import { resolve, join, dirname } from "node:path";
 
@@ -8,22 +9,28 @@ export interface ScaffoldOptions {
 const version = "0.0.1";
 const control = (
   name: string,
-) => `import { defineField, stringValue, controlAttributes, h } from "@ourform/sdk";
+) => `import { defineField, stringValue, stringProperty, numberProperty, booleanProperty, controlAttributes, h } from "@ourform/sdk";
 export const field = defineField({
   type: "${name}", title: "${name}", value: stringValue(),
-  control: (props) => h("input", {
+  properties: {
+    placeholder: stringProperty({label: "Placeholder", default: "Type a value"}),
+    maxLength: numberProperty({label: "Maximum length", default: 80, min: 1}),
+    showCount: booleanProperty({label: "Show character count", default: true}),
+  },
+  control: (props) => h("div", {}, h("input", {
     ...controlAttributes(props), value: props.value,
+    placeholder: props.config.placeholder, maxlength: props.config.maxLength,
     class: props.theme.classFor("control"),
     oninput: (event: Event) => props.setValue((event.target as HTMLInputElement).value),
     onblur: props.onBlur,
-  }),
+  }), props.config.showCount ? h("output", {}, String(props.value.length)) : null),
 });
 `;
 const testSource = (
   kind: ScaffoldKind,
   name: string,
 ) => `import { test, expect } from "vitest";
-import { renderVNodeToString, defaultMessage } from "@ourform/sdk";
+import { renderVNodeToString, defaultMessage, resolveConfig } from "@ourform/sdk";
 import { field${kind === "component" ? "" : `, ${kind}`} } from "../src/index";
 import { componentTestEngine, checkValueAdapter, checkValidation, checkBuilderRoundTrip } from "@ourform/testing";
 test("generated ${kind}: values, validation and generated builder palette/undo/redo", async () => {
@@ -35,8 +42,10 @@ test("generated ${kind}: values, validation and generated builder palette/undo/r
     components: [{id: "sample", type: "${name}", key: "value", validation: {required: true}}],
   }, [{data: {value: ""}, valid: false, codes: ["required"]}, {data: {value: "hello"}, valid: true}]);
   expect(field.model.type).toBe("${name}");
+  const resolved = resolveConfig(field.properties);
+  if (!resolved.ok) throw new Error("Invalid generated defaults");
   const markup = renderVNodeToString(field.views.portable!({
-    value: "hello", config: {}, setValue: () => {}, onBlur: () => {}, focusRef: () => {},
+    value: "hello", config: resolved.config, setValue: () => {}, onBlur: () => {}, focusRef: () => {},
     state: {disabled: false, readOnly: false, invalid: false, pending: false, required: true},
     a11y: {id: "sample", name: "value", labelledBy: "sample-label"},
     theme: {classFor: () => "control"}, t: defaultMessage,
@@ -65,10 +74,19 @@ export async function createScaffold(
   const devDependencies: Record<string, string> = {
     "@ourform/testing": version,
     "@types/node": "22.15.29",
+    "@playwright/test": "1.56.1",
+    "@axe-core/playwright": "4.10.2",
     typescript: "6.0.2",
     tsup: "8.5.0",
     vitest: "3.2.4",
     vite: "6.3.5",
+    ...(kind === "theme"
+      ? {
+          "@ourform/theme-bootstrap4": version,
+          "@ourform/theme-bootstrap5": version,
+          "@ourform/theme-tailwind": version,
+        }
+      : {}),
   };
   const overrides: Record<string, string> = {
     vite: "6.3.5",
@@ -107,6 +125,8 @@ export const theme: Theme = {name: "${name}", extends: "base", tokens: {"--of-ac
   try {
     await mkdir(join(target, "src"));
     await mkdir(join(target, "tests"));
+    await mkdir(join(target, "browser"));
+    await mkdir(join(target, "scripts"));
     const pkg = {
       name,
       version: "0.0.0",
@@ -114,7 +134,7 @@ export const theme: Theme = {name: "${name}", extends: "base", tokens: {"--of-ac
       type: "module",
       sideEffects: false,
       packageManager: "pnpm@10.10.0",
-      engines: { node: ">=22.22.3" },
+      engines: { node: "22.22.3", pnpm: "10.10.0" },
       exports: {
         ".": { types: "./dist/index.d.ts", import: "./dist/index.js" },
       },
@@ -122,13 +142,26 @@ export const theme: Theme = {name: "${name}", extends: "base", tokens: {"--of-ac
         build: "tsup src/index.ts --format esm --dts --clean",
         typecheck: "tsc --noEmit",
         test: "vitest run --reporter=verbose",
-        verify: "pnpm build && pnpm typecheck && pnpm test",
+        dev: "vite --host 127.0.0.1 --port 4175 --strictPort",
+        builder: "pnpm dev --open /?builder",
+        "test:browser": "playwright test",
+        "visual:record": "node scripts/visuals.mjs record",
+        "visual:check": "node scripts/visuals.mjs check",
+        "visual:linux:record": "node scripts/visuals.mjs record --linux",
+        "visual:linux:check": "node scripts/visuals.mjs check --linux",
+        verify:
+          "pnpm build && pnpm typecheck && pnpm test && pnpm test:browser",
       },
       dependencies,
       devDependencies,
       pnpm: { overrides },
     };
     const files: Record<string, string> = {
+      ...browserFiles(
+        name,
+        options.localPackages ? resolve(options.localPackages) : undefined,
+        kind === "theme",
+      ),
       "package.json": JSON.stringify(pkg, null, 2) + "\n",
       "pnpm-workspace.yaml": "packages: []\n",
       "tsconfig.json":
@@ -146,15 +179,23 @@ export const theme: Theme = {name: "${name}", extends: "base", tokens: {"--of-ac
               ignoreDeprecations: "6.0",
               types: ["node"],
             },
-            include: ["src/**/*.ts", "tests/**/*.ts"],
+            include: [
+              "src/**/*.ts",
+              "tests/**/*.ts",
+              "browser/**/*.ts",
+              "preview.ts",
+              "playwright.config.ts",
+              "vitest.config.ts",
+            ],
           },
           null,
           2,
         ) + "\n",
       "src/index.ts": source,
       "tests/extension.test.ts": testSource(kind, name),
-      ".gitignore": "node_modules/\ndist/\ncoverage/\n",
-      "README.md": `# ${name}\n\nGenerated ${kind}. Install with pinned Node 22.22.3 and pnpm 10.10.0:\n\n\`\`\`sh\npnpm install\npnpm verify\n\`\`\`\n\nRegister field.model in your engine and field.views in your renderer; the builder palette and property panel use the same model. ${kind === "plugin" ? "Alternatively install plugin with createEngine({plugins: [plugin]}), then pass its component views/themes to the host." : kind === "theme" ? "Pass theme to the renderer's themes array and select it by name; field is a sample preview control." : "See the component author guide and renderComponent test helper for DOM/a11y/theme tests."}\n\nThe Node suite proves values, canonical validation and builder undo/redo. Before shipping, exercise the control in base, Bootstrap 4, Bootstrap 5 and Tailwind with browser conformance and visual checks.\n${options.localPackages ? "\nThis development project uses the local packed SDK kit selected at generation time.\n" : "\nRegistry dependencies require the matching OurForm 0.0.1 packages to be published; development kits can be selected with --local-packages.\n"}`,
+      ".gitignore":
+        "node_modules/\ndist/\ncoverage/\ntest-results/\nplaywright-report/\n",
+      "README.md": `# ${name}\n\nGenerated ${kind}. Install with pinned Node 22.22.3 and pnpm 10.10.0:\n\n\`\`\`sh\nofrun() { npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 "$@"; }\nofrun node --version\nofrun pnpm --version\nofrun pnpm install\nofrun pnpm exec playwright install chromium firefox webkit\nofrun pnpm verify\n\`\`\`\n\nRegister field.model in your engine and field.views in your renderer; the builder palette and property panel use the same model. ${kind === "plugin" ? "Alternatively install plugin with createEngine({plugins: [plugin]}), then pass its component views/themes to the host." : kind === "theme" ? "Pass theme to the renderer's themes array and select it by name; field is a sample preview control." : "See the component author guide and renderComponent test helper for DOM/a11y/theme tests."}\n\nRun pnpm exec playwright install chromium firefox webkit once, then pnpm verify runs Node and all three browsers in all four themes. pnpm builder opens the registered mini builder. Browser tests assert every generated component property editor changes the preview. Missing visual baselines capture explicitly unapproved evidence; pnpm visual:record records only a fresh platform folder, then compares it. Review and commit those images before shipping. pnpm visual:linux:record uses the exact Docker image in playwright-container.json.\n${options.localPackages ? "\nThis development project uses the local packed SDK kit selected at generation time.\n" : "\nRegistry dependencies require the matching OurForm 0.0.1 packages to be published; development kits can be selected with --local-packages.\n"}`,
     };
     for (const [path, value] of Object.entries(files))
       await writeFile(join(target, path), value, { flag: "wx" });

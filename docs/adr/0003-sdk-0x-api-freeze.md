@@ -60,7 +60,8 @@ VNodeAttribute, VNodeChild, VNodeProps, ValueAdapter.
   private range grammar. It has no runtime dependencies. Package/size checks remain enforced.
 - @ourform/testing adds renderComponent(def,{host,theme,...}) (host is an empty caller-owned Element),
   RenderComponentOptions, componentTestEngine, checkValueAdapter, checkValidation and
-  checkBuilderRoundTrip. An engine with custom validators/providers and native hosts can be supplied explicitly; destroy releases the fixture.
+  checkBuilderRoundTrip and mountComponentBuilder. The Playwright subpath adds
+  checkPropertyEditors/PropertyEditorCase. An engine with custom validators/providers and native hosts can be supplied explicitly; destroy releases the fixture.
   Helpers throw on invariant failures and use the actual public engine/renderer/builder/validation.
 - @ourform/cli exports createScaffold, runCli, ScaffoldKind and ScaffoldOptions and the ourform binary.
   create-component/create-theme/create-plugin generate standalone projects with pinned tools and
@@ -81,4 +82,5 @@ assertion, pixel threshold or control source is weakened. The four-theme browser
 Automated scenarios A–F and scaffold checks are recorded with final commands in docs/progress.md.
 The independent developer's name and guide-only authoring notes cannot be supplied by the implementing
 agent. Until that actual exercise and human review are recorded, the M08 recommendation is **NO-GO**
-for merging/freezing the SDK gate. No M09 implementation is authorized by this ADR.
+for freezing the SDK gate. The user authorizes merging the implementation delivery after green CI
+while keeping M08 open for the human report (ADR-0012). No M09 implementation is authorized by this ADR.

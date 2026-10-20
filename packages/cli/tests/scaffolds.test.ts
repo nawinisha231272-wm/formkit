@@ -45,6 +45,20 @@ test("CLI rejects invalid arguments and existing targets without modifying calle
       await readFile(join(root, "plain/package.json"), "utf8"),
     );
     expect(pkg.dependencies["@ourform/sdk"]).toBe("0.0.1");
+    expect(pkg.packageManager).toBe("pnpm@10.10.0");
+    expect(pkg.engines).toEqual({ node: "22.22.3", pnpm: "10.10.0" });
+    expect(await readFile(join(root, "plain/.nvmrc"), "utf8")).toBe(
+      "22.22.3\n",
+    );
+    expect(pkg.scripts.verify).toContain("pnpm test:browser");
+    expect(pkg.scripts.builder).toContain("--open");
+    const pin = JSON.parse(
+      await readFile(join(root, "plain/playwright-container.json"), "utf8"),
+    );
+    expect(pin.image).toBe(
+      JSON.parse(await readFile("scripts/playwright-container.json", "utf8"))
+        .image,
+    );
     await expect(
       runCli(["create-theme", "sample", "--directory", join(root, "plain")]),
     ).rejects.toThrow();

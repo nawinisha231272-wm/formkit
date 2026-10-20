@@ -157,3 +157,75 @@ export async function checkComponentConformance(
     ).toEqual([]);
   }
 }
+
+export interface PropertyEditorCase {
+  key: string;
+  value: string | number | boolean | object | null;
+  verify(preview: import("@playwright/test").Locator): Promise<void>;
+}
+/** Exercise every component-specific metadata editor, with an observable preview assertion per edit. */
+export async function checkPropertyEditors(
+  page: Page,
+  cases: readonly PropertyEditorCase[],
+  options: { root?: string } = {},
+): Promise<void> {
+  const root = page.locator(options.root ?? "#builder");
+  const editors = root.locator(
+    '[data-author-properties] [data-property^="properties."]',
+  );
+  const keys = await editors.evaluateAll((nodes) =>
+    nodes
+      .map((node) =>
+        node.getAttribute("data-property")!.slice("properties.".length),
+      )
+      .sort(),
+  );
+  expect(
+    cases.map((sample) => sample.key).sort(),
+    "Supply exactly one preview assertion for every generated component property",
+  ).toEqual(keys);
+  const preview = root.locator("[data-author-preview]");
+  for (const sample of cases) {
+    // Filter by the observed dataset rather than interpolating a customer key into CSS.
+    const index = await editors.evaluateAll(
+      (nodes, key) =>
+        nodes.findIndex(
+          (node) => node.getAttribute("data-property") === `properties.${key}`,
+        ),
+      sample.key,
+    );
+    const target = editors.nth(index);
+    const kind = await target.evaluate((node) =>
+      node.tagName === "TEXTAREA"
+        ? "json"
+        : node.tagName === "SELECT"
+          ? "select"
+          : (node as HTMLInputElement).type,
+    );
+    const before =
+      kind === "checkbox"
+        ? await target.isChecked()
+        : kind === "number"
+          ? Number(await target.inputValue())
+          : kind === "json"
+            ? JSON.parse(await target.inputValue())
+            : await target.inputValue();
+    expect(
+      before,
+      `Choose a different value for property ${sample.key}`,
+    ).not.toEqual(sample.value);
+    if (kind === "checkbox") {
+      if (typeof sample.value !== "boolean")
+        throw new Error("Checkbox editor requires a boolean");
+      await target.setChecked(sample.value);
+    } else if (kind === "select")
+      await target.selectOption(String(sample.value));
+    else {
+      await target.fill(
+        kind === "json" ? JSON.stringify(sample.value) : String(sample.value),
+      );
+      await target.dispatchEvent("change");
+    }
+    await sample.verify(preview);
+  }
+}
