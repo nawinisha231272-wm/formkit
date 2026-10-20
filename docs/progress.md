@@ -50,7 +50,7 @@ run provenance through the API. The theme conformance page now gives its host-ow
 a light native color scheme and matching ButtonText system color: Linux WebKit's native dark button
 otherwise reports 1.81:1 contrast. Explicit background colors were rejected after local verification
 showed they change Mac WebKit's native height by three pixels. The final rule retains native geometry.
-No SDK source, pixel/timing threshold or existing test assertion is changed.
+No runtime SDK source, pixel/timing threshold or existing test assertion is weakened.
 
 The supplied nine findings are audited in docs/starter-kit-review.md: eight PASS, builder commands
 PARTIAL until M09.
@@ -102,6 +102,17 @@ fails reading Git provenance because the host-owned checkout needs an explicit s
 in the container user's Git configuration. Only the actual GITHUB_WORKSPACE is trusted; an early
 rev-parse/clean-status check is added. No wildcard trust, HOME reassignment, test/threshold change or
 baseline timing update is used. The final native rerun is pending.
+
+At 00c1dbf, [push run 39464178487](https://github.com/nawinisha231272-wm/formkit/actions/runs/39464178487)
+passes 158 unit tests, all 351 browser cases and 14 size budgets, emits clean linux-x64 provenance,
+then fails only on the explicit pending Linux budget. Its report is not eligible for calibration.
+The parallel [PR run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39464185762) has one
+intermittent Firefox React failure: the flow did not wait for the email provider to finish and remove
+an error above the later pointer target. The shared development conformance helper now asserts email aria-busy=false
+and aria-invalid=false before proceeding. The original checkbox check and every other assertion remain;
+no retry, timeout, pixel allowance or runtime behavior changes. All ten focused Firefox repetitions
+pass (`tests/e2e/tier1.spec.ts`, react shared-conformance case, --repeat-each=10). Final full local and
+native verification of this stronger readiness check are pending.
 
 ## Log
 

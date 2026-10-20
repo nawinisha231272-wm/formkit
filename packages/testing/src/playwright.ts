@@ -124,6 +124,9 @@ export async function checkComponentConformance(
   await expect(email).toHaveAttribute("aria-invalid", "true");
   await email.fill("ana@example.com");
   await email.press("Tab");
+  // Let the host's async validator settle before later pointer targets can move.
+  await expect(email).toHaveAttribute("aria-busy", "false");
+  await expect(email).toHaveAttribute("aria-invalid", "false");
   await root.getByLabel("Password", { exact: true }).fill("test-password");
   await expect(root.getByLabel("Password", { exact: true })).toHaveAttribute(
     "type",
