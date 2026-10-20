@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 import { platform, arch } from "node:os";
 export default defineConfig({
+  // Bound concurrent real framework hosts without changing deadlines or assertions.
+  workers: 2,
+  reporter: "list",
   snapshotPathTemplate: `{testDir}/__screenshots__/${platform()}-${arch()}/{testFilePath}/{projectName}/{arg}{ext}`,
   testDir: "./tests/e2e",
   use: { baseURL: "http://127.0.0.1:4173" },

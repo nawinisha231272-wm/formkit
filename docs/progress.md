@@ -1019,3 +1019,28 @@ contracts and boundaries are in ADR-0009, package READMEs/specs and the changese
 but `gh auth status` still reports no authenticated host, so this summary substitutes for a PR.
 
 **Stop for human review, as AGENTS.md and M07 require. M08 has not begun.**
+
+### Nightly diagnostic correction — 2026-10-20
+
+After main became the default branch, the first manual diagnostic
+[39490884430](https://github.com/nawinisha231272-wm/formkit/actions/runs/39490884430) failed on attempt 1:
+Vite readiness timed out, so no timing verdict or nightly streak was produced. Do not re-run that run.
+Reproduced using its built runtime artifact inside the exact pinned Playwright image: Vite responds
+HTTP 200 to curl, while Node fetch reports `fetch failed`; the original harness consequently times out.
+The direct node:http loopback probe returns {ok:true,status:200} in the same environment.
+
+Fix: use the direct loopback HTTP client with bounded requests; retain the Vite log in uploaded
+benchmark-results and include its tail and the last probe in readiness errors. Spawn failures are
+handled explicitly. Manual branch diagnostics are allowed; scheduled runs and issue/streak updates
+remain limited to main. The 120-second startup deadline and every performance/correctness threshold
+are unchanged. Regression test `nightly probes real loopback when fetch is unavailable; rejects HTTP
+errors, closed ports and timeouts` passes. The corrected full local pinned-image diagnostic completes,
+records all three sizes and 12 comparisons, and confirms manual runs do not modify streaks or issues.
+Those emulated local timings are harness evidence only, never Linux runner calibration values.
+
+Local full pinned verify and the corrected branch's first native diagnostic/CI are pending before merge.
+This correction contains no M08 features. PR #3's original first-attempt green checks remain recorded.
+The first local combined verify passed lint/build/types and 168 unit tests, but its browser matrix
+hit existing test deadlines while multiple framework/axe workers competed with other verification.
+Browser file concurrency is now explicitly bounded to two and the reporter names each case. Deadlines,
+assertions and baseline bytes are unchanged; final isolated verification is required before claiming PASS.
