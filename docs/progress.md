@@ -1042,5 +1042,11 @@ Local full pinned verify and the corrected branch's first native diagnostic/CI a
 This correction contains no M08 features. PR #3's original first-attempt green checks remain recorded.
 The first local combined verify passed lint/build/types and 168 unit tests, but its browser matrix
 hit existing test deadlines while multiple framework/axe workers competed with other verification.
-Browser file concurrency is now explicitly bounded to two and the reporter names each case. Deadlines,
+Browser file concurrency is now explicitly one in CI (including pinned local verify), at most two
+for interactive local runs, and the reporter names each case. Deadlines,
 assertions and baseline bytes are unchanged; final isolated verification is required before claiming PASS.
+
+The completed initial local matrix was 350 PASS / 7 FAIL, all existing browser deadlines (Chromium
+tailwind-dark; Firefox builder native themes, Angular 21 read-only, vanilla onboarding Bootstrap 5
+read-only, Bootstrap 4 default/real CSS, and DOM Tier 1 conformance). Original images and assertions are
+retained. Final isolated verification uses the committed worker policy, without concurrent M08 checks.
