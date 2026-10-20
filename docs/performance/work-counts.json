@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "edits": 25,
+  "fixtures": {
+    "100": {
+      "processorsPerEdit": 26,
+      "domCreatedPerEdit": 0,
+      "domReplacedPerEdit": 0,
+      "statePatchesPerEdit": 1,
+      "rendersPerStatePatch": 26
+    },
+    "500": {
+      "processorsPerEdit": 26,
+      "domCreatedPerEdit": 0,
+      "domReplacedPerEdit": 0,
+      "statePatchesPerEdit": 1,
+      "rendersPerStatePatch": 26
+    },
+    "1000": {
+      "processorsPerEdit": 26,
+      "domCreatedPerEdit": 0,
+      "domReplacedPerEdit": 0,
+      "statePatchesPerEdit": 1,
+      "rendersPerStatePatch": 26
+    },
+    "onboarding": {
+      "processorsPerEdit": 1,
+      "domCreatedPerEdit": 0,
+      "domReplacedPerEdit": 0,
+      "statePatchesPerEdit": 1,
+      "rendersPerStatePatch": 1
+    }
+  }
+}

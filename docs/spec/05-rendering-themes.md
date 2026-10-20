@@ -180,3 +180,9 @@ sets a child's 1–12 grid span under Columns (default 12); up to 640px viewport
 Base layout styles are inherited by Bootstrap 4/5 and Tailwind. Theme/parent updates preserve children,
 focus, caret and session state. Static portable SSR is replaced on client mount, with no hydration.
 FormView.reset(data?) clears submitted/summary state and pending blur touches before session.reset.
+
+## 1.0 support decision (ADR-0011)
+
+Bootstrap 4 remains fully supported for 1.0. Every new component must pass conformance and visual checks
+in all four shipped themes: base, Bootstrap 4, Bootstrap 5 and Tailwind. Existing contrast/pixel thresholds
+and pinned framework stylesheet versions remain unchanged.

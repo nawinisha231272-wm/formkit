@@ -331,3 +331,95 @@ for (const host of ["dom", "react", "angular"])
       await page.evaluate(() => Reflect.get(window, "m06Xss")),
     ).toBeUndefined();
   });
+
+test("browser and Node enforce reject/strip identically for nested unknown keys and unsafe data", async ({
+  page,
+}) => {
+  const definition = {
+    $formVersion: "1.0",
+    id: "unknown-policy",
+    display: "form",
+    components: [
+      {
+        id: "group",
+        type: "container",
+        key: "group",
+        components: [
+          {
+            id: "name",
+            type: "text",
+            key: "name",
+            validation: { required: true },
+          },
+        ],
+      },
+    ],
+  };
+  const cases: {
+    definition: unknown;
+    data: unknown;
+    unknownKeys?: "reject" | "strip";
+  }[] = [];
+  const data = { group: { name: "Ada", extra: "discard" }, extra: 123 };
+  cases.push(
+    { definition, data },
+    { definition, data, unknownKeys: "reject" },
+    { definition, data, unknownKeys: "strip" },
+  );
+  for (const data of [
+    { group: [] },
+    { group: { name: 5 } },
+    { group: {} },
+    JSON.parse('{"group":{"name":"Ada"},"constructor":{}}'),
+  ])
+    cases.push({ definition, data, unknownKeys: "strip" });
+  const engine = createConformanceEngine();
+  const compiled = engine.compile(definition);
+  if (!compiled.ok) throw new Error("compile");
+  const expected = [];
+  for (const item of cases)
+    expected.push({
+      compile: compiled.diagnostics,
+      result: await validateSubmission(compiled.form, item.data, {
+        ...(item.unknownKeys ? { unknownKeys: item.unknownKeys } : {}),
+      }),
+    });
+  expect(expected.map((item) => item.result.valid)).toEqual([
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+  ]);
+  await page.goto("/tier1.html");
+  await page.waitForFunction(() => !!window.tier1Demo?.form);
+  expect(
+    await page.evaluate(
+      (cases) => window.tier1Demo.validateCases(cases),
+      cases,
+    ),
+  ).toEqual(expected);
+});
+
+test("playground demonstrates default rejection and opt-in strip without mutating data", async ({
+  page,
+}) => {
+  await page.goto("/tier1.html");
+  await page.waitForFunction(() => !!window.tier1Demo?.form);
+  await expect(page.getByLabel("Unknown key policy")).toHaveValue("reject");
+  await page
+    .getByRole("button", { name: "Validate a sample with extra keys" })
+    .click();
+  const result = page.getByRole("region", {
+    name: "Unknown key validation result",
+  });
+  await expect(result).toContainText('"valid": false');
+  await page.getByLabel("Unknown key policy").selectOption("strip");
+  await page
+    .getByRole("button", { name: "Validate a sample with extra keys" })
+    .click();
+  await expect(result).toContainText('"valid": true');
+  await expect(result).toContainText('"originalExtra": "host metadata"');
+});

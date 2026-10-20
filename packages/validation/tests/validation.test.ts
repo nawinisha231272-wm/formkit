@@ -446,3 +446,119 @@ test("null serialization is a canonical empty value, including calculated fields
     (await validateSubmission(calc.form, { a: 3 })).errors[0]!.error.code,
   ).toBe("calculated");
 });
+
+test("unknownKeys defaults to reject; strip filters nested scopes before providers without mutating input", async () => {
+  const seen: unknown[] = [];
+  const e = engine();
+  const observer = createEngine({
+    validators: {
+      inspect: {
+        validate: (_value, context) => {
+          seen.push(context.data);
+          return null;
+        },
+      },
+    },
+  });
+  for (const field of e.listFields()) observer.register(field);
+  const r = observer.compile(
+    def([
+      {
+        id: "box",
+        type: "container",
+        key: "group",
+        components: [
+          {
+            id: "name",
+            key: "name",
+            type: "text",
+            validation: { required: true, custom: [{ validator: "inspect" }] },
+          },
+        ],
+      },
+    ]),
+  );
+  if (!r.ok) throw new Error("compile");
+  const input = {
+    extra: "discard",
+    group: { name: "Ada", extra: { deep: "discard" } },
+  };
+  const original = structuredClone(input);
+  expect(await validateSubmission(r.form, input)).toMatchObject({
+    valid: false,
+    errors: [{ path: ["extra"] }, { path: ["group", "extra"] }],
+  });
+  expect(seen).toEqual([]);
+  expect(
+    (await validateSubmission(r.form, input, { unknownKeys: "reject" })).valid,
+  ).toBe(false);
+  expect(
+    await validateSubmission(r.form, input, { unknownKeys: "strip" }),
+  ).toEqual({ valid: true, errors: [] });
+  expect(seen).toEqual([{ group: { name: "Ada" } }]);
+  expect(input).toEqual(original);
+  for (const bad of [
+    { group: "wrong" },
+    { group: null },
+    { group: [] },
+    { group: { name: 42 } },
+    { group: {} },
+    JSON.parse('{"group":{"name":"Ada"},"extra":{"__proto__":{}}}'),
+  ])
+    expect(
+      (await validateSubmission(r.form, bad, { unknownKeys: "strip" })).valid,
+    ).toBe(false);
+  await expect(
+    validateSubmission(r.form, input, { unknownKeys: "invalid" as never }),
+  ).rejects.toThrow("unknownKeys must");
+});
+
+test("strip treats adapter-owned objects and arrays as opaque and still rejects forged calculations", async () => {
+  const e = engine().register({
+    type: "opaque",
+    title: "Opaque",
+    value: {
+      empty: () => null,
+      normalize: (value: unknown) => value,
+      isEmpty: (value: unknown) => value === null,
+    },
+  });
+  const r = e.compile(
+    def([
+      { id: "o", type: "opaque", key: "o" },
+      { id: "a", type: "number", key: "a" },
+      {
+        id: "b",
+        type: "number",
+        key: "b",
+        calculate: { expr: ["mul", { ref: "a" }, 2] },
+      },
+    ]),
+  );
+  if (!r.ok) throw new Error("compile");
+  for (const o of [{ arbitrary: { preserved: true } }, [{ nested: 1 }]])
+    expect(
+      (
+        await validateSubmission(
+          r.form,
+          { o, a: 2, b: 4, extra: "ignored" },
+          { unknownKeys: "strip" },
+        )
+      ).valid,
+    ).toBe(true);
+  expect(
+    (
+      await validateSubmission(
+        r.form,
+        { o: null, a: 2, b: 99, extra: "ignored" },
+        { unknownKeys: "strip" },
+      )
+    ).errors,
+  ).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        error: expect.objectContaining({ code: "calculated" }),
+      }),
+    ]),
+  );
+});

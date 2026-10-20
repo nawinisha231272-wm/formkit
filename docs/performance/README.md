@@ -1,57 +1,80 @@
-# Platform-specific performance baselines
+# Work counts and advisory timing
 
-Build first: `pnpm install --frozen-lockfile && pnpm build`.
-Run `pnpm benchmark:check`, or start `pnpm --filter @ourform/benchmarks dev` and open
-http://127.0.0.1:4190 for interactive measurements.
+Current policy: [ADR-0010](../adr/0010-deterministic-count-gates-and-advisory-timing.md). It supersedes
+the old wall-clock PR hard gate after documented 40–70% runner noise. All original timing artifacts and
+failed-run records remain in this repository and docs/progress.md.
 
-Baselines are selected by the exact Node platform/architecture (`os.platform()` + `os.arch()`):
+## Deterministic hard gate
 
-| Platform     | Artifact                    | Status                                              |
-| ------------ | --------------------------- | --------------------------------------------------- |
-| darwin-arm64 | baselines/darwin-arm64.json | Measured M07 local medians, timing values unchanged |
-| linux-x64    | baselines/linux-x64.json    | Measured: medians of three clean main CI runs       |
+`pnpm verify` runs correctness, accessibility, visuals, coverage, size budgets and `pnpm benchmark:counts`.
+The latter performs 25 edits per fixture: 100/500/1,000 fields (one source plus 25 calculated dependents)
+and the shared 40-field onboarding form (contact.firstName). Exact expectations live in work-counts.json:
 
-There is no platform fallback. Linux calibration is complete; linuxBaselineRequired=true closes the
-bootstrap exception. Both stored platform baselines are now enforced. The user authorized this
-temporary Linux bootstrap on 2026-10-20:
-while linux-x64 is pending and scripts/performance-policy.json has linuxBaselineRequired=false,
-ordinary verification measures and uploads timings, logs **linux baseline missing: not enforced**,
-and retains every correctness assertion. This is record-only, not a performance regression verdict.
-Mac always enforces its stored baseline. A measured Linux artifact always enforces its own baseline.
-Malformed/mismatched data and missing files fail; no cross-platform substitution is allowed.
-Docker-on-Mac/emulated measurements cannot populate the CI baseline.
+| Fixture          | Processors/edit | Created DOM/edit | Replaced DOM/edit | Patches/edit | Renders/patch |
+| ---------------- | --------------- | ---------------- | ----------------- | ------------ | ------------- |
+| 100 / 500 / 1000 | 26              | 0                | 0                 | 1            | 26            |
+| onboarding       | 1               | 0                | 0                 | 1            | 1             |
 
-Each size has 3 warm-ups and 15 samples; report timings are medians in ms. Compile, mount plus forced
-layout, 25 edits plus layout and two appearance changes plus layout are measured. The 500-field form
-includes 25 calculated dependents; each edit batch executes exactly 650 processors. All sizes assert
-control count/identity/focus and DOM cleanup. Every 500-field timing must be <= its platform baseline
-×1.20. Boundary and cross-platform rejection tests are in tests/performance.test.ts.
+Every edit and patch is checked, not an average. Any increase fails. Decreases fail with an explicit
+instruction to update the reviewed count baseline in the same PR. No automatic updater runs in CI.
+The probe wraps actual portable views and session counters, observes implicit DOM additions and hooks
+explicit allocations (including detached nodes). Replacements are previously present node identities
+missing after an edit. Hook restoration, implicit replacements/transient allocations, control count, focused-control
+identity and cleanup have browser tests. No wall-clock measurement runs in verify.
 
-## Recording and checking
+## Standalone local timing
 
-`pnpm benchmark:record` explicitly records a local platform baseline for review and refuses a single
-linux-x64 recording. Checks never rewrite baselines. Reports in benchmark-results/measurement.json
-include commit, dirty state, GitHub ref/run ID/attempt, platform and configured runner type.
+Build first: `pnpm install --frozen-lockfile && pnpm build`. Run `pnpm benchmark:check` by itself with
+other workloads stopped. It retains 3 warm-ups and 15 samples per size, 650 processor assertions,
+identity/focus/control-count and cleanup checks. Timing ratios against the exact platform baseline are
+advisory; timing changes do not fail the command. Invalid benchmark data/correctness failures still fail.
+`pnpm benchmark:record` is an explicit local recording tool, not a way to repair a failing check.
+It still refuses a single Linux recording.
 
-Merge [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) only after all Linux correctness
-checks pass: lint, types, build, unit/browser tests, all Linux visuals and size budgets. Its pending
-Linux performance stage is explicitly record-only. Then dispatch Verify three times on the same clean
-**main** commit, with no intervening code changes, all on ubuntu-24.04. Each full run must succeed.
-Download each run's benchmark-results/measurement.json, then:
+| Platform     | Preserved timing artifact   | Provenance                                              |
+| ------------ | --------------------------- | ------------------------------------------------------- |
+| darwin-arm64 | baselines/darwin-arm64.json | Original M07 local values                               |
+| linux-x64    | baselines/linux-x64.json    | Per-metric medians of three clean same-commit main runs |
 
-```sh
-node scripts/aggregate-ci-baseline.mjs run1/measurement.json run2/measurement.json run3/measurement.json
-```
+There is no cross-platform fallback. These files are unchanged by this redesign. The old
+performance-policy.json/bootstrap selection helpers remain as historical validation utilities, not
+active PR timing enforcement. The original aggregation CLI and API-verified run URLs remain available.
+Docker-on-Mac/emulated measurements must never replace a CI baseline.
 
-The CLI uses authenticated `gh api` to verify each run succeeded on main at the measured commit and
-its jobs used ubuntu-24.04. It requires three distinct run IDs, clean GitHub Actions linux-x64 reports,
-one matching commit, all three sizes, 15 samples and the expected 650 processors. It writes per-metric
-medians of the three run medians and the run URLs to baselines/linux-x64.json. Open a second PR on
-`ci-linux-baseline`, store those medians and set linuxBaselineRequired=true. This closes the bootstrap
-exception: pending or missing Linux data must then fail. Merge that PR only after its own ordinary
-CI passes the unchanged >20% limit. Record both PR links, the three runs and medians in progress.md.
-Stop before M08. Product questions in progress.md remain unanswered.
+## Isolated PR A/B job
 
-The previous M07 single artifact was relocated from docs/performance/m07-baseline.json without
-altering its measured values. Absolute timings still depend on hardware, browser, CPU/power and load;
-keep the pinned environment and investigate regressions before updating a baseline.
+`.github/workflows/performance.yml` uses an independent pinned Ubuntu/Playwright runner. It prepares
+the main/base-SHA and PR production builds, then runs only timings: main → PR → main → PR for five
+pairs on that same runner, fresh browser contexts per build. Each size/metric reports the median of
+five paired PR/main ratios (not a ratio of medians) in the job summary and advisory-ab-timings artifact.
+It does not compare production builds to the historical Vite-dev baseline. Timing is advisory, never
+a PR failure. An unavailable report is explicitly labeled and must be investigated rather than called
+a measured result. Both build revisions and all pair samples are retained in the artifact.
+
+## Nightly main trend
+
+`.github/workflows/nightly-performance.yml` runs at 07:17 UTC, on main, on its own runner with no other
+checks. It uses the original Vite development serving mode and the preserved linux-x64 baseline.
+State is an Actions artifact keyed by exact baseline SHA-256/platform/UTC date and each size/metric.
+More than 20% for three consecutive nights opens one managed GitHub issue. Later nightly reports update
+that issue; recovery is reported without automatically closing it. Human notes outside the managed
+section are preserved. Missing nights, recovery and baseline changes reset streaks. Duplicate dates
+never advance them. Manual workflow_dispatch measures without advancing streaks or modifying issues.
+
+Only this trusted-main workflow receives issues:write/actions:read. The SDK makes no new network calls.
+GitHub's scheduled trigger requires main as the default branch; see the
+[GitHub scheduled-workflow reference](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+State downloads use the [Actions artifact API](https://docs.github.com/en/rest/actions/artifacts#download-an-artifact)
+and the pinned image's Python zip reader; no GitHub token is forwarded to the archive storage host.
+
+Tests: tests/ci-performance.test.ts (count changes, paired medians, nightly boundary/streak/reset/issue
+behavior), tests/work-counts/counts.spec.ts (actual browser work), and the existing platform/container tests.
+
+Build preparation runs on a separate runner and transfers immutable artifacts. The timing runners
+perform only dependency/setup, artifact loading and their timing workload; no builds or correctness
+checks execute on those measurement runners.
+
+PR baseline evolution is checked against its immutable main/base SHA: raising expected counts or
+removing an existing fixture fails even if the measurements match the edited JSON. Decreases remain
+allowed only with exact updated expectations and matching measurements in that PR. The initial
+baseline is explicitly seeded because the prior main revision has no count artifact.

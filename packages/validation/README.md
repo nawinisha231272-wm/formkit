@@ -12,6 +12,7 @@ const result = compileForm(engine, definition); // engine already has models/val
 if (result.ok) {
   const validation = await validateSubmission(result.form, submittedData, {
     providers,
+    unknownKeys: "reject", // default; opt into "strip" for unknown scope keys
   });
   const schema = toSubmissionSchema(result.form);
 }
@@ -22,7 +23,7 @@ validateSubmission returns ValidationResult (valid/errors with path, componentId
 server-side providers explicitly; the compiled form retains validator functions, not engine provider
 instances. Register equivalent host functions/validators in browser and Node. This API sends nothing.
 
-The boundary rejects unsafe/non-object JSON, unknown keys, malformed scopes, normalization/serialization
+The boundary rejects unsafe/non-object JSON, malformed scopes, normalization/serialization
 coercions, missing visible required fields and forged calculations. Custom serialized data must round-trip
 through normalize/serialize. It validates with the same session pipeline, including async rules, then disposes
 its temporary session. Provider exceptions fail validation. Providers are trusted host code and own timeouts.
@@ -33,3 +34,19 @@ runtime rules; bare JSON Schema validation does not execute them. Arbitrary adap
 validators and correct jsonSchema hints. No Ajv/runtime code generation dependency is shipped.
 
 See ADR-0008 and the shared good/bad fixtures. Build: pnpm --filter @ourform/validation build.
+
+## Unknown keys
+
+`ValidateSubmissionOptions` accepts `unknownKeys: 'reject' | 'strip'` (default `'reject'`). Reject reports
+unknown keys at the root or declared object scopes. Strip copies only known keys before creating the
+validation session, so calculations and host validators see the filtered snapshot. Caller input is never
+mutated. Adapter-owned object/array values retain their internal keys and must still round-trip canonically.
+
+Both modes reject unsafe JSON (including prototype keys, even inside ignored properties), malformed known
+scopes, coercions, missing required values and forged calculations. Invalid option strings throw TypeError.
+The result stays ValidationResult; it does not return a cleaned payload or mutate what a host persists.
+Generated JSON Schema remains strict (`additionalProperties: false`); bare Ajv does not implement this
+SDK preprocessing. See ADR-0011 and the shared browser/Node policy tests.
+
+Playground: open `/tier1.html`, choose Unknown key policy, and validate the sample with extra keys.
+The demo shows default rejection, opt-in stripping and the unchanged original extra property.

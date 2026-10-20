@@ -100,7 +100,7 @@ schema exports toSubmissionSchema(SubmissionSchemaSource), JSONSchema and emailP
 structurally satisfies the generator input; schema never imports core. validation re-exports the generator.
 Draft 2020-12 output includes object scopes, adapter submission type hints, unconditional required/empty
 constraints, scalar bounds/patterns and static email/option rules. Optional empty values bypass ordinary
-rules as in sessions. Unknown submission keys are disallowed. Serialize is applied to empty-value hints.
+rules as in sessions. Generated submission JSON Schema disallows unknown keys. Serialize is applied to empty-value hints.
 
 Visibility-dependent validation, calculations, disabled conditions and host/custom rules are explicit
 x-ourform-\* annotations. Static validators cannot execute those annotations; use validateSubmission for
@@ -108,7 +108,17 @@ runtime logic. Arbitrary adapter domain rules require model validators and appro
 Unsafe/non-JSON adapter schemas and unsafe/row paths are rejected. Arrays executing repeater rows remain M10.
 
 @ourform/validation exports compileForm(engine, unknown) → CompileResult and
-validateSubmission(compiled, submission, {providers?}) → Promise<ValidationResult>. It checks safe/canonical
+validateSubmission(compiled, submission, {providers?, unknownKeys?}) → Promise<ValidationResult>. It checks safe/canonical
 serialized data and scope/key structure before using the shared session pipeline. Missing visible required
 fields, coercions and forged calculations fail; custom values must round-trip normalize/serialize. It
 sends nothing and imports no renderer. See ADR-0008 and fixtures/submissions for explicit good/bad samples.
+
+## Submission unknown-key decision (ADR-0011)
+
+validateSubmission's options select `unknownKeys: 'reject' | 'strip'`, default `'reject'`. Strip ignores
+unknown properties only at the root and declared object scopes, before runtime rules/provider validation,
+without mutating caller data. Declared adapter values (including object/array values) retain their own
+internal shape and canonical checks. Unsafe input anywhere, malformed known scopes, required/type failures
+and forged calculations remain errors. The result remains ValidationResult, not a filtered payload.
+Generated JSON Schema remains strict; hosts choosing strip use SDK preprocessing rather than expecting
+JSON Schema validators to remove properties. This option is not persisted in FormDefinition settings.
