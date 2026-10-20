@@ -19,3 +19,6 @@ stylesheets loaded together. The bootstrap legacy alias remains Bootstrap 5. Rat
 use the same shell/part metadata in both themes, with no component-specific theme code.
 
 Reference: [Bootstrap 4 form classes](https://getbootstrap.com/docs/4.6/components/forms/).
+
+Bootstrap 4 is fully supported for 1.0 (ADR-0011). Every new component must pass conformance and
+visual checks in base, Bootstrap 4, Bootstrap 5 and Tailwind, with unchanged accessibility/pixel gates.

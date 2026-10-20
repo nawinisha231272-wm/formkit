@@ -160,3 +160,13 @@ browsers; headless packages compile with ES2022/Node development types and no DO
 Providers.localization(key, params, locale) returns text or undefined. session.localize resolves it with
 an English catalog fallback; renderer t remains compatible. Validation strings remain keys/parameters.
 String length rules count Unicode code points (not UTF-16 code units), matching JSON Schema.
+
+## Submission unknown-key policy (ADR-0011)
+
+@ourform/validation exports ValidateSubmissionOptions with providers? and
+`unknownKeys?: 'reject' | 'strip'` (default reject). validateSubmission first inspects all input for safe,
+bounded JSON, then rejects or filters unknown root/object-scope keys before constructing its temporary
+session. Providers and calculations observe the filtered data in strip mode. Caller input stays unchanged;
+ValidationResult does not contain sanitized data. Adapter-owned values are opaque to scope filtering.
+Known scope/type/required/calculation constraints are unchanged. Invalid option strings are programmer
+errors; invalid submitted data still returns diagnostics. Browser and customer Node behavior is identical.

@@ -27,6 +27,7 @@ npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify
 ```
 
 The housekeeping progress entry records the fresh execution result. `pnpm verify` includes the named
-unit/browser tests, source boundaries, strict headless checks and the platform-matched performance gate.
+unit/browser tests, source boundaries, strict headless checks and the deterministic work-count gate.
 Remote CI/calibration is separate evidence recorded with run URLs in docs/progress.md. Eight findings are PASS; row 8 stays PARTIAL until M09. No other
-finding is marked OPEN, and no M08 feature or undecided unknown-key/Bootstrap policy is implemented.
+finding is marked OPEN. The later user decisions on unknownKeys and full Bootstrap 4 support are
+recorded in ADR-0011 and progress.md; M08 remains a separate milestone.

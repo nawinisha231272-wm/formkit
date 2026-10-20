@@ -40,12 +40,23 @@ function read(data: unknown, path: Path): unknown {
     data,
   );
 }
-/** Validate canonical SDK submission data; reject coercions/unknown keys before invoking host validators. */
+export interface ValidateSubmissionOptions {
+  providers?: Providers;
+  /** Ignore unknown scope keys before host validation; never mutates the input. */
+  unknownKeys?: "reject" | "strip";
+}
+/** Validate canonical SDK data, enforcing the selected unknown-key policy before host validators. */
 export async function validateSubmission(
   form: CompiledForm,
   submission: unknown,
-  options: { providers?: Providers } = {},
+  options: ValidateSubmissionOptions = {},
 ): Promise<ValidationResult> {
+  if (
+    options.unknownKeys !== undefined &&
+    options.unknownKeys !== "reject" &&
+    options.unknownKeys !== "strip"
+  )
+    throw new TypeError("unknownKeys must be reject or strip");
   const errors: ValidationResult["errors"] = [];
   const add = (componentId: string, path: Path, code: string) =>
     errors.push({
@@ -64,18 +75,26 @@ export async function validateSubmission(
       .map((e) => JSON.stringify(e.path)),
   );
   const leafPaths = new Set(leaves.map((e) => JSON.stringify(e.path)));
-  function inspect(value: Record<string, unknown>, parent: string[]): void {
+  function inspect(
+    value: Record<string, unknown>,
+    parent: string[],
+  ): Record<string, unknown> {
+    const filtered: Record<string, unknown> = {};
     for (const [key, child] of Object.entries(value)) {
       const path = [...parent, key];
       const encoded = JSON.stringify(path);
-      if (leafPaths.has(encoded)) continue;
-      if (scopePaths.has(encoded) && isRecord(child)) inspect(child, path);
-      else add(form.definition.id, path, "submission");
+      if (leafPaths.has(encoded)) filtered[key] = child;
+      else if (scopePaths.has(encoded)) {
+        if (isRecord(child)) filtered[key] = inspect(child, path);
+        else add(form.definition.id, path, "submission");
+      } else if (options.unknownKeys !== "strip")
+        add(form.definition.id, path, "submission");
     }
+    return filtered;
   }
-  inspect(submission, []);
+  const data = inspect(submission, []);
   for (const entry of leaves) {
-    const raw = read(submission, entry.path);
+    const raw = read(data, entry.path);
     if (raw === undefined) continue;
     try {
       const value = entry.model.value!.normalize(raw);
@@ -90,7 +109,10 @@ export async function validateSubmission(
   if (errors.length) return { valid: false, errors };
   let session: FormSession;
   try {
-    session = new FormSession(form, { data: submission, ...options });
+    session = new FormSession(form, {
+      data,
+      ...(options.providers ? { providers: options.providers } : {}),
+    });
   } catch {
     add(form.definition.id, [], "submission");
     return { valid: false, errors };
@@ -99,7 +121,7 @@ export async function validateSubmission(
     for (const entry of leaves) {
       const state = session.getFieldState(entry.node.id);
       if (!state.visible) continue;
-      const raw = read(submission, entry.path);
+      const raw = read(data, entry.path);
       if (raw === undefined && state.required)
         add(entry.node.id, entry.path, "required");
       if (

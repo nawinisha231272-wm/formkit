@@ -1,0 +1,72 @@
+name: Nightly Linux timings
+on:
+  schedule:
+    - cron: "17 7 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nightly-linux-timings
+  cancel-in-progress: false
+jobs:
+  prepare-build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a
+      options: --ipc=host
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.3
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile && pnpm build
+      - run: tar -czf runtime-builds.tgz packages/*/dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nightly-runtime-builds
+          path: runtime-builds.tgz
+  nightly:
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    if: github.ref == 'refs/heads/main'
+    needs: prepare-build
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a
+      options: --ipc=host
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.3
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: nightly-runtime-builds
+      - run: tar -xzf runtime-builds.tgz
+      - name: Measure alone; retain original Vite environment for Linux baseline comparisons
+        run: node scripts/timing-ci.mjs --nightly .
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-performance-state
+          path: benchmark-results/nightly-state.json
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-timings
+          path: benchmark-results/

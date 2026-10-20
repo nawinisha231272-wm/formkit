@@ -128,18 +128,19 @@ independent choices. Public reset clears the summary and touched state. Web Comp
 schema/data JSON plus theme/read-only attributes; invalid attributes emit of-error.
 
 After pnpm build, `pnpm --filter @ourform/benchmarks dev` opens the 100/500/1,000-field performance app
-on port 4190. `pnpm benchmark:check` enforces the stored 500-field baseline with a 20% limit; the command
-is part of pnpm verify/CI. See docs/performance and ADR-0009 for measurements and platform limits.
+on port 4190. `pnpm benchmark:counts` hard-gates deterministic processor, DOM and render work for
+100/500/1,000 fields and onboarding, and is part of `pnpm verify`. Run `pnpm benchmark:check` separately
+for advisory timings. PR A/B ratios run alone on one runner; nightly main alerts after three consecutive
+nights more than 20% over Linux baseline. See ADR-0010 and docs/performance.
 
 ## Repository housekeeping before M08
 
-The nine original starter-kit findings and exact evidence are in docs/starter-kit-review.md. Product
-decisions about unknown submission keys and Bootstrap 4 at 1.0 remain open in docs/progress.md.
+The nine original starter findings and evidence are in docs/starter-kit-review.md. The user decided
+validateSubmission supports unknownKeys reject/strip (default reject), and Bootstrap 4 remains fully
+supported for 1.0. Every new component must pass conformance and visuals in all four shipped themes.
 
-Visual snapshots now select darwin-arm64/linux-x64 directories. Generate/check Linux visuals using
-`sh scripts/linux-visuals.sh record` / `check` in the pinned official Playwright container. Performance
-baselines also select the exact platform: the Mac M07 values are preserved, and Linux uses per-metric
-medians from three successful clean main CI runs on ubuntu-24.04. Both platforms enforce the unchanged
-
-> 20% regression limit for the 500-field workload. Required Linux enforcement is on; the temporary
-> record-only bootstrap is closed. See docs/performance and docs/progress.md for provenance.
+Visual snapshots select darwin-arm64/linux-x64 directories. Generate/check Linux visuals using
+`sh scripts/linux-visuals.sh record` / `check` in the pinned official Playwright container. All existing
+Mac/Linux timing baselines and failed-run evidence are preserved. The 20% wall-clock PR hard gate is
+superseded by the deterministic gate; timing remains observable through paired and nightly reports.
+See docs/progress.md for decisions and provenance.

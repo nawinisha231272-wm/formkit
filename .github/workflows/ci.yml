@@ -12,8 +12,11 @@ jobs:
     env:
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
       OURFORM_CI_RUNNER_TYPE: ubuntu-24.04
+      OURFORM_COUNT_BASE_REF: ${{ github.event.pull_request.base.sha }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
@@ -32,14 +35,8 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git rev-parse HEAD
           test -z "$(git status --porcelain)"
-      - name: Verify correctness, accessibility and the 500-field performance budget
+      - name: Verify correctness, accessibility, size and deterministic work counts
         run: pnpm verify
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: benchmark-results
-          path: benchmark-results/
-          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

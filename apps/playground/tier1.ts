@@ -152,7 +152,13 @@ document.querySelector("#tier-schema")!.textContent = JSON.stringify(
   null,
   2,
 );
-async function validateCases(cases: { definition: unknown; data?: unknown }[]) {
+async function validateCases(
+  cases: {
+    definition: unknown;
+    data?: unknown;
+    unknownKeys?: "reject" | "strip";
+  }[],
+) {
   const results: {
     compile: CompileResult["diagnostics"];
     result?: ValidationResult;
@@ -167,13 +173,39 @@ async function validateCases(cases: { definition: unknown; data?: unknown }[]) {
       compiled.ok
         ? {
             compile: compiled.diagnostics,
-            result: await validateSubmission(compiled.form, data),
+            result: await validateSubmission(compiled.form, data, {
+              ...(item.unknownKeys ? { unknownKeys: item.unknownKeys } : {}),
+            }),
           }
         : { compile: compiled.diagnostics },
     );
   }
   return results;
 }
+const unknownPolicy =
+  document.querySelector<HTMLSelectElement>("#unknown-policy")!;
+const unknownButton =
+  document.querySelector<HTMLButtonElement>("#validate-unknown")!;
+unknownButton.addEventListener("click", async () => {
+  unknownButton.disabled = true;
+  try {
+    const data = { ...structuredClone(goodData), extra: "host metadata" };
+    const [result] = await validateCases([
+      {
+        definition: schema,
+        data,
+        unknownKeys: unknownPolicy.value === "strip" ? "strip" : "reject",
+      },
+    ]);
+    document.querySelector("#unknown-result")!.textContent = JSON.stringify(
+      { validation: result?.result, originalExtra: data.extra },
+      null,
+      2,
+    );
+  } finally {
+    unknownButton.disabled = false;
+  }
+});
 declare global {
   interface Window {
     tier1Demo: {

@@ -1,0 +1,77 @@
+name: Advisory timings
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  prepare-builds:
+    name: Prepare main and PR builds
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a
+      options: --ipc=host
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      OURFORM_MAIN_SHA: ${{ github.event.pull_request.base.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: candidate
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: main-build
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+          package_json_file: candidate/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.3
+      - name: Prepare main build
+        working-directory: main-build
+        run: pnpm install --frozen-lockfile && pnpm build
+      - name: Prepare PR build
+        working-directory: candidate
+        run: pnpm install --frozen-lockfile && pnpm build
+      - name: Stage the two immutable builds
+        run: |
+          mkdir -p timing-builds/main timing-builds/candidate
+          cp -R main-build/apps/benchmarks/dist/. timing-builds/main/
+          cp -R candidate/apps/benchmarks/dist/. timing-builds/candidate/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ab-builds
+          path: timing-builds/
+  interleaved-ab:
+    name: Isolated interleaved A/B (advisory)
+    continue-on-error: true
+    timeout-minutes: 20
+    needs: prepare-builds
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a
+      options: --ipc=host
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      OURFORM_MAIN_SHA: ${{ github.event.pull_request.base.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.3
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: ab-builds
+          path: timing-builds/
+      - name: Measure five alternating main/PR pairs (no builds or checks on this runner)
+        run: node scripts/timing-ci.mjs --ab timing-builds/main timing-builds/candidate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: advisory-ab-timings
+          path: benchmark-results/

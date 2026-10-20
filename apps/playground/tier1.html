@@ -61,6 +61,30 @@
           </p>
         </section>
       </div>
+      <section aria-labelledby="policy-title">
+        <h2 id="policy-title">Unknown submission keys</h2>
+        <p>
+          Reject reports extra keys. Strip omits them from validation without
+          changing the original data.
+        </p>
+        <label for="unknown-policy">Unknown key policy</label>
+        <select id="unknown-policy">
+          <option value="reject">Reject (default)</option>
+          <option value="strip">Strip</option>
+        </select>
+        <button id="validate-unknown" type="button">
+          Validate a sample with extra keys
+        </button>
+        <pre
+          id="unknown-result"
+          role="region"
+          aria-label="Unknown key validation result"
+          aria-live="polite"
+          tabindex="0"
+        >
+Choose a policy and validate the sample.</pre
+        >
+      </section>
     </main>
     <script type="module" src="./tier1.ts"></script>
   </body>

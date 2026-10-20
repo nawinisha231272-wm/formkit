@@ -19,10 +19,58 @@ deviations from spec, open questions.
 
 ## Open questions
 
-1. **validateSubmission unknown-key policy:** proposal `unknownKeys: 'reject' | 'strip'`, default
-   `'reject'`. Awaiting the user's answer. Keep the existing rejection behavior; do not implement strip.
-2. **Bootstrap 4 theme status for 1.0:** keep / legacy-frozen / remove. Awaiting the user's answer.
-   Keep the current theme unchanged until a decision is provided.
+No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
+
+## Pre-M08 CI redesign and decisions — 2026-10-20
+
+User decisions (supersede the earlier open questions and wall-clock PR hard gate):
+
+- validateSubmission supports `unknownKeys: 'reject' | 'strip'`, default `'reject'`. Strip removes
+  unknown scope keys before validation/provider invocation, without mutating caller data; malformed
+  known scopes, unsafe JSON, invalid canonical values and forged calculations still fail.
+- Bootstrap 4 remains fully supported for 1.0, alongside base, Bootstrap 5 and Tailwind. Every new
+  component must pass conformance and visual checks in all four themes.
+- PR correctness hard-gates deterministic work counts. Wall-clock A/B timing is advisory in its own
+  job; nightly main timing opens/updates an issue only after three consecutive >20% nights.
+
+Plan: implement and test scope filtering; instrument real per-edit processor/DOM/render counts for
+100/500/1,000 fields and onboarding; store exact expected counts; separate timing into isolated A/B
+and nightly jobs; test ratio/streak/issue behavior; update standards/ADR/READMEs while preserving all
+historical baselines and failures. Run full pinned verify before opening one PR. Its initial CI run
+must pass; do not re-run failures for green. Fix causes with reviewed code when needed. After merge,
+report this checkpoint and start M08 using its normal milestone process.
+
+### Pre-PR verification evidence
+
+- PASS — full pinned `CI=true pnpm verify` (Node 22.22.3/pnpm 10.10.0): lint, build/typecheck,
+  167 unit tests, 357 Chromium/Firefox/WebKit browser cases (including existing visual/a11y checks),
+  14 size budgets and five deterministic count-gate browser cases. Core line coverage remains 98.57%;
+  validation 99.25%. An initial full run before the final playground demo also passed (354 browser cases).
+- PASS — exact work expectations: 25 edits each for 100/500/1,000 fields (26 processors and renders,
+  one patch, zero DOM creation/replacement), onboarding (one processor/render/patch, zero DOM work).
+  `tests/work-counts/counts.spec.ts` also detects implicit/transient/detached allocations and restores hooks.
+- PASS — `tests/ci-performance.test.ts`: increases and decreases, median paired ratios (not ratio of
+  medians), exact 20% boundary, three consecutive nights, missing nights/recovery/new-baseline resets,
+  duplicate dates, individual-metric streaks, cross-platform state rejection and managed issue updates.
+- PASS — real local main-vs-candidate production-build A/B smoke: five alternating pairs, all three
+  sizes, 15 samples each; measured JSON/median-ratio summary emitted. This is a harness smoke check,
+  not a replacement CI baseline. CI timing runs use their own runners, with builds prepared elsewhere.
+- PASS — Node unknown-key tests: default/explicit reject, nested strip, provider-visible filtered
+  data, input immutability, opaque adapter objects/arrays, unsafe/malformed/type/required/calculated
+  rejection. Browser/Node parity and the playground reject/strip demo pass in all three browsers.
+- PASS — original timing workload, both timing baseline JSON files and all existing PNG bytes remain
+  unchanged. No correctness, coverage, pixel or size threshold was relaxed. The former 20% PR timing
+  rule is explicitly superseded by ADR-0010; all failed-run records below remain intact.
+
+- PASS — release verification includes `scripts/work-count-baseline.mjs`, tested against the immutable
+  PR main/base revision. Raising any expected count, removing an existing fixture or changing the
+  workload format fails; reviewed decreases are allowed and still must match every measured edit.
+  Final full pinned verify exits zero with this guard. The strengthened demo readiness test also passes
+  all three browsers separately. No remote CI has been retried or triggered before this final commit.
+
+Remote initial CI and actual scheduled-night observations are not claimed yet. PR merging requires
+its initial CI checks and a measured five-pair advisory artifact; no CI re-runs are authorized for green.
+The nightly workflow is unit-tested for its policy and will be enabled on default branch main after merge.
 
 ## Linux calibration follow-up — 2026-10-20
 

@@ -2,10 +2,10 @@ import { test, expect } from "@playwright/test";
 import { writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { platform, arch } from "node:os";
 import { execFileSync } from "node:child_process";
-import { loadPerformancePolicy } from "../../scripts/platform-baselines.mjs";
-import { checkPerformance } from "../../scripts/performance-budget.mjs";
+import { loadPlatformBaseline } from "../../scripts/platform-baselines.mjs";
+import { compareTimings } from "../../scripts/timing-statistics.mjs";
 import type {} from "../../apps/benchmarks/main";
-test("measured 100/500/1000-field baseline and strict 500-field performance budget", async ({
+test("standalone 100/500/1000-field timings with correctness assertions and advisory ratios", async ({
   page,
   browserName,
 }, info) => {
@@ -62,26 +62,19 @@ test("measured 100/500/1000-field baseline and strict 500-field performance budg
       JSON.stringify(report, null, 2) + "\n",
     );
   } else {
-    const policy = loadPerformancePolicy(report.platform);
-    if (policy.mode === "record-only") {
-      console.log(policy.message);
-      info.annotations.push({
-        type: "record-only",
-        description: policy.message,
-      });
-      if (process.env.GITHUB_STEP_SUMMARY)
-        appendFileSync(
-          process.env.GITHUB_STEP_SUMMARY,
-          `### ${policy.message}\nCorrectness assertions remain enforced; timings uploaded for three-run main calibration.\n`,
-        );
-    } else {
-      console.log(
-        `${report.platform} performance baseline enforced: fail above 20%`,
-      );
-      checkPerformance(
-        policy.baseline.results.find((r) => r.count === 500)!,
-        results[1]!,
-      );
-    }
+    const baseline = loadPlatformBaseline(report.platform);
+    const comparisons = compareTimings(baseline, results);
+    const text = comparisons
+      .map(
+        (metric) =>
+          `${metric.key}: ${metric.actual.toFixed(2)} ms / ${metric.baseline.toFixed(2)} ms = ${metric.ratio.toFixed(3)}×${metric.exceeded ? " (>20%, advisory)" : ""}`,
+      )
+      .join("\n");
+    console.log(
+      "Standalone timing report — advisory; deterministic work counts are the hard gate.\n" +
+        text,
+    );
+    if (process.env.GITHUB_STEP_SUMMARY)
+      appendFileSync(process.env.GITHUB_STEP_SUMMARY, text + "\n");
   }
 });

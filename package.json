@@ -15,11 +15,12 @@
     "test": "vitest run --coverage",
     "test:e2e": "playwright test",
     "size": "size-limit",
-    "verify": "pnpm lint && pnpm build && pnpm typecheck && pnpm test && pnpm test:e2e && pnpm size && pnpm benchmark:check",
+    "verify": "pnpm lint && pnpm build && pnpm typecheck && pnpm test && pnpm test:e2e && pnpm size && pnpm benchmark:counts",
     "dev": "pnpm build && pnpm --filter @ourform/playground dev",
     "changeset": "changeset",
     "benchmark:check": "playwright test -c playwright.bench.config.ts",
-    "benchmark:record": "OURFORM_RECORD_BASELINE=1 playwright test -c playwright.bench.config.ts"
+    "benchmark:record": "OURFORM_RECORD_BASELINE=1 playwright test -c playwright.bench.config.ts",
+    "benchmark:counts": "node scripts/work-count-baseline.mjs && playwright test -c playwright.counts.config.ts"
   },
   "devDependencies": {
     "@angular/common": "22.2.3",

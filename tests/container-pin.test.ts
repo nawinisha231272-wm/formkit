@@ -14,7 +14,14 @@ test("official Linux visual image matches the pinned browser package and CI cont
       `^mcr\\.microsoft\\.com/playwright:v${version.replaceAll(".", "\\.")}-noble@sha256:[a-f0-9]{64}$`,
     ),
   );
-  expect(read(".github/workflows/ci.yml")).toContain(`image: ${pin.image}`);
+  for (const workflow of [
+    "ci.yml",
+    "performance.yml",
+    "nightly-performance.yml",
+  ])
+    expect(read(`.github/workflows/${workflow}`)).toContain(
+      `image: ${pin.image}`,
+    );
   expect(pin.node).toBe("22.22.3");
   expect(pin.pnpm).toBe(
     JSON.parse(read("package.json")).packageManager.slice(5),
