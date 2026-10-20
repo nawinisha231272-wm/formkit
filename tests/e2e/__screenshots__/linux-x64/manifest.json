@@ -17,10 +17,16 @@
     "duration": "10.7m"
   },
   "comparison": {
-    "status": "pending-native-CI",
-    "snapshotUpdates": false
+    "status": "passed",
+    "snapshotUpdates": false,
+    "visualCases": 60,
+    "browserSuitePassed": 351,
+    "ciRun": "https://github.com/nawinisha231272-wm/formkit/actions/runs/39462700675",
+    "headSha": "6c71f05895f218ad79bab39a77de9939c316358f",
+    "workflowConclusion": "failure",
+    "workflowFailure": "Later Git provenance read required the trusted Actions checkout to be configured as safe.directory; visual comparisons all passed."
   },
-  "note": "Generated inside the pinned official image. Independent no-update comparison will be checked by native Linux CI. These are visual files, not CI performance timings.",
+  "note": "Generated inside the pinned official image; all 60 no-update comparisons pass in the native Linux CI browser suite. These are visual files, not CI performance timings.",
   "sha256": {
     "themes.spec.ts/chromium/base-dark.png": "30d1ca85db32c7489d099c5137c47498cea3bb98c54c493019023ebf31a78716",
     "themes.spec.ts/chromium/base-high-contrast.png": "ef5515666e3b582800ed6b59a71ebb591c015b772339600ed3035988170589bf",

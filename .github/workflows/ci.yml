@@ -33,6 +33,11 @@ jobs:
         # Actions mounts a home owned by pwuser while this image runs as root.
         # Firefox requires matching ownership; retain HOME and browser sandbox settings.
         run: chown "$(id -u):$(id -g)" "$HOME"
+      - name: Check clean checkout provenance
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git rev-parse HEAD
+          test -z "$(git status --porcelain)"
       - name: Label calibration runs explicitly
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_mode == 'measure' }}
         run: echo '### Calibration only — performance timings collected, regression budget NOT validated.' >> "$GITHUB_STEP_SUMMARY"

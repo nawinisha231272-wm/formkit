@@ -92,7 +92,16 @@ The first [push run](https://github.com/nawinisha231272-wm/formkit/actions/runs/
 cases, including all 40 of their Linux visual comparisons. All 117 Firefox cases fail before launch:
 Actions provides a home owned by pwuser while the official container runs as root. The workflow now
 matches that disposable directory's ownership to the actual container user; HOME, sandbox flags,
-baselines and assertions remain unchanged. The complete native rerun is pending.
+baselines and assertions remain unchanged. A controlled pinned-image probe reproduces the failure
+with mismatched ownership and successfully launches Firefox after ownership is restored.
+
+The corrected [PR run 39462700675](https://github.com/nawinisha231272-wm/formkit/actions/runs/39462700675)
+passes all 158 unit tests, **351 browser cases (all 60 Linux visual comparisons)** and 14 size budgets.
+The screenshot manifest now records the no-update comparison as PASS at 6c71f05. The workflow then
+fails reading Git provenance because the host-owned checkout needs an explicit safe.directory entry
+in the container user's Git configuration. Only the actual GITHUB_WORKSPACE is trusted; an early
+rev-parse/clean-status check is added. No wildcard trust, HOME reassignment, test/threshold change or
+baseline timing update is used. The final native rerun is pending.
 
 ## Log
 
