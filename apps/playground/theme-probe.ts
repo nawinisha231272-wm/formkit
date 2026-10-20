@@ -23,7 +23,7 @@ submit.textContent = "Submit";
 document.querySelector("#form")!.append(submit);
 const style = document.createElement("style");
 style.textContent =
-  "body{margin:0;background:#e2e8f0}main{max-width:560px;margin:20px auto}h1{font:24px Arial}#form{font-family:Arial,sans-serif}";
+  'body{margin:0;background:#e2e8f0}main{max-width:560px;margin:20px auto}h1{font:24px Arial}#form{font-family:Arial,sans-serif}#form>button[type="submit"]{color-scheme:light;color:ButtonText}';
 document.head.append(style);
 const second = () =>
   createThemeConformance(document.querySelector("#second")!, {

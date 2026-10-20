@@ -72,6 +72,7 @@ export default [
       "test-results/**",
       "playwright-report/**",
       "benchmark-results/**",
+      "visual-results/**",
     ],
   },
   js.configs.recommended,

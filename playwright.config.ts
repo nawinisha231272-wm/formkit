@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
+import { platform, arch } from "node:os";
 export default defineConfig({
-  snapshotPathTemplate:
-    "{testDir}/__screenshots__/{testFilePath}/{projectName}/{arg}{ext}",
+  snapshotPathTemplate: `{testDir}/__screenshots__/${platform()}-${arch()}/{testFilePath}/{projectName}/{arg}{ext}`,
   testDir: "./tests/e2e",
   use: { baseURL: "http://127.0.0.1:4173" },
   projects: [

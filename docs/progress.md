@@ -11,11 +11,136 @@ deviations from spec, open questions.
 - **M00 complete** — clean installation and full verification pass.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
-- Next milestone: **M03 — FieldShell, accessibility and themes**.
+- **M03–M07 complete** — local evidence is recorded below. M08 is not started.
+- `main` points at verified M07 (`cd6517e`); all milestone branches and m00-done…m07-done tags are preserved.
+- Current work: repository housekeeping on `housekeeping`; GitHub CLI API access works, CI calibration pending.
 
 ## Open questions
 
-_None yet. Add questions here instead of guessing at a contract._
+1. **validateSubmission unknown-key policy:** proposal `unknownKeys: 'reject' | 'strip'`, default
+   `'reject'`. Awaiting the user's answer. Keep the existing rejection behavior; do not implement strip.
+2. **Bootstrap 4 theme status for 1.0:** keep / legacy-frozen / remove. Awaiting the user's answer.
+   Keep the current theme unchanged until a decision is provided.
+
+## Repository housekeeping — 2026-10-20 (CI/calibration pending)
+
+Scope authorized by the user: platform-select visual/performance baselines, generate Linux-x64 visuals
+in the matching official Playwright Docker image, verify the supplied nine starter-kit findings, record
+the two open questions, run pinned local verification and push housekeeping. Preserve the M00–M07
+branches/tags. No M08 features or changes to either undecided product policy. Linux performance numbers
+must remain explicitly pending until three clean CI measurements are available; never borrow macOS
+numbers. GitHub CLI repository/Actions access now works (the connector still returns 404). Test
+thresholds remain unchanged.
+
+Main's push did trigger [Verify run 39430723757](https://github.com/nawinisha231272-wm/formkit/actions/runs/39430723757)
+at cd6517e. It failed with 302 browser cases passing and 49 theme cases failing (Linux compared to Mac
+images, plus native dark Submit contrast). This is the original M07 CI result, not a green result or
+performance measurement for housekeeping.
+
+Calibration sequencing was resolved by the user's explicit Option 1 approval on 2026-10-20:
+merge PR #1 only after all Linux correctness checks pass, with the pending Linux performance stage
+record-only and a visible "linux baseline missing: not enforced" line. Mac retains enforcement.
+Then collect three successful clean main runs at one unchanged commit on ubuntu-24.04. A second PR,
+`ci-linux-baseline`, stores per-metric medians and enables required Linux enforcement (>20%). Merge
+it only after its own CI passes, record all three runs/medians/both PRs, and stop before M08.
+This supersedes the earlier fail-closed pending-Linux policy and the historical blockers below.
+
+Built: exact platform visual paths; digest/version-pinned official Linux Playwright container and
+reproduction wrapper; unchanged Mac baselines; exact-platform performance selection with a pending
+Linux artifact; explicit calibration reports and a three-run median aggregator that verifies main
+run provenance through the API. The theme conformance page now gives its host-owned Submit button
+a light native color scheme and matching ButtonText system color: Linux WebKit's native dark button
+otherwise reports 1.81:1 contrast. Explicit background colors were rejected after local verification
+showed they change Mac WebKit's native height by three pixels. The final rule retains native geometry.
+No runtime SDK source, pixel/timing threshold or existing test assertion is weakened.
+
+The supplied nine findings are audited in docs/starter-kit-review.md: eight PASS, builder commands
+PARTIAL until M09.
+
+### Local verification evidence
+
+- PASS — frozen install with Node 22.22.3/pnpm 10.10.0.
+- PASS — official pinned linux/amd64 Docker generation: all 60 visual cases with one worker (10.7m).
+  Initial emulated two-worker attempts timed out; serialization retains the existing test timeouts.
+  PNGs were copied for review after generation; their manifest leaves the independent comparison
+  explicitly pending native CI. The wrapper reproduces generation followed by comparison serially.
+- PASS — all 60 original Mac PNGs are byte-identical to M07 after relocation; every original Mac
+  baseline value is unchanged. No pixel or performance threshold is changed.
+- PASS — final native-button fix: all 20 Mac WebKit visual cases pass against existing images.
+  A pinned Linux WebKit probe confirms unchanged button geometry and no serious/critical axe issues,
+  including inherited Bootstrap-like text styles. Full Linux comparison remains CI evidence.
+- PASS — full pinned `CI=true pnpm verify` reaches and passes lint, all builds/typechecks, 158 unit
+  tests, 351 browser cases and all 14 size budgets. Core line coverage is 98.57%, validation 99.15%.
+- RETRY/PASS — that combined run's Mac benchmark stage initially exceeded the unchanged ceilings
+  (500-field compile/mount/edit/theme: 6.40/46.90/126.80/81.40 ms). A separate pinned
+  `CI=true pnpm benchmark:check` passes at 4.50/37.60/98.70/63.00 ms after other checks finish.
+  The full command's first result is not claimed green; the isolated retry is recorded separately.
+  No runtime/workload code or stored timings were changed to obtain the passing check.
+- PASS — a final complete pinned `CI=true pnpm verify` on committed 2e2c8e4 exits successfully in one
+  run: all stages above plus the Mac performance gate at 4.40/36.70/99.60/63.30 ms. This rerun had no
+  Docker work alongside it. The earlier failure/retry remains documented rather than omitted.
+- PASS — platform selection/pending-baseline rejection, strict 20% boundary, API-provenanced three-run
+  median aggregation and official container/package version alignment pass in the unit suite.
+
+Remote PR, no-update Linux visual comparison and three clean main CI performance runs remain pending.
+Under the now-authorized bootstrap, pending Linux verification is record-only; this is not a green
+performance regression verdict. Main advances only after all correctness checks pass. M08 is not started.
+
+### Native CI follow-up
+
+[PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) is open as a draft from housekeeping to main.
+The first [push run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39460791176) and
+[PR run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39460822825) each pass 234 Chromium/WebKit
+cases, including all 40 of their Linux visual comparisons. All 117 Firefox cases fail before launch:
+Actions provides a home owned by pwuser while the official container runs as root. The workflow now
+matches that disposable directory's ownership to the actual container user; HOME, sandbox flags,
+baselines and assertions remain unchanged. A controlled pinned-image probe reproduces the failure
+with mismatched ownership and successfully launches Firefox after ownership is restored.
+
+The corrected [PR run 39462700675](https://github.com/nawinisha231272-wm/formkit/actions/runs/39462700675)
+passes all 158 unit tests, **351 browser cases (all 60 Linux visual comparisons)** and 14 size budgets.
+The screenshot manifest now records the no-update comparison as PASS at 6c71f05. The workflow then
+fails reading Git provenance because the host-owned checkout needs an explicit safe.directory entry
+in the container user's Git configuration. Only the actual GITHUB_WORKSPACE is trusted; an early
+rev-parse/clean-status check is added. No wildcard trust, HOME reassignment, test/threshold change or
+baseline timing update is used. The final native rerun is pending.
+
+At 00c1dbf, [push run 39464178487](https://github.com/nawinisha231272-wm/formkit/actions/runs/39464178487)
+passes 158 unit tests, all 351 browser cases and 14 size budgets, emits clean linux-x64 provenance,
+then fails only on the explicit pending Linux budget. Its report is not eligible for calibration.
+The parallel [PR run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39464185762) has one
+intermittent Firefox React failure: the flow did not wait for the email provider to finish and remove
+an error above the later pointer target. The shared development conformance helper now asserts email aria-busy=false
+and aria-invalid=false before proceeding. The original checkbox check and every other assertion remain;
+no retry, timeout, pixel allowance or runtime behavior changes. All ten focused Firefox repetitions
+pass (`tests/e2e/tier1.spec.ts`, react shared-conformance case, --repeat-each=10).
+
+Final local verification on 354585e again passes lint, builds/types, all 158 unit tests, all 351 browser
+cases and 14 size budgets. Its Mac benchmark fails only compile (5.60 ms versus the unchanged 5.40 ms
+ceiling); mount/edit/theme pass at 42.90/114.70/73.40 ms. A separate pinned benchmark retry passes at
+4.50/36.80/99.80/64.20 ms. The latest combined command is therefore **not claimed green**, although a
+complete earlier combined run on 2e2c8e4 passes and both isolated checks pass. Runtime benchmark source
+and baseline values are unchanged. Timing variability after the full suite remains explicit.
+
+Native verification of the strengthened readiness assertions passes in both
+[push run 39467103066](https://github.com/nawinisha231272-wm/formkit/actions/runs/39467103066) and
+[PR run 39467110555](https://github.com/nawinisha231272-wm/formkit/actions/runs/39467110555) at 354585e:
+158 unit tests, all 351 browser cases (all 60 Linux comparisons), 14 size budgets and clean linux-x64
+provenance. **Both workflows fail only on the explicit pending Linux baseline.** Their housekeeping
+timings are not used as calibration evidence: zero of the three required successful main runs exist.
+The screenshot manifest records the latest comparison evidence; Mac bytes/timings remain unchanged.
+
+### Authorized bootstrap implementation
+
+The pending-Linux exception is restricted to the exact platform and an explicit
+scripts/performance-policy.json switch. Measured Linux and Mac enforce their own baseline. Closing
+the switch in PR #2 makes pending Linux fail again. There is no generic measurement bypass.
+Unit evidence: `bootstrap records only pending Linux; Mac and measured Linux enforce and calibration
+can be closed`; the aggregation test also rejects a different runner type using API job labels.
+The workflow retains the pinned image, all correctness checks and benchmark artifact uploads.
+
+PR #1 and the three required main runs are being completed under the approved sequence. No M08 or
+product-policy implementation is included. Historical CI failures above remain documented.
 
 ## Log
 
