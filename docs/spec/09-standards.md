@@ -40,3 +40,6 @@ missing/pending Linux then fails and measured Linux enforces the unchanged >20% 
 results never supply a passing regression verdict. Visual baselines also select the
 platform; Linux visuals/CI use the same version/digest-pinned official Playwright Docker image.
 No pixel or timing threshold is loosened. See docs/performance and the screenshot README.
+
+The Linux bootstrap is now closed: linuxBaselineRequired=true and the artifact contains medians
+from three successful clean main CI runs on ubuntu-24.04. See docs/progress.md for run URLs and values.
