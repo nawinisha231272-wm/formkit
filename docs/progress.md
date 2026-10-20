@@ -37,11 +37,13 @@ at cd6517e. It failed with 302 browser cases passing and 49 theme cases failing 
 images, plus native dark Submit contrast). This is the original M07 CI result, not a green result or
 performance measurement for housekeeping.
 
-Calibration sequencing remains unresolved: main still has the original M07 workflow, without the
-new Linux visual files or explicit calibration mode. Three clean main calibration runs require the
-housekeeping harness on main, but the user requires those runs before this PR merges. Do not bypass
-the pending budget or update main prematurely. A separately approved CI bootstrap on main, or the
-user changing the calibration branch requirement, is needed to break this dependency.
+Calibration sequencing was resolved by the user's explicit Option 1 approval on 2026-10-20:
+merge PR #1 only after all Linux correctness checks pass, with the pending Linux performance stage
+record-only and a visible "linux baseline missing: not enforced" line. Mac retains enforcement.
+Then collect three successful clean main runs at one unchanged commit on ubuntu-24.04. A second PR,
+`ci-linux-baseline`, stores per-metric medians and enables required Linux enforcement (>20%). Merge
+it only after its own CI passes, record all three runs/medians/both PRs, and stop before M08.
+This supersedes the earlier fail-closed pending-Linux policy and the historical blockers below.
 
 Built: exact platform visual paths; digest/version-pinned official Linux Playwright container and
 reproduction wrapper; unchanged Mac baselines; exact-platform performance selection with a pending
@@ -81,8 +83,8 @@ PARTIAL until M09.
   median aggregation and official container/package version alignment pass in the unit suite.
 
 Remote PR, no-update Linux visual comparison and three clean main CI performance runs remain pending.
-Ordinary Linux verification must reject its pending budget; a calibration-only success cannot be
-reported as a green regression gate. Main is not advanced and no M08 work is started.
+Under the now-authorized bootstrap, pending Linux verification is record-only; this is not a green
+performance regression verdict. Main advances only after all correctness checks pass. M08 is not started.
 
 ### Native CI follow-up
 
@@ -128,10 +130,17 @@ provenance. **Both workflows fail only on the explicit pending Linux baseline.**
 timings are not used as calibration evidence: zero of the three required successful main runs exist.
 The screenshot manifest records the latest comparison evidence; Mac bytes/timings remain unchanged.
 
-The user has been asked whether to authorize landing the reviewed CI bootstrap on main before its
-three calibration runs, allow calibration on housekeeping instead, or keep the PR unmerged. No answer
-has been received. Main remains cd6517e; PR #1 remains a draft. No merge, main update, Linux performance
-baseline recording or M08 work is performed while that sequencing decision is pending.
+### Authorized bootstrap implementation
+
+The pending-Linux exception is restricted to the exact platform and an explicit
+scripts/performance-policy.json switch. Measured Linux and Mac enforce their own baseline. Closing
+the switch in PR #2 makes pending Linux fail again. There is no generic measurement bypass.
+Unit evidence: `bootstrap records only pending Linux; Mac and measured Linux enforce and calibration
+can be closed`; the aggregation test also rejects a different runner type using API job labels.
+The workflow retains the pinned image, all correctness checks and benchmark artifact uploads.
+
+PR #1 and the three required main runs are being completed under the approved sequence. No M08 or
+product-policy implementation is included. Historical CI failures above remain documented.
 
 ## Log
 

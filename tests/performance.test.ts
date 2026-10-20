@@ -68,6 +68,7 @@ test("Linux baseline aggregation requires three successful clean main runs and t
       ref: "refs/heads/main",
       runId: String(index + 1),
       commit: "same-main-commit",
+      runnerType: "ubuntu-24.04",
     },
     results: [100, 500, 1000].map((count) => ({
       count,
@@ -82,10 +83,17 @@ test("Linux baseline aggregation requires three successful clean main runs and t
   const runs = reports.map((report) => ({
     id: Number(report.source.runId),
     conclusion: "success",
+    jobs: [{ labels: ["ubuntu-24.04"] }],
     head_branch: "main",
     head_sha: report.source.commit,
     html_url: `https://github.com/example/actions/runs/${report.source.runId}`,
   }));
+  expect(() =>
+    aggregateCiBaseline(reports, [
+      { ...runs[0], jobs: [{ labels: ["ubuntu-22.04"] }] },
+      ...runs.slice(1),
+    ]),
+  ).toThrow("same ubuntu-24.04");
   const result = aggregateCiBaseline(reports, runs);
   expect(result.platform).toBe("linux-x64");
   expect(result.results.find((r) => r.count === 500)).toMatchObject({
@@ -123,4 +131,45 @@ test("Linux baseline aggregation requires three successful clean main runs and t
       runs,
     ),
   ).toThrow("real linux-x64");
+});
+
+test("bootstrap records only pending Linux; Mac and measured Linux enforce and calibration can be closed", async () => {
+  const { selectPerformancePolicy, loadPlatformBaseline } = await import(
+    "../scripts/platform-baselines.mjs"
+  );
+  const pending = { platform: "linux-x64", status: "pending", results: [] };
+  expect(selectPerformancePolicy(pending, "linux-x64", false)).toEqual({
+    mode: "record-only",
+    message: "linux baseline missing: not enforced",
+  });
+  expect(() => selectPerformancePolicy(pending, "linux-x64", true)).toThrow(
+    "pending",
+  );
+  expect(() => selectPerformancePolicy(pending, "darwin-arm64", false)).toThrow(
+    "platform mismatch",
+  );
+  expect(() =>
+    selectPerformancePolicy(
+      { ...pending, platform: "darwin-arm64" },
+      "darwin-arm64",
+      false,
+    ),
+  ).toThrow("pending");
+  const mac = loadPlatformBaseline("darwin-arm64");
+  expect(selectPerformancePolicy(mac, "darwin-arm64", false)).toEqual({
+    mode: "enforce",
+    baseline: mac,
+  });
+  const linux = { ...mac, platform: "linux-x64" };
+  expect(selectPerformancePolicy(linux, "linux-x64", false)).toEqual({
+    mode: "enforce",
+    baseline: linux,
+  });
+  expect(() =>
+    selectPerformancePolicy(
+      { ...pending, status: "invalid" },
+      "linux-x64",
+      false,
+    ),
+  ).toThrow("invalid");
 });

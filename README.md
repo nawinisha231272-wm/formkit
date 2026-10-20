@@ -139,5 +139,6 @@ decisions about unknown submission keys and Bootstrap 4 at 1.0 remain open in do
 Visual snapshots now select darwin-arm64/linux-x64 directories. Generate/check Linux visuals using
 `sh scripts/linux-visuals.sh record` / `check` in the pinned official Playwright container. Performance
 baselines also select the exact platform: the Mac M07 values are preserved, and linux-x64 remains
-explicitly pending three clean CI runs. A pending budget fails normal checks; benchmark:measure is
-calibration only. See docs/performance for the recording and API-verification procedure.
+explicitly pending three clean main CI runs. The authorized bootstrap logs "linux baseline missing:
+not enforced" and records Linux timings while retaining correctness checks; Mac keeps enforcing.
+A second PR stores the three-run medians and requires Linux enforcement. See docs/performance for the recording and API-verification procedure.

@@ -14,3 +14,15 @@ export function requirePlatformBaseline(
   actualPlatform: string,
 ): PlatformBaseline;
 export function loadPlatformBaseline(actualPlatform?: string): PlatformBaseline;
+
+export type PerformancePolicy =
+  | { mode: "enforce"; baseline: PlatformBaseline }
+  | { mode: "record-only"; message: string };
+export function selectPerformancePolicy(
+  baseline: unknown,
+  actualPlatform: string,
+  linuxBaselineRequired: boolean,
+): PerformancePolicy;
+export function loadPerformancePolicy(
+  actualPlatform?: string,
+): PerformancePolicy;

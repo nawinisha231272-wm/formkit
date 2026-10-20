@@ -16,7 +16,8 @@ export function aggregateCiBaseline(reports, runs) {
       report.browser !== "chromium" ||
       source?.githubActions !== true ||
       source.dirty !== false ||
-      source.ref !== "refs/heads/main"
+      source.ref !== "refs/heads/main" ||
+      source.runnerType !== "ubuntu-24.04"
     )
       throw new Error(
         "Each report must measure clean main on a real linux-x64 GitHub Actions runner",
@@ -32,6 +33,11 @@ export function aggregateCiBaseline(reports, runs) {
       run.head_sha !== source.commit
     )
       throw new Error(`Run ${id} is not a successful matching main run`);
+    if (
+      !run.jobs?.length ||
+      run.jobs.some((job) => !job.labels?.includes(source.runnerType))
+    )
+      throw new Error(`Run ${id} must use the same ubuntu-24.04 runner type`);
     ids.add(id);
     commits.add(source.commit);
   }
@@ -71,6 +77,7 @@ export function aggregateCiBaseline(reports, runs) {
     platform: "linux-x64",
     status: "measured",
     browser: "chromium",
+    runnerType: "ubuntu-24.04",
     recordedAt: new Date().toISOString(),
     aggregation:
       "Per-metric median of three clean successful main CI run medians; each run has 3 warm-ups and 15 measured samples per size",
@@ -102,13 +109,21 @@ if (
   const runs = reports.map((report) => {
     const id = String(report.source?.runId);
     if (!/^\d+$/.test(id)) throw new Error("Invalid run ID");
-    return JSON.parse(
+    const run = JSON.parse(
       execFileSync(
         "gh",
         ["api", `repos/nawinisha231272-wm/formkit/actions/runs/${id}`],
         { encoding: "utf8" },
       ),
     );
+    const jobs = JSON.parse(
+      execFileSync(
+        "gh",
+        ["api", `repos/nawinisha231272-wm/formkit/actions/runs/${id}/jobs`],
+        { encoding: "utf8" },
+      ),
+    );
+    return { ...run, jobs: jobs.jobs };
   });
   const baseline = aggregateCiBaseline(reports, runs);
   writeFileSync(

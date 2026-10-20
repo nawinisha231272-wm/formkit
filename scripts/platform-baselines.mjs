@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { platform, arch } from "node:os";
-/** Exact platform match only: no fallback, aliases, or pending-baseline success. */
+/** Exact platform match only; no cross-platform fallback or aliases. */
 export function requirePlatformBaseline(baseline, actualPlatform) {
   if (!baseline || baseline.platform !== actualPlatform)
     throw new Error(
@@ -8,7 +8,7 @@ export function requirePlatformBaseline(baseline, actualPlatform) {
     );
   if (baseline.status !== "measured")
     throw new Error(
-      `Performance baseline for ${actualPlatform} is ${baseline.status ?? "unmeasured"}. Record three clean CI runs on main before enabling the Linux budget. Use benchmark:measure only for explicit calibration; it is not a passing regression check.`,
+      `Performance baseline for ${actualPlatform} is ${baseline.status ?? "unmeasured"}. Record three clean CI runs on main before enabling the Linux budget.`,
     );
   if (
     !Array.isArray(baseline.results) ||
@@ -37,4 +37,53 @@ export function loadPlatformBaseline(
     );
   }
   return requirePlatformBaseline(baseline, actualPlatform);
+}
+
+/** The temporary bootstrap exception is Linux-only and must be explicitly disabled after calibration. */
+export function selectPerformancePolicy(
+  baseline,
+  actualPlatform,
+  linuxBaselineRequired,
+) {
+  if (baseline?.platform !== actualPlatform)
+    return {
+      mode: "enforce",
+      baseline: requirePlatformBaseline(baseline, actualPlatform),
+    };
+  if (
+    actualPlatform === "linux-x64" &&
+    baseline.status === "pending" &&
+    linuxBaselineRequired === false
+  )
+    return {
+      mode: "record-only",
+      message: "linux baseline missing: not enforced",
+    };
+  return {
+    mode: "enforce",
+    baseline: requirePlatformBaseline(baseline, actualPlatform),
+  };
+}
+export function loadPerformancePolicy(
+  actualPlatform = `${platform()}-${arch()}`,
+) {
+  if (!/^[a-z0-9]+-[a-z0-9]+$/.test(actualPlatform))
+    throw new Error("Invalid baseline platform");
+  const policy = JSON.parse(
+    readFileSync(new URL("./performance-policy.json", import.meta.url), "utf8"),
+  );
+  const baseline = JSON.parse(
+    readFileSync(
+      new URL(
+        `../docs/performance/baselines/${actualPlatform}.json`,
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  return selectPerformancePolicy(
+    baseline,
+    actualPlatform,
+    policy.linuxBaselineRequired,
+  );
 }

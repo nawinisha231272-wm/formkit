@@ -11,9 +11,12 @@ Baselines are selected by the exact Node platform/architecture (`os.platform()` 
 | darwin-arm64 | baselines/darwin-arm64.json | Measured M07 local medians, timing values unchanged  |
 | linux-x64    | baselines/linux-x64.json    | **PENDING** — no CI timing values have been invented |
 
-There is no platform fallback. A missing, mismatched or pending baseline fails `benchmark:check`
-with an explicit error. The Linux gate remains blocked until calibration is complete; a green
-calibration job is not a green performance regression verdict. Never compare Linux to the Mac file.
+There is no platform fallback. The user authorized a temporary Linux bootstrap on 2026-10-20:
+while linux-x64 is pending and scripts/performance-policy.json has linuxBaselineRequired=false,
+ordinary verification measures and uploads timings, logs **linux baseline missing: not enforced**,
+and retains every correctness assertion. This is record-only, not a performance regression verdict.
+Mac always enforces its stored baseline. A measured Linux artifact always enforces its own baseline.
+Malformed/mismatched data and missing files fail; no cross-platform substitution is allowed.
 Docker-on-Mac/emulated measurements cannot populate the CI baseline.
 
 Each size has 3 warm-ups and 15 samples; report timings are medians in ms. Compile, mount plus forced
@@ -24,30 +27,28 @@ control count/identity/focus and DOM cleanup. Every 500-field timing must be <= 
 
 ## Recording and checking
 
-`pnpm benchmark:record` explicitly records a local platform baseline for review. It refuses a single
-linux-x64 recording. Checks never rewrite baselines. `pnpm benchmark:measure` records timings to
-benchmark-results/measurement.json without comparing or approving a baseline. It labels the result
-**CALIBRATION ONLY**, retains correctness/count/cleanup assertions, and includes commit, dirty state,
-GitHub ref/run ID/attempt and platform. No measurement-only mode is enabled for ordinary push/PR CI.
+`pnpm benchmark:record` explicitly records a local platform baseline for review and refuses a single
+linux-x64 recording. Checks never rewrite baselines. Reports in benchmark-results/measurement.json
+include commit, dirty state, GitHub ref/run ID/attempt, platform and configured runner type.
 
-The Verify workflow has an explicit workflow_dispatch `performance_mode: measure` calibration mode.
-Run it three times on the same clean **main** commit after that harness is available there. Each full
-correctness run must succeed. Download each run's benchmark-results/measurement.json, then:
+Merge [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) only after all Linux correctness
+checks pass: lint, types, build, unit/browser tests, all Linux visuals and size budgets. Its pending
+Linux performance stage is explicitly record-only. Then dispatch Verify three times on the same clean
+**main** commit, with no intervening code changes, all on ubuntu-24.04. Each full run must succeed.
+Download each run's benchmark-results/measurement.json, then:
 
 ```sh
 node scripts/aggregate-ci-baseline.mjs run1/measurement.json run2/measurement.json run3/measurement.json
 ```
 
-The CLI uses authenticated `gh api` to verify each referenced workflow run concluded successfully
-on main at the measured commit. It requires three distinct run IDs, clean GitHub Actions linux-x64
-reports, one matching commit, all three sizes, 15 samples and the expected 650 processors. It writes
-per-metric medians of the three run medians, with the CI run URLs, to baselines/linux-x64.json. The
-exported pure aggregator can also consume run metadata retrieved through the connected GitHub API.
-Review and commit the resulting artifact, then run the ordinary check-mode CI. No automatic merge or
-baseline replacement occurs. GitHub CLI API access is available; the three clean main measurements
-remain pending. Main still has the M07 workflow without this harness. Landing the harness on main
-requires a separately approved bootstrap if the housekeeping PR itself must wait for these main
-measurements. Do not merge or bypass the pending budget to resolve that sequencing requirement.
+The CLI uses authenticated `gh api` to verify each run succeeded on main at the measured commit and
+its jobs used ubuntu-24.04. It requires three distinct run IDs, clean GitHub Actions linux-x64 reports,
+one matching commit, all three sizes, 15 samples and the expected 650 processors. It writes per-metric
+medians of the three run medians and the run URLs to baselines/linux-x64.json. Open a second PR on
+`ci-linux-baseline`, store those medians and set linuxBaselineRequired=true. This closes the bootstrap
+exception: pending or missing Linux data must then fail. Merge that PR only after its own ordinary
+CI passes the unchanged >20% limit. Record both PR links, the three runs and medians in progress.md.
+Stop before M08. Product questions in progress.md remain unanswered.
 
 The previous M07 single artifact was relocated from docs/performance/m07-baseline.json without
 altering its measured values. Absolute timings still depend on hardware, browser, CPU/power and load;

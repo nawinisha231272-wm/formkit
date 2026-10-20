@@ -32,7 +32,11 @@ proof boundaries are documented in ADR-0009. Repeater/grid benchmarks await M10.
 
 Housekeeping (2026-10-20): performance baseline selection requires an exact OS/architecture match and
 measured status. Linux-x64 stays explicitly pending until three clean successful main CI runs are
-aggregated per metric; ordinary verification fails closed until then. Calibration-only measurement
-mode is explicit and never supplies a passing regression verdict. Visual baselines also select the
+aggregated per metric. The user authorized temporary Linux-only record-only verification while
+linuxBaselineRequired=false: log "linux baseline missing: not enforced" and upload timings, retaining
+all correctness checks. Mac always enforces its measured baseline. After three successful runs of
+the same main commit on ubuntu-24.04, a second PR stores medians and sets linuxBaselineRequired=true;
+missing/pending Linux then fails and measured Linux enforces the unchanged >20% limit. Record-only
+results never supply a passing regression verdict. Visual baselines also select the
 platform; Linux visuals/CI use the same version/digest-pinned official Playwright Docker image.
 No pixel or timing threshold is loosened. See docs/performance and the screenshot README.

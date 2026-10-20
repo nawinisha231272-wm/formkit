@@ -3,12 +3,6 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-    inputs:
-      performance_mode:
-        description: "check enforces the platform budget; measure is explicit calibration only"
-        type: choice
-        options: [check, measure]
-        default: check
 jobs:
   verify:
     runs-on: ubuntu-24.04
@@ -17,7 +11,7 @@ jobs:
       options: --ipc=host
     env:
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
-      OURFORM_MEASURE_PERFORMANCE: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_mode == 'measure' && '1' || '0' }}
+      OURFORM_CI_RUNNER_TYPE: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -38,9 +32,6 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git rev-parse HEAD
           test -z "$(git status --porcelain)"
-      - name: Label calibration runs explicitly
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_mode == 'measure' }}
-        run: echo '### Calibration only — performance timings collected, regression budget NOT validated.' >> "$GITHUB_STEP_SUMMARY"
       - name: Verify correctness, accessibility and the 500-field performance budget
         run: pnpm verify
       - uses: actions/upload-artifact@v4
