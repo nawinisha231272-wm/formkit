@@ -20,6 +20,7 @@ import {
 } from "./timing-statistics.mjs";
 import { loadPlatformBaseline } from "./platform-baselines.mjs";
 import { advanceNightly, nightlyIssuePlan } from "./nightly-performance.mjs";
+import { probeLoopback } from "./loopback-health.mjs";
 const mode = process.argv[2];
 const actualPlatform = `${platform()}-${arch()}`;
 const repo = process.env.GITHUB_REPOSITORY;
@@ -90,36 +91,44 @@ async function serve(rootPath) {
   };
 }
 async function devServer(rootPath) {
-  const log = openSync("/tmp/ourform-nightly-vite.log", "w");
+  mkdirSync("benchmark-results", { recursive: true });
+  const logPath = "benchmark-results/nightly-vite.log";
+  const log = openSync(logPath, "w");
   const child = spawn("pnpm", ["--filter", "@ourform/benchmarks", "dev"], {
     cwd: resolve(rootPath),
     detached: true,
     stdio: ["ignore", log, log],
   });
   closeSync(log);
+  let spawnError;
+  child.on("error", (error) => {
+    spawnError = error;
+  });
   const close = async () => {
-    if (child.exitCode === null) {
+    if (child.pid && child.exitCode === null) {
       process.kill(-child.pid, "SIGTERM");
       await new Promise((resolve) => child.once("exit", resolve));
     }
   };
   try {
     const deadline = Date.now() + 120000;
+    let lastProbe;
     while (Date.now() < deadline) {
+      if (spawnError) throw spawnError;
       if (child.exitCode !== null)
         throw new Error("Nightly Vite server exited before readiness");
-      try {
-        if ((await fetch("http://127.0.0.1:4190")).ok)
-          return { url: "http://127.0.0.1:4190", close };
-      } catch {
-        /* Wait for the dedicated server. */
-      }
+      lastProbe = await probeLoopback(4190);
+      if (lastProbe.ok) return { url: "http://127.0.0.1:4190", close };
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
-    throw new Error("Nightly Vite server readiness timeout");
+    throw new Error(
+      `Nightly Vite server readiness timeout: ${JSON.stringify(lastProbe)}`,
+    );
   } catch (error) {
     await close();
-    throw error;
+    throw new Error(
+      `${error.message}\nVite log:\n${readFileSync(logPath, "utf8").slice(-4000)}`,
+    );
   }
 }
 async function measure(browser, server) {
