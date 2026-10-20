@@ -39,3 +39,16 @@ disappearing cannot move later pointer targets during their activation.
 M07: createConformanceEngine installs builtinComponents, including the shipped transparent layouts
 and object Container. The onboarding host suite reuses the same 40-value fixture for controlled,
 uncontrolled, read-only, summary/reset, all themes, SSR/remount and the offline production-sample gate.
+
+## Component author test kit (M08)
+
+`renderComponent(def,{host,theme,...})` mounts a real single-component form in an empty caller-owned
+Element and returns a FormController. Optional node/data/fields/readOnly engine and adapter/nativeHost cover
+composites and native controls. Call destroy after each test; host content must be empty initially.
+`componentTestEngine(fields)` creates an isolated engine from descriptors.
+`checkValueAdapter(adapter,samples)` checks empty recognition and canonical normalize/serialize
+round trips. `checkValidation(engine,definition,cases)` checks valid and optional exact error-code
+expectations against canonical SDK validation. `checkBuilderRoundTrip(engine,type)` checks palette,
+generated label editing and byte-identical undo/redo. Helpers throw on mismatch; no test runner is
+required. Every new component needs conformance and visual checks in base, Bootstrap 4, Bootstrap 5
+and Tailwind. The component author guide shows the complete workflow.

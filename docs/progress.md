@@ -11,11 +11,11 @@ deviations from spec, open questions.
 - **M00 complete** — clean installation and full verification pass.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
-- **M03–M07 complete** — local evidence is recorded below. M08 is not started.
+- **M03–M07 complete** — local and Linux evidence is recorded below. M08 is in progress on `m08-sdk-complete`.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
-  [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 remains unstarted.
+  [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 is now in progress on its separate milestone branch.
 
 ## Open questions
 
@@ -68,9 +68,68 @@ report this checkpoint and start M08 using its normal milestone process.
   Final full pinned verify exits zero with this guard. The strengthened demo readiness test also passes
   all three browsers separately. No remote CI has been retried or triggered before this final commit.
 
-Remote initial CI and actual scheduled-night observations are not claimed yet. PR merging requires
-its initial CI checks and a measured five-pair advisory artifact; no CI re-runs are authorized for green.
-The nightly workflow is unit-tested for its policy and will be enabled on default branch main after merge.
+Remote initial CI is now recorded in the merged checkpoint below. Actual scheduled-night observations
+are not claimed before they occur. No CI re-runs were used for green.
+
+### Merged CI checkpoint
+
+[PR #3](https://github.com/nawinisha231272-wm/formkit/pull/3) merged as
+`201b6095e3f9407e3734ac80e749a45203575ee6` after all initial checks passed, each on attempt 1:
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39486249662),
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39486224605), and
+[isolated advisory A/B](https://github.com/nawinisha231272-wm/formkit/actions/runs/39486249733).
+Native Linux verified 167 unit tests, 357 browser cases, 14 size budgets and five count-gate cases.
+The A/B artifact has status=measured, five alternating main/candidate pairs and all 12 metric ratios;
+500-field compile/mount/edit/theme ratios were 1.053/1.008/0.970/0.991. No workflow was re-run for green.
+The post-merge main Verify run is [39488293769](https://github.com/nawinisha231272-wm/formkit/actions/runs/39488293769).
+
+PASS — the user changed the default branch to main, verified through the repository API. The nightly
+workflow is registered and its first manual diagnostic is [39490884430](https://github.com/nawinisha231272-wm/formkit/actions/runs/39490884430).
+Manual diagnostics do not advance nightly streaks or write issues. The post-merge main Verify run
+above completed successfully on attempt 1. Actual three-night observations remain prospective.
+Repository protection now requires PRs and Verify; no force pushes are permitted (user-reported).
+
+## M08 — SDK completion (in progress)
+
+Plan: complete typed presets and declarative composites, then plugin packaging/engine installation
+with semver, conflicts and requirements; add the component test kit; add verifiable CLI component,
+theme and plugin scaffolds; publish author guides and an extension playground; automate scenarios A–F
+and four-theme conformance/visuals. Run pinned verify, prepare the ADR-0003 export inventory and PR,
+then stop for the M08 gate review. The external developer exercise requires a named independent
+human and remains pending until actual guide-only evidence is supplied. Do not start M09.
+
+Risks: expanded child ids/references and object scopes must remain stable; plugin installation must
+preserve the headless/model-view boundary and per-engine isolation; generated projects must use the
+pinned toolchain without relying on unpublished registry packages. Existing correctness checks and
+count baselines remain enforced. Contract details will be recorded in the spec and ADR before freeze.
+
+### M08 implementation checkpoint
+
+Implemented presets (typed portable metadata and native-view preservation), fixed-template Address
+composites with stable ids/internal references, bounded headless expansion, and per-engine plugin
+installation/semver/conflicts/requirements. Added component value/validation/builder/render helpers,
+CLI component/theme/plugin generators and author guides. The CLI proof packs the public packages,
+installs all three fresh projects offline and runs each unedited pnpm verify. The package README,
+spec 04, proposed ADR-0003, export inventory and changeset document contracts. semver 7.8.5 is the
+sole new runtime dependency, to support full npm ranges rather than inventing a partial grammar.
+
+Intermediate evidence: focused SDK/core/test-kit checks pass; the built CLI proof passes all three
+scaffolds. SDK scenarios A/B/D source/unit tests pass (Rating is 29 meaningful non-import lines), and
+24 browser cases passed across Chromium/Firefox/WebKit after fixing outside-submit blur coordination.
+The matrix is being extended with native-component visuals in every theme before final verification.
+The initial broad unit run under contention hit existing deadlines; compiler diagnostics for a
+composite with no expansion also exposed a compatibility requirement, now preserved as
+unsupported-component. The expensive SDK export check now parses declared names and verifies actual
+runtime exports directly, preserving the inventory assertion without loading a full compiler graph.
+Unit/browser concurrency is bounded; all original deadlines, tests, images and thresholds remain.
+Final full pinned verify and Linux images are pending; this is not a milestone completion claim.
+
+The user is arranging the independent author exercise and explicitly requires the gate remain pending
+until their report. Gate recommendation remains **NO-GO pending that report and final verification**.
+The nightly diagnostic correction is isolated in [PR #4](https://github.com/nawinisha231272-wm/formkit/pull/4);
+its first failed diagnostic 39490884430 is retained. Main default is verified; the API reports main
+protected=false and returns HTTP 403 (private repository plan restriction) when querying rulesets.
+Our work continues with PRs, green checks and no force pushes; server-enforced protection is not claimed.
 
 ## Linux calibration follow-up — 2026-10-20
 

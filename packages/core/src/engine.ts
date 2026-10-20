@@ -14,6 +14,9 @@ import { compileExpression } from "./expressions";
 import { freeze, pathKey, snapshot } from "./paths";
 import { orderGraph } from "./graph";
 import { FormSession } from "./session";
+import { expandComposites } from "./composites";
+import { pluginVersions, meetsRequirement, mergePluginMap } from "./plugins";
+import type { PluginRegistration } from "./plugins";
 export class Registry {
   #models = new Map<string, ComponentModel>();
   register<T>(model: ComponentModel<T>): this {
@@ -26,6 +29,7 @@ export class Registry {
         ...model,
         ...(model.value ? { value: Object.freeze({ ...model.value }) } : {}),
         ...(model.properties ? { properties: snapshot(model.properties) } : {}),
+        ...(model.builder ? { builder: snapshot(model.builder) } : {}),
         ...(model.validators
           ? { validators: Object.freeze([...model.validators]) }
           : {}),
@@ -44,6 +48,7 @@ export interface EngineOptions {
   functions?: FunctionMap;
   validators?: ValidatorMap;
   providers?: Providers;
+  plugins?: readonly PluginRegistration[];
 }
 export class Engine {
   readonly registry = new Registry();
@@ -51,9 +56,44 @@ export class Engine {
   readonly validators: Readonly<ValidatorMap>;
   readonly providers: Readonly<Providers>;
   #forms = new WeakSet<CompiledForm>();
+  #plugins: ReadonlyMap<string, string>;
   constructor(options: EngineOptions = {}) {
-    this.providers = Object.freeze({ ...options.providers });
-    for (const name of Object.keys(options.validators ?? {}))
+    this.#plugins = pluginVersions(options.plugins ?? []);
+    const functions: FunctionMap = { ...options.functions };
+    const validators: ValidatorMap = { ...options.validators };
+    const dataSources: Record<string, unknown> = {};
+    const themes = new Set<string>();
+    for (const plugin of options.plugins ?? []) {
+      for (const component of plugin.components ?? [])
+        this.register("model" in component ? component.model : component);
+      mergePluginMap(functions, plugin.functions, "function");
+      mergePluginMap(validators, plugin.validators, "validator");
+      mergePluginMap(dataSources, plugin.dataSources, "data source");
+      for (const theme of plugin.themes ?? []) {
+        if (!theme.name || themes.has(theme.name))
+          throw new Error(`Duplicate theme: ${theme.name}`);
+        themes.add(theme.name);
+      }
+    }
+    const providers = { ...options.providers };
+    if (Object.keys(dataSources).length) {
+      const configured = providers.dataSources;
+      if (
+        configured !== undefined &&
+        (configured === null ||
+          typeof configured !== "object" ||
+          Array.isArray(configured))
+      )
+        throw new Error("providers.dataSources must be a named provider map.");
+      mergePluginMap(
+        dataSources,
+        configured as Record<string, unknown> | undefined,
+        "data source",
+      );
+      providers.dataSources = Object.freeze(dataSources);
+    }
+    this.providers = Object.freeze(providers);
+    for (const name of Object.keys(validators))
       if (
         Object.hasOwn(builtinValidators, name) ||
         ["__proto__", "prototype", "constructor"].includes(name)
@@ -61,14 +101,14 @@ export class Engine {
         throw new Error(`Reserved validator name: ${name}`);
     this.validators = Object.freeze(
       Object.fromEntries(
-        Object.entries({ ...builtinValidators, ...options.validators }).map(
+        Object.entries({ ...builtinValidators, ...validators }).map(
           ([name, validator]) => [name, Object.freeze({ ...validator })],
         ),
       ),
     );
     this.functions = Object.freeze(
       Object.fromEntries(
-        Object.entries(options.functions ?? {}).map(([key, fn]) => [
+        Object.entries(functions).map(([key, fn]) => [
           key,
           Object.freeze({ ...fn }),
         ]),
@@ -102,9 +142,22 @@ export class Engine {
     }
   }
   private compileDefinition(input: unknown): CompileResult {
-    const diagnostics = validateDefinition(input, this.registry);
-    if (diagnostics.length) return { ok: false, diagnostics };
-    const definition = snapshot(migrate(input).definition);
+    const migration = migrate(input);
+    const shapeDiagnostics = migration.diagnostics.filter(
+      (d) => d.code !== "bad-ref",
+    );
+    if (shapeDiagnostics.length)
+      return { ok: false, diagnostics: shapeDiagnostics };
+    const definition = snapshot(migration.definition);
+    let hasComposites = false;
+    // References to generated children are checked after registered composites expand.
+    const diagnostics = validateDefinition(definition, {
+      get: (type) => {
+        const model = this.registry.get(type);
+        if (model?.kind === "composite") hasComposites = true;
+        return model;
+      },
+    }).filter((d) => !hasComposites || d.code !== "bad-ref");
     const error = (code: string, message: string, id?: string) =>
       diagnostics.push({
         severity: "error",
@@ -112,8 +165,18 @@ export class Engine {
         message,
         ...(id === undefined ? {} : { componentId: id }),
       });
-    if (definition.requires?.length)
-      error("missing-plugin", "Plugin requirements are not available in M01.");
+    for (const requirement of definition.requires ?? [])
+      if (!meetsRequirement(this.#plugins, requirement))
+        error(
+          "missing-plugin",
+          `Form requires ${requirement.plugin} ${requirement.version}.`,
+        );
+    if (diagnostics.length) return { ok: false, diagnostics };
+    const expanded = hasComposites
+      ? expandComposites(definition, this.registry)
+      : { components: definition.components, diagnostics: [] };
+    if (expanded.diagnostics.length)
+      return { ok: false, diagnostics: expanded.diagnostics };
     const nodes: CompiledNode[] = [];
     const byId: Record<string, CompiledNode> = Object.create(null);
     const byPath: Record<string, CompiledNode> = Object.create(null);
@@ -127,12 +190,6 @@ export class Engine {
         const model = this.registry.get(node.type)!;
         if (model.dataScope === "array")
           error("unsupported-scope", "Array scopes require M10.", node.id);
-        if (model.kind === "composite")
-          error(
-            "unsupported-component",
-            "Composite expansion requires M08.",
-            node.id,
-          );
         if (model.dataScope === "object" && !node.key)
           error("missing-key", "Object scope requires a key.", node.id);
         if (node.calculate && !model.value)
@@ -167,7 +224,7 @@ export class Engine {
         );
       }
     };
-    visit(definition.components, []);
+    visit(snapshot(expanded.components), []);
     const dependenciesFor = (target: CompiledNode): string[] =>
       target.model.value
         ? [target.node.id]

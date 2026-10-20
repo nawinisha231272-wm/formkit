@@ -235,7 +235,7 @@ function mountForm(
     clearTimeout(blurTimer);
     deferredTouches.clear();
     pointers.clear();
-    root.removeEventListener("pointerdown", pointerDown, true);
+    document.removeEventListener("pointerdown", pointerDown, true);
     document.removeEventListener("pointerup", pointerEnd, true);
     document.removeEventListener("pointercancel", pointerEnd, true);
     document.defaultView?.removeEventListener("blur", windowBlur);
@@ -349,7 +349,9 @@ function mountForm(
     root.append(live);
     summary.addEventListener("click", onSummaryClick);
     root.addEventListener("submit", onSubmit);
-    root.addEventListener("pointerdown", pointerDown, true);
+    // Host-owned submit/actions may be outside root; their activation must finish
+    // before a blur removes errors and moves the pointer target.
+    document.addEventListener("pointerdown", pointerDown, true);
     document.addEventListener("pointerup", pointerEnd, true);
     document.addEventListener("pointercancel", pointerEnd, true);
     document.defaultView?.addEventListener("blur", windowBlur);

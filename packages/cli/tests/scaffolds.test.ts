@@ -1,0 +1,103 @@
+import { test, expect } from "vitest";
+import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { execFileSync } from "node:child_process";
+import { createScaffold, runCli } from "../src/index";
+
+test("CLI rejects invalid arguments and existing targets without modifying caller files", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ourform-cli-errors-"));
+  try {
+    await expect(runCli([])).rejects.toThrow("Usage");
+    await expect(
+      runCli(["create-component", "name", "--directory"]),
+    ).rejects.toThrow("Usage");
+    await expect(
+      runCli(["create-component", "name", "--bad", "value"]),
+    ).rejects.toThrow("Invalid option");
+    await expect(
+      runCli([
+        "create-component",
+        "name",
+        "--directory",
+        "a",
+        "--directory",
+        "b",
+      ]),
+    ).rejects.toThrow("Invalid option");
+    await expect(
+      createScaffold("component", join(root, "bad"), "../escape"),
+    ).rejects.toThrow("lowercase");
+    await expect(
+      createScaffold("component", join(root, "bad"), "name", {
+        localPackages: root,
+      }),
+    ).rejects.toThrow("missing");
+    await expect(createScaffold("component", root, "name")).rejects.toThrow();
+    expect(await readdir(root)).toEqual([]);
+    await runCli([
+      "create-component",
+      "sample",
+      "--directory",
+      join(root, "plain"),
+    ]);
+    const pkg = JSON.parse(
+      await readFile(join(root, "plain/package.json"), "utf8"),
+    );
+    expect(pkg.dependencies["@ourform/sdk"]).toBe("0.0.1");
+    await expect(
+      runCli(["create-theme", "sample", "--directory", join(root, "plain")]),
+    ).rejects.toThrow();
+    expect(
+      JSON.parse(await readFile(join(root, "plain/package.json"), "utf8")),
+    ).toEqual(pkg);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("all three unedited CLI scaffolds install from packed workspace packages and pass pinned verify", async () => {
+  const root = await mkdtemp(join(tmpdir(), "ourform-cli-proof-"));
+  const kit = join(root, "kit");
+  const run = (args: string[], cwd = resolve(".")) => {
+    try {
+      return execFileSync("pnpm", args, {
+        cwd,
+        encoding: "utf8",
+        timeout: 120000,
+        maxBuffer: 5 * 1024 * 1024,
+        env: { ...process.env, CI: "true" },
+      });
+    } catch (error) {
+      if (error instanceof Error && "stdout" in error)
+        throw new Error(`${error.message}\n${String(error.stdout)}`);
+      throw error;
+    }
+  };
+  try {
+    run(["sdk:pack", kit]);
+    for (const kind of ["component", "theme", "plugin"] as const) {
+      const directory = join(root, kind);
+      // Exercise the built executable users receive, not only the in-process generator.
+      execFileSync(
+        process.execPath,
+        [
+          resolve("packages/cli/dist/cli.js"),
+          `create-${kind}`,
+          `sample-${kind}`,
+          "--directory",
+          directory,
+          "--local-packages",
+          kit,
+        ],
+        { encoding: "utf8" },
+      );
+      run(["install", "--offline"], directory);
+      const result = run(["verify"], directory);
+      expect(result).toContain("1 passed");
+      expect(result).toContain("generated builder palette/undo/redo");
+    }
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+}, 180000);

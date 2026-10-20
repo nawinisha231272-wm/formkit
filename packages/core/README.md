@@ -1,6 +1,6 @@
 # @ourform/core
 
-Headless M01 compiler and runtime. Zero external runtime dependencies; compiles without DOM types.
+Headless compiler and runtime; compiles without DOM types. Uses pinned semver for plugin compatibility.
 
 ```ts
 import { createEngine, type ComponentModel } from "@ourform/core";
@@ -84,3 +84,17 @@ providers.localization(key, params, locale) may return text or undefined. sessio
 frozen englishMessages/englishMessage catalog as fallback (or a supplied fallback). Locale comes from
 form settings. Built-in length rules count Unicode code points, matching JSON Schema. Node types are
 build-time only; core still compiles without DOM and runs in both Node 22 and browsers.
+
+## M08 extensions
+
+`createEngine({plugins:[...]})` accepts structural PluginRegistration descriptors, validates npm semver
+against exported coreVersion and all dependencies, and rejects conflicting registered names.
+Functions/validators and providers.dataSources are per engine. Hosts pass views/themes separately;
+core does not retain them. Changing the plugin set requires another engine. Forms with absent or
+incompatible plugin requirements return missing-plugin diagnostics.
+ComponentModel.expand is a trusted headless composite callback returning safe JSON children. Compile
+validates expanded definitions and rejects recursion, malformed output, id/key/ref collisions, and
+limits above 64 levels / 10,000 expanded nodes. The original wire definition is retained. SDK
+defineComposite handles stable instance ids and local reference rebasing. See spec 04 and ADR-0003.
+The pinned semver runtime dependency implements the standard npm range grammar; no custom parser or
+network request is used.

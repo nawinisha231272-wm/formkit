@@ -255,3 +255,32 @@ div (default), section or fieldset; columns defaults false. Layout properties us
 metadata. The renderer owns child mounting into the layout root, after its heading/description.
 Built-in descriptors: panelLayout, columnsLayout, fieldsetLayout, containerLayout; builtinLayouts
 and builtinComponents join the compatible M06 builtinFields export.
+
+## M08 extension contracts (ADR-0003)
+
+definePreset(type,{base,defaults,title}) shares a portable/native field's adapter/validators/views and derives frozen
+typed property defaults. Node properties override them; the base is unchanged and the type must differ.
+defineComposite({type,title,components,dataScope}) snapshots fixed child templates. Object scope is
+default; none is transparent. Children receive instance-id/local-id ids and runtime visibility/calculation/validation refs
+are rebased; properties/meta/default values stay opaque. Absolute paths/external refs retain meaning. Wire definitions remain compact; expanded
+nodes are validated for shape, ids, keys, types, properties and refs. Instance children cannot override
+the template. Recursive expansion fails; limits are 64 levels / 10,000 expanded nodes. Composite roots
+use a fieldset/legend; defineLayout remains the API for wire-editable child layouts.
+
+definePlugin packages trusted descriptors. Install with createEngine({plugins:[plugin,...]}), supplying
+all dependencies together; order is independent. Semver ranges use npm semantics against coreVersion
+and installed plugin versions. Invalid/incompatible registrations and conflicting plugin ids, component
+types, theme names, functions, validators or data-source names throw; form requires returns missing-plugin.
+Core keeps models/version metadata; renderer/adapters receive component views and themes explicitly.
+dataSources are host-owned providers under providers.dataSources, with no automatic network access;
+M11 remote-control behavior is deferred. Changing plugins requires a new engine.
+
+@ourform/testing exports renderComponent(def,{host,theme,...}), with an empty caller-owned Element host,
+optional engine/node/data/fields/readOnly/adapter/nativeHost and a normal destroyable FormController result.
+checkValueAdapter, checkValidation and checkBuilderRoundTrip plus componentTestEngine are reusable
+Node/browser invariants. CLI create-component/create-theme/create-plugin emit pinned standalone
+projects; --local-packages selects packed prepublication dependencies. See apps/docs author guides.
+Every new component must pass conformance and visuals in base, Bootstrap 4, Bootstrap 5 and Tailwind.
+
+The exact proposed SDK 0.x named export freeze is docs/api/sdk-0.x.json / ADR-0003. The external
+guide-only developer exercise and M08 human gate review are required before that freeze is accepted.

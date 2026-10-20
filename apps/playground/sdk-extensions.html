@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SDK extensions — OurForm</title>
+    <style>
+      body {
+        font: 16px system-ui;
+        max-width: 850px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      #form {
+        margin: 1rem 0;
+      }
+      pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>SDK extensions</h1>
+    <p>
+      Property presets, reusable Address composition and a versioned plugin use
+      the same renderer and generated builder metadata.
+    </p>
+    <label for="theme">Theme</label>
+    <select id="theme">
+      <option value="base">Base</option>
+      <option value="bootstrap4">Bootstrap 4</option>
+      <option value="bootstrap5">Bootstrap 5</option>
+      <option value="tailwind">Tailwind</option>
+    </select>
+    <form id="form"></form>
+    <button id="submit" type="button">Validate and submit</button>
+    <button id="missing" type="button">Check missing plugin requirement</button>
+    <pre id="result" aria-live="polite"></pre>
+    <pre id="diagnostics"></pre>
+    <h2>React registration</h2>
+    <div id="react"></div>
+    <label for="harness-kind">Test component</label>
+    <select id="harness-kind">
+      <option value="rating">Rating preset</option>
+      <option value="address">Address composite</option>
+    </select>
+    <label
+      ><input id="harness-readonly" type="checkbox" /> Read-only harness</label
+    >
+    <button id="harness" type="button">Open component test harness</button>
+    <section id="test-harness" aria-label="Component test harness"></section>
+    <script type="module" src="/sdk-extensions.ts"></script>
+  </body>
+</html>

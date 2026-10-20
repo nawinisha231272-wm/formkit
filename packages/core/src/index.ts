@@ -41,3 +41,5 @@ export type {
 } from "./validators";
 export { emailPattern } from "./validators";
 export { englishMessages, englishMessage } from "./messages";
+export { coreVersion } from "./plugins";
+export type { PluginRegistration } from "./plugins";

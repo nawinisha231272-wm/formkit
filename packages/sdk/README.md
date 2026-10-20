@@ -1,6 +1,6 @@
 # @ourform/sdk
 
-Typed component authoring with portable VNodes. No external runtime dependency.
+Typed component authoring with portable VNodes and headless core models.
 
 ```ts
 import {
@@ -56,7 +56,7 @@ Host function handlers use lowercase event props (oninput, onchange, onclick, on
 an HTMLElement or null on release. Unsafe attributes, executable string events and unsupported URLs are rejected.
 `renderVNodeToString` escapes text/attributes and omits refs/events/keys; `escapeHtml` is the shared escaper.
 `defaultMessage` supplies the Rating, shell and synchronous validation English defaults and falls back to the message key.
-Full localization and composite/plugin/native registration APIs arrive in later milestones.
+Localization, native bridges and declarative preset/composite/plugin APIs are available; see below.
 
 Types re-exported: ComponentModel, ValueAdapter, PropertyDefinition, PropertyMap, PropertyKind,
 PropertyGroup, ConfigOf, FormDefinition, FormField, Expr, FieldControlProps, FocusTarget, ShellVariant,
@@ -87,3 +87,21 @@ M07: `defineLayout({ type: 'acme.section', title: 'Section', tag: 'section', dat
 returns frozen model/layout-view metadata. The renderer independently owns child mounts. tag supports
 div/section/fieldset, columns enables a 12-track grid, and dataScope supports none/object. Optional
 properties use the same helpers/generated builder panels. No value adapter or raw HTML slot is needed.
+
+## M08 presets, composites and plugins
+
+`definePreset(type,{base,defaults,title})` derives typed property defaults and shares the base field's
+views/adapter/validators without mutation. Node properties can override them; use a distinct type.
+`defineComposite({type,title,components,dataScope})` creates fixed reusable children, object-scoped by
+default (or transparent with none). Child ids and internal refs are prefixed with the instance id;
+wire definitions remain compact. Children cannot be overridden at the instance. Invalid/recursive
+expansion and id/key collisions are compile diagnostics. The Address sample is in `/sdk-extensions.html`.
+
+`definePlugin({id,version,engine,components?,themes?,validators?,functions?,dataSources?,requires?})`
+packages trusted descriptors. `createEngine({plugins:[...]})` validates full npm semver ranges, required
+plugins and conflicting registration names. A form's unsatisfied requires returns missing-plugin.
+Hosts supply packaged component views/themes explicitly; core retains only models/version metadata.
+Data sources are customer-owned providers, with no automatic requests. Installation is per engine,
+fixed at creation. Native views are packaged as RegisteredField descriptors; raw headless models are
+also accepted. See [component author guide](../../apps/docs/component-author-guide.md),
+[theme author guide](../../apps/docs/theme-author-guide.md) and ADR-0003 for the proposed 0.x freeze.

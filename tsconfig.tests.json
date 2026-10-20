@@ -15,6 +15,7 @@
     "apps/playground/builder.ts",
     "apps/playground/tier1.ts",
     "apps/playground/onboarding.ts",
+    "apps/playground/sdk-extensions.ts",
     "playwright.counts.config.ts"
   ]
 }
