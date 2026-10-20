@@ -20,7 +20,9 @@ pnpm install
 pnpm verify
 ```
 
-The root scaffold integration test executes the built CLI for all three kinds, installs offline from
-packed public packages and runs each unedited project's verification. Browser conformance and visual
+The root scaffold integration test executes the built CLI for all three kinds, installs from packed
+public packages with a fresh metadata cache, then removes node_modules and proves a frozen/offline
+reinstall before running each unedited project's verification. The initial dependency resolution
+uses the registry, like the documented pnpm install; no pre-existing metadata cache is assumed. Browser conformance and visual
 checks in all four themes remain required before a customer component ships. See the author guides
 in apps/docs and ADR-0003.

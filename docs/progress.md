@@ -111,7 +111,8 @@ Implemented presets (typed portable metadata and native-view preservation), fixe
 composites with stable ids/internal references, bounded headless expansion, and per-engine plugin
 installation/semver/conflicts/requirements. Added component value/validation/builder/render helpers,
 CLI component/theme/plugin generators and author guides. The CLI proof packs the public packages,
-installs all three fresh projects offline and runs each unedited pnpm verify. The package README,
+installs all three fresh projects and runs each unedited pnpm verify, with a frozen/offline reinstall
+proof after their initial dependency resolution. The package README,
 spec 04, proposed ADR-0003, export inventory and changeset document contracts. semver 7.8.5 is the
 sole new runtime dependency, to support full npm ranges rather than inventing a partial grammar.
 
@@ -150,7 +151,7 @@ attempt 1. The prerequisite correction is complete.
 | Criterion                                           | Status                     | Evidence                                                                                                                                                                                                                                                                                                             |
 | --------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Scenarios A–F automated                             | PASS                       | `tests/sdk-scenarios.test.ts`: Rating <30 meaningful lines, one-statement conventional registration, generated palette/max editing/undo/redo. `tests/e2e/sdk-extensions.spec.ts`: real React mappings, four-theme identity/validation/reset, actual Angular portable Rating; 27 cases pass on macOS.                 |
-| Component/theme/plugin scaffolds work without edits | PASS                       | `all three unedited CLI scaffolds install from packed workspace packages and pass pinned verify`: built CLI, fresh projects, offline packed dependencies, build/typecheck/value/canonical-validation/generated-palette/undo/redo tests.                                                                              |
+| Component/theme/plugin scaffolds work without edits | PASS                       | `all three unedited CLI scaffolds install from packed workspace packages and pass pinned verify`: built CLI, fresh projects, packed SDK dependencies, initial resolution and frozen/offline reinstall, build/typecheck/value/canonical-validation/generated-palette/undo/redo tests.                                 |
 | Independent developer uses guide alone              | PENDING — gate cannot pass | User is arranging the exercise. Record actual name, commands/results and confusing steps after their report; no simulated or implementing-agent evidence substitutes for it.                                                                                                                                         |
 | ADR-0003 freezes SDK 0.x export list                | PENDING human gate review  | `docs/adr/0003-sdk-0x-api-freeze.md` and exact `docs/api/sdk-0.x.json`; `SDK 0.x export inventory matches ADR-0003` checks declared and built runtime exports. Proposed until independent exercise/review.                                                                                                           |
 | Full pinned verify                                  | PASS                       | `CI=true pnpm verify`, Node 22.22.3 / pnpm 10.10.0: lint, 22 builds, 37 typecheck tasks, 183 unit tests, 384 browser cases, all size budgets and five deterministic count cases. Core lines 95.14%; validation 99.25%. CLI budget includes every emitted JS chunk; its final tightened size check is recorded below. |
@@ -175,6 +176,29 @@ to an empty selected suite before `--update-snapshots=all`, then compared with u
 Existing 120 PNG bytes, both timing baseline JSON files and the original timing workload are verified
 unchanged against main. New SDK visuals are separate platform-specific additions, with existing pixel
 thresholds retained. No later-milestone builder commands or repeater/data-source UI are implemented.
+
+### M08 initial native CI failure and scaffold setup correction
+
+At `0ca164db10f4d9e87a1cdb26c31f8673dec4840e`, initial attempt-1
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39501212521) and
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39501195234) failed the new
+scaffold integration test: `ERR_PNPM_NO_OFFLINE_META` for @types/node@22.15.29. Both pass lint,
+build/typecheck and 182 other unit tests; browser/size/count stages were not reached in these runs.
+The previous local full verify had passed with an existing registry metadata cache. No CI job is rerun.
+
+Cause: a frozen workspace installation downloads package contents without necessarily storing the
+registry metadata needed for a brand-new project's initial dependency resolution. The new proof now
+runs the guide's normal initial install with an isolated, initially empty metadata cache, removes
+each generated node_modules, then requires `pnpm install --offline --frozen-lockfile` before the same
+unedited build/typecheck/value/validation/palette/undo/redo assertions. The generator still performs no
+network calls. All existing assertions and deadlines are retained; the offline reinstall is stronger
+with a frozen lockfile. The focused corrected proof passes both tests in 30.7 seconds locally.
+Final full local/native verification of this correction is pending before claiming remote PASS.
+
+The initial [isolated A/B](https://github.com/nawinisha231272-wm/formkit/actions/runs/39501212559)
+completed on attempt 1 with status=measured, five pairs and all 12 Linux ratios. At 500 fields,
+compile/mount/edit/theme ratios were 1.173/1.013/0.994/1.009; these remain advisory.
+Both failed native runs are retained as evidence; the M08 gate stays NO-GO.
 
 ## Linux calibration follow-up — 2026-10-20
 

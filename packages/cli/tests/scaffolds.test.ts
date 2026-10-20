@@ -66,7 +66,10 @@ test("all three unedited CLI scaffolds install from packed workspace packages an
         encoding: "utf8",
         timeout: 120000,
         maxBuffer: 5 * 1024 * 1024,
-        env: { ...process.env, CI: "true" },
+        // Initial dependency resolution may use the registry; the explicit offline
+        // install below must succeed after removing node_modules. npx --offline
+        // pins the test runner and must not disable this documented setup step.
+        env: { ...process.env, CI: "true", npm_config_offline: "false" },
       });
     } catch (error) {
       if (error instanceof Error && "stdout" in error)
@@ -92,7 +95,19 @@ test("all three unedited CLI scaffolds install from packed workspace packages an
         ],
         { encoding: "utf8" },
       );
-      run(["install", "--offline"], directory);
+      const cache = join(root, "registry-cache");
+      // A frozen workspace install caches contents but need not cache registry
+      // metadata for a new project's first resolution. Exercise the documented
+      // initial install with a fresh metadata cache, then prove frozen/offline use.
+      run(["install", "--prefer-offline", "--cache-dir", cache], directory);
+      await rm(join(directory, "node_modules"), {
+        recursive: true,
+        force: true,
+      });
+      run(
+        ["install", "--offline", "--frozen-lockfile", "--cache-dir", cache],
+        directory,
+      );
       const result = run(["verify"], directory);
       expect(result).toContain("1 passed");
       expect(result).toContain("generated builder palette/undo/redo");
