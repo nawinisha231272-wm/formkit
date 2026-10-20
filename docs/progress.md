@@ -111,8 +111,27 @@ intermittent Firefox React failure: the flow did not wait for the email provider
 an error above the later pointer target. The shared development conformance helper now asserts email aria-busy=false
 and aria-invalid=false before proceeding. The original checkbox check and every other assertion remain;
 no retry, timeout, pixel allowance or runtime behavior changes. All ten focused Firefox repetitions
-pass (`tests/e2e/tier1.spec.ts`, react shared-conformance case, --repeat-each=10). Final full local and
-native verification of this stronger readiness check are pending.
+pass (`tests/e2e/tier1.spec.ts`, react shared-conformance case, --repeat-each=10).
+
+Final local verification on 354585e again passes lint, builds/types, all 158 unit tests, all 351 browser
+cases and 14 size budgets. Its Mac benchmark fails only compile (5.60 ms versus the unchanged 5.40 ms
+ceiling); mount/edit/theme pass at 42.90/114.70/73.40 ms. A separate pinned benchmark retry passes at
+4.50/36.80/99.80/64.20 ms. The latest combined command is therefore **not claimed green**, although a
+complete earlier combined run on 2e2c8e4 passes and both isolated checks pass. Runtime benchmark source
+and baseline values are unchanged. Timing variability after the full suite remains explicit.
+
+Native verification of the strengthened readiness assertions passes in both
+[push run 39467103066](https://github.com/nawinisha231272-wm/formkit/actions/runs/39467103066) and
+[PR run 39467110555](https://github.com/nawinisha231272-wm/formkit/actions/runs/39467110555) at 354585e:
+158 unit tests, all 351 browser cases (all 60 Linux comparisons), 14 size budgets and clean linux-x64
+provenance. **Both workflows fail only on the explicit pending Linux baseline.** Their housekeeping
+timings are not used as calibration evidence: zero of the three required successful main runs exist.
+The screenshot manifest records the latest comparison evidence; Mac bytes/timings remain unchanged.
+
+The user has been asked whether to authorize landing the reviewed CI bootstrap on main before its
+three calibration runs, allow calibration on housekeeping instead, or keep the PR unmerged. No answer
+has been received. Main remains cd6517e; PR #1 remains a draft. No merge, main update, Linux performance
+baseline recording or M08 work is performed while that sequencing decision is pending.
 
 ## Log
 

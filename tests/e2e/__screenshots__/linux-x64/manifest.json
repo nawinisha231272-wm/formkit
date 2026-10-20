@@ -21,10 +21,10 @@
     "snapshotUpdates": false,
     "visualCases": 60,
     "browserSuitePassed": 351,
-    "ciRun": "https://github.com/nawinisha231272-wm/formkit/actions/runs/39462700675",
-    "headSha": "6c71f05895f218ad79bab39a77de9939c316358f",
+    "ciRun": "https://github.com/nawinisha231272-wm/formkit/actions/runs/39467110555",
+    "headSha": "354585e51932d3f39f6232668ab32edd70f7bce8",
     "workflowConclusion": "failure",
-    "workflowFailure": "Later Git provenance read required the trusted Actions checkout to be configured as safe.directory; visual comparisons all passed."
+    "workflowFailure": "Only the explicit pending linux-x64 performance baseline. All correctness, visual comparisons, size budgets and clean provenance checks passed."
   },
   "note": "Generated inside the pinned official image; all 60 no-update comparisons pass in the native Linux CI browser suite. These are visual files, not CI performance timings.",
   "sha256": {
