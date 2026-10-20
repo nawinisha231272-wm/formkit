@@ -1,0 +1,47 @@
+import {test, expect} from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+import {existsSync} from "node:fs";
+import {checkPropertyEditors} from "@ourform/testing/playwright";
+import type {} from "../preview";
+for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+  test(`sample: ${theme} values, state, a11y and visual evidence`, async ({page}, info) => {
+    await page.goto("/"); await page.locator("#theme").selectOption(theme);
+    const input = page.locator("#fixture input");
+    await page.locator("#submit").click(); await expect(input).toHaveAttribute("aria-invalid", "true");
+    await expect(input).toHaveAccessibleName("Sample");
+    await expect(input).toHaveAccessibleDescription("Sample is required");
+    const violations = (await new AxeBuilder({page}).analyze()).violations.filter(v => ["serious", "critical"].includes(v.impact ?? ""));
+    expect(violations).toEqual([]);
+    const snapshot = `sample-${theme}.png`;
+    if (info.config.updateSnapshots === "all" || existsSync(info.snapshotPath(snapshot)))
+      await expect(page.locator("#fixture")).toHaveScreenshot(snapshot, {animations: "disabled", maxDiffPixelRatio: 0.02});
+    else {
+      await info.attach(`UNAPPROVED-${snapshot}`, {body: await page.locator("#fixture").screenshot(), contentType: "image/png"});
+      console.log("visual baseline missing: evidence captured, comparison pending explicit record/review");
+    }
+    await input.fill("bad"); await page.locator("#submit").click();
+    await expect(page.locator("#result")).toContainText('"ok":false');
+    await expect(page.locator("#fixture [data-color-swatch]")).toHaveAccessibleName("Color preview");
+    await expect(page.locator("#fixture [data-color-swatch]")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await input.fill("#336699"); await page.locator("#submit").click();
+    await expect(page.locator("#result")).toContainText('"ok":true');
+    await expect(page.locator("#fixture [data-color-swatch]")).toHaveCSS("background-color", "rgb(51, 102, 153)");
+    await page.locator("#reset").click(); await expect(input).toHaveValue("");
+    for (const toggle of ["read-only", "disabled"]) {
+      await page.locator(`#${toggle}`).check();
+      await page.evaluate(() => window.authorHarness.fixture.session.setValue("value", "#112233"));
+      await input.evaluate(el => {const control = el as HTMLInputElement; control.value = "#ff0000"; control.dispatchEvent(new Event("input", {bubbles: true}));});
+      await expect(input).toHaveValue("#112233");
+      expect(await page.evaluate(() => window.authorHarness.fixture.session.getValue("value"))).toBe("#112233");
+      await page.locator(`#${toggle}`).uncheck();
+    }
+  });
+}
+
+test("every generated property editor changes the preview", async ({page}) => {
+  await page.goto("/"); await page.locator('#builder [data-component-type="acme-color"]').click();
+  await checkPropertyEditors(page, [
+    {key: "placeholder", value: "Your note", verify: async preview => {await expect(preview.locator("input")).toHaveAttribute("placeholder", "Your note");}},
+    {key: "showSwatch", value: false, verify: async preview => {await expect(preview.locator("[data-color-swatch]")).toHaveCount(0);}},
+  ]);
+});

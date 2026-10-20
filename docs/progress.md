@@ -21,7 +21,7 @@ deviations from spec, open questions.
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
 
-## M08 author rehearsal corrections — 2026-10-20 (in progress)
+## M08 author rehearsal corrections — 2026-10-20 (implementation verified; human gate pending)
 
 The Slider exercise is AI-assisted rehearsal only, never independent M08 gate evidence.
 Plan: restore protected controls through a core refresh patch without data/processor changes; test
@@ -61,6 +61,42 @@ copying the project to /project changed that relationship (ENOENT /ourform-sdk-k
 preserves the original project/kit absolute directory relationship inside the disposable container,
 with read-only source/kit mounts and fresh Linux node_modules. This failure is retained; the pushed
 checkout proof and Linux command will be repeated after the fix.
+
+### Pushed guide proof and different-component rehearsal
+
+PASS — final implementation `53402c0f6ee7e2f24015e5cc5d570c1cfc160542` was cloned from GitHub
+without overlays, and the exact guide was followed from step 1. All ten commands succeeded, the
+SDK clone stayed clean, and hashes proved generated source/config files were unedited. The generated
+project passed build/typecheck, one Node test and 15 browser cases. Both initial and corrected clean
+clone records are in `docs/rehearsals/fresh-clone-*-proof.json` / `fresh-clone-proof.json`.
+
+PASS — the Color rehearsal used a separately generated project from the corrected pushed kit.
+Its portable control has 24 physical lines, placeholder/showSwatch properties and typed translation fallback;
+required/pattern rules live in the host fixture, with no protected-state wrapper. Native verification
+passed two Node and 15 browser cases. Explicit native and generated Linux recording each passed
+15 recording plus 15 update-disabled comparison cases, four themes and three browsers, with 12 PNGs
+per platform. The exact generated `pnpm visual:linux:record` succeeded in the pinned official image.
+The source, tests, command outcomes, hashes, standalone commit and remaining limitations are in
+[the correction report](rehearsals/author-rehearsal-corrections.md), which maps all eight findings to
+PASS evidence. The initial style-object author error and Linux kit-path failure are retained there.
+
+PASS — native Linux full pinned `pnpm verify` at `53402c0`:
+[push Verify, attempt 1](https://github.com/nawinisha231272-wm/formkit/actions/runs/39509468196)
+passes lint, build/typecheck, 187 unit tests, 432 browser cases, all 15 size budgets and five count-gate
+cases. Core line coverage is 95.15%; validation 99.25%. CLI integration includes three unedited projects
+and 48 nested browser cases. No count baseline, timing baseline, existing PNG or correctness threshold
+was relaxed. The earlier `5c78ddf` implementation also passed its initial
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39508959364).
+
+The [isolated A/B at 53402c0](https://github.com/nawinisha231272-wm/formkit/actions/runs/39509473241)
+is attempt 1, status=measured, five alternating pairs. At 500 fields compile/mount/edit/theme median
+paired ratios are 1.132/0.981/1.004/1.029, advisory. Final local full verification and the final delivery
+head's initial CI checks are recorded in [PR #5](https://github.com/nawinisha231272-wm/formkit/pull/5).
+No failed run is retried to get green; historical failures remain above/below and in the rehearsal log.
+
+**M08 gate remains NO-GO pending the user's independent human author report and human review.**
+The user separately authorizes implementation delivery to merge after green CI. ADR-0003 remains
+proposed, no m08-done tag is created, and M09 is not started. AI rehearsals never substitute for human evidence.
 
 ## Pre-M08 CI redesign and decisions — 2026-10-20
 

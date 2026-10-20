@@ -1,0 +1,19 @@
+import {test,expect} from "vitest";
+import {componentTestEngine,checkValueAdapter,checkValidation,checkBuilderRoundTrip} from "@ourform/testing";
+import {renderVNodeToString,defaultMessage,resolveConfig} from "@ourform/sdk";
+import {field} from "../src/index";
+test("Color values, required/pattern validation, English fallback and generated builder palette/undo/redo", async () => {
+ const engine=componentTestEngine([field]);
+ checkValueAdapter(field.model.value!, ["", "#336699"]);
+ checkBuilderRoundTrip(engine,"acme-color");
+ await checkValidation(engine, {$formVersion:"1.0",id:"color",display:"form",components:[{id:"color",key:"value",type:"acme-color",validation:{required:true,pattern:"^#[0-9A-Fa-f]{6}$"}}]}, [
+  {data:{},valid:false,codes:["required"]}, {data:{value:""},valid:false,codes:["required"]},
+  {data:{value:"bad"},valid:false,codes:["pattern"]}, {data:{value:"#336699"},valid:true},
+ ]);
+ const config=resolveConfig(field.properties); if(!config.ok) throw new Error("Invalid defaults");
+ expect(config.config).toEqual({placeholder:"#336699",showSwatch:true});
+ const markup=renderVNodeToString(field.views.portable!({value:"#336699",config:config.config,setValue:()=>{},onBlur:()=>{},focusRef:()=>{},state:{disabled:false,readOnly:false,invalid:false,pending:false,required:true},a11y:{id:"color",name:"value",labelledBy:"color-label"},theme:{classFor:()=>"control"},t:defaultMessage}));
+ expect(markup).toContain('aria-label="Color preview"');
+ expect(markup).toContain('aria-labelledby="color-label"');
+ expect(markup).toContain('#336699');
+});

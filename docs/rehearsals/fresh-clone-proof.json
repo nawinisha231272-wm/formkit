@@ -1,0 +1,167 @@
+{
+  "status": "PASS",
+  "checkout": "53402c0f6ee7e2f24015e5cc5d570c1cfc160542",
+  "sourceOverlay": false,
+  "generatedFilesUnedited": true,
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "project": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/acme-note",
+  "steps": [
+    {
+      "at": "2026-10-20T18:37:31.753723-04:00",
+      "args": [
+        "git",
+        "clone",
+        "--branch",
+        "m08-sdk-complete",
+        "--single-branch",
+        "https://github.com/nawinisha231272-wm/formkit.git",
+        "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/formkit"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr",
+      "exit": 0,
+      "elapsedSeconds": 1.055
+    },
+    {
+      "at": "2026-10-20T18:37:32.881192-04:00",
+      "args": [
+        "npx",
+        "--yes",
+        "--package=node@22.22.3",
+        "--package=pnpm@10.10.0",
+        "node",
+        "--version"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/formkit",
+      "exit": 0,
+      "elapsedSeconds": 0.443
+    },
+    {
+      "at": "2026-10-20T18:37:33.324813-04:00",
+      "args": [
+        "npx",
+        "--yes",
+        "--package=node@22.22.3",
+        "--package=pnpm@10.10.0",
+        "pnpm",
+        "--version"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/formkit",
+      "exit": 0,
+      "elapsedSeconds": 0.656
+    },
+    {
+      "at": "2026-10-20T18:37:33.981016-04:00",
+      "args": [
+        "npx",
+        "--yes",
+        "--package=node@22.22.3",
+        "--package=pnpm@10.10.0",
+        "pnpm",
+        "install",
+        "--frozen-lockfile"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/formkit",
+      "exit": 0,
+      "elapsedSeconds": 5.626
+    },
+    {
+      "at": "2026-10-20T18:37:39.607120-04:00",
+      "args": [
+        "npx",
+        "--yes",
+        "--package=node@22.22.3",
+        "--package=pnpm@10.10.0",
+        "pnpm",
+        "build"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/formkit",
+      "exit": 0,
+      "elapsedSeconds": 30.993
+    },
+    {
+      "at": "2026-10-20T18:38:10.602262-04:00",
+      "args": [
+        "npx",
+        "--yes",
+        "--package=node@22.22.3",
+        "--package=pnpm@10.10.0",
+        "pnpm",
+        "sdk:pack",
+        "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/ourform-sdk-kit"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/formkit",
+      "exit": 0,
+      "elapsedSeconds": 5.576
+    },
+    {
+      "at": "2026-10-20T18:38:16.178436-04:00",
+      "args": [
+        "npx",
+        "--yes",
+        "--package=node@22.22.3",
+        "--package=pnpm@10.10.0",
+        "node",
+        "packages/cli/dist/cli.js",
+        "create-component",
+        "acme-note",
+        "--directory",
+        "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/acme-note",
+        "--local-packages",
+        "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/ourform-sdk-kit"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/formkit",
+      "exit": 0,
+      "elapsedSeconds": 1.046
+    },
+    {
+      "at": "2026-10-20T18:38:17.226664-04:00",
+      "args": [
+        "npx",
+        "--yes",
+        "--package=node@22.22.3",
+        "--package=pnpm@10.10.0",
+        "pnpm",
+        "install"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/acme-note",
+      "exit": 0,
+      "elapsedSeconds": 1.811
+    },
+    {
+      "at": "2026-10-20T18:38:19.038612-04:00",
+      "args": [
+        "npx",
+        "--yes",
+        "--package=node@22.22.3",
+        "--package=pnpm@10.10.0",
+        "pnpm",
+        "exec",
+        "playwright",
+        "install",
+        "chromium",
+        "firefox",
+        "webkit"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/acme-note",
+      "exit": 0,
+      "elapsedSeconds": 1.802
+    },
+    {
+      "at": "2026-10-20T18:38:20.840610-04:00",
+      "args": [
+        "npx",
+        "--yes",
+        "--package=node@22.22.3",
+        "--package=pnpm@10.10.0",
+        "pnpm",
+        "verify"
+      ],
+      "cwd": "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/acme-note",
+      "exit": 0,
+      "elapsedSeconds": 30.132
+    }
+  ],
+  "unitTests": 1,
+  "browserTests": 15
+}

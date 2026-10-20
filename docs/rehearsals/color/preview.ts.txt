@@ -1,0 +1,27 @@
+import { field } from "./src/index";
+
+import { renderComponent, mountComponentBuilder } from "@ourform/testing";
+import type { RenderComponentOptions } from "@ourform/testing";
+const element = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+const host = element("fixture");
+const theme = element<HTMLSelectElement>("theme");
+
+let fixture: ReturnType<typeof renderComponent>;
+let mini: ReturnType<typeof mountComponentBuilder>;
+function render() {
+  fixture?.destroy(); mini?.destroy();
+  const options = {
+    host, theme: theme.value,  readOnly: element<HTMLInputElement>("read-only").checked,
+    node: {label: "Sample", validation: {required: element<HTMLInputElement>("required").checked, pattern: "^#[0-9A-Fa-f]{6}$"},
+      disabledWhen: element<HTMLInputElement>("disabled").checked ? ["eq", 1, 1] : ["eq", 1, 0]},
+  } satisfies RenderComponentOptions;
+  fixture = renderComponent(field, options);
+  mini = mountComponentBuilder(field, {host: element("builder"), theme: theme.value});
+}
+for (const id of ["theme", "required", "disabled", "read-only"]) element(id).addEventListener("change", render);
+element("submit").addEventListener("click", async () => { element("result").textContent = JSON.stringify(await fixture.submit()); });
+element("reset").addEventListener("click", () => { fixture.reset(); element("result").textContent = ""; });
+render();
+window.authorHarness = {get fixture() {return fixture;}, get mini() {return mini;}};
+window.addEventListener("pagehide", () => {fixture.destroy(); mini.destroy();});
+declare global {interface Window {authorHarness: {readonly fixture: typeof fixture; readonly mini: typeof mini}}}

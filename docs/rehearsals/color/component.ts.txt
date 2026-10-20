@@ -1,0 +1,24 @@
+import {defineField, stringValue, stringProperty, booleanProperty, controlAttributes, h} from "@ourform/sdk";
+import type {FieldControlProps} from "@ourform/sdk";
+const english = {"acme.color.preview": "Color preview"} as const;
+type Translate = FieldControlProps<string, Record<string, unknown>>["t"];
+function message(t: Translate, key: keyof typeof english): string {
+  const translated = t(key);
+  return translated === key ? english[key] : translated;
+}
+export const field = defineField({
+  type: "acme-color", title: "Color", value: stringValue(),
+  properties: {
+    placeholder: stringProperty({label: "Placeholder", default: "#336699"}),
+    showSwatch: booleanProperty({label: "Show swatch", default: true}),
+  },
+  control: p => h("div", {}, h("input", {
+    ...controlAttributes(p), value: p.value, placeholder: p.config.placeholder,
+    class: p.theme.classFor("control"),
+    oninput: (event: Event) => p.setValue((event.target as HTMLInputElement).value),
+    onblur: p.onBlur,
+  }), p.config.showSwatch ? h("span", {
+    "data-color-swatch": "", role: "img", "aria-label": message(p.t, "acme.color.preview"),
+    style: `display:inline-block;width:24px;height:24px;border:1px solid #777;background-color:${/^#[0-9a-f]{6}$/i.test(p.value) ? p.value : "transparent"}`,
+  }) : null),
+});
