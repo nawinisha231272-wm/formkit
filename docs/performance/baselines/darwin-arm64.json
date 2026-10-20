@@ -30,5 +30,10 @@
       "themeMS": 126.09999990463257,
       "processorRuns": 650
     }
-  ]
+  ],
+  "status": "measured",
+  "provenance": {
+    "kind": "local-m07",
+    "note": "Original M07 darwin-arm64 measurements; timing values unchanged."
+  }
 }

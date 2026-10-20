@@ -1,8 +1,23 @@
 name: Verify
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      performance_mode:
+        description: "check enforces the platform budget; measure is explicit calibration only"
+        type: choice
+        options: [check, measure]
+        default: check
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a
+      options: --ipc=host
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      OURFORM_MEASURE_PERFORMANCE: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_mode == 'measure' && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -11,7 +26,12 @@ jobs:
           node-version: 22.22.3
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Check pinned container and browser package match
+        run: |
+          node -e 'const p=require("./scripts/playwright-container.json"); const v=require("./package.json").devDependencies["@playwright/test"]; if(p.playwright!==v || process.platform!=="linux" || process.arch!=="x64") process.exit(1)'
+      - name: Label calibration runs explicitly
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_mode == 'measure' }}
+        run: echo '### Calibration only — performance timings collected, regression budget NOT validated.' >> "$GITHUB_STEP_SUMMARY"
       - name: Verify correctness, accessibility and the 500-field performance budget
         run: pnpm verify
       - uses: actions/upload-artifact@v4

@@ -5,3 +5,5 @@ coverage
 .turbo
 test-results
 playwright-report
+benchmark-results
+visual-results

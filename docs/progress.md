@@ -11,11 +11,75 @@ deviations from spec, open questions.
 - **M00 complete** — clean installation and full verification pass.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
-- Next milestone: **M03 — FieldShell, accessibility and themes**.
+- **M03–M07 complete** — local evidence is recorded below. M08 is not started.
+- `main` points at verified M07 (`cd6517e`); all milestone branches and m00-done…m07-done tags are preserved.
+- Current work: repository housekeeping on `housekeeping`; GitHub CLI API access works, CI calibration pending.
 
 ## Open questions
 
-_None yet. Add questions here instead of guessing at a contract._
+1. **validateSubmission unknown-key policy:** proposal `unknownKeys: 'reject' | 'strip'`, default
+   `'reject'`. Awaiting the user's answer. Keep the existing rejection behavior; do not implement strip.
+2. **Bootstrap 4 theme status for 1.0:** keep / legacy-frozen / remove. Awaiting the user's answer.
+   Keep the current theme unchanged until a decision is provided.
+
+## Repository housekeeping — 2026-10-20 (CI/calibration pending)
+
+Scope authorized by the user: platform-select visual/performance baselines, generate Linux-x64 visuals
+in the matching official Playwright Docker image, verify the supplied nine starter-kit findings, record
+the two open questions, run pinned local verification and push housekeeping. Preserve the M00–M07
+branches/tags. No M08 features or changes to either undecided product policy. Linux performance numbers
+must remain explicitly pending until three clean CI measurements are available; never borrow macOS
+numbers. GitHub CLI repository/Actions access now works (the connector still returns 404). Test
+thresholds remain unchanged.
+
+Main's push did trigger [Verify run 39430723757](https://github.com/nawinisha231272-wm/formkit/actions/runs/39430723757)
+at cd6517e. It failed with 302 browser cases passing and 49 theme cases failing (Linux compared to Mac
+images, plus native dark Submit contrast). This is the original M07 CI result, not a green result or
+performance measurement for housekeeping.
+
+Calibration sequencing remains unresolved: main still has the original M07 workflow, without the
+new Linux visual files or explicit calibration mode. Three clean main calibration runs require the
+housekeeping harness on main, but the user requires those runs before this PR merges. Do not bypass
+the pending budget or update main prematurely. A separately approved CI bootstrap on main, or the
+user changing the calibration branch requirement, is needed to break this dependency.
+
+Built: exact platform visual paths; digest/version-pinned official Linux Playwright container and
+reproduction wrapper; unchanged Mac baselines; exact-platform performance selection with a pending
+Linux artifact; explicit calibration reports and a three-run median aggregator that verifies main
+run provenance through the API. The theme conformance page now gives its host-owned Submit button
+a light native color scheme and matching ButtonText system color: Linux WebKit's native dark button
+otherwise reports 1.81:1 contrast. Explicit background colors were rejected after local verification
+showed they change Mac WebKit's native height by three pixels. The final rule retains native geometry.
+No SDK source, pixel/timing threshold or existing test assertion is changed.
+
+The supplied nine findings are audited in docs/starter-kit-review.md: eight PASS, builder commands
+PARTIAL until M09.
+
+### Local verification evidence
+
+- PASS — frozen install with Node 22.22.3/pnpm 10.10.0.
+- PASS — official pinned linux/amd64 Docker generation: all 60 visual cases with one worker (10.7m).
+  Initial emulated two-worker attempts timed out; serialization retains the existing test timeouts.
+  PNGs were copied for review after generation; their manifest leaves the independent comparison
+  explicitly pending native CI. The wrapper reproduces generation followed by comparison serially.
+- PASS — all 60 original Mac PNGs are byte-identical to M07 after relocation; every original Mac
+  baseline value is unchanged. No pixel or performance threshold is changed.
+- PASS — final native-button fix: all 20 Mac WebKit visual cases pass against existing images.
+  A pinned Linux WebKit probe confirms unchanged button geometry and no serious/critical axe issues,
+  including inherited Bootstrap-like text styles. Full Linux comparison remains CI evidence.
+- PASS — full pinned `CI=true pnpm verify` reaches and passes lint, all builds/typechecks, 158 unit
+  tests, 351 browser cases and all 14 size budgets. Core line coverage is 98.57%, validation 99.15%.
+- RETRY/PASS — that combined run's Mac benchmark stage initially exceeded the unchanged ceilings
+  (500-field compile/mount/edit/theme: 6.40/46.90/126.80/81.40 ms). A separate pinned
+  `CI=true pnpm benchmark:check` passes at 4.50/37.60/98.70/63.00 ms after other checks finish.
+  The full command's first result is not claimed green; the isolated retry is recorded separately.
+  No runtime/workload code or stored timings were changed to obtain the passing check.
+- PASS — platform selection/pending-baseline rejection, strict 20% boundary, API-provenanced three-run
+  median aggregation and official container/package version alignment pass in the unit suite.
+
+Remote PR, no-update Linux visual comparison and three clean main CI performance runs remain pending.
+Ordinary Linux verification must reject its pending budget; a calibration-only success cannot be
+reported as a green regression gate. Main is not advanced and no M08 work is started.
 
 ## Log
 

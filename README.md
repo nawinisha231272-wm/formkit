@@ -130,3 +130,14 @@ schema/data JSON plus theme/read-only attributes; invalid attributes emit of-err
 After pnpm build, `pnpm --filter @ourform/benchmarks dev` opens the 100/500/1,000-field performance app
 on port 4190. `pnpm benchmark:check` enforces the stored 500-field baseline with a 20% limit; the command
 is part of pnpm verify/CI. See docs/performance and ADR-0009 for measurements and platform limits.
+
+## Repository housekeeping before M08
+
+The nine original starter-kit findings and exact evidence are in docs/starter-kit-review.md. Product
+decisions about unknown submission keys and Bootstrap 4 at 1.0 remain open in docs/progress.md.
+
+Visual snapshots now select darwin-arm64/linux-x64 directories. Generate/check Linux visuals using
+`sh scripts/linux-visuals.sh record` / `check` in the pinned official Playwright container. Performance
+baselines also select the exact platform: the Mac M07 values are preserved, and linux-x64 remains
+explicitly pending three clean CI runs. A pending budget fails normal checks; benchmark:measure is
+calibration only. See docs/performance for the recording and API-verification procedure.

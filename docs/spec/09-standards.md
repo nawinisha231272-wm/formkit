@@ -24,8 +24,15 @@ Status: normative. `pnpm verify` enforces most of these.
 | CI            | GitHub Actions: frozen install → lint → typecheck → build → test → e2e → size; bench on main                                                                                                                    |
 
 M07 performance gate: apps/benchmarks measures actual 100/500/1,000-field compile/mount/25-edit/two-mode
-workloads. Three warm-ups and 15 measured samples produce medians in docs/performance/m07-baseline.json.
+workloads. Three warm-ups and 15 measured samples produce medians in docs/performance/baselines/<platform>-<arch>.json.
 `pnpm benchmark:check` rejects any 500-field timing >20% above that baseline; pnpm verify/CI run it with
 one Chromium worker after correctness tests. `pnpm benchmark:record` explicitly records a new measured
 artifact for review. Reports include platform/browser; absolute timing sensitivity and local/remote
 proof boundaries are documented in ADR-0009. Repeater/grid benchmarks await M10.
+
+Housekeeping (2026-10-20): performance baseline selection requires an exact OS/architecture match and
+measured status. Linux-x64 stays explicitly pending until three clean successful main CI runs are
+aggregated per metric; ordinary verification fails closed until then. Calibration-only measurement
+mode is explicit and never supplies a passing regression verdict. Visual baselines also select the
+platform; Linux visuals/CI use the same version/digest-pinned official Playwright Docker image.
+No pixel or timing threshold is loosened. See docs/performance and the screenshot README.

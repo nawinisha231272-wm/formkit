@@ -19,7 +19,8 @@
     "dev": "pnpm build && pnpm --filter @ourform/playground dev",
     "changeset": "changeset",
     "benchmark:check": "playwright test -c playwright.bench.config.ts",
-    "benchmark:record": "OURFORM_RECORD_BASELINE=1 playwright test -c playwright.bench.config.ts"
+    "benchmark:record": "OURFORM_RECORD_BASELINE=1 playwright test -c playwright.bench.config.ts",
+    "benchmark:measure": "OURFORM_MEASURE_PERFORMANCE=1 playwright test -c playwright.bench.config.ts"
   },
   "devDependencies": {
     "@angular/common": "22.2.3",
