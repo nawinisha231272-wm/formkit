@@ -54,7 +54,13 @@ ADR-0003 accepted, tag m08-done, claim the gate passed or begin M09.
   supplies explicit stored initial data, and tests assert it before mutation. All 48 cases then
   pass. No production behavior or threshold was changed to hide this fixture error.
 
-Fresh clone and different-component rehearsal results will be recorded after pushing this checkpoint.
+Fresh clone of pushed `5c78ddf` passed all ten guide steps with an unedited generated project
+(build/typecheck, one Node test, 15 browser cases) and a clean SDK tree. The Color rehearsal then
+found a real generated-Linux-command failure: pnpm relativizes local-kit tarball paths in its lockfile;
+copying the project to /project changed that relationship (ENOENT /ourform-sdk-kit). The correction
+preserves the original project/kit absolute directory relationship inside the disposable container,
+with read-only source/kit mounts and fresh Linux node_modules. This failure is retained; the pushed
+checkout proof and Linux command will be repeated after the fix.
 
 ## Pre-M08 CI redesign and decisions — 2026-10-20
 

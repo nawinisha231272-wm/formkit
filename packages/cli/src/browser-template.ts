@@ -129,8 +129,10 @@ if (!linux) {
   mkdirSync(folder,{recursive:true});
   const mounts = ["--mount", "type=bind,source="+process.cwd()+",target=/source,readonly", "--mount", "type=bind,source="+resolve(folder)+",target=/visual-output"];
   if (pin.sdkKit) mounts.push("--mount","type=bind,source="+pin.sdkKit+",target="+pin.sdkKit+",readonly");
-  const shell = 'set -eu; mkdir /project; cd /source; tar --exclude=node_modules --exclude=dist --exclude=.git --exclude=test-results --exclude=playwright-report -cf - . | tar -C /project -xf -; cd /project; npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm install --frozen-lockfile; npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm build; '+(mode === 'record' ? 'npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test --update-snapshots=all; ' : '')+'npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test; cp -R browser/__screenshots__/linux-x64/. /visual-output/';
-  run("docker",["run","--rm","--init","--ipc=host","--platform","linux/amd64",...mounts,"--env","CI=true","--env","PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1",pin.image,"/bin/bash","-c",shell]);
+  // pnpm lockfiles relativize file: tarballs. Preserve the original project/kit
+  // relationship inside the disposable container without sharing node_modules.
+  const shell = 'set -eu; mkdir -p "$OURFORM_AUTHOR_PROJECT"; cd /source; tar --exclude=node_modules --exclude=dist --exclude=.git --exclude=test-results --exclude=playwright-report -cf - . | tar -C "$OURFORM_AUTHOR_PROJECT" -xf -; cd "$OURFORM_AUTHOR_PROJECT"; npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm install --frozen-lockfile; npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm build; '+(mode === 'record' ? 'npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test --update-snapshots=all; ' : '')+'npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test; cp -R browser/__screenshots__/linux-x64/. /visual-output/';
+  run("docker",["run","--rm","--init","--ipc=host","--platform","linux/amd64",...mounts,"--env","CI=true","--env","PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1","--env","OURFORM_AUTHOR_PROJECT="+process.cwd(),pin.image,"/bin/bash","-c",shell]);
 }
 `,
   };
