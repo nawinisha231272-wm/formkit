@@ -14,7 +14,8 @@ deviations from spec, open questions.
 - **M03–M07 complete** — local evidence is recorded below. M08 is not started.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
-- Current work: Linux CI calibration on `ci-linux-baseline`; M08 remains unstarted.
+- Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
+  [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 remains unstarted.
 
 ## Open questions
 
@@ -58,7 +59,9 @@ Per-metric medians of the three run medians (milliseconds; JSON retains full pre
 `scripts/performance-policy.json` now sets linuxBaselineRequired=true: the bootstrap exception is
 closed. The 500-field gate fails at more than 20% over its Linux baseline; exact ceilings are
 7.08/62.76/163.44/109.56 ms for compile/mount/edit/theme. Mac continues enforcing its unchanged artifact.
-The `ci-linux-baseline` PR must pass its own full Linux CI against this baseline before merging.
+[ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2) stores the medians and
+requires its own full Linux CI to pass against this baseline before merging. After merge, stop;
+M08 requires the user's explicit confirmation.
 No M08 or undecided product-policy changes are included.
 
 Latest local full pinned `CI=true pnpm verify` at cbddf40 passes all correctness stages above but
