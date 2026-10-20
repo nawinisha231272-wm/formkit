@@ -74,12 +74,25 @@ PARTIAL until M09.
   `CI=true pnpm benchmark:check` passes at 4.50/37.60/98.70/63.00 ms after other checks finish.
   The full command's first result is not claimed green; the isolated retry is recorded separately.
   No runtime/workload code or stored timings were changed to obtain the passing check.
+- PASS — a final complete pinned `CI=true pnpm verify` on committed 2e2c8e4 exits successfully in one
+  run: all stages above plus the Mac performance gate at 4.40/36.70/99.60/63.30 ms. This rerun had no
+  Docker work alongside it. The earlier failure/retry remains documented rather than omitted.
 - PASS — platform selection/pending-baseline rejection, strict 20% boundary, API-provenanced three-run
   median aggregation and official container/package version alignment pass in the unit suite.
 
 Remote PR, no-update Linux visual comparison and three clean main CI performance runs remain pending.
 Ordinary Linux verification must reject its pending budget; a calibration-only success cannot be
 reported as a green regression gate. Main is not advanced and no M08 work is started.
+
+### Native CI follow-up
+
+[PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) is open as a draft from housekeeping to main.
+The first [push run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39460791176) and
+[PR run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39460822825) each pass 234 Chromium/WebKit
+cases, including all 40 of their Linux visual comparisons. All 117 Firefox cases fail before launch:
+Actions provides a home owned by pwuser while the official container runs as root. The workflow now
+matches that disposable directory's ownership to the actual container user; HOME, sandbox flags,
+baselines and assertions remain unchanged. The complete native rerun is pending.
 
 ## Log
 

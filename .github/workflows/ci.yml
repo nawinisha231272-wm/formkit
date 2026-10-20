@@ -29,6 +29,10 @@ jobs:
       - name: Check pinned container and browser package match
         run: |
           node -e 'const p=require("./scripts/playwright-container.json"); const v=require("./package.json").devDependencies["@playwright/test"]; if(p.playwright!==v || process.platform!=="linux" || process.arch!=="x64") process.exit(1)'
+      - name: Match browser home ownership to the container user
+        # Actions mounts a home owned by pwuser while this image runs as root.
+        # Firefox requires matching ownership; retain HOME and browser sandbox settings.
+        run: chown "$(id -u):$(id -g)" "$HOME"
       - name: Label calibration runs explicitly
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_mode == 'measure' }}
         run: echo '### Calibration only — performance timings collected, regression budget NOT validated.' >> "$GITHUB_STEP_SUMMARY"
