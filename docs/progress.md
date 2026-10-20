@@ -12,8 +12,10 @@ deviations from spec, open questions.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
 - **M03–M07 complete** — local evidence is recorded below. M08 is not started.
-- `main` points at verified M07 (`cd6517e`); all milestone branches and m00-done…m07-done tags are preserved.
-- Current work: repository housekeeping on `housekeeping`; GitHub CLI API access works, CI calibration pending.
+- `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
+  m00-done…m07-done tags are preserved at their original heads.
+- Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
+  [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 remains unstarted.
 
 ## Open questions
 
@@ -21,6 +23,69 @@ deviations from spec, open questions.
    `'reject'`. Awaiting the user's answer. Keep the existing rejection behavior; do not implement strip.
 2. **Bootstrap 4 theme status for 1.0:** keep / legacy-frozen / remove. Awaiting the user's answer.
    Keep the current theme unchanged until a decision is provided.
+
+## Linux calibration follow-up — 2026-10-20
+
+[Housekeeping PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) merged only after both
+[PR CI](https://github.com/nawinisha231272-wm/formkit/actions/runs/39469856409) and
+[push CI](https://github.com/nawinisha231272-wm/formkit/actions/runs/39469846896) were green at cbddf40:
+159 unit tests, all 351 browser cases (60 Linux visual comparisons), all 14 size budgets, lint,
+build/type checks and benchmark correctness assertions. Both used the pinned official image and
+ubuntu-24.04. Pending Linux performance was explicitly record-only and logged
+`linux baseline missing: not enforced`; no performance regression verdict was claimed.
+
+Three successful workflow_dispatch runs measured unchanged main commit
+`e89eb62176932a9d35f08b484b9ac3fd2d855381` on ubuntu-24.04:
+
+1. https://github.com/nawinisha231272-wm/formkit/actions/runs/39471823710
+2. https://github.com/nawinisha231272-wm/formkit/actions/runs/39471831492
+3. https://github.com/nawinisha231272-wm/formkit/actions/runs/39471839601
+
+PASS — no intervening code changes on main; every report identifies a clean checkout of that exact
+commit and linux-x64/Chromium. The CLI `scripts/aggregate-ci-baseline.mjs` verifies successful main
+run metadata and ubuntu-24.04 job labels through the GitHub API. Each run passes full pinned verify,
+including all 159 unit tests, 351 browser cases, 60 Linux comparisons and 14 size budgets. The automatic
+main push run also passed but is not one of the three selected calibration reports.
+
+Per-metric medians of the three run medians (milliseconds; JSON retains full precision):
+
+| Fields | Compile | Mount  | 25 edits | Theme changes |
+| ------ | ------- | ------ | -------- | ------------- |
+| 100    | 2.40    | 11.10  | 57.10    | 16.90         |
+| 500    | 5.90    | 52.30  | 136.20   | 91.30         |
+| 1000   | 11.00   | 104.10 | 292.70   | 175.70        |
+
+`docs/performance/baselines/linux-x64.json` stores these medians and all three run URLs.
+`scripts/performance-policy.json` now sets linuxBaselineRequired=true: the bootstrap exception is
+closed. The 500-field gate fails at more than 20% over its Linux baseline; exact ceilings are
+7.08/62.76/163.44/109.56 ms for compile/mount/edit/theme. Mac continues enforcing its unchanged artifact.
+[ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2) stores the medians and
+requires its own full Linux CI to pass against this baseline before merging. After merge, stop;
+M08 requires the user's explicit confirmation.
+No M08 or undecided product-policy changes are included.
+
+### Initial required-enforcement CI results
+
+The first enforcing [PR run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39474015036/attempts/1)
+and [push run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39474008325/attempts/1) at
+68e4ee5 pass every correctness check (159 unit tests, 351 browser cases/all 60 visual comparisons,
+14 size budgets, lint/build/types), then **FAIL the unchanged Linux performance budget**.
+500-field compile/mount/edit/theme: PR 8.40/78.80/194.10/140.80 ms; push
+9.90/90.60/214.00/154.30 ms. Both log `linux-x64 performance baseline enforced: fail above 20%`.
+
+No runtime, benchmark workload or harness source differs from the calibration commit; PR #2 changes
+only the baseline, required policy and audit documentation. The PR's 1,000-field results remain near
+the calibration medians (10.50/107.70/286.80/180.00 ms), while its 500-field phase spikes. This suggests
+measurement variability but does not establish a cause. A bounded full-CI retry retains all checks,
+original medians and the 20% threshold. These initial failures remain recorded; no green result or
+permission to merge is claimed until required enforcement passes.
+
+Latest local full pinned `CI=true pnpm verify` at cbddf40 passes all correctness stages above but
+**fails the unchanged Mac timing gate**: compile/mount/edit/theme 6.20/49.50/128.40/86.00 ms versus
+ceilings 5.40/44.64/119.52/75.48 ms. A separate pinned `CI=true pnpm benchmark:check` passes at
+4.50/36.50/98.70/62.90 ms. These are separate results; the latest combined command is not claimed green.
+All 60 Mac PNG bytes and every original Mac timing value remain unchanged. No runtime benchmark
+workload, threshold, retry setting or user application was changed to obtain the isolated pass.
 
 ## Repository housekeeping — 2026-10-20 (CI/calibration pending)
 

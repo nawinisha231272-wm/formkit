@@ -6,12 +6,14 @@ http://127.0.0.1:4190 for interactive measurements.
 
 Baselines are selected by the exact Node platform/architecture (`os.platform()` + `os.arch()`):
 
-| Platform     | Artifact                    | Status                                               |
-| ------------ | --------------------------- | ---------------------------------------------------- |
-| darwin-arm64 | baselines/darwin-arm64.json | Measured M07 local medians, timing values unchanged  |
-| linux-x64    | baselines/linux-x64.json    | **PENDING** — no CI timing values have been invented |
+| Platform     | Artifact                    | Status                                              |
+| ------------ | --------------------------- | --------------------------------------------------- |
+| darwin-arm64 | baselines/darwin-arm64.json | Measured M07 local medians, timing values unchanged |
+| linux-x64    | baselines/linux-x64.json    | Measured: medians of three clean main CI runs       |
 
-There is no platform fallback. The user authorized a temporary Linux bootstrap on 2026-10-20:
+There is no platform fallback. Linux calibration is complete; linuxBaselineRequired=true closes the
+bootstrap exception. Both stored platform baselines are now enforced. The user authorized this
+temporary Linux bootstrap on 2026-10-20:
 while linux-x64 is pending and scripts/performance-policy.json has linuxBaselineRequired=false,
 ordinary verification measures and uploads timings, logs **linux baseline missing: not enforced**,
 and retains every correctness assertion. This is record-only, not a performance regression verdict.
