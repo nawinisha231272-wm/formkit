@@ -42,6 +42,8 @@ export default defineConfig({
         "builder.html",
         "sdk-probe.html",
         "theme-probe.html",
+        "sdk-extensions.html",
+        "authoring.html",
       ],
     },
   },

@@ -42,3 +42,7 @@ export { englishMessages } from "@ourform/core";
 
 export { defineLayout } from "./define-layout";
 export type { LayoutView } from "./native";
+export { definePreset } from "./define-preset";
+export { defineComposite } from "./define-composite";
+export { definePlugin } from "./define-plugin";
+export type { Plugin } from "./define-plugin";

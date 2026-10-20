@@ -163,7 +163,11 @@ function patch(unit: Unit, next: VNode | string): Unit {
     ...Object.keys(old.props),
     ...Object.keys(next.props),
   ]))
-    if (old.props[name] !== next.props[name])
+    if (
+      old.props[name] !== next.props[name] ||
+      name === "value" ||
+      name === "checked"
+    )
       attribute(unit, name, next.props[name], old.props[name]);
   const keyed = new Map(
     unit.children

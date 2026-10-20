@@ -372,6 +372,12 @@ importers:
         specifier: workspace:*
         version: link:../schema
 
+  packages/cli:
+    devDependencies:
+      '@types/node':
+        specifier: 22.15.29
+        version: 22.15.29
+
   packages/components:
     dependencies:
       '@ourform/sdk':
@@ -383,6 +389,13 @@ importers:
       '@ourform/schema':
         specifier: workspace:*
         version: link:../schema
+      semver:
+        specifier: 7.8.5
+        version: 7.8.5
+    devDependencies:
+      '@types/semver':
+        specifier: 7.7.1
+        version: 7.7.1
 
   packages/element:
     dependencies:
@@ -466,6 +479,9 @@ importers:
       '@axe-core/playwright':
         specifier: 4.10.2
         version: 4.10.2(playwright-core@1.56.1)
+      '@ourform/builder-core':
+        specifier: workspace:*
+        version: link:../builder-core
       '@ourform/components':
         specifier: workspace:*
         version: link:../components
@@ -1554,6 +1570,9 @@ packages:
 
   '@types/react@19.2.2':
     resolution: {integrity: sha512-6mDvHUFSjyT2B2yeNx2nUgMxh9LtOWvkhIU3uePn2I2oyNymUAX1NIsdgviM4CH+JSrp2D2hsMvJOkxY+0wNRA==}
+
+  '@types/semver@7.7.1':
+    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
   '@typescript-eslint/eslint-plugin@8.72.0':
     resolution: {integrity: sha512-aysKgysPX9XOv/dk95UkvUDe++Q3n3dJPG9CEWT3RUccxfkPJ+Qn6nhKPDhZXU6Ofo9kgwGWwKyQCnZIXTgngg==}
@@ -4210,6 +4229,8 @@ snapshots:
   '@types/react@19.2.2':
     dependencies:
       csstype: 3.2.3
+
+  '@types/semver@7.7.1': {}
 
   '@typescript-eslint/eslint-plugin@8.72.0(@typescript-eslint/parser@8.72.0(eslint@9.28.0(jiti@2.7.0))(typescript@6.0.2))(eslint@9.28.0(jiti@2.7.0))(typescript@6.0.2)':
     dependencies:

@@ -20,7 +20,8 @@
     "changeset": "changeset",
     "benchmark:check": "playwright test -c playwright.bench.config.ts",
     "benchmark:record": "OURFORM_RECORD_BASELINE=1 playwright test -c playwright.bench.config.ts",
-    "benchmark:counts": "node scripts/work-count-baseline.mjs && playwright test -c playwright.counts.config.ts"
+    "benchmark:counts": "node scripts/work-count-baseline.mjs && playwright test -c playwright.counts.config.ts",
+    "sdk:pack": "node scripts/pack-sdk-kit.mjs"
   },
   "devDependencies": {
     "@angular/common": "22.2.3",
@@ -139,6 +140,11 @@
     {
       "name": "validation",
       "path": "packages/validation/dist/index.js",
+      "limit": "30 kB"
+    },
+    {
+      "name": "cli",
+      "path": "packages/cli/dist/*.js",
       "limit": "30 kB"
     }
   ]

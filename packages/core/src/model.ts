@@ -1,4 +1,4 @@
-import type { Expr } from "@ourform/schema";
+import type { ComponentNode, Expr } from "@ourform/schema";
 export type PropertyKind =
   | "string"
   | "number"
@@ -44,6 +44,7 @@ export interface ComponentModel<T = unknown> {
   title: string;
   kind?: "field" | "layout" | "composite";
   dataScope?: "none" | "object" | "array";
+  expand?: (node: ComponentNode) => ComponentNode[];
   value?: ValueAdapter<T>;
   validators?: readonly string[];
   properties?: PropertyMap;

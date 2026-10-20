@@ -10,6 +10,7 @@
     "builder.ts",
     "vite.config.ts",
     "tier1.ts",
-    "onboarding.ts"
+    "onboarding.ts",
+    "sdk-extensions.ts"
   ]
 }

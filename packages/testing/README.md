@@ -39,3 +39,24 @@ disappearing cannot move later pointer targets during their activation.
 M07: createConformanceEngine installs builtinComponents, including the shipped transparent layouts
 and object Container. The onboarding host suite reuses the same 40-value fixture for controlled,
 uncontrolled, read-only, summary/reset, all themes, SSR/remount and the offline production-sample gate.
+
+## Component author test kit (M08)
+
+`renderComponent(def,{host,theme,...})` mounts a real single-component form in an empty caller-owned
+Element and returns a FormController. Optional node/data/fields/readOnly engine and adapter/nativeHost cover
+composites and native controls. Call destroy after each test; host content must be empty initially.
+`componentTestEngine(fields)` creates an isolated engine from descriptors.
+`checkValueAdapter(adapter,samples)` checks empty recognition and canonical normalize/serialize
+round trips. `checkValidation(engine,definition,cases)` checks valid and optional exact error-code
+expectations against canonical SDK validation. `checkBuilderRoundTrip(engine,type)` checks palette,
+generated label editing and byte-identical undo/redo. Helpers throw on mismatch; no test runner is
+required. Every new component needs conformance and visual checks in base, Bootstrap 4, Bootstrap 5
+and Tailwind. The component author guide shows the complete workflow.
+
+M08 author correction: `mountComponentBuilder(field,{host,theme?,themes?,engine?})` mounts an empty-host
+mini builder with a real palette button, metadata-generated editors and preview. It returns builder,
+preview and destroy; repeated destroy is safe. The Playwright subpath exports
+`checkPropertyEditors(page,cases,{root?})` and `PropertyEditorCase`: each custom properties.\* editor
+needs exactly one `{key,value,verify(preview)}` case. The helper edits the DOM editor and awaits the
+observable preview assertion. See apps/docs/component-author-guide.md for full typed numeric/i18n and
+required/disabled/top-level-readOnly fixtures. These are author fixtures, not M09's full builder UI.

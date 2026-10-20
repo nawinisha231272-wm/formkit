@@ -1,6 +1,6 @@
 # @ourform/core
 
-Headless M01 compiler and runtime. Zero external runtime dependencies; compiles without DOM types.
+Headless compiler and runtime; compiles without DOM types. Uses pinned semver for plugin compatibility.
 
 ```ts
 import { createEngine, type ComponentModel } from "@ourform/core";
@@ -64,8 +64,9 @@ Other public types: `ComponentModel`, `ValueAdapter`, property metadata types, `
 `FieldState`, `StatePatch`, `ValidationResult`, `SubmitResult`, `CompiledForm`, `CompiledNode`,
 `CompileResult`, `FunctionMap`, `HostFunction`, `CompiledExpression`, `ExpressionContext`, `ExpressionBindings`.
 
-Custom/async validation, plugins, composites and repeaters remain later milestones. They are explicitly
-diagnosed rather than partially executed. Full SDK metadata/value helpers arrive in M02.
+Custom/async validation and plugin/composite contracts are documented below. Repeater/array scopes
+remain M10 and are explicitly diagnosed rather than partially executed. SDK metadata/value helpers
+are available through @ourform/sdk.
 
 ## M06 custom and async validation
 
@@ -84,3 +85,22 @@ providers.localization(key, params, locale) may return text or undefined. sessio
 frozen englishMessages/englishMessage catalog as fallback (or a supplied fallback). Locale comes from
 form settings. Built-in length rules count Unicode code points, matching JSON Schema. Node types are
 build-time only; core still compiles without DOM and runs in both Node 22 and browsers.
+
+## M08 extensions
+
+`createEngine({plugins:[...]})` accepts structural PluginRegistration descriptors, validates npm semver
+against exported coreVersion and all dependencies, and rejects conflicting registered names.
+Functions/validators and providers.dataSources are per engine. Hosts pass views/themes separately;
+core does not retain them. Changing the plugin set requires another engine. Forms with absent or
+incompatible plugin requirements return missing-plugin diagnostics.
+ComponentModel.expand is a trusted headless composite callback returning safe JSON children. Compile
+validates expanded definitions and rejects recursion, malformed output, id/key/ref collisions, and
+limits above 64 levels / 10,000 expanded nodes. The original wire definition is retained. SDK
+defineComposite handles stable instance ids and local reference rebasing. See spec 04 and ADR-0003.
+The pinned semver runtime dependency implements the standard npm range grammar; no custom parser or
+network request is used.
+
+Protected user-sourced setValue now emits a refresh-only StatePatch for that field: changedPaths=[],
+unchanged data/state and no normalization/validation/dependent processing. Renderers restore the live
+control from stored state. Default/API writes continue normally; equal API writes still emit nothing.
+See ADR-0012. Read-only is a session/host mode; disabled comes from disabledWhen (including parents).

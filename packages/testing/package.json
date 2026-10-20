@@ -21,6 +21,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@ourform/builder-core": "workspace:*",
     "@ourform/schema": "workspace:*",
     "@ourform/core": "workspace:*",
     "@ourform/sdk": "workspace:*",

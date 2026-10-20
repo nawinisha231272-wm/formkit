@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "aiAssisted": true,
+  "independentHumanEvidence": false,
+  "sdkCheckout": "53402c0f6ee7e2f24015e5cc5d570c1cfc160542",
+  "sourceLines": 24,
+  "unitTests": 2,
+  "browserTests": 15,
+  "steps": [
+    {
+      "at": "2026-10-20T18:38:57.898188-04:00",
+      "args": [
+        "node",
+        "packages/cli/dist/cli.js",
+        "create-component",
+        "acme-color",
+        "--directory",
+        "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/acme-color",
+        "--local-packages",
+        "/Users/dharanesh/Documents/ChatGPT/m08-author-rehearsal-sxvslgfr/ourform-sdk-kit"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 1.159
+    },
+    {
+      "at": "2026-10-20T18:38:59.059878-04:00",
+      "args": ["pnpm", "install"],
+      "exit": 0,
+      "elapsedSeconds": 2.294
+    },
+    {
+      "at": "2026-10-20T18:39:01.354718-04:00",
+      "args": ["pnpm", "verify"],
+      "exit": 0,
+      "elapsedSeconds": 31.116
+    },
+    {
+      "at": "2026-10-20T18:39:32.472463-04:00",
+      "args": ["pnpm", "visual:record"],
+      "exit": 0,
+      "elapsedSeconds": 52.943
+    },
+    {
+      "at": "2026-10-20T18:40:25.417431-04:00",
+      "args": ["pnpm", "visual:linux:record"],
+      "exit": 0,
+      "elapsedSeconds": 305.827
+    }
+  ],
+  "sourceCommit": "04431577c58798e4a6ee10181e0e29705e2871d6",
+  "screenshots": {
+    "browser/__screenshots__/darwin-arm64/chromium/sample-base.png": "b786a84ea4c363bd69b724b2f054d9f95be58b53c7bfd10a2aa96815284e5068",
+    "browser/__screenshots__/darwin-arm64/chromium/sample-bootstrap4.png": "2858fdbf95da45b362537e04d7db072b2f499b9a045862adc5c0b2582568d84c",
+    "browser/__screenshots__/darwin-arm64/chromium/sample-bootstrap5.png": "3a747615054d7c2fd58dfddcb4d9338fc29d8695d20878bad66d5231e821edc7",
+    "browser/__screenshots__/darwin-arm64/chromium/sample-tailwind.png": "e48dd12430d514cf407a3280564a88d3f1a070128f2a76c2a477c9ef8edb69eb",
+    "browser/__screenshots__/darwin-arm64/firefox/sample-base.png": "d46d39d20e7356997dc3719ba22c9567e3e432a0e07360825ac35c5c1e841c12",
+    "browser/__screenshots__/darwin-arm64/firefox/sample-bootstrap4.png": "48f1ea0341267465a244bc6b572ee442339f1617f6f6a6750fbb80175d56da76",
+    "browser/__screenshots__/darwin-arm64/firefox/sample-bootstrap5.png": "b9752a33fd533d3ebea66a57bcc0e6ba8a826126d4168a662ada9eff40193afb",
+    "browser/__screenshots__/darwin-arm64/firefox/sample-tailwind.png": "02ad960dde119cf8fb729ed701b418d5001535f7511c4ec3794cdfee86d4dd7d",
+    "browser/__screenshots__/darwin-arm64/webkit/sample-base.png": "621e35353cabf0e378985f6f56fd4331d9d5f59b922df6e149712d35df1ae47d",
+    "browser/__screenshots__/darwin-arm64/webkit/sample-bootstrap4.png": "8f6d22a491be5218f53f1e9327406538cd366c612273970b989c6640676b8d14",
+    "browser/__screenshots__/darwin-arm64/webkit/sample-bootstrap5.png": "e2748cf2f23f4634cbbebbcb1f244d3225b8a20e468d26b63638c9550112f076",
+    "browser/__screenshots__/darwin-arm64/webkit/sample-tailwind.png": "d1d3eef071499a299817fa993b1bc38afe397ca320fbf09cd4d402ab652997bd",
+    "browser/__screenshots__/linux-x64/chromium/sample-base.png": "6c64ece08c4af6d8b34f06233b25f6b784b69495aba27b2cd900e5e8d091837a",
+    "browser/__screenshots__/linux-x64/chromium/sample-bootstrap4.png": "8ed03d03b854020ccd19187a7e5a9fce632f04cdd463bb3334d48b0e9357e633",
+    "browser/__screenshots__/linux-x64/chromium/sample-bootstrap5.png": "89e4f4c4792d40763e3b850a34dac3ceaab388a4311b5d3f0e8892dc2ede77d6",
+    "browser/__screenshots__/linux-x64/chromium/sample-tailwind.png": "6144d4774bebe02b54efe0239bd9b120b2386cd27c97d0e6c1eaef21fd9d8cff",
+    "browser/__screenshots__/linux-x64/firefox/sample-base.png": "e9de7e456bf4bf129c57d07a711e14dcc4c1193757d11b2a592ae1761b132763",
+    "browser/__screenshots__/linux-x64/firefox/sample-bootstrap4.png": "bf0369c4720512c1cb67b20db451a0e912b4376dc61b9ca807161658343dfd8c",
+    "browser/__screenshots__/linux-x64/firefox/sample-bootstrap5.png": "344e01aab2fd4dfb5e5db722506fa7e34699147bbef583d455f294c4d5cd1c79",
+    "browser/__screenshots__/linux-x64/firefox/sample-tailwind.png": "fdd5d98ad23b708767cb91e029055e29ff1ca4c7f9aa9d0a89e98524fc94f51f",
+    "browser/__screenshots__/linux-x64/webkit/sample-base.png": "7e815ce9ee808b7fc74fc7b5e5e6d2197339d3ca78f3b315d9ec0eb615227408",
+    "browser/__screenshots__/linux-x64/webkit/sample-bootstrap4.png": "a75de1618446fa67026f80348c04d132119832c6611aa9c06d3bb36f1e51946e",
+    "browser/__screenshots__/linux-x64/webkit/sample-bootstrap5.png": "2db28c1211c2596f3e33da97067037b08f01756b6852407e5d7ea23c4c88a2d9",
+    "browser/__screenshots__/linux-x64/webkit/sample-tailwind.png": "7e794b8a66af4efd312c5e1085b963cd4045609ef706c49e5112de42b0491e81"
+  }
+}

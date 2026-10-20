@@ -81,3 +81,7 @@ view.reset();
 ```
 
 `pnpm dev` → `/onboarding.html` demonstrates built-package server output and client remount.
+
+Rejected user edits on disabled/read-only fields trigger a core refresh patch. Portable rendering
+restores live value/checked properties even when VNode props are unchanged, preserving node identity.
+Field authors forward state/ARIA and can call setValue directly; no manual DOM restoration is needed.

@@ -308,6 +308,10 @@ test("value equality, serialization, readOnly, disposal and unsubscribe", async 
   const off = s.subscribe((p) => changes.push(p));
   s.setValue("object", { x: 1 }, { source: "user" });
   expect(s.getValue("object")).toEqual({ x: 0 });
+  expect(changes).toEqual([
+    { changedFields: ["object"], changedPaths: [], data: { object: { x: 0 } } },
+  ]);
+  changes.length = 0; // The following equal API write must still emit nothing.
   s.setValue("object", { x: 0 });
   expect(changes).toEqual([]);
   const input = { x: 2 };

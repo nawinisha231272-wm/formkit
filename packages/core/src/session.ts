@@ -181,12 +181,13 @@ export class FormSession {
       }),
     );
   }
-  private emit(ids: readonly string[]): void {
+  private emit(ids: readonly string[], includePaths = true): void {
     const paths: Path[] = [];
     const seen = new Set<string>();
     for (const id of ids) {
       const entry = this.form.byId[id]!;
       if (
+        includePaths &&
         entry.path.length &&
         (entry.model.value || entry.model.dataScope === "object") &&
         !seen.has(pathKey(entry.path))
@@ -234,8 +235,12 @@ export class FormSession {
     if (
       options.source === "user" &&
       (old.disabled || old.readOnly || !old.visible)
-    )
+    ) {
+      // Restore a control that optimistically changed its DOM value. No store,
+      // normalization, validation, dirty state or dependent processors change.
+      this.emit([entry.node.id], false);
       return;
+    }
     const normalized = adapter.normalize(raw);
     if (
       (adapter.equals ?? Object.is)(

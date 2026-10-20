@@ -140,3 +140,13 @@ export function createThemeConformance(
 }
 
 export { createConformanceEngine } from "./components";
+export {
+  renderComponent,
+  checkValueAdapter,
+  checkValidation,
+  checkBuilderRoundTrip,
+  componentTestEngine,
+} from "./authoring";
+export type { RenderComponentOptions } from "./authoring";
+
+export { mountComponentBuilder } from "./component-builder";

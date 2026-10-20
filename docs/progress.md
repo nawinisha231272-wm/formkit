@@ -11,15 +11,92 @@ deviations from spec, open questions.
 - **M00 complete** — clean installation and full verification pass.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
-- **M03–M07 complete** — local evidence is recorded below. M08 is not started.
+- **M03–M07 complete** — local and Linux evidence is recorded below. M08 is in progress on `m08-sdk-complete`.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
-  [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 remains unstarted.
+  [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 is now in progress on its separate milestone branch.
 
 ## Open questions
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
+
+## M08 author rehearsal corrections — 2026-10-20 (implementation verified; human gate pending)
+
+The Slider exercise is AI-assisted rehearsal only, never independent M08 gate evidence.
+Plan: restore protected controls through a core refresh patch without data/processor changes; test
+core and every host; simplify the Slider; complete provisioning, numeric/i18n examples, typed fixtures,
+scaffolded browser/axe/visual checks and a metadata-driven mini builder/editor assertion helper.
+Commit/push every deliverable, prove the guide from a fresh clone of the pushed branch, then rehearse
+with a different component and record remaining gaps. Run full pinned verification and initial CI.
+The user explicitly authorizes merging the delivery PR after green CI while keeping M08 open for the
+independent human report; this supersedes the earlier draft-only delivery restriction. Do not mark
+ADR-0003 accepted, tag m08-done, claim the gate passed or begin M09.
+
+### Correction checkpoint before fresh-clone proof
+
+- PASS — core protected-write tests cover disabled/read-only/hidden user writes: stored data and
+  state identity are unchanged, no processors run, and a target-only refresh patch restores the
+  control. API writes still work. Direct DOM, vanilla, React, Angular 21/22 and Web Component
+  light/shadow hosts are covered by `protected-writes.spec.ts` and `authoring.spec.ts` (48 cases).
+- PASS — full Quantity example is compiled and its exact guide snippet is checked by
+  `tests/author-guide.test.ts`, including typed English fallback and translated output.
+- PASS — new Slider/Quantity images: 12 darwin-arm64 and 12 linux-x64, all four themes and all
+  three browsers. Linux recording and comparison ran in the official digest-pinned Playwright
+  1.56.1 image; existing 168 PNG files are unchanged. No pixel threshold changed.
+- Slider source: original 51 physical / 50 nonblank lines; simplified 46 physical / 45 nonblank.
+  Excluding imports, comments, blanks and punctuation-only lines: 35 → 28 meaningful lines.
+  Original source/report are retained in `docs/rehearsals/`; the new source is
+  `apps/docs/examples/slider.ts`. Native range still displays its minimum while the model is null;
+  key/pointer handlers retain the first-interaction commit, and reset clears the model.
+- Initial focused browser run: 42 passed, six React fixture cases failed because controlled
+  `data={}` correctly overrode the schema default with empty data. The protected fixture now
+  supplies explicit stored initial data, and tests assert it before mutation. All 48 cases then
+  pass. No production behavior or threshold was changed to hide this fixture error.
+
+Fresh clone of pushed `5c78ddf` passed all ten guide steps with an unedited generated project
+(build/typecheck, one Node test, 15 browser cases) and a clean SDK tree. The Color rehearsal then
+found a real generated-Linux-command failure: pnpm relativizes local-kit tarball paths in its lockfile;
+copying the project to /project changed that relationship (ENOENT /ourform-sdk-kit). The correction
+preserves the original project/kit absolute directory relationship inside the disposable container,
+with read-only source/kit mounts and fresh Linux node_modules. This failure is retained; the pushed
+checkout proof and Linux command will be repeated after the fix.
+
+### Pushed guide proof and different-component rehearsal
+
+PASS — final implementation `53402c0f6ee7e2f24015e5cc5d570c1cfc160542` was cloned from GitHub
+without overlays, and the exact guide was followed from step 1. All ten commands succeeded, the
+SDK clone stayed clean, and hashes proved generated source/config files were unedited. The generated
+project passed build/typecheck, one Node test and 15 browser cases. Both initial and corrected clean
+clone records are in `docs/rehearsals/fresh-clone-*-proof.json` / `fresh-clone-proof.json`.
+
+PASS — the Color rehearsal used a separately generated project from the corrected pushed kit.
+Its portable control has 24 physical lines, placeholder/showSwatch properties and typed translation fallback;
+required/pattern rules live in the host fixture, with no protected-state wrapper. Native verification
+passed two Node and 15 browser cases. Explicit native and generated Linux recording each passed
+15 recording plus 15 update-disabled comparison cases, four themes and three browsers, with 12 PNGs
+per platform. The exact generated `pnpm visual:linux:record` succeeded in the pinned official image.
+The source, tests, command outcomes, hashes, standalone commit and remaining limitations are in
+[the correction report](rehearsals/author-rehearsal-corrections.md), which maps all eight findings to
+PASS evidence. The initial style-object author error and Linux kit-path failure are retained there.
+
+PASS — native Linux full pinned `pnpm verify` at `53402c0`:
+[push Verify, attempt 1](https://github.com/nawinisha231272-wm/formkit/actions/runs/39509468196)
+passes lint, build/typecheck, 187 unit tests, 432 browser cases, all 15 size budgets and five count-gate
+cases. Core line coverage is 95.15%; validation 99.25%. CLI integration includes three unedited projects
+and 48 nested browser cases. No count baseline, timing baseline, existing PNG or correctness threshold
+was relaxed. The earlier `5c78ddf` implementation also passed its initial
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39508959364).
+
+The [isolated A/B at 53402c0](https://github.com/nawinisha231272-wm/formkit/actions/runs/39509473241)
+is attempt 1, status=measured, five alternating pairs. At 500 fields compile/mount/edit/theme median
+paired ratios are 1.132/0.981/1.004/1.029, advisory. Final local full verification and the final delivery
+head's initial CI checks are recorded in [PR #5](https://github.com/nawinisha231272-wm/formkit/pull/5).
+No failed run is retried to get green; historical failures remain above/below and in the rehearsal log.
+
+**M08 gate remains NO-GO pending the user's independent human author report and human review.**
+The user separately authorizes implementation delivery to merge after green CI. ADR-0003 remains
+proposed, no m08-done tag is created, and M09 is not started. AI rehearsals never substitute for human evidence.
 
 ## Pre-M08 CI redesign and decisions — 2026-10-20
 
@@ -68,9 +145,137 @@ report this checkpoint and start M08 using its normal milestone process.
   Final full pinned verify exits zero with this guard. The strengthened demo readiness test also passes
   all three browsers separately. No remote CI has been retried or triggered before this final commit.
 
-Remote initial CI and actual scheduled-night observations are not claimed yet. PR merging requires
-its initial CI checks and a measured five-pair advisory artifact; no CI re-runs are authorized for green.
-The nightly workflow is unit-tested for its policy and will be enabled on default branch main after merge.
+Remote initial CI is now recorded in the merged checkpoint below. Actual scheduled-night observations
+are not claimed before they occur. No CI re-runs were used for green.
+
+### Merged CI checkpoint
+
+[PR #3](https://github.com/nawinisha231272-wm/formkit/pull/3) merged as
+`201b6095e3f9407e3734ac80e749a45203575ee6` after all initial checks passed, each on attempt 1:
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39486249662),
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39486224605), and
+[isolated advisory A/B](https://github.com/nawinisha231272-wm/formkit/actions/runs/39486249733).
+Native Linux verified 167 unit tests, 357 browser cases, 14 size budgets and five count-gate cases.
+The A/B artifact has status=measured, five alternating main/candidate pairs and all 12 metric ratios;
+500-field compile/mount/edit/theme ratios were 1.053/1.008/0.970/0.991. No workflow was re-run for green.
+The post-merge main Verify run is [39488293769](https://github.com/nawinisha231272-wm/formkit/actions/runs/39488293769).
+
+PASS — the user changed the default branch to main, verified through the repository API. The nightly
+workflow is registered and its first manual diagnostic is [39490884430](https://github.com/nawinisha231272-wm/formkit/actions/runs/39490884430).
+Manual diagnostics do not advance nightly streaks or write issues. The post-merge main Verify run
+above completed successfully on attempt 1. Actual three-night observations remain prospective.
+Repository ruleset 25504006 now requires PRs and the actual GitHub Actions `verify` check, with
+non-fast-forward updates prohibited; verified through the branch rules API after the user corrected
+the required-check name. No administrative bypass was used.
+
+## M08 — SDK completion (in progress)
+
+Plan: complete typed presets and declarative composites, then plugin packaging/engine installation
+with semver, conflicts and requirements; add the component test kit; add verifiable CLI component,
+theme and plugin scaffolds; publish author guides and an extension playground; automate scenarios A–F
+and four-theme conformance/visuals. Run pinned verify, prepare the ADR-0003 export inventory and PR,
+then stop for the M08 gate review. The external developer exercise requires a named independent
+human and remains pending until actual guide-only evidence is supplied. Do not start M09.
+
+Risks: expanded child ids/references and object scopes must remain stable; plugin installation must
+preserve the headless/model-view boundary and per-engine isolation; generated projects must use the
+pinned toolchain without relying on unpublished registry packages. Existing correctness checks and
+count baselines remain enforced. Contract details will be recorded in the spec and ADR before freeze.
+
+### M08 implementation checkpoint
+
+Implemented presets (typed portable metadata and native-view preservation), fixed-template Address
+composites with stable ids/internal references, bounded headless expansion, and per-engine plugin
+installation/semver/conflicts/requirements. Added component value/validation/builder/render helpers,
+CLI component/theme/plugin generators and author guides. The CLI proof packs the public packages,
+installs all three fresh projects and runs each unedited pnpm verify, with a frozen/offline reinstall
+proof after their initial dependency resolution. The package README,
+spec 04, proposed ADR-0003, export inventory and changeset document contracts. semver 7.8.5 is the
+sole new runtime dependency, to support full npm ranges rather than inventing a partial grammar.
+
+Intermediate evidence: focused SDK/core/test-kit checks pass; the built CLI proof passes all three
+scaffolds. SDK scenarios A/B/D source/unit tests pass (Rating is 29 meaningful non-import lines), and
+24 browser cases passed across Chromium/Firefox/WebKit after fixing outside-submit blur coordination.
+The matrix is being extended with native-component visuals in every theme before final verification.
+The initial broad unit run under contention hit existing deadlines; compiler diagnostics for a
+composite with no expansion also exposed a compatibility requirement, now preserved as
+unsupported-component. The expensive SDK export check now parses declared names and verifies actual
+runtime exports directly, preserving the inventory assertion without loading a full compiler graph.
+Unit/browser concurrency is bounded; all original deadlines, tests, images and thresholds remain.
+These intermediate issues are resolved by the final evidence below; the independent human exercise
+and gate review remain pending, so this is not a milestone completion claim.
+
+The user is arranging the independent author exercise and explicitly requires the gate remain pending
+until their report. Gate recommendation remains **NO-GO pending that report and human review**.
+The nightly diagnostic correction [PR #4](https://github.com/nawinisha231272-wm/formkit/pull/4)
+merged as `e20fe437895eafb5cd4a0d938f80791aba813547` after current head
+`a05c15e6e82f8672aed1ae8c707938097e724834` passed all checks on attempt 1:
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39495383732),
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39495358280),
+[advisory A/B](https://github.com/nawinisha231272-wm/formkit/actions/runs/39495383915), and
+[manual nightly diagnostic](https://github.com/nawinisha231272-wm/formkit/actions/runs/39495395088).
+The native diagnostic measured all three sizes and 12 comparisons; the advisory measured five pairs.
+Neither timing artifact reports unavailable/error. Local full pinned verify passed 168 unit tests,
+357 browser cases, 14 size budgets and five count checks. Native Linux correctness passed too.
+The initial failed diagnostic 39490884430 and local contention failures remain recorded below.
+No CI re-runs were used. The user corrected the required check to `verify`; the live rules API now
+confirms it, required PRs and prohibited non-fast-forward pushes. Post-merge main CI
+[39498170756](https://github.com/nawinisha231272-wm/formkit/actions/runs/39498170756) also passed on
+attempt 1. The prerequisite correction is complete.
+
+### M08 acceptance and gate report
+
+| Criterion                                           | Status                     | Evidence                                                                                                                                                                                                                                                                                                             |
+| --------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scenarios A–F automated                             | PASS                       | `tests/sdk-scenarios.test.ts`: Rating <30 meaningful lines, one-statement conventional registration, generated palette/max editing/undo/redo. `tests/e2e/sdk-extensions.spec.ts`: real React mappings, four-theme identity/validation/reset, actual Angular portable Rating; 27 cases pass on macOS.                 |
+| Component/theme/plugin scaffolds work without edits | PASS                       | `all three unedited CLI scaffolds install from packed workspace packages and pass pinned verify`: built CLI, fresh projects, packed SDK dependencies, initial resolution and frozen/offline reinstall, build/typecheck/value/canonical-validation/generated-palette/undo/redo tests.                                 |
+| Independent developer uses guide alone              | PENDING — gate cannot pass | User is arranging the exercise. Record actual name, commands/results and confusing steps after their report; no simulated or implementing-agent evidence substitutes for it.                                                                                                                                         |
+| ADR-0003 freezes SDK 0.x export list                | PENDING human gate review  | `docs/adr/0003-sdk-0x-api-freeze.md` and exact `docs/api/sdk-0.x.json`; `SDK 0.x export inventory matches ADR-0003` checks declared and built runtime exports. Proposed until independent exercise/review.                                                                                                           |
+| Full pinned verify                                  | PASS                       | `CI=true pnpm verify`, Node 22.22.3 / pnpm 10.10.0: lint, 22 builds, 37 typecheck tasks, 183 unit tests, 384 browser cases, all size budgets and five deterministic count cases. Core lines 95.14%; validation 99.25%. CLI budget includes every emitted JS chunk; its final tightened size check is recorded below. |
+
+Gate recommendation: **NO-GO** until actual independent author evidence and human review. The later author-rehearsal correction request explicitly authorizes merging tested M08 implementation delivery; it does not pass the gate, accept ADR-0003 or authorize M09.
+
+Final automated evidence — full pinned verify exits zero (`/tmp/m08-full-pinned-verify.log`). All
+183 unit tests include the actual built CLI/fresh scaffold proof; all 384 browser cases include 27 SDK
+cases and existing regressions. Native pinned Node imports core/SDK, installs a semver-checked plugin
+and compiles its required form without DOM globals. `sh scripts/linux-visuals.sh record sdk` uses the
+exact image in scripts/playwright-container.json, records 24 new Linux SDK PNGs and passes all 12
+comparison-only cases. 24 Mac SDK images pass too; representative images were inspected. The existing
+120 PNGs, timing workload and platform baselines remain byte-identical. CLI's new 30 kB budget covers
+all emitted JS files, including its shared chunk; the follow-up pinned `pnpm size` passes all 15
+budgets (CLI 3.07 kB brotlied), and `pnpm lint` passes. All prior budgets are unchanged.
+
+Mac baseline recording with `--update-snapshots=missing` wrote the 12 new native screenshots and
+reported them as missing (the pinned Playwright behavior). The subsequent update-disabled comparison
+passed all 27 SDK browser cases; no existing screenshot was replaced. Linux recording is restricted
+to an empty selected suite before `--update-snapshots=all`, then compared with updates disabled.
+
+Existing 120 PNG bytes, both timing baseline JSON files and the original timing workload are verified
+unchanged against main. New SDK visuals are separate platform-specific additions, with existing pixel
+thresholds retained. No later-milestone builder commands or repeater/data-source UI are implemented.
+
+### M08 initial native CI failure and scaffold setup correction
+
+At `0ca164db10f4d9e87a1cdb26c31f8673dec4840e`, initial attempt-1
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39501212521) and
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39501195234) failed the new
+scaffold integration test: `ERR_PNPM_NO_OFFLINE_META` for @types/node@22.15.29. Both pass lint,
+build/typecheck and 182 other unit tests; browser/size/count stages were not reached in these runs.
+The previous local full verify had passed with an existing registry metadata cache. No CI job is rerun.
+
+Cause: a frozen workspace installation downloads package contents without necessarily storing the
+registry metadata needed for a brand-new project's initial dependency resolution. The new proof now
+runs the guide's normal initial install with an isolated, initially empty metadata cache, removes
+each generated node_modules, then requires `pnpm install --offline --frozen-lockfile` before the same
+unedited build/typecheck/value/validation/palette/undo/redo assertions. The generator still performs no
+network calls. All existing assertions and deadlines are retained; the offline reinstall is stronger
+with a frozen lockfile. The focused corrected proof passes both tests in 30.7 seconds locally.
+Final full local/native verification of this correction is pending before claiming remote PASS.
+
+The initial [isolated A/B](https://github.com/nawinisha231272-wm/formkit/actions/runs/39501212559)
+completed on attempt 1 with status=measured, five pairs and all 12 Linux ratios. At 500 fields,
+compile/mount/edit/theme ratios were 1.173/1.013/0.994/1.009; these remain advisory.
+Both failed native runs are retained as evidence; the M08 gate stays NO-GO.
 
 ## Linux calibration follow-up — 2026-10-20
 
@@ -1038,7 +1243,9 @@ errors, closed ports and timeouts` passes. The corrected full local pinned-image
 records all three sizes and 12 comparisons, and confirms manual runs do not modify streaks or issues.
 Those emulated local timings are harness evidence only, never Linux runner calibration values.
 
-Local full pinned verify and the corrected branch's first native diagnostic/CI are pending before merge.
+Final evidence: local full pinned verify passed (168 unit / 357 browser / 14 size / five count checks).
+The corrected current head passed native PR/push Verify, A/B and manual nightly diagnostics on
+attempt 1; PR #4 is merged. Exact run links and merge commit are recorded above.
 This correction contains no M08 features. PR #3's original first-attempt green checks remain recorded.
 The first local combined verify passed lint/build/types and 168 unit tests, but its browser matrix
 hit existing test deadlines while multiple framework/axe workers competed with other verification.
