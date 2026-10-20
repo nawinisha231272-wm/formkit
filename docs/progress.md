@@ -64,6 +64,22 @@ requires its own full Linux CI to pass against this baseline before merging. Aft
 M08 requires the user's explicit confirmation.
 No M08 or undecided product-policy changes are included.
 
+### Initial required-enforcement CI results
+
+The first enforcing [PR run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39474015036/attempts/1)
+and [push run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39474008325/attempts/1) at
+68e4ee5 pass every correctness check (159 unit tests, 351 browser cases/all 60 visual comparisons,
+14 size budgets, lint/build/types), then **FAIL the unchanged Linux performance budget**.
+500-field compile/mount/edit/theme: PR 8.40/78.80/194.10/140.80 ms; push
+9.90/90.60/214.00/154.30 ms. Both log `linux-x64 performance baseline enforced: fail above 20%`.
+
+No runtime, benchmark workload or harness source differs from the calibration commit; PR #2 changes
+only the baseline, required policy and audit documentation. The PR's 1,000-field results remain near
+the calibration medians (10.50/107.70/286.80/180.00 ms), while its 500-field phase spikes. This suggests
+measurement variability but does not establish a cause. A bounded full-CI retry retains all checks,
+original medians and the 20% threshold. These initial failures remain recorded; no green result or
+permission to merge is claimed until required enforcement passes.
+
 Latest local full pinned `CI=true pnpm verify` at cbddf40 passes all correctness stages above but
 **fails the unchanged Mac timing gate**: compile/mount/edit/theme 6.20/49.50/128.40/86.00 ms versus
 ceilings 5.40/44.64/119.52/75.48 ms. A separate pinned `CI=true pnpm benchmark:check` passes at
