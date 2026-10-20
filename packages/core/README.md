@@ -64,8 +64,9 @@ Other public types: `ComponentModel`, `ValueAdapter`, property metadata types, `
 `FieldState`, `StatePatch`, `ValidationResult`, `SubmitResult`, `CompiledForm`, `CompiledNode`,
 `CompileResult`, `FunctionMap`, `HostFunction`, `CompiledExpression`, `ExpressionContext`, `ExpressionBindings`.
 
-Custom/async validation, plugins, composites and repeaters remain later milestones. They are explicitly
-diagnosed rather than partially executed. Full SDK metadata/value helpers arrive in M02.
+Custom/async validation and plugin/composite contracts are documented below. Repeater/array scopes
+remain M10 and are explicitly diagnosed rather than partially executed. SDK metadata/value helpers
+are available through @ourform/sdk.
 
 ## M06 custom and async validation
 

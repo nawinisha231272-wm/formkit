@@ -141,6 +141,11 @@
       "name": "validation",
       "path": "packages/validation/dist/index.js",
       "limit": "30 kB"
+    },
+    {
+      "name": "cli",
+      "path": "packages/cli/dist/*.js",
+      "limit": "30 kB"
     }
   ]
 }

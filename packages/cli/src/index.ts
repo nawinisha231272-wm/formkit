@@ -112,6 +112,7 @@ export const theme: Theme = {name: "${name}", extends: "base", tokens: {"--of-ac
       version: "0.0.0",
       private: true,
       type: "module",
+      sideEffects: false,
       packageManager: "pnpm@10.10.0",
       engines: { node: ">=22.22.3" },
       exports: {

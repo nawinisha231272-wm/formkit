@@ -87,7 +87,9 @@ PASS — the user changed the default branch to main, verified through the repos
 workflow is registered and its first manual diagnostic is [39490884430](https://github.com/nawinisha231272-wm/formkit/actions/runs/39490884430).
 Manual diagnostics do not advance nightly streaks or write issues. The post-merge main Verify run
 above completed successfully on attempt 1. Actual three-night observations remain prospective.
-Repository protection now requires PRs and Verify; no force pushes are permitted (user-reported).
+Repository ruleset 25504006 now requires PRs and the actual GitHub Actions `verify` check, with
+non-fast-forward updates prohibited; verified through the branch rules API after the user corrected
+the required-check name. No administrative bypass was used.
 
 ## M08 — SDK completion (in progress)
 
@@ -122,14 +124,57 @@ composite with no expansion also exposed a compatibility requirement, now preser
 unsupported-component. The expensive SDK export check now parses declared names and verifies actual
 runtime exports directly, preserving the inventory assertion without loading a full compiler graph.
 Unit/browser concurrency is bounded; all original deadlines, tests, images and thresholds remain.
-Final full pinned verify and Linux images are pending; this is not a milestone completion claim.
+These intermediate issues are resolved by the final evidence below; the independent human exercise
+and gate review remain pending, so this is not a milestone completion claim.
 
 The user is arranging the independent author exercise and explicitly requires the gate remain pending
-until their report. Gate recommendation remains **NO-GO pending that report and final verification**.
-The nightly diagnostic correction is isolated in [PR #4](https://github.com/nawinisha231272-wm/formkit/pull/4);
-its first failed diagnostic 39490884430 is retained. Main default is verified; the API reports main
-protected=false and returns HTTP 403 (private repository plan restriction) when querying rulesets.
-Our work continues with PRs, green checks and no force pushes; server-enforced protection is not claimed.
+until their report. Gate recommendation remains **NO-GO pending that report and human review**.
+The nightly diagnostic correction [PR #4](https://github.com/nawinisha231272-wm/formkit/pull/4)
+merged as `e20fe437895eafb5cd4a0d938f80791aba813547` after current head
+`a05c15e6e82f8672aed1ae8c707938097e724834` passed all checks on attempt 1:
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39495383732),
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39495358280),
+[advisory A/B](https://github.com/nawinisha231272-wm/formkit/actions/runs/39495383915), and
+[manual nightly diagnostic](https://github.com/nawinisha231272-wm/formkit/actions/runs/39495395088).
+The native diagnostic measured all three sizes and 12 comparisons; the advisory measured five pairs.
+Neither timing artifact reports unavailable/error. Local full pinned verify passed 168 unit tests,
+357 browser cases, 14 size budgets and five count checks. Native Linux correctness passed too.
+The initial failed diagnostic 39490884430 and local contention failures remain recorded below.
+No CI re-runs were used. The user corrected the required check to `verify`; the live rules API now
+confirms it, required PRs and prohibited non-fast-forward pushes. Post-merge main CI
+[39498170756](https://github.com/nawinisha231272-wm/formkit/actions/runs/39498170756) also passed on
+attempt 1. The prerequisite correction is complete.
+
+### M08 acceptance and gate report
+
+| Criterion                                           | Status                     | Evidence                                                                                                                                                                                                                                                                                                             |
+| --------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scenarios A–F automated                             | PASS                       | `tests/sdk-scenarios.test.ts`: Rating <30 meaningful lines, one-statement conventional registration, generated palette/max editing/undo/redo. `tests/e2e/sdk-extensions.spec.ts`: real React mappings, four-theme identity/validation/reset, actual Angular portable Rating; 27 cases pass on macOS.                 |
+| Component/theme/plugin scaffolds work without edits | PASS                       | `all three unedited CLI scaffolds install from packed workspace packages and pass pinned verify`: built CLI, fresh projects, offline packed dependencies, build/typecheck/value/canonical-validation/generated-palette/undo/redo tests.                                                                              |
+| Independent developer uses guide alone              | PENDING — gate cannot pass | User is arranging the exercise. Record actual name, commands/results and confusing steps after their report; no simulated or implementing-agent evidence substitutes for it.                                                                                                                                         |
+| ADR-0003 freezes SDK 0.x export list                | PENDING human gate review  | `docs/adr/0003-sdk-0x-api-freeze.md` and exact `docs/api/sdk-0.x.json`; `SDK 0.x export inventory matches ADR-0003` checks declared and built runtime exports. Proposed until independent exercise/review.                                                                                                           |
+| Full pinned verify                                  | PASS                       | `CI=true pnpm verify`, Node 22.22.3 / pnpm 10.10.0: lint, 22 builds, 37 typecheck tasks, 183 unit tests, 384 browser cases, all size budgets and five deterministic count cases. Core lines 95.14%; validation 99.25%. CLI budget includes every emitted JS chunk; its final tightened size check is recorded below. |
+
+Gate recommendation: **NO-GO** until actual independent author evidence and human review. M08 can be reviewed as a draft; do not merge it or start M09 before those gate requirements.
+
+Final automated evidence — full pinned verify exits zero (`/tmp/m08-full-pinned-verify.log`). All
+183 unit tests include the actual built CLI/fresh scaffold proof; all 384 browser cases include 27 SDK
+cases and existing regressions. Native pinned Node imports core/SDK, installs a semver-checked plugin
+and compiles its required form without DOM globals. `sh scripts/linux-visuals.sh record sdk` uses the
+exact image in scripts/playwright-container.json, records 24 new Linux SDK PNGs and passes all 12
+comparison-only cases. 24 Mac SDK images pass too; representative images were inspected. The existing
+120 PNGs, timing workload and platform baselines remain byte-identical. CLI's new 30 kB budget covers
+all emitted JS files, including its shared chunk; the follow-up pinned `pnpm size` passes all 15
+budgets (CLI 3.07 kB brotlied), and `pnpm lint` passes. All prior budgets are unchanged.
+
+Mac baseline recording with `--update-snapshots=missing` wrote the 12 new native screenshots and
+reported them as missing (the pinned Playwright behavior). The subsequent update-disabled comparison
+passed all 27 SDK browser cases; no existing screenshot was replaced. Linux recording is restricted
+to an empty selected suite before `--update-snapshots=all`, then compared with updates disabled.
+
+Existing 120 PNG bytes, both timing baseline JSON files and the original timing workload are verified
+unchanged against main. New SDK visuals are separate platform-specific additions, with existing pixel
+thresholds retained. No later-milestone builder commands or repeater/data-source UI are implemented.
 
 ## Linux calibration follow-up — 2026-10-20
 
@@ -1097,7 +1142,9 @@ errors, closed ports and timeouts` passes. The corrected full local pinned-image
 records all three sizes and 12 comparisons, and confirms manual runs do not modify streaks or issues.
 Those emulated local timings are harness evidence only, never Linux runner calibration values.
 
-Local full pinned verify and the corrected branch's first native diagnostic/CI are pending before merge.
+Final evidence: local full pinned verify passed (168 unit / 357 browser / 14 size / five count checks).
+The corrected current head passed native PR/push Verify, A/B and manual nightly diagnostics on
+attempt 1; PR #4 is merged. Exact run links and merge commit are recorded above.
 This correction contains no M08 features. PR #3's original first-attempt green checks remain recorded.
 The first local combined verify passed lint/build/types and 168 unit tests, but its browser matrix
 hit existing test deadlines while multiple framework/axe workers competed with other verification.
