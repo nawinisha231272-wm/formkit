@@ -8,11 +8,12 @@ This kit now carries the full build specification:
 
 - `AGENTS.md` — rules for anyone (human or coding agent) changing this repo. Codex reads it automatically.
 - `docs/spec/` — normative contracts (architecture, form definition, runtime, expressions, SDK, rendering/themes, adapters, builder, licensing, standards).
-- `docs/milestones/M00.md` … `M12.md` — the development plan, one milestone per file, with tasks and acceptance criteria.
+- `docs/milestones/M00.md` … `M12.md` — the development plan with tasks and acceptance criteria; M10 is split into M10a (data structures) and M10b (advanced inputs).
 - `docs/progress.md` — the running log of what is done.
 - `docs/codex-prompts.md` — prompts to drive OpenAI Codex milestone by milestone.
 
-Current development milestone: **M07 — Layouts and production adapters**. See `docs/progress.md` for verification status.
+M08 is approved. Next development milestone: **M09 — Builder with nested drag and drop**;
+implementation follows the separately merged plan amendment. See `docs/progress.md` for verification status.
 
 ## Run
 

@@ -21,6 +21,22 @@ deviations from spec, open questions.
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
 
+## M09 plan amendment — implementation not started
+
+The owner authorizes nested drag and drop after the M08 approval docs PR. Plan-only changes rename
+M09, add the shared ComponentModel slot contract and optional child slot wire placement (ADR-0014),
+move Tabs into M09, split M10 into M10a data structures and M10b advanced inputs, and retain M11/M12
+numbering and human guide usability. Original M09 requirements (all commands, expression/property
+editors, JSON/preview, DOM/custom-element/React/Angular wrappers, accessibility) remain in scope.
+
+Implementation order after this plan PR merges: shared slot/schema contracts and invariants; nested
+commands and bounded history; Tabs/runtime design support; reusable canvas/outline/property/JSON UI
+and wrappers; mouse/keyboard/host/theme tests and new visuals; full pinned verify and first-run CI.
+Risks: preserving old default-slot layouts/images, data-scope uniqueness/stale paths, subtree identity/
+ref rebasing, and focus/native bridge cleanup. Mitigations are explicit tests and independent JSON
+Patch replay over 50 random nested sequences. No performance/correctness/pixel thresholds change.
+No M10 implementation is authorized by this milestone. Stop when M09 is complete.
+
 ## M08 owner gate and baseline approval
 
 Owner reviewed the 24 Yes/No baseline images: approved.
