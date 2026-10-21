@@ -261,6 +261,17 @@ test("cut/paste refuses descendant cycles and root-only nesting with visible rea
   page,
 }) => {
   await page.goto("/builder.html?fixture");
+  await page.locator('[data-tree-toggle="tabs"]').click();
+  await expect(
+    page.getByRole("treeitem", { name: "Customer details", exact: true }),
+  ).toHaveAttribute("aria-expanded", "false");
+  await expect(
+    page.getByRole("treeitem", { name: "Full name", exact: true }),
+  ).toHaveCount(0);
+  await page.locator('[data-tree-toggle="tabs"]').click();
+  await expect(
+    page.getByRole("treeitem", { name: "Full name", exact: true }),
+  ).toBeVisible();
   await page
     .getByRole("treeitem", { name: "Customer details", exact: true })
     .click();

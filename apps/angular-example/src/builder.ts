@@ -1,6 +1,7 @@
 import "@angular/compiler";
 import {
   Component,
+  ApplicationRef,
   EventEmitter,
   InjectionToken,
   inject,
@@ -79,10 +80,16 @@ class App {
   readonly schema = signal<unknown>(schema);
   readonly theme = signal("base");
   readonly mounted = signal(true);
+  readonly application = inject(ApplicationRef);
   constructor() {
     window.builderAttach = () => this.mounted.set(true);
     window.builderDetach = () => this.mounted.set(false);
-    window.builderTheme = (theme) => this.theme.set(theme);
+    window.builderTheme = async (theme) => {
+      // A visible child may precede completion of the initial Angular render.
+      await this.application.whenStable();
+      this.theme.set(theme);
+      await this.application.whenStable();
+    };
   }
   changed(change: SchemaChange) {
     window.builderChanges.push(change);

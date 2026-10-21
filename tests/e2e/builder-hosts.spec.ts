@@ -8,6 +8,7 @@ const fixture: unknown = JSON.parse(
   ),
 );
 import type { JsonPatchOp } from "@ourform/builder-core";
+import type { FormDefinition } from "@ourform/schema";
 function replay(input: unknown, patch: readonly JsonPatchOp[]): unknown {
   let result = structuredClone(input);
   for (const op of patch) {
@@ -46,7 +47,7 @@ for (const [host, url] of hosts)
   for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
     test(`${host} builder ${theme}: Tabs, generated native editors, schema events, context, focus and teardown`, async ({
       page,
-    }, testInfo) => {
+    }) => {
       await page.goto(url);
       await expect(
         page.getByRole("tab", { name: "Profile", exact: true }),
@@ -64,14 +65,6 @@ for (const [host, url] of hosts)
       await page
         .getByRole("treeitem", { name: "Contact", exact: true })
         .click();
-      if (testInfo.project.name === "chromium")
-        await expect(preview).toHaveScreenshot(
-          `builder-${host.replaceAll(" ", "-")}-${theme}.png`,
-          {
-            animations: "disabled",
-            maxDiffPixelRatio: 0.02,
-          },
-        );
       const changes = await page.evaluate(() => window.builderChanges.length);
       await page
         .getByRole("button", { name: "Add Native text", exact: true })
@@ -187,8 +180,8 @@ for (const [host, url] of hosts)
       await page.evaluate((t) => window.builderTheme(t), theme);
       const preview = page.locator('[data-builder-part="preview"]');
       await expect(preview).toHaveAttribute("data-of-theme", theme);
-      const schema = structuredClone(fixture) as { components: unknown[] };
-      schema.components.push({
+      const schema = structuredClone(fixture) as FormDefinition;
+      schema.components[0]!.components![1]!.components![0]!.components!.push({
         id: "native-accessibility",
         key: "native_text",
         type: "acme.native",
@@ -205,6 +198,12 @@ for (const [host, url] of hosts)
       ).toEqual([]);
       await page.getByRole("tab", { name: "Contact", exact: true }).click();
       const native = preview.locator("input[data-builder-native]");
+      await page.evaluate(() =>
+        window.builderHost.preview!.session.setValue(
+          "contact.native_text",
+          "API answer",
+        ),
+      );
       await expect(native).toBeDisabled();
       await expect(native).toHaveAccessibleName("Native text");
       await expect(native).toHaveAttribute("aria-required", "true");
@@ -217,5 +216,35 @@ for (const [host, url] of hosts)
           ["serious", "critical"].includes(v.impact ?? ""),
         ),
       ).toEqual([]);
+    });
+  }
+
+for (const [host, url] of hosts)
+  for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+    test(`${host} builder ${theme}: visual conformance`, async ({
+      page,
+    }, testInfo) => {
+      await page.goto(url);
+      await expect(
+        page.getByRole("tab", { name: "Profile", exact: true }),
+      ).toBeVisible();
+      await page.evaluate((t) => window.builderTheme(t), theme);
+      const preview = page.locator('[data-builder-part="preview"]');
+      await expect(preview).toHaveAttribute("data-of-theme", theme);
+      await expect(
+        preview.getByRole("textbox", { name: "Full name", exact: true }),
+      ).toHaveValue("Ada Lovelace");
+      await page.getByRole("tab", { name: "Contact", exact: true }).click();
+      await expect(
+        preview.getByRole("textbox", { name: "Email", exact: true }),
+      ).toHaveValue("ada@example.test");
+      await page
+        .getByRole("treeitem", { name: "Contact", exact: true })
+        .click();
+      if (testInfo.project.name === "chromium")
+        await expect(preview).toHaveScreenshot(
+          `builder-${host.replaceAll(" ", "-")}-${theme}.png`,
+          { animations: "disabled", maxDiffPixelRatio: 0.02 },
+        );
     });
   }

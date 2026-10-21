@@ -50,20 +50,31 @@ if [ "$OURFORM_VISUAL_SUITE" = sdk ]; then visual_file=tests/e2e/sdk-extensions.
 if [ "$OURFORM_VISUAL_SUITE" = author ]; then visual_file=tests/e2e/authoring.spec.ts; visual_filter="authoring:"; fi
 if [ "$OURFORM_VISUAL_SUITE" = boolean ]; then visual_file=tests/e2e/nullable-boolean.spec.ts; visual_filter="nullable boolean:"; fi
 if [ "$OURFORM_VISUAL_SUITE" = tabs ]; then visual_file=tests/e2e/tabs.spec.ts; visual_filter="visual conformance"; fi
-if [ "$OURFORM_VISUAL_SUITE" = builder ]; then visual_file=tests/e2e/builder-hosts.spec.ts; visual_filter="builder .*Tabs"; fi
-visual_files=("$visual_file")
-if [ "$OURFORM_VISUAL_SUITE" = m09 ]; then visual_files=(tests/e2e/tabs.spec.ts tests/e2e/builder-hosts.spec.ts); visual_filter="visual conformance|builder .*Tabs"; fi
+if [ "$OURFORM_VISUAL_SUITE" = builder ]; then visual_file=tests/e2e/builder-hosts.spec.ts; visual_filter="visual conformance"; fi
+# Only screenshot cases belong to image recording; full pnpm verify retains every functional/axe case.
+run_visual() {
+  local snapshot_args=()
+  if [ "$1" = record ]; then snapshot_args=(--update-snapshots=all); fi
+  if [ "$OURFORM_VISUAL_SUITE" = m09 ]; then
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/tabs.spec.ts --workers=1 --max-failures=1 --grep "visual conformance" "${snapshot_args[@]}" || return $?
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-hosts.spec.ts --project=chromium --workers=1 --max-failures=1 --grep "visual conformance" "${snapshot_args[@]}"
+  else
+    local project_args=()
+    if [ "$OURFORM_VISUAL_SUITE" = builder ]; then project_args=(--project=chromium); fi
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "$visual_file" --workers=1 --max-failures=1 --grep "$visual_filter" "${project_args[@]}" "${snapshot_args[@]}"
+  fi
+}
 : > /results/generation.log
 : > /results/themes.log
 set +e
 if [ "$OURFORM_VISUAL_MODE" = record ]; then
-  npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "${visual_files[@]}" --workers=1 --max-failures=1 --grep "$visual_filter" --update-snapshots=all > /results/generation.log 2>&1
+  run_visual record > /results/generation.log 2>&1
   result=$?
   cat /results/generation.log
 else result=0
 fi
 if [ "$result" -eq 0 ]; then
-  npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "${visual_files[@]}" --workers=1 --max-failures=1 --grep "$visual_filter" > /results/themes.log 2>&1
+  run_visual check > /results/themes.log 2>&1
   result=$?
 fi
 set -e

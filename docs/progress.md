@@ -73,7 +73,19 @@ selector. The interrupted diagnostic log is `/tmp/m09-linux-theme-selector-failu
 record/comparison run is `/tmp/m09-linux-visuals-split-hosts.log`. Existing assertions are unchanged. The combined React/Tailwind host scenario
 then exceeded its unchanged30-second deadline during axe under x64 emulation. The new host suite now
 separates authoring/lifecycle from accessibility, retaining every assertion and timeout; native/chrome
-axe coverage still spans every host/theme/browser. Original log: `/tmp/m09-linux-host-combined-timeout.log`.
+axe coverage still spans every host/theme/browser. A later emulated Angular bootstrap5 case observed
+Base while the initial controlled-theme update was pending; the fixture's builderTheme helper now
+awaits Angular ApplicationRef.whenStable before and after its signal update, rather than treating
+visible child DOM as completed host initialization. `/tmp/m09-linux-angular-theme-readiness.log`
+retains that failure. No timeout was extended. Ten fresh native Chromium mounts across Angular22/21
+then pass in `/tmp/m09-angular-controlled-theme-repetition.log`; the emulated run must also pass. The next
+emulated React case consumed its deadline after snapshot capture, before native authoring began
+(`/tmp/m09-linux-host-image-authoring-timeout.log`). Dedicated image cases now preserve those same
+captures, while separate full-matrix authoring/lifecycle and accessibility cases retain the original
+checks and30-second deadline. The Linux image helper runs only screenshot cases: runtime Tabs in
+three browsers plus all host/theme previews in Chromium, matching the documented image matrix.
+Full pnpm verify still runs all three groups for every host/theme/browser. The final image log is
+`/tmp/m09-linux-visuals-only.log`. Original log: `/tmp/m09-linux-host-combined-timeout.log`.
 
 ## M09 plan amendment — implementation not started
 

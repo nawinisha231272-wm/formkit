@@ -37,6 +37,9 @@ test("meta-schema is valid Draft 2020-12 and agrees with structural runtime chec
   for (const input of [
     form,
     { ...form, display: "invalid" },
+    { ...form, components: [{ ...field, slot: "children" }] },
+    { ...form, components: [{ ...field, slot: "" }] },
+    { ...form, components: [{ ...field, slot: 3 }] },
     { ...form, components: [{ ...field, validation: { required: "yes" } }] },
     { ...form, components: [{ ...field, layout: { width: 13 } }] },
     { ...form, components: [{ ...field, calculate: { expr: ["add", 1, 2] } }] },

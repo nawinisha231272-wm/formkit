@@ -6,7 +6,7 @@ declare global {
     builderDomEvents: SchemaChange[];
     builderDetach(): void;
     builderAttach(): void;
-    builderTheme(theme: string): void;
+    builderTheme(theme: string): void | Promise<void>;
   }
 }
 export function recordBuilderEvents(): void {

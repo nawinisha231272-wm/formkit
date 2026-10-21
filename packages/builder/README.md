@@ -32,8 +32,9 @@ const diagnostics = controller.load(importedJson);
 controller.destroy();
 ```
 
-The mount must be empty and caller-owned. The lower-level function requires fields (or a populated
-engine); `renderBuilder` from `@ourform/element` registers built-ins for convenience. HostOptions
+The mount must be empty and caller-owned. The lower-level function requires field bindings (models plus views); an optional engine supplies
+customer headless registrations/providers. `renderBuilder` from `@ourform/element` registers built-ins
+for convenience. HostOptions
 carry customer providers, native bridges, data, translation and themes. `BuilderController` exposes
 engine, immutable headless builder, current preview, load/selectSlot/setTheme/setMode/destroy.
 `onPreviewReady` receives each replacement preview and undefined during cleanup. Repeated destroy

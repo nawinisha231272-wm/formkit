@@ -333,6 +333,7 @@ export class Canvas {
             this.#collapsed.has(node.id) ? "▸ " : "▾ ",
           );
           caret.setAttribute("aria-hidden", "true");
+          caret.dataset.treeToggle = node.id;
           text.append(caret);
           li.setAttribute(
             "aria-expanded",
@@ -468,6 +469,14 @@ export class Canvas {
     const add = target.closest<HTMLElement>("[data-type]");
     if (add && this.palette.contains(add)) {
       this.ui.dispatch(new AddComponent(add.dataset.type!, this.target));
+      return;
+    }
+    const toggle = target.closest<HTMLElement>("[data-tree-toggle]");
+    if (toggle && this.outline.contains(toggle)) {
+      const id = toggle.dataset.treeToggle!;
+      if (!this.#collapsed.delete(id)) this.#collapsed.add(id);
+      this.ui.builder.select(id);
+      this.focusSelected(true);
       return;
     }
     const handle = target.closest<HTMLElement>("[data-drag-id]");
