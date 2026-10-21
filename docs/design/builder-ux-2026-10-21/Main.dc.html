@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OurForm builder: nested form</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+.ofb-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid #D5DBE3;border-radius:6px;background:#fff;color:#1B2430;font:500 13px Inter,system-ui,sans-serif;cursor:pointer}
+.ofb-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid #D5DBE3;border-radius:6px;background:#fff;color:#1B2430;cursor:pointer;padding:0}
+.ofb-tile{display:flex;align-items:center;gap:8px;height:36px;padding:0 8px;border:1px solid #E2E6EC;border-radius:6px;background:#fff;color:#1B2430;font:500 12.5px Inter,system-ui,sans-serif;text-align:left;cursor:grab}
+.ofb-glyph{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:5px;background:#EEF2F7;color:#334155;font:600 11px Inter,system-ui,sans-serif;flex:none}
+.ofb-group{display:flex;align-items:center;justify-content:space-between;font:600 11.5px Inter,system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#5B6675;margin:0 0 8px}
+.ofb-tree{display:flex;align-items:center;gap:6px;height:28px;border-radius:6px;font:400 13px Inter,system-ui,sans-serif;color:#1B2430}
+.ofb-tb{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:0;border-radius:5px;background:transparent;color:#1B2430;cursor:pointer;padding:0}
+</style>
+</helmet>
+<div style="min-height: 960px; background: #F3F5F8; font-family: Inter, system-ui, sans-serif; color: #1B2430; display: flex; flex-direction: column">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; padding: 10px 20px; background: #FFFFFF; border-bottom: 1px solid #E2E6EC">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #2563EB; color: #FFFFFF; font-weight: 700; font-size: 14px">O</span>
+<span style="font-weight: 600; font-size: 14px">OurForm</span>
+<span style="color: #9AA4B2">/</span>
+<span style="font-size: 14px; color: #5B6675">Forms</span>
+<span style="color: #9AA4B2">/</span>
+<span style="font-size: 14px; font-weight: 600">Customer onboarding</span>
+<span style="font-size: 12px; color: #5B6675; background: #EEF2F7; border-radius: 999px; padding: 3px 9px">Draft · saved 2 min ago</span>
+</div>
+<nav aria-label="Builder mode" style="display: flex; gap: 2px; background: #EEF2F7; border-radius: 8px; padding: 3px">
+<button type="button" aria-pressed="true" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,24,40,.12); font: 600 13px Inter, sans-serif; color: #1B2430">Build</button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">Logic</button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">Data</button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">Preview</button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">JSON</button>
+</nav>
+<div style="flex: 1 1 0"></div>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; color: #5B6675">Theme</span>
+<div role="group" aria-label="Form theme" style="display: flex; gap: 2px; background: #EEF2F7; border-radius: 8px; padding: 3px">
+<sc-for list="{{themeOpts}}" as="opt" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{opt.pressed}}" onClick="{{opt.pick}}" style="{{opt.style}}">{{opt.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 6px">
+<button type="button" class="ofb-icon" aria-label="Undo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg></button>
+<button type="button" class="ofb-icon" aria-label="Redo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14l5-5-5-5"></path><path d="M20 9H10a6 6 0 0 0 0 12h3"></path></svg></button>
+<button type="button" class="ofb-btn" style="color: #B42318; border-color: #F4C7C3; background: #FEF3F2">2 issues</button>
+<button type="button" class="ofb-btn">Preview</button>
+<button type="button" class="ofb-btn" style="background: #2563EB; border-color: #2563EB; color: #FFFFFF">Save</button>
+</div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; flex: 1 1 auto; align-items: stretch">
+
+<aside aria-label="Components" style="flex: 1 0 264px; max-width: 300px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E2E6EC; padding: 16px; display: flex; flex-direction: column; gap: 16px">
+<label style="position: relative; display: block">
+<span style="position: absolute; left: 10px; top: 9px; color: #5B6675"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></span>
+<input type="search" placeholder="Search components" aria-label="Search components" style="width: 100%; box-sizing: border-box; height: 34px; padding: 0 30px 0 34px; border: 1px solid #D5DBE3; border-radius: 6px; font: 13px Inter, sans-serif; color: #1B2430">
+<span style="position: absolute; right: 8px; top: 8px; font-size: 11px; color: #5B6675; border: 1px solid #D5DBE3; border-radius: 4px; padding: 0 5px">/</span>
+</label>
+<section>
+<div class="ofb-group"><span>Basic</span><span style="text-transform: none; letter-spacing: 0; font-weight: 500">8</span></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+<button type="button" class="ofb-tile"><span class="ofb-glyph">Aa</span>Text field</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph">@</span>Email</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph">12</span>Number</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph">▾</span>Select</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph">✓</span>Checkbox</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph">◉</span>Radio</button>
+<button type="button" class="ofb-tile" style="opacity: .45; border-style: dashed"><span class="ofb-glyph">31</span>Date</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph">¶</span>Text area</button>
+</div>
+</section>
+<section>
+<div class="ofb-group"><span>Layout</span><span style="text-transform: none; letter-spacing: 0; font-weight: 500">6</span></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+<button type="button" class="ofb-tile"><span class="ofb-glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18"></path></svg></span>Panel</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="7" height="16" rx="1.5"></rect><rect x="14" y="4" width="7" height="16" rx="1.5"></rect></svg></span>Columns</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 8h7V5h5v3h6v11H3z"></path></svg></span>Tabs</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7h4M17 7h4M3 7v13h18V7"></path></svg></span>Fieldset</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1.5"></rect><path d="M3 10h18M3 15h18M9 4v16M15 4v16"></path></svg></span>Table</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><path d="M7 12h3M14 12h3"></path></svg></span>Wizard</button>
+</div>
+</section>
+<section>
+<div class="ofb-group"><span>Data</span><span style="text-transform: none; letter-spacing: 0; font-weight: 500">4</span></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+<button type="button" class="ofb-tile"><span class="ofb-glyph" style="background: #EAF1FE; color: #1D4ED8"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1.5"></rect><path d="M3 9h18M3 14h18M10 4v16"></path></svg></span>Data grid</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph" style="background: #EAF1FE; color: #1D4ED8"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1.5"></rect><path d="M3 10h18M14 14l3 3M17 14l-3 3"></path></svg></span>Edit grid</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph" style="background: #EAF1FE; color: #1D4ED8"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="3" width="16" height="6" rx="1.5"></rect><rect x="4" y="12" width="16" height="6" rx="1.5"></rect><path d="M12 20v2"></path></svg></span>Repeater</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph" style="background: #EAF1FE; color: #1D4ED8">{ }</span>Container</button>
+</div>
+</section>
+<section>
+<div class="ofb-group"><span>Advanced</span><span style="text-transform: none; letter-spacing: 0; font-weight: 500">File, Signature, Currency +5 ▸</span></div>
+</section>
+<section>
+<div class="ofb-group"><span>Acme components</span><span style="text-transform: none; letter-spacing: 0; font-weight: 500">2</span></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+<button type="button" class="ofb-tile"><span class="ofb-glyph" style="background: #FEF0C7; color: #93370D">★</span>Rating</button>
+<button type="button" class="ofb-tile"><span class="ofb-glyph" style="background: #FEF0C7; color: #93370D">ID</span>Employee lookup</button>
+</div>
+</section>
+</aside>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 14px 24px 24px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px">
+<nav aria-label="Selection path" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12.5px; color: #5B6675">
+<span>Form</span><span>›</span><span>Tabs: Profile</span><span>›</span><span>Panel: Contact details</span><span>›</span><span>Columns · column 2</span><span>›</span><span style="color: #1B2430; font-weight: 600">Email</span>
+</nav>
+<div style="display: flex; align-items: center; gap: 8px">
+<div role="group" aria-label="Canvas width" style="display: flex; gap: 2px; background: #E6EAF0; border-radius: 7px; padding: 2px">
+<button type="button" aria-pressed="true" style="height: 26px; padding: 0 10px; border: 0; border-radius: 5px; background: #FFFFFF; font: 500 12px Inter, sans-serif; color: #1B2430">Desktop</button>
+<button type="button" aria-pressed="false" style="height: 26px; padding: 0 10px; border: 0; border-radius: 5px; background: transparent; font: 500 12px Inter, sans-serif; color: #5B6675">Tablet</button>
+<button type="button" aria-pressed="false" style="height: 26px; padding: 0 10px; border: 0; border-radius: 5px; background: transparent; font: 500 12px Inter, sans-serif; color: #5B6675">Phone</button>
+</div>
+<span style="font-size: 12px; color: #5B6675">100%</span>
+</div>
+</div>
+
+<div style="width: 100%; max-width: 880px; margin: 8px auto 0; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 12px; box-shadow: 0 1px 3px rgba(16,24,40,.06); padding: 32px 36px 28px; font-family: {{t.font}}">
+<h2 style="{{t.title}}">Customer onboarding</h2>
+<div role="tablist" aria-label="Form sections" style="{{t.tabs}}">
+<span role="tab" aria-selected="true" style="{{t.tabActive}}">Profile</span>
+<span role="tab" aria-selected="false" style="{{t.tab}}">Company</span>
+<span role="tab" aria-selected="false" style="{{t.tab}}">Orders</span>
+</div>
+
+<div style="{{t.card}}">
+<div style="{{t.cardHeader}}">Contact details</div>
+<div style="{{t.cardBody}}">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+
+<div style="position: relative; padding: 14px 12px 4px; margin: -14px -12px 0; border: 1.5px dashed #2563EB; border-radius: 8px; background: rgba(37,99,235,.05)">
+<span style="position: absolute; top: -11px; left: 10px; font: 600 11px Inter, sans-serif; color: #FFFFFF; background: #2563EB; border-radius: 4px; padding: 2px 6px">Column 1 of 2</span>
+<div style="{{t.field}}">
+<label style="{{t.label}}">Full name <span style="color: #B42318">*</span></label>
+<input type="text" value="" placeholder="" aria-label="Full name" style="{{t.input}}">
+</div>
+<div style="position: relative; margin: 2px 0 18px">
+<div style="height: 40px; box-sizing: border-box; border: 1.5px dashed #2563EB; border-radius: 6px; background: rgba(37,99,235,.08); display: flex; align-items: center; justify-content: center; font: 500 12px Inter, sans-serif; color: #1D4ED8">Drop Date here</div>
+<div style="position: absolute; top: 18px; left: 46%; display: flex; align-items: center; gap: 8px; padding: 7px 12px; background: #FFFFFF; border: 1px solid #2563EB; border-radius: 7px; box-shadow: 0 8px 20px rgba(16,24,40,.18); transform: rotate(-2deg); font: 600 12.5px Inter, sans-serif; color: #1B2430"><span class="ofb-glyph">31</span>Date</div>
+</div>
+<div style="{{t.field}}">
+<label style="{{t.label}}">Phone</label>
+<input type="tel" aria-label="Phone" style="{{t.input}}">
+</div>
+</div>
+
+<div>
+<div style="position: relative; {{t.field}}">
+<div aria-hidden="true" style="position: absolute; inset: -12px -10px -8px; border: 2px solid #2563EB; border-radius: 8px; pointer-events: none"></div>
+<div role="toolbar" aria-label="Email actions" style="position: absolute; top: -48px; right: -10px; display: flex; gap: 2px; padding: 3px; background: #FFFFFF; border: 1px solid #D5DBE3; border-radius: 8px; box-shadow: 0 4px 12px rgba(16,24,40,.12); z-index: 2">
+<button type="button" class="ofb-tb" aria-label="Edit settings (Enter)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button>
+<button type="button" class="ofb-tb" aria-label="Move (drag or Alt+arrows)" style="cursor: grab"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></button>
+<button type="button" class="ofb-tb" aria-label="Duplicate (Ctrl+D)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path></svg></button>
+<button type="button" class="ofb-tb" aria-label="Logic for Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B54708" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"></path></svg></button>
+<button type="button" class="ofb-tb" aria-label="Edit JSON"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 4c-2 0-2 2-2 4s-1 3-2 4c1 1 2 2 2 4s0 4 2 4"></path><path d="M16 4c2 0 2 2 2 4s1 3 2 4c-1 1-2 2-2 4s0 4-2 4"></path></svg></button>
+<button type="button" class="ofb-tb" aria-label="More actions"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="19" cy="12" r="1.8"></circle></svg></button>
+<span style="width: 1px; background: #E2E6EC; margin: 4px 2px"></span>
+<button type="button" class="ofb-tb" aria-label="Delete" style="color: #B42318"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg></button>
+</div>
+<span style="position: absolute; top: -38px; left: -10px; font: 600 11px Inter, sans-serif; color: #FFFFFF; background: #2563EB; border-radius: 4px; padding: 2px 6px">Email · email</span>
+<label style="{{t.label}}">Email <span style="color: #B42318">*</span></label>
+<input type="email" value="ana@example.com" aria-label="Email" style="{{t.input}}">
+<div style="{{t.help}}">We send receipts here.</div>
+</div>
+<div style="margin-top: 28px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px">
+<span style="{{t.groupLabel}}">Customer type</span>
+<span style="display: inline-flex; align-items: center; gap: 4px; font: 600 11px Inter, sans-serif; color: #93370D; background: #FEF0C7; border-radius: 999px; padding: 2px 8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"></path></svg>Controls 3 fields</span>
+</div>
+<div style="display: flex; gap: 20px">
+<label style="display: inline-flex; align-items: center; gap: 8px; {{t.radioLabel}}"><input type="radio" name="ctype" style="accent-color: {{t.accent}}; width: 16px; height: 16px">Individual</label>
+<label style="display: inline-flex; align-items: center; gap: 8px; {{t.radioLabel}}"><input type="radio" name="ctype" checked style="accent-color: {{t.accent}}; width: 16px; height: 16px">Business</label>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<div style="margin-top: 20px; {{t.card}}">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; {{t.cardHeader}}">
+<span>Company details</span>
+<span style="display: inline-flex; align-items: center; gap: 4px; font: 500 11px Inter, sans-serif; color: #1D4ED8; background: #EAF1FE; border-radius: 999px; padding: 2px 8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>Shown when Customer type is Business</span>
+<span style="margin-left: auto; font: 500 12px Inter, sans-serif; color: #5B6675">Collapsed on canvas · 4 fields ▸</span>
+</div>
+</div>
+
+<div style="margin-top: 20px; height: 48px; border: 1.5px dashed #C3CBD6; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; font: 500 12.5px Inter, sans-serif; color: #5B6675">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; background: #EEF2F7; color: #1B2430; font-weight: 600">+</span>Drag a component here, or press + to add
+</div>
+
+<div style="margin-top: 24px">
+<button type="button" style="{{t.button}}">Submit</button>
+</div>
+</div>
+
+<div role="status" style="align-self: center; display: flex; align-items: center; gap: 14px; margin-top: 6px; padding: 9px 14px; background: #1B2430; color: #FFFFFF; border-radius: 8px; box-shadow: 0 8px 20px rgba(16,24,40,.2); font-size: 13px">
+<span>Notes field deleted</span>
+<button type="button" style="border: 0; background: transparent; color: #93C5FD; font: 600 13px Inter, sans-serif; cursor: pointer; padding: 0">Undo</button>
+<span style="color: #9AA4B2; font-size: 12px">Ctrl+Z</span>
+</div>
+</main>
+
+<aside aria-label="Outline and selection" style="flex: 1 0 280px; max-width: 320px; box-sizing: border-box; background: #FFFFFF; border-left: 1px solid #E2E6EC; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+<div role="tablist" aria-label="Side panel" style="display: flex; gap: 16px; border-bottom: 1px solid #E2E6EC">
+<span role="tab" aria-selected="true" style="padding: 0 0 8px; font-size: 13px; font-weight: 600; color: #1B2430; border-bottom: 2px solid #2563EB">Outline</span>
+<span role="tab" aria-selected="false" style="padding: 0 0 8px; font-size: 13px; color: #5B6675">Issues <span style="color: #B42318">2</span></span>
+<span role="tab" aria-selected="false" style="padding: 0 0 8px; font-size: 13px; color: #5B6675">History</span>
+</div>
+<div role="tree" aria-label="Form outline" style="display: flex; flex-direction: column; gap: 1px">
+<div class="ofb-tree" style="padding-left: 4px">▾ <strong style="font-weight: 600">Customer onboarding</strong></div>
+<div class="ofb-tree" style="padding-left: 18px">▾ Tabs</div>
+<div class="ofb-tree" style="padding-left: 32px">▾ Profile</div>
+<div class="ofb-tree" style="padding-left: 46px">▾ Panel · Contact details</div>
+<div class="ofb-tree" style="padding-left: 60px">▾ Columns</div>
+<div class="ofb-tree" style="padding-left: 74px; color: #5B6675">Column 1</div>
+<div class="ofb-tree" style="padding-left: 88px">Full name <span style="color: #B42318">*</span></div>
+<div class="ofb-tree" style="padding-left: 88px">Phone</div>
+<div class="ofb-tree" style="padding-left: 74px; color: #5B6675">Column 2</div>
+<div class="ofb-tree" style="padding-left: 82px; background: #EAF1FE; color: #1D4ED8; font-weight: 600">Email <span style="color: #B42318">*</span></div>
+<div class="ofb-tree" style="padding-left: 88px">Customer type <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B54708" stroke-width="2" stroke-linejoin="round" aria-label="Has logic" role="img"><path d="M13 2L4 14h7l-1 8 9-12h-7z"></path></svg></div>
+<div class="ofb-tree" style="padding-left: 46px">▸ Panel · Company details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2" aria-label="Conditional" role="img"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
+<div class="ofb-tree" style="padding-left: 32px">▸ Company</div>
+<div class="ofb-tree" style="padding-left: 32px">▸ Orders · Data grid</div>
+<div class="ofb-tree" style="padding-left: 18px">Submit</div>
+</div>
+<div style="border-top: 1px solid #E2E6EC; padding-top: 14px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: baseline; justify-content: space-between">
+<span style="font-size: 14px; font-weight: 600">Email</span>
+<span style="font-size: 12px; color: #5B6675">Email field · key <code style="font-size: 12px">email</code></span>
+</div>
+<dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 12.5px">
+<dt style="color: #5B6675">Required</dt><dd style="margin: 0">Yes</dd>
+<dt style="color: #5B6675">Visible</dt><dd style="margin: 0">Always</dd>
+<dt style="color: #5B6675">Logic</dt><dd style="margin: 0">Used in 1 rule: confirmation email</dd>
+<dt style="color: #5B6675">Data path</dt><dd style="margin: 0"><code style="font-size: 12px">email</code></dd>
+</dl>
+<div style="display: flex; gap: 8px">
+<button type="button" class="ofb-btn" style="background: #2563EB; border-color: #2563EB; color: #FFFFFF">Edit settings</button>
+<button type="button" class="ofb-btn">Add logic</button>
+</div>
+<p style="margin: 0; font-size: 12px; color: #5B6675">Enter to edit · Space to pick up · ? for all shortcuts</p>
+</div>
+</aside>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { theme: 'bs5' };
+  }
+  renderVals() {
+    var key = (this.state && this.state.theme) || 'bs5';
+    var themes = {
+      bs5: {
+        font: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+        accent: '#0d6efd',
+        title: 'font-size: 26px; font-weight: 500; margin: 0 0 18px; color: #212529',
+        tabs: 'display: flex; gap: 4px; border-bottom: 1px solid #dee2e6; margin-bottom: 20px',
+        tabActive: 'padding: 8px 16px; border: 1px solid #dee2e6; border-bottom-color: #ffffff; margin-bottom: -1px; border-radius: 6px 6px 0 0; background: #ffffff; color: #495057; font-size: 15px',
+        tab: 'padding: 8px 16px; border: 1px solid transparent; color: #0d6efd; font-size: 15px',
+        card: 'border: 1px solid #dee2e6; border-radius: 8px; background: #ffffff',
+        cardHeader: 'padding: 11px 16px; background: #f8f9fa; border-bottom: 1px solid #dee2e6; border-radius: 8px 8px 0 0; font-size: 15px; font-weight: 600; color: #212529',
+        cardBody: 'padding: 26px 16px 8px',
+        field: 'position: relative; margin-bottom: 16px',
+        label: 'display: block; margin: 0 0 6px; font-size: 14px; font-weight: 500; color: #212529',
+        groupLabel: 'font-size: 14px; font-weight: 500; color: #212529',
+        input: 'display: block; width: 100%; box-sizing: border-box; height: 38px; padding: 6px 12px; font-size: 15px; font-family: inherit; color: #212529; background: #ffffff; border: 1px solid #dee2e6; border-radius: 6px',
+        help: 'margin-top: 4px; font-size: 13px; color: #6c757d',
+        radioLabel: 'font-size: 15px; color: #212529',
+        button: 'background: #0d6efd; color: #ffffff; border: 0; border-radius: 6px; padding: 8px 18px; font-size: 15px; font-family: inherit'
+      },
+      bs4: {
+        font: "-apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+        accent: '#007bff',
+        title: 'font-size: 28px; font-weight: 500; margin: 0 0 18px; color: #212529',
+        tabs: 'display: flex; gap: 2px; border-bottom: 1px solid #dee2e6; margin-bottom: 20px',
+        tabActive: 'padding: 8px 16px; border: 1px solid #dee2e6; border-bottom-color: #ffffff; margin-bottom: -1px; border-radius: 4px 4px 0 0; background: #ffffff; color: #495057; font-size: 16px',
+        tab: 'padding: 8px 16px; border: 1px solid transparent; color: #007bff; font-size: 16px',
+        card: 'border: 1px solid rgba(0,0,0,.125); border-radius: 4px; background: #ffffff',
+        cardHeader: 'padding: 12px 20px; background: rgba(0,0,0,.03); border-bottom: 1px solid rgba(0,0,0,.125); font-size: 16px; font-weight: 500; color: #212529',
+        cardBody: 'padding: 26px 20px 8px',
+        field: 'position: relative; margin-bottom: 16px',
+        label: 'display: block; margin: 0 0 8px; font-size: 16px; color: #212529',
+        groupLabel: 'font-size: 16px; color: #212529',
+        input: 'display: block; width: 100%; box-sizing: border-box; height: 38px; padding: 6px 12px; font-size: 16px; font-family: inherit; color: #495057; background: #ffffff; border: 1px solid #ced4da; border-radius: 4px',
+        help: 'margin-top: 4px; font-size: 13px; color: #6c757d',
+        radioLabel: 'font-size: 16px; color: #212529',
+        button: 'background: #007bff; color: #ffffff; border: 1px solid #007bff; border-radius: 4px; padding: 6px 14px; font-size: 16px; font-family: inherit'
+      },
+      md: {
+        font: "Roboto, 'Segoe UI', system-ui, sans-serif",
+        accent: '#6750A4',
+        title: 'font-size: 26px; font-weight: 400; margin: 0 0 14px; color: #1D1B20',
+        tabs: 'display: flex; border-bottom: 1px solid #CAC4D0; margin-bottom: 22px',
+        tabActive: 'padding: 12px 22px; color: #6750A4; border-bottom: 3px solid #6750A4; font-size: 14px; font-weight: 500; letter-spacing: .01em',
+        tab: 'padding: 12px 22px; color: #49454F; border-bottom: 3px solid transparent; font-size: 14px; font-weight: 500',
+        card: 'border-radius: 12px; background: #F7F2FA; box-shadow: 0 1px 3px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.1)',
+        cardHeader: 'padding: 18px 20px 6px; font-size: 16px; font-weight: 500; color: #1D1B20',
+        cardBody: 'padding: 26px 20px 10px',
+        field: 'position: relative; margin: 6px 0 22px',
+        label: 'position: absolute; top: -8px; left: 12px; z-index: 1; padding: 0 4px; background: #F7F2FA; font-size: 12px; line-height: 16px; color: #49454F',
+        groupLabel: 'font-size: 12px; color: #49454F',
+        input: 'display: block; width: 100%; box-sizing: border-box; height: 52px; padding: 14px 16px; font-size: 16px; font-family: inherit; color: #1D1B20; background: transparent; border: 1px solid #79747E; border-radius: 4px',
+        help: 'margin: 4px 16px 0; font-size: 12px; color: #49454F',
+        radioLabel: 'font-size: 15px; color: #1D1B20',
+        button: 'background: #6750A4; color: #ffffff; border: 0; border-radius: 20px; padding: 10px 24px; font-size: 14px; font-weight: 500; letter-spacing: .01em; font-family: inherit'
+      }
+    };
+    var names = { bs5: 'Bootstrap 5', bs4: 'Bootstrap 4', md: 'Material' };
+    var self = this;
+    var on = 'height: 28px; padding: 0 12px; border: 0; border-radius: 6px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,24,40,.12); font: 600 13px Inter, sans-serif; color: #1B2430; cursor: pointer';
+    var off = 'height: 28px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675; cursor: pointer';
+    var themeOpts = ['bs5', 'bs4', 'md'].map(function (k) {
+      return {
+        label: names[k],
+        pressed: k === key ? 'true' : 'false',
+        style: k === key ? on : off,
+        pick: function () { self.setState({ theme: k }); }
+      };
+    });
+    return { t: themes[key], themeOpts: themeOpts };
+  }
+}
+</script>
+</body>
+</html>

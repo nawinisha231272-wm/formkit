@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OurForm builder: data grid, edit grid and table</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+.ofb-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid #D5DBE3;border-radius:6px;background:#fff;color:#1B2430;font:500 13px Inter,system-ui,sans-serif;cursor:pointer}
+.bs-input{display:block;width:100%;box-sizing:border-box;height:34px;padding:4px 10px;font:14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#212529;background:#fff;border:1px solid #dee2e6;border-radius:6px}
+.bs-th{padding:8px 10px;text-align:left;font:600 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#212529;background:#f8f9fa;border-bottom:1px solid #dee2e6;white-space:nowrap}
+.bs-td{padding:6px 8px;border-bottom:1px solid #dee2e6;vertical-align:middle}
+.bs-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid #0d6efd;border-radius:6px;background:#fff;color:#0d6efd;font:14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.bs-label{display:block;margin:0 0 4px;font:500 13px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#212529}
+.ofb-set{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #EEF2F7;font:13px Inter,system-ui,sans-serif}
+.ofb-col{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #E2E6EC;border-radius:7px;background:#fff;font:13px Inter,system-ui,sans-serif}
+.ofb-sw{position:relative;display:inline-block;width:30px;height:18px;border-radius:999px;background:#2563EB;flex:none}
+.ofb-sw-off{background:#C3CBD6}
+.ofb-kn{position:absolute;top:2px;left:14px;width:14px;height:14px;border-radius:50%;background:#fff}
+.ofb-tag{display:inline-flex;align-items:center;gap:4px;font:600 11px Inter,system-ui,sans-serif;border-radius:4px;padding:2px 6px}
+</style>
+</helmet>
+<div style="min-height: 960px; background: #F3F5F8; font-family: Inter, system-ui, sans-serif; color: #1B2430; display: flex; flex-direction: column">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; padding: 10px 20px; background: #FFFFFF; border-bottom: 1px solid #E2E6EC">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #2563EB; color: #FFFFFF; font-weight: 700; font-size: 14px">O</span>
+<span style="font-weight: 600; font-size: 14px">Customer onboarding</span>
+</div>
+<nav aria-label="Builder mode" style="display: flex; gap: 2px; background: #EEF2F7; border-radius: 8px; padding: 3px">
+<button type="button" aria-pressed="true" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,24,40,.12); font: 600 13px Inter, sans-serif; color: #1B2430">Build</button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">Logic</button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">Data</button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">Preview</button>
+</nav>
+<div style="flex: 1 1 0"></div>
+<span style="font-size: 12px; color: #5B6675">Theme: Bootstrap 5 · Editor: drawer</span>
+<button type="button" class="ofb-btn" style="background: #2563EB; border-color: #2563EB; color: #FFFFFF">Save</button>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; flex: 1 1 auto; align-items: stretch">
+
+<main style="flex: 999 1 640px; min-width: 0; padding: 14px 28px 28px; display: flex; flex-direction: column; gap: 12px">
+<nav aria-label="Selection path" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 12.5px; color: #5B6675"><span>Form</span><span>›</span><span>Tabs: Orders</span><span>›</span><span style="color: #1B2430; font-weight: 600">Data grid · Order lines</span></nav>
+
+<div style="width: 100%; max-width: 940px; margin: 0 auto; box-sizing: border-box; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 12px; padding: 28px 32px; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; gap: 34px">
+
+<section aria-label="Data grid: Order lines" style="position: relative">
+<div aria-hidden="true" style="position: absolute; inset: -12px; border: 2px solid #2563EB; border-radius: 10px; pointer-events: none"></div>
+<span style="position: absolute; top: -24px; left: -12px; font: 600 11px Inter, sans-serif; color: #FFFFFF; background: #2563EB; border-radius: 4px; padding: 2px 6px">Data grid · orderLines · 3 rows</span>
+<h3 style="margin: 0 0 10px; font-size: 17px; font-weight: 600; color: #212529">Order lines</h3>
+<div style="overflow-x: auto; border: 1px solid #dee2e6; border-radius: 8px">
+<table style="width: 100%; min-width: 760px; border-collapse: collapse">
+<thead>
+<tr>
+<th class="bs-th" style="width: 28px"><span style="position: absolute; left: -9999px">Reorder</span></th>
+<th class="bs-th">Product <span style="color: #dc3545">*</span></th>
+<th class="bs-th" style="width: 110px; position: relative; background: #EAF1FE; box-shadow: inset 0 -2px 0 #2563EB">Quantity <span style="color: #dc3545">*</span>
+<span role="toolbar" aria-label="Column actions" style="position: absolute; top: -34px; left: 0; display: inline-flex; gap: 2px; padding: 2px; background: #FFFFFF; border: 1px solid #D5DBE3; border-radius: 6px; box-shadow: 0 4px 10px rgba(16,24,40,.12)">
+<button type="button" aria-label="Column settings" style="width: 24px; height: 24px; border: 0; background: transparent; color: #1B2430; padding: 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button>
+<button type="button" aria-label="Move column" style="width: 24px; height: 24px; border: 0; background: transparent; color: #1B2430; padding: 0; font: 600 12px Inter, sans-serif">↔</button>
+<button type="button" aria-label="Remove column" style="width: 24px; height: 24px; border: 0; background: transparent; color: #B42318; padding: 0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg></button>
+</span>
+</th>
+<th class="bs-th" style="width: 130px">Unit price</th>
+<th class="bs-th" style="width: 140px">Total <span class="ofb-tag" style="background: #FEF0C7; color: #93370D; font-family: Inter, sans-serif">⚡ calc</span></th>
+<th class="bs-th" style="width: 150px; padding: 4px">
+<div style="position: relative; height: 32px; display: flex; align-items: center; justify-content: center; border: 1.5px dashed #D92D20; border-radius: 6px; background: #FEF3F2; font: 600 11.5px Inter, sans-serif; color: #B42318">Can't drop here
+<div role="tooltip" style="position: absolute; top: 40px; right: 0; width: 220px; padding: 8px 10px; background: #1B2430; color: #FFFFFF; border-radius: 6px; font: 500 12px/16px Inter, sans-serif; text-align: left; white-space: normal; box-shadow: 0 8px 20px rgba(16,24,40,.25); z-index: 3">Data grid columns accept fields only. Drop the Panel outside the grid, or add fields inside it.</div>
+<div style="position: absolute; top: -26px; right: 30px; display: flex; align-items: center; gap: 6px; padding: 5px 10px; background: #FFFFFF; border: 1px solid #D92D20; border-radius: 6px; box-shadow: 0 8px 18px rgba(16,24,40,.18); transform: rotate(-2deg); font: 600 12px Inter, sans-serif; color: #1B2430">▭ Panel</div>
+</div>
+</th>
+<th class="bs-th" style="width: 40px"><span style="position: absolute; left: -9999px">Row actions</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="bs-td" style="color: #9AA4B2; text-align: center">⋮⋮</td>
+<td class="bs-td"><select aria-label="Product, row 1" class="bs-input"><option>Laptop stand</option></select></td>
+<td class="bs-td"><input aria-label="Quantity, row 1" class="bs-input" type="number" value="4"></td>
+<td class="bs-td"><input aria-label="Unit price, row 1" class="bs-input" type="text" value="$ 49.00"></td>
+<td class="bs-td"><input aria-label="Total, row 1" class="bs-input" type="text" value="$ 196.00" readonly style="background: #f8f9fa"></td>
+<td class="bs-td"></td>
+<td class="bs-td"><button type="button" aria-label="Remove row 1" style="border: 0; background: transparent; color: #6c757d">✕</button></td>
+</tr>
+<tr>
+<td class="bs-td" style="color: #9AA4B2; text-align: center">⋮⋮</td>
+<td class="bs-td"><select aria-label="Product, row 2" class="bs-input"><option>USB-C dock</option></select></td>
+<td class="bs-td"><input aria-label="Quantity, row 2" class="bs-input" type="number" value="12"></td>
+<td class="bs-td"><input aria-label="Unit price, row 2" class="bs-input" type="text" value="$ 189.00"></td>
+<td class="bs-td"><input aria-label="Total, row 2" class="bs-input" type="text" value="$ 2,268.00" readonly style="background: #f8f9fa"></td>
+<td class="bs-td"></td>
+<td class="bs-td"><button type="button" aria-label="Remove row 2" style="border: 0; background: transparent; color: #6c757d">✕</button></td>
+</tr>
+<tr>
+<td class="bs-td" style="color: #9AA4B2; text-align: center">⋮⋮</td>
+<td class="bs-td"><select aria-label="Product, row 3" class="bs-input" style="border-color: #dc3545"><option>Select a product</option></select><div style="font-size: 12px; color: #dc3545; margin-top: 2px">Required</div></td>
+<td class="bs-td"><input aria-label="Quantity, row 3" class="bs-input" type="number" value="1"></td>
+<td class="bs-td"><input aria-label="Unit price, row 3" class="bs-input" type="text" value=""></td>
+<td class="bs-td"><input aria-label="Total, row 3" class="bs-input" type="text" value="$ 0.00" readonly style="background: #f8f9fa"></td>
+<td class="bs-td"></td>
+<td class="bs-td"><button type="button" aria-label="Remove row 3" style="border: 0; background: transparent; color: #6c757d">✕</button></td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td class="bs-td" colspan="2" style="border-bottom: 0"><button type="button" class="bs-btn">+ Add line</button></td>
+<td class="bs-td" colspan="2" style="border-bottom: 0; text-align: right; font-size: 14px; color: #6c757d">Order total</td>
+<td class="bs-td" style="border-bottom: 0; font-size: 15px; font-weight: 600; color: #212529">$ 2,464.00</td>
+<td class="bs-td" colspan="2" style="border-bottom: 0"></td>
+</tr>
+</tfoot>
+</table>
+</div>
+</section>
+
+<section aria-label="Edit grid: Shipping addresses" style="position: relative">
+<span style="position: absolute; top: -20px; left: 0; font: 500 11px Inter, sans-serif; color: #5B6675">Edit grid · one row at a time, summary when closed</span>
+<h3 style="margin: 0 0 10px; font-size: 17px; font-weight: 600; color: #212529">Shipping addresses</h3>
+<div style="border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #dee2e6">
+<span style="flex: 1 1 240px; font-size: 14px; color: #212529"><strong style="font-weight: 600">Head office</strong> · 1 Main Street, Toronto ON M5V 2T6</span>
+<button type="button" class="bs-btn" style="height: 28px">Edit</button>
+<button type="button" class="bs-btn" style="height: 28px; border-color: #dc3545; color: #dc3545">Remove</button>
+</div>
+<div style="padding: 14px; background: #f8f9fa; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+<div><label class="bs-label">Label</label><input class="bs-input" type="text" value="Warehouse"></div>
+<div style="grid-column: span 2"><label class="bs-label">Street</label><input class="bs-input" type="text" value="88 Dock Road"></div>
+<div><label class="bs-label">Postcode</label><input class="bs-input" type="text" value="L4W 1N2"></div>
+<div style="grid-column: 1 / -1; display: flex; gap: 8px"><button type="button" class="bs-btn" style="background: #0d6efd; color: #FFFFFF">Save address</button><button type="button" class="bs-btn" style="border-color: #6c757d; color: #6c757d">Cancel</button></div>
+</div>
+</div>
+<button type="button" class="bs-btn" style="margin-top: 10px">+ Add address</button>
+</section>
+
+<section aria-label="Table layout: Delivery schedule" style="position: relative">
+<span style="position: absolute; top: -20px; left: 0; font: 500 11px Inter, sans-serif; color: #5B6675">Table layout · fixed cells for layout, not repeating data</span>
+<h3 style="margin: 0 0 10px; font-size: 17px; font-weight: 600; color: #212529">Delivery schedule</h3>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden">
+<div style="padding: 10px 12px; border-right: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6"><label class="bs-label">Preferred day</label><select class="bs-input"><option>Tuesday</option></select></div>
+<div style="padding: 10px 12px; border-right: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6"><label class="bs-label">Window</label><select class="bs-input"><option>9:00 – 12:00</option></select></div>
+<div style="padding: 10px 12px; border-bottom: 1px solid #dee2e6"><label class="bs-label">Dock number</label><input class="bs-input" type="text" value="3"></div>
+<div style="padding: 10px 12px; border-right: 1px solid #dee2e6"><label class="bs-label">Contact on site</label><input class="bs-input" type="text" value="Priya Shah"></div>
+<div style="padding: 10px 12px; border-right: 1px solid #dee2e6"><label class="bs-label">Phone</label><input class="bs-input" type="tel" value="+1 416 555 0100"></div>
+<div style="padding: 8px; display: flex"><div style="flex: 1; min-height: 56px; border: 1.5px dashed #C3CBD6; border-radius: 6px; display: flex; align-items: center; justify-content: center; font: 500 12px Inter, sans-serif; color: #5B6675">Row 2 · Cell 3 · drop here</div></div>
+</div>
+</section>
+
+</div>
+</main>
+
+<aside aria-label="Data grid settings" style="flex: 1 0 340px; max-width: 380px; box-sizing: border-box; background: #FFFFFF; border-left: 1px solid #E2E6EC; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<div style="display: flex; flex-direction: column">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Order lines</h2>
+<span style="font-size: 12px; color: #5B6675">Data grid · key <code style="font-size: 12px">orderLines</code></span>
+</div>
+<button type="button" aria-label="Close settings" style="width: 30px; height: 30px; border: 0; background: transparent; color: #1B2430">✕</button>
+</div>
+<div role="tablist" aria-label="Grid settings" style="display: flex; gap: 16px; border-bottom: 1px solid #E2E6EC; font-size: 13px">
+<span role="tab" aria-selected="true" style="padding-bottom: 8px; font-weight: 600; border-bottom: 2px solid #2563EB">Columns</span>
+<span role="tab" aria-selected="false" style="padding-bottom: 8px; color: #5B6675">Rows</span>
+<span role="tab" aria-selected="false" style="padding-bottom: 8px; color: #5B6675">Validation</span>
+<span role="tab" aria-selected="false" style="padding-bottom: 8px; color: #5B6675">Logic</span>
+<span role="tab" aria-selected="false" style="padding-bottom: 8px; color: #5B6675">Display</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div class="ofb-col"><span style="color: #9AA4B2">⋮⋮</span><span style="flex: 1">Product</span><span class="ofb-tag" style="background: #EEF2F7; color: #334155">Select</span><span style="font-size: 11px; color: #B42318">required</span></div>
+<div class="ofb-col" style="border-color: #2563EB; background: #F5F8FF"><span style="color: #9AA4B2">⋮⋮</span><span style="flex: 1; font-weight: 600">Quantity</span><span class="ofb-tag" style="background: #EEF2F7; color: #334155">Number</span><span style="font-size: 11px; color: #5B6675">min 1</span></div>
+<div class="ofb-col"><span style="color: #9AA4B2">⋮⋮</span><span style="flex: 1">Unit price</span><span class="ofb-tag" style="background: #EEF2F7; color: #334155">Currency</span></div>
+<div class="ofb-col"><span style="color: #9AA4B2">⋮⋮</span><span style="flex: 1">Total</span><span class="ofb-tag" style="background: #FEF0C7; color: #93370D">Quantity × Unit price</span></div>
+<button type="button" class="ofb-btn" style="border-style: dashed; justify-content: center">+ Add column</button>
+<p style="margin: 2px 0 0; font-size: 12px; color: #5B6675">Or drag a field from the palette into the grid's header.</p>
+</div>
+<div style="margin-top: 4px">
+<div style="font: 600 11.5px Inter, sans-serif; letter-spacing: .04em; text-transform: uppercase; color: #5B6675; margin-bottom: 4px">Rows</div>
+<div class="ofb-set"><span>Minimum rows</span><input aria-label="Minimum rows" type="number" value="1" style="width: 70px; height: 30px; padding: 0 8px; border: 1px solid #D5DBE3; border-radius: 6px; font: 13px Inter, sans-serif"></div>
+<div class="ofb-set"><span>Maximum rows</span><input aria-label="Maximum rows" type="number" value="50" style="width: 70px; height: 30px; padding: 0 8px; border: 1px solid #D5DBE3; border-radius: 6px; font: 13px Inter, sans-serif"></div>
+<div class="ofb-set"><span>Add button label</span><input aria-label="Add button label" type="text" value="Add line" style="width: 120px; height: 30px; padding: 0 8px; border: 1px solid #D5DBE3; border-radius: 6px; font: 13px Inter, sans-serif"></div>
+<div class="ofb-set"><span>Users can reorder rows</span><span class="ofb-sw"><span class="ofb-kn"></span></span></div>
+<div class="ofb-set"><span>Footer total for Total</span><span class="ofb-sw"><span class="ofb-kn"></span></span></div>
+<div class="ofb-set"><span>Virtual scrolling above 100 rows</span><span class="ofb-sw"><span class="ofb-kn"></span></span></div>
+<div class="ofb-set" style="border-bottom: 0"><span>Open as edit grid on phones</span><span class="ofb-sw ofb-sw-off"><span class="ofb-kn" style="left: 2px"></span></span></div>
+</div>
+<p style="margin: 0; font-size: 12px; color: #5B6675">Changes apply live in drawer mode; each edit is one undo step.</p>
+</aside>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

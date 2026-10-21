@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OurForm builder: logic rules</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+.ofb-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid #D5DBE3;border-radius:6px;background:#fff;color:#1B2430;font:500 13px Inter,system-ui,sans-serif;cursor:pointer}
+.ofb-pick{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border:1px solid #D5DBE3;border-radius:6px;background:#fff;color:#1B2430;font:500 13px Inter,system-ui,sans-serif;cursor:pointer}
+.ofb-pick-field{background:#F5F8FF;border-color:#C7D7FE;color:#1D4ED8}
+.ofb-block{border:1px solid #E2E6EC;border-radius:10px;background:#fff;padding:14px 16px}
+.ofb-kicker{display:inline-flex;align-items:center;gap:6px;font:700 11px Inter,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;border-radius:5px;padding:3px 8px}
+.ofb-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ofb-rule{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:1px solid #E2E6EC;border-radius:8px;background:#fff;text-align:left;font:13px Inter,system-ui,sans-serif;color:#1B2430;cursor:pointer;width:100%}
+.ofb-chip{font:500 12px Inter,system-ui,sans-serif;border:1px solid #D5DBE3;border-radius:999px;padding:4px 10px;background:#fff;color:#1B2430}
+.ofb-node{position:absolute;box-sizing:border-box;display:flex;align-items:center;padding:6px 10px;background:#fff;border:1px solid #D5DBE3;border-radius:8px;font:12.5px/16px Inter,system-ui,sans-serif;color:#1B2430}
+</style>
+</helmet>
+<div style="min-height: 960px; background: #F3F5F8; font-family: Inter, system-ui, sans-serif; color: #1B2430; display: flex; flex-direction: column">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; padding: 10px 20px; background: #FFFFFF; border-bottom: 1px solid #E2E6EC">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #2563EB; color: #FFFFFF; font-weight: 700; font-size: 14px">O</span>
+<span style="font-weight: 600; font-size: 14px">Customer onboarding</span>
+</div>
+<nav aria-label="Builder mode" style="display: flex; gap: 2px; background: #EEF2F7; border-radius: 8px; padding: 3px">
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">Build</button>
+<button type="button" aria-pressed="true" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,24,40,.12); font: 600 13px Inter, sans-serif; color: #1B2430">Logic <span style="font-size: 11px; color: #93370D; background: #FEF0C7; border-radius: 999px; padding: 1px 6px">6</span></button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">Data</button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">Preview</button>
+<button type="button" aria-pressed="false" style="height: 28px; padding: 0 14px; border: 0; border-radius: 6px; background: transparent; font: 500 13px Inter, sans-serif; color: #5B6675">JSON</button>
+</nav>
+<div style="flex: 1 1 0"></div>
+<button type="button" class="ofb-btn">Preview</button>
+<button type="button" class="ofb-btn" style="background: #2563EB; border-color: #2563EB; color: #FFFFFF">Save</button>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; flex: 1 1 auto; align-items: stretch">
+
+<aside aria-label="Rules" style="flex: 1 0 280px; max-width: 320px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E2E6EC; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Rules</h2>
+<button type="button" class="ofb-btn" style="height: 30px; background: #2563EB; border-color: #2563EB; color: #FFFFFF">+ New rule</button>
+</div>
+<input type="search" aria-label="Search rules" placeholder="Search rules or fields" style="height: 34px; padding: 0 10px; border: 1px solid #D5DBE3; border-radius: 6px; font: 13px Inter, sans-serif">
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span class="ofb-chip" style="background: #1B2430; border-color: #1B2430; color: #FFFFFF">All 6</span>
+<span class="ofb-chip">Visibility 2</span>
+<span class="ofb-chip">Values 2</span>
+<span class="ofb-chip">Validation 1</span>
+<span class="ofb-chip">Data 1</span>
+</div>
+<button type="button" class="ofb-rule" style="border-color: #F79009; box-shadow: 0 0 0 3px #FEF0C7">
+<span style="display: flex; justify-content: space-between; gap: 8px"><strong style="font-weight: 600">Business customers</strong><span style="font-size: 11px; color: #067647; background: #DCFAE6; border-radius: 999px; padding: 1px 7px">On</span></span>
+<span style="font-size: 12px; color: #5B6675">When Customer type changes · 3 actions</span>
+</button>
+<button type="button" class="ofb-rule">
+<span style="display: flex; justify-content: space-between; gap: 8px"><strong style="font-weight: 600">Order total</strong><span style="font-size: 11px; color: #067647; background: #DCFAE6; border-radius: 999px; padding: 1px 7px">On</span></span>
+<span style="font-size: 12px; color: #5B6675">When Quantity or Unit price changes · calculate Total</span>
+</button>
+<button type="button" class="ofb-rule">
+<span style="display: flex; justify-content: space-between; gap: 8px"><strong style="font-weight: 600">Large orders need approval</strong><span style="font-size: 11px; color: #067647; background: #DCFAE6; border-radius: 999px; padding: 1px 7px">On</span></span>
+<span style="font-size: 12px; color: #5B6675">When Total is over 10,000 · show and require</span>
+</button>
+<button type="button" class="ofb-rule">
+<span style="display: flex; justify-content: space-between; gap: 8px"><strong style="font-weight: 600">Load states</strong><span style="font-size: 11px; color: #067647; background: #DCFAE6; border-radius: 999px; padding: 1px 7px">On</span></span>
+<span style="font-size: 12px; color: #5B6675">When Country changes · refresh State options</span>
+</button>
+<button type="button" class="ofb-rule">
+<span style="display: flex; justify-content: space-between; gap: 8px"><strong style="font-weight: 600">Confirmation email</strong><span style="font-size: 11px; color: #5B6675; background: #EEF2F7; border-radius: 999px; padding: 1px 7px">Off</span></span>
+<span style="font-size: 12px; color: #5B6675">When Email changes · set Send copy</span>
+</button>
+<button type="button" class="ofb-rule">
+<span style="display: flex; justify-content: space-between; gap: 8px"><strong style="font-weight: 600">Lock after submit</strong><span style="font-size: 11px; color: #067647; background: #DCFAE6; border-radius: 999px; padding: 1px 7px">On</span></span>
+<span style="font-size: 12px; color: #5B6675">On form load, if Status is Submitted · disable all</span>
+</button>
+</aside>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 20px 28px 28px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<input type="text" value="Business customers" aria-label="Rule name" style="flex: 1 1 260px; height: 38px; padding: 0 12px; border: 1px solid transparent; border-radius: 6px; background: transparent; font: 600 18px Inter, sans-serif; color: #1B2430">
+<label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px"><span style="position: relative; display: inline-block; width: 34px; height: 20px; border-radius: 999px; background: #2563EB"><span style="position: absolute; top: 2px; left: 16px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF"></span></span>Rule is on</label>
+<button type="button" class="ofb-btn">Duplicate</button>
+<button type="button" class="ofb-btn" style="color: #B42318; border-color: #F4C7C3">Delete</button>
+</div>
+
+<section class="ofb-block" aria-label="Trigger">
+<div class="ofb-row" style="margin-bottom: 10px"><span class="ofb-kicker" style="background: #EEF2F7; color: #334155">When</span><span style="font-size: 12.5px; color: #5B6675">What starts this rule</span></div>
+<div class="ofb-row">
+<button type="button" class="ofb-pick ofb-pick-field">◉ Customer type ▾</button>
+<button type="button" class="ofb-pick">changes ▾</button>
+<span style="font-size: 12.5px; color: #5B6675">Also runs on form load, so saved forms open correctly.</span>
+</div>
+</section>
+
+<div aria-hidden="true" style="width: 2px; height: 14px; background: #C3CBD6; margin: -14px 0 -14px 34px"></div>
+
+<section class="ofb-block" aria-label="Conditions">
+<div class="ofb-row" style="margin-bottom: 10px"><span class="ofb-kicker" style="background: #EAF1FE; color: #1D4ED8">If</span>
+<span style="font-size: 12.5px; color: #5B6675">Match</span>
+<span role="group" aria-label="Match mode" style="display: inline-flex; gap: 2px; background: #EEF2F7; border-radius: 6px; padding: 2px"><button type="button" aria-pressed="true" style="height: 24px; padding: 0 10px; border: 0; border-radius: 4px; background: #FFFFFF; font: 600 12px Inter, sans-serif">All</button><button type="button" aria-pressed="false" style="height: 24px; padding: 0 10px; border: 0; border-radius: 4px; background: transparent; font: 500 12px Inter, sans-serif; color: #5B6675">Any</button></span>
+<span style="font-size: 12.5px; color: #5B6675">of these conditions</span></div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="ofb-row"><button type="button" class="ofb-pick ofb-pick-field">◉ Customer type ▾</button><button type="button" class="ofb-pick">is ▾</button><button type="button" class="ofb-pick">Business ▾</button><button type="button" class="ofb-btn" aria-label="Remove condition" style="width: 32px; padding: 0; justify-content: center">✕</button></div>
+<div class="ofb-row"><button type="button" class="ofb-pick ofb-pick-field">▾ Country ▾</button><button type="button" class="ofb-pick">is one of ▾</button><button type="button" class="ofb-pick">United States, Canada ▾</button><button type="button" class="ofb-btn" aria-label="Remove condition" style="width: 32px; padding: 0; justify-content: center">✕</button></div>
+<div class="ofb-row"><button type="button" class="ofb-btn" style="border-style: dashed">+ Add condition</button><button type="button" class="ofb-btn" style="border-style: dashed">+ Add group</button><button type="button" class="ofb-btn" style="border: 0; color: #1D4ED8">Write as expression</button></div>
+</div>
+</section>
+
+<div aria-hidden="true" style="width: 2px; height: 14px; background: #C3CBD6; margin: -14px 0 -14px 34px"></div>
+
+<section class="ofb-block" aria-label="Actions" style="border-color: #FEC84B">
+<div class="ofb-row" style="margin-bottom: 10px"><span class="ofb-kicker" style="background: #FEF0C7; color: #93370D">Then</span><span style="font-size: 12.5px; color: #5B6675">Runs in order, top to bottom</span></div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="ofb-row"><span style="color: #9AA4B2; cursor: grab" aria-hidden="true">⋮⋮</span><span style="width: 18px; font-size: 12px; color: #5B6675">1</span><button type="button" class="ofb-pick">Show ▾</button><button type="button" class="ofb-pick ofb-pick-field">▭ Panel · Company details ▾</button></div>
+<div class="ofb-row"><span style="color: #9AA4B2; cursor: grab" aria-hidden="true">⋮⋮</span><span style="width: 18px; font-size: 12px; color: #5B6675">2</span><button type="button" class="ofb-pick">Make required ▾</button><button type="button" class="ofb-pick ofb-pick-field">Aa VAT number ▾</button></div>
+<div class="ofb-row"><span style="color: #9AA4B2; cursor: grab" aria-hidden="true">⋮⋮</span><span style="width: 18px; font-size: 12px; color: #5B6675">3</span><button type="button" class="ofb-pick">Set value ▾</button><button type="button" class="ofb-pick ofb-pick-field">▾ Invoice type ▾</button><span style="font-size: 12.5px; color: #5B6675">to</span><button type="button" class="ofb-pick">Company invoice ▾</button></div>
+<div class="ofb-row"><button type="button" class="ofb-btn" style="border-style: dashed">+ Add action</button><span style="font-size: 12px; color: #5B6675">Show, hide, enable, disable, require, set value, clear, calculate, refresh options, run function</span></div>
+</div>
+</section>
+
+<section class="ofb-block" aria-label="Otherwise" style="background: #FAFBFC">
+<div class="ofb-row"><span class="ofb-kicker" style="background: #EEF2F7; color: #334155">Otherwise</span>
+<label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px"><input type="checkbox" checked style="width: 16px; height: 16px; accent-color: #2563EB">Reverse these actions when the conditions stop matching (hide Company details, make VAT number optional, clear Invoice type)</label></div>
+</section>
+
+<section aria-label="Test this rule" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; border: 1px dashed #C3CBD6; border-radius: 10px; padding: 14px 16px; background: #FFFFFF">
+<div style="flex: 1 1 220px">
+<div style="font-size: 13px; font-weight: 600; margin-bottom: 8px">Test this rule</div>
+<div class="ofb-row"><span style="font-size: 12.5px; color: #5B6675">Customer type</span><button type="button" class="ofb-pick">Business ▾</button><span style="font-size: 12.5px; color: #5B6675">Country</span><button type="button" class="ofb-pick">Canada ▾</button></div>
+</div>
+<ul style="flex: 1 1 260px; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px">
+<li style="display: flex; gap: 8px"><span style="color: #067647; font-weight: 700">✓</span>Conditions match (2 of 2)</li>
+<li style="display: flex; gap: 8px"><span style="color: #067647; font-weight: 700">✓</span>Company details becomes visible</li>
+<li style="display: flex; gap: 8px"><span style="color: #067647; font-weight: 700">✓</span>VAT number becomes required</li>
+<li style="display: flex; gap: 8px"><span style="color: #067647; font-weight: 700">✓</span>Invoice type set to Company invoice</li>
+</ul>
+</section>
+</main>
+
+<aside aria-label="Dependency map" style="flex: 1 0 420px; max-width: 460px; box-sizing: border-box; background: #FFFFFF; border-left: 1px solid #E2E6EC; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Dependency map</h2>
+<span style="font-size: 12px; color: #5B6675">Whole form · 6 rules</span>
+</div>
+<p style="margin: 0; font-size: 12.5px; color: #5B6675">What changes when a field changes. The selected rule is highlighted; click any box to open that field or rule.</p>
+<div style="position: relative; width: 380px; height: 476px; margin-top: 6px">
+<svg width="48" height="8" viewBox="0 0 48 8" preserveAspectRatio="none" style="position: absolute; left: 128px; top: 74px; width: 48px; height: 8px; overflow: visible; fill: none; stroke: #DC6803; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M 0 4 L 48 4"></path></svg>
+<svg width="8" height="112" viewBox="0 0 8 112" preserveAspectRatio="none" style="position: absolute; left: 172px; top: 22px; width: 8px; height: 112px; overflow: visible; fill: none; stroke: #DC6803; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M 4 0 L 4 112"></path></svg>
+<svg width="47" height="8" viewBox="0 0 47 8" preserveAspectRatio="none" style="position: absolute; left: 176px; top: 18px; width: 47px; height: 8px; overflow: visible; fill: none; stroke: #DC6803; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><defs><marker id="dc-arrow-head-filled-1" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#DC6803" stroke="none" style="stroke: none; fill: #DC6803; fill: context-stroke"></path></marker></defs><path d="M 0 4 L 43 4" marker-end="url(#dc-arrow-head-filled-1)"></path></svg>
+<svg width="47" height="8" viewBox="0 0 47 8" preserveAspectRatio="none" style="position: absolute; left: 176px; top: 74px; width: 47px; height: 8px; overflow: visible; fill: none; stroke: #DC6803; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><defs><marker id="dc-arrow-head-filled-2" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#DC6803" stroke="none" style="stroke: none; fill: #DC6803; fill: context-stroke"></path></marker></defs><path d="M 0 4 L 43 4" marker-end="url(#dc-arrow-head-filled-2)"></path></svg>
+<svg width="47" height="8" viewBox="0 0 47 8" preserveAspectRatio="none" style="position: absolute; left: 176px; top: 130px; width: 47px; height: 8px; overflow: visible; fill: none; stroke: #DC6803; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><defs><marker id="dc-arrow-head-filled-3" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#DC6803" stroke="none" style="stroke: none; fill: #DC6803; fill: context-stroke"></path></marker></defs><path d="M 0 4 L 43 4" marker-end="url(#dc-arrow-head-filled-3)"></path></svg>
+<svg width="48" height="8" viewBox="0 0 48 8" preserveAspectRatio="none" style="position: absolute; left: 128px; top: 228px; width: 48px; height: 8px; overflow: visible; fill: none; stroke: #8A94A6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M 0 4 L 48 4"></path></svg>
+<svg width="48" height="8" viewBox="0 0 48 8" preserveAspectRatio="none" style="position: absolute; left: 128px; top: 292px; width: 48px; height: 8px; overflow: visible; fill: none; stroke: #8A94A6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M 0 4 L 48 4"></path></svg>
+<svg width="8" height="64" viewBox="0 0 8 64" preserveAspectRatio="none" style="position: absolute; left: 172px; top: 232px; width: 8px; height: 64px; overflow: visible; fill: none; stroke: #8A94A6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M 4 0 L 4 64"></path></svg>
+<svg width="47" height="8" viewBox="0 0 47 8" preserveAspectRatio="none" style="position: absolute; left: 176px; top: 260px; width: 47px; height: 8px; overflow: visible; fill: none; stroke: #8A94A6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><defs><marker id="dc-arrow-head-filled-4" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8A94A6" stroke="none" style="stroke: none; fill: #8A94A6; fill: context-stroke"></path></marker></defs><path d="M 0 4 L 43 4" marker-end="url(#dc-arrow-head-filled-4)"></path></svg>
+<svg width="8" height="43" viewBox="0 0 8 43" preserveAspectRatio="none" style="position: absolute; left: 295px; top: 286px; width: 8px; height: 43px; overflow: visible; fill: none; stroke: #8A94A6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><defs><marker id="dc-arrow-head-filled-5" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8A94A6" stroke="none" style="stroke: none; fill: #8A94A6; fill: context-stroke"></path></marker></defs><path d="M 4 0 L 4 39" marker-end="url(#dc-arrow-head-filled-5)"></path></svg>
+<svg width="95" height="8" viewBox="0 0 95 8" preserveAspectRatio="none" style="position: absolute; left: 128px; top: 436px; width: 95px; height: 8px; overflow: visible; fill: none; stroke: #8A94A6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><defs><marker id="dc-arrow-head-filled-6" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#8A94A6" stroke="none" style="stroke: none; fill: #8A94A6; fill: context-stroke"></path></marker></defs><path d="M 0 4 L 91 4" marker-end="url(#dc-arrow-head-filled-6)"></path></svg>
+<div class="ofb-node" style="left: 0px; top: 56px; width: 128px; height: 44px; border-color: #F79009; background: #FFFAEB; font-weight: 600">Customer type</div>
+<div class="ofb-node" style="left: 224px; top: 0px; width: 150px; height: 44px; border-color: #F79009"><span><b style="font-weight: 600">Company details</b><br><span style="font-size: 11.5px; color: #5B6675">show</span></span></div>
+<div class="ofb-node" style="left: 224px; top: 56px; width: 150px; height: 44px; border-color: #F79009"><span><b style="font-weight: 600">VAT number</b><br><span style="font-size: 11.5px; color: #5B6675">require</span></span></div>
+<div class="ofb-node" style="left: 224px; top: 112px; width: 150px; height: 44px; border-color: #F79009"><span><b style="font-weight: 600">Invoice type</b><br><span style="font-size: 11.5px; color: #5B6675">set value</span></span></div>
+<div class="ofb-node" style="left: 0px; top: 210px; width: 128px; height: 44px">Quantity</div>
+<div class="ofb-node" style="left: 0px; top: 274px; width: 128px; height: 44px">Unit price</div>
+<div class="ofb-node" style="left: 224px; top: 242px; width: 150px; height: 44px"><span><b style="font-weight: 600">Total</b><br><span style="font-size: 11.5px; color: #5B6675">calculate</span></span></div>
+<div class="ofb-node" style="left: 224px; top: 330px; width: 150px; height: 44px"><span><b style="font-weight: 600">Approval panel</b><br><span style="font-size: 11.5px; color: #5B6675">show and require</span></span></div>
+<div class="ofb-node" style="left: 0px; top: 418px; width: 128px; height: 44px">Country</div>
+<div class="ofb-node" style="left: 224px; top: 418px; width: 150px; height: 44px"><span><b style="font-weight: 600">State</b><br><span style="font-size: 11.5px; color: #5B6675">refresh options</span></span></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: #5B6675; border-top: 1px solid #E2E6EC; padding-top: 10px">
+<span>No circular dependencies</span><span>Unused fields: 0</span><span style="color: #1D4ED8">Open full-screen map</span>
+</div>
+</aside>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

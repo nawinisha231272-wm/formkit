@@ -22,6 +22,24 @@ deviations from spec, open questions.
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
 
+## Approved UX plan — 2026-10-21
+
+The owner approved the builder UX designs on **2026-10-21**. Builder themes are required, not optional.
+Specs 10/11 and the unchanged exported mockups are saved under docs/spec and docs/design respectively.
+The reference HTML is visual evidence, not implementation code. M09a is merged as PR #11 (ef3edfd),
+with final head 337999b passing first-attempt CI and full pinned verify (268 unit / 711 browser).
+
+Plan-only PR first, merged only on first-run green CI. Then M09b order: builder primitives/--ofb-\* →
+Neutral builder theme → Material form theme → other builder themes and match-form → screens 1/2/5.
+M09c owns screen 3 and the root logic-rule engine; M10a adds Table and screen 4 grid/edit-grid authoring.
+Existing compact expressions remain available in M09b; future unregistered palette components are not
+simulated. Preserve correctness thresholds, platform baselines and the complete existing test intent.
+
+Risks and evidence: accessible pointer/keyboard parity, atomic dialog/drawer undo behavior, theme/focus/
+DOM preservation, contrast in all themes/modes/densities, no >50 ms drag task at 500 fields, independent
+fresh-session author exercise and owner implementation-screenshot approval. The approved designs are
+not approval of future generated baselines. No M09c implementation begins before owner review.
+
 ## M09a — Column storage and palette contract (locally verified)
 
 Branch: m09a-columns, from merged M09 (PR #10, 5e1a5f2). Plan: introduce canonical per-column
