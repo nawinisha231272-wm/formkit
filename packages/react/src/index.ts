@@ -27,6 +27,13 @@ import type {
   RegisteredField,
 } from "@ourform/sdk";
 import { builtinComponents } from "@ourform/components";
+import { createBuilderController } from "@ourform/builder";
+import type { BuilderController, BuilderOptions } from "@ourform/builder";
+export type {
+  BuilderController,
+  BuilderOptions,
+  SchemaChange,
+} from "@ourform/builder";
 const emptyFields: readonly RegisteredField[] = [];
 const Environment = createContext<{
   engine?: Engine;
@@ -188,3 +195,113 @@ export function useField(path: string): FieldState | null {
   );
   return useSyncExternalStore(subscribe, snapshot, () => null);
 }
+export interface FormBuilderProps extends BuilderOptions {
+  className?: string;
+  onReady?: (controller: BuilderController) => void;
+}
+/** Schema echoes are no-ops; changed schemas load through the same atomic command as JSON import. */
+export const FormBuilder = forwardRef<BuilderController, FormBuilderProps>(
+  function FormBuilder(props, ref) {
+    const environment = useContext(Environment);
+    const container = useRef<HTMLDivElement>(null);
+    const current = useRef(props);
+    current.current = props;
+    const controller = useRef<BuilderController | null>(null);
+    const loadedSchema = useRef(props.schema);
+    const [handle, setHandle] = useState<BuilderController | null>(null);
+    const [preview, setPreview] = useState<FormController | null>(null);
+    const [portals, setPortals] = useState<ReadonlyMap<HTMLElement, Portal>>(
+      new Map(),
+    );
+    const fields = useMemo(
+      () => [
+        ...(environment.fields ?? emptyFields),
+        ...(props.fields ?? emptyFields),
+      ],
+      [environment.fields, props.fields],
+    );
+    const engine = props.engine ?? environment.engine;
+    useImperativeHandle(ref, () => handle as BuilderController, [handle]);
+    useLayoutEffect(() => {
+      let active = true;
+      const nativeHost: NativeHost = {
+        mount(slot, view, initial) {
+          const publish = (p: typeof initial) => {
+            if (!active) return;
+            setPortals((before) => {
+              const next = new Map(before);
+              next.set(slot, {
+                key: p.a11y.id,
+                slot,
+                node: createElement(
+                  view.component as ComponentType<Record<string, unknown>>,
+                  mapNativeProps(view, p),
+                ),
+              });
+              return next;
+            });
+          };
+          publish(initial);
+          return {
+            update: publish,
+            destroy() {
+              if (active)
+                setPortals((before) => {
+                  const next = new Map(before);
+                  next.delete(slot);
+                  return next;
+                });
+            },
+          };
+        },
+      };
+      const next = createBuilderController(container.current!, {
+        ...current.current,
+        ...(engine ? { engine } : {}),
+        fields: [...builtinComponents, ...fields],
+        adapter: "react",
+        nativeHost,
+        onSchemaChange: (change) => current.current.onSchemaChange?.(change),
+        onPreviewReady: (form) => {
+          if (active) {
+            setPreview(form ?? null);
+            current.current.onPreviewReady?.(form);
+          }
+        },
+        onSubmit: (result) => current.current.onSubmit?.(result),
+      });
+      controller.current = next;
+      loadedSchema.current = current.current.schema;
+      setHandle(next);
+      current.current.onReady?.(next);
+      return () => {
+        active = false;
+        next.destroy();
+        controller.current = null;
+        setHandle(null);
+        setPreview(null);
+        setPortals(new Map());
+      };
+    }, [engine, fields]);
+    useLayoutEffect(() => {
+      if (props.schema !== loadedSchema.current) {
+        controller.current?.load(props.schema);
+        loadedSchema.current = props.schema;
+      }
+    }, [props.schema, handle]);
+    useLayoutEffect(() => {
+      controller.current?.setTheme(props.theme ?? "base");
+    }, [props.theme, handle]);
+    useLayoutEffect(() => {
+      controller.current?.setMode(props.themeMode ?? "light");
+    }, [props.themeMode, handle]);
+    return createElement(
+      Session.Provider,
+      { value: preview },
+      createElement("div", { ref: container, className: props.className }),
+      [...portals.values()].map((portal) =>
+        createPortal(portal.node, portal.slot, portal.key),
+      ),
+    );
+  },
+);

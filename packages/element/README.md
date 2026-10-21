@@ -61,3 +61,29 @@ Imperative reset() clears the renderer summary and touched state. Disconnect/rec
 Invalid schema/theme updates retain the previous valid property. Removing schema clears the mounted
 form; setting it again remounts with preserved data. Initial connection failures also emit of-error.
 Custom Theme objects remove the string attribute and remain property-owned.
+
+## Visual builder (M09)
+
+```ts
+import { renderBuilder, defineOurFormBuilderElement } from "@ourform/element";
+const controller = renderBuilder(emptyMount, {
+  schema,
+  fields: [customField],
+  onSchemaChange: save,
+});
+defineOurFormBuilderElement();
+const element = document.createElement("our-form-builder");
+element.schema = schema;
+element.fields = [customField];
+element.theme = "bootstrap4";
+element.setAttribute("shadow", ""); // optional; before connection
+mount.append(element);
+element.addEventListener("of-schema-change", (e) => save(e.detail));
+```
+
+`OurFormBuilderElement` exposes schema/theme/engine/fields/controller. Set engine/fields before connect;
+changes validate and recreate the controller. Connected schema updates load atomically without resetting
+history; schema echoes are no-ops. Theme updates preserve controller/control identity. `of-ready` supplies
+the controller; `of-error` reports invalid schema/attributes. Disconnect destroys listeners/controllers;
+reconnect restores current definition with new history. Light and open-shadow modes are supported;
+schema events bubble/composed. Use controller.preview for response data. No global field registry.

@@ -48,7 +48,8 @@ export interface ComponentModel<V = unknown, C = Record<string, unknown>> {
 
 export interface ComponentSlot {
   name: string;
-  label: string;
+  label: string; // literal English fallback
+  labelKey?: string; // explicit opt-in to host translation
   accepts: readonly string[]; // field/layout/composite kinds or exact registered type
   max?: number; // direct children in this slot, not descendants
 }
@@ -363,3 +364,8 @@ Children stay in node.components and may specify node.slot; omission selects the
 Configurable Tabs uses stable option values as slot names and editable option labels as captions.
 Deleting a slot with children is an invalid edit until those children are moved or removed.
 See spec 07 for structural commands, drop rules and keyboard authoring.
+
+M09 ships the slots described above as additive SDK0.x APIs (`ComponentSlot`, `resolveSlots`, layout
+slots/tabs/rootOnly options). Slot labels are literal by default. Optional labelKey explicitly opts into host translation
+with label as the English fallback. Tabs default slot names first/second are stable option values;
+labels can change independently. See the guide's typed card example and ADR-0014 implementation note.

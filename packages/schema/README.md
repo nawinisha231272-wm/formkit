@@ -56,3 +56,7 @@ emailPattern is the shared Tier 1 email rule source used by core and JSON Schema
 Boolean value adapters may have more than one empty state (e.g. nullable consent treats false and
 null as empty). For a declared boolean/null JSON Schema domain, toSubmissionSchema normalizes each serialized boolean/null candidate before consulting isEmpty. Required excludes every empty candidate; optional values
 remain valid. This keeps nullableBooleanValue({requiredTrue:true}) aligned with runtime validation.
+
+M09 adds optional component `slot: string`: the parent's declared destination, omitted for its first
+slot. Root components cannot specify a slot. Children retain their ordered `components` array. Slot
+membership does not change data scopes; moving into a keyed Container does. Old JSON remains valid.

@@ -41,3 +41,49 @@ playground. Public types: Builder, BuilderState, BuilderContext, Command, Comman
 PaletteGroup, PanelProperty and PropertyPanelModel.
 
 Build: pnpm --filter @ourform/builder-core build. See ADR-0007 and docs/spec/07-builder.md.
+
+## M09 nested editing (supersedes the M05 limitations above)
+
+```ts
+import {
+  createBuilder,
+  AddComponent,
+  MoveComponent,
+  DuplicateComponent,
+  ChangeKey,
+  WrapInLayout,
+  Unwrap,
+  ReplaceDefinition,
+} from "@ourform/builder-core";
+const builder = createBuilder(engine, definition, { historyLimit: 100 });
+builder.dispatch(new AddComponent("tabs"));
+const tabs = builder.getState().selection!;
+builder.dispatch(
+  new MoveComponent("name", { parentId: tabs, slot: "second", index: 0 }),
+);
+builder.dispatch(
+  new DuplicateComponent("name", { parentId: tabs, slot: "first" }),
+);
+builder.dispatch(new ChangeKey("name", "fullName"));
+builder.dispatch(new WrapInLayout("name", "panel"));
+builder.dispatch(new Unwrap(builder.getState().selection!));
+builder.dispatch(new ReplaceDefinition(importedJson));
+const diagnostics = builder.canDrop("text", { parentId: tabs, slot: "first" });
+```
+
+DropTarget is `{parentId?,slot?,index?}`. Omitted parent is root, omitted slot is the parent's first,
+omitted index appends; move indices are interpreted **after** removing the source, within one slot.
+`canDrop(type,target,movingId?)` checks the same structural rules as commands without mutation.
+All commands reject unknown parents/slots, cycles, accepts/capacity/root-only violations and destination
+scope key conflicts atomically. Fixed composites are not editable. `resolveSlots` is shared by compile,
+commands and renderer. Changing paths warns on runtime path references while stable IDs remain stable.
+Duplicate copies the entire subtree with new IDs, unique keys and rebased internal runtime references;
+opaque config/meta and external refs remain unchanged. WrapInLayout retains the child ID, Unwrap
+retains children and validates the replacement destination. JSON import is one validated command.
+
+History is now bounded: default100, configurable integer1..1000. Failed/no-op edits retain redo.
+Before/after snapshots preserve byte order and generated IDs; JSON Patch is independently replayable.
+Tests include 50 deterministic random sequences with nested moves, wrapping/duplication and exact
+undo/redo plus explicit capacity/cycle/scope/path/history checks. Public additions: BuilderOptions,
+DropTarget, MoveComponent, DuplicateComponent, ChangeKey, WrapInLayout, Unwrap, ReplaceDefinition.
+The full UI lives in `@ourform/builder`; no DOM types enter this package.

@@ -19,6 +19,7 @@
     "apps/playground/authoring.ts",
     "apps/playground/boolean-authoring.ts",
     "apps/docs/examples/**/*.ts",
-    "playwright.counts.config.ts"
+    "playwright.counts.config.ts",
+    "apps/playground/tabs.ts"
   ]
 }

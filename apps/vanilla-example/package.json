@@ -12,7 +12,8 @@
     "@ourform/sdk": "workspace:*",
     "@ourform/core": "workspace:*",
     "@ourform/renderer-dom": "workspace:*",
-    "@ourform/element": "workspace:*"
+    "@ourform/element": "workspace:*",
+    "@ourform/builder": "workspace:*"
   },
   "devDependencies": {}
 }

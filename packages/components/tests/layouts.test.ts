@@ -13,6 +13,7 @@ test("40-field onboarding uses transparent layouts, an object container and cons
     "none",
     "none",
     "object",
+    "none",
   ]);
   const compiled = engine.compile(fixture);
   if (!compiled.ok) throw new Error(JSON.stringify(compiled.diagnostics));

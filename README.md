@@ -12,8 +12,9 @@ This kit now carries the full build specification:
 - `docs/progress.md` — the running log of what is done.
 - `docs/codex-prompts.md` — prompts to drive OpenAI Codex milestone by milestone.
 
-M08 is approved. Next development milestone: **M09 — Builder with nested drag and drop**;
-implementation follows the separately merged plan amendment. See `docs/progress.md` for verification status.
+M08 is approved. **M09 — Builder with nested drag and drop** implements the separately merged plan
+amendment. Open `/builder.html?fixture` in the playground to explore Tabs > Panel > Columns > field;
+each host example also has `/builder.html`. See `docs/progress.md` for verification status.
 
 ## Run
 

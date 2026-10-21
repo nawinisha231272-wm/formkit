@@ -12,6 +12,7 @@ export {
 export { selectField, radioField } from "./choices";
 export { contentField, sanitizeContent } from "./content";
 export { buttonField } from "./button";
+export { tabsLayout } from "./tabs";
 import { textField } from "./text";
 import { numberField } from "./number";
 import { checkboxField } from "./checkbox";

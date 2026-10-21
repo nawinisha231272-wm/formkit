@@ -1,0 +1,5 @@
+{
+  "name": "Ada Lovelace",
+  "rating": 4,
+  "contact": { "email": "ada@example.test", "notes": "Call after lunch" }
+}

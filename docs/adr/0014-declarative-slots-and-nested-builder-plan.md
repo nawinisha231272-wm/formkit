@@ -1,6 +1,6 @@
 # ADR-0014 — Declarative slots and nested builder plan
 
-Status: accepted plan; implementation and evidence belong to M09.
+Status: accepted; M09 implements the owner-approved plan.
 
 Milestone: M09
 
@@ -85,3 +85,28 @@ Stop after M09; no M10 implementation is included.
 
 Keyboard reference patterns: [W3C APG Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/)
 and [W3C APG Tree View](https://www.w3.org/WAI/ARIA/apg/patterns/treeview/).
+
+## M09 implementation
+
+The shared headless resolver, optional wire slot, complete structural commands and bounded snapshot
+history implement the planned contract. Slot labels are literal English captions by default. Optional
+labelKey explicitly opts into host translation; missing translations fall back to label. Literal captions
+that happen to equal catalog keys are never translated, preserving the accepted M08 caption policy. No code
+recognizes built-in types in builder drop handling. Fixed model-owned composites remain uneditable.
+
+The new @ourform/builder owns chrome and delegates forms/native bridges to renderer/adapters. Design
+and preview share one session. Schema edits remount transient view/session state while preserving
+answers for surviving value-field IDs; removed answers are not history. Theme/mode updates preserve
+controls, selection handles and insertion buttons. Wrappers keep native owner context/DI and publish
+nonempty patches only. Engine/registration changes rebuild the controller; controlled schema echoes
+do not rebuild or loop. Tabs keeps inactive panels mounted; focus reveals error targets in ancestors.
+
+There is no external runtime library: the new package depends only on existing OurForm layers. The
+existing boundary lint rule explicitly allows adapters to import the builder UI for their wrappers.
+No existing deterministic counts, screenshot tolerances, correctness checks or size limits increase.
+
+Native HTML drag is retained. The pinned Firefox engine does not start button drags from empty space
+([Mozilla bug 568313](https://bugzilla.mozilla.org/show_bug.cgi?id=568313#c23)); transparent inner content
+covers palette/selection button hit areas without changing their appearance or button semantics.
+The acceptance tests use real mouse movement and native keyboard traversal, including Safari's
+Option+Tab on macOS; no synthetic drag events or application-specific focus preferences are required.

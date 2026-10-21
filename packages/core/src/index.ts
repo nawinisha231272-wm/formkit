@@ -9,6 +9,7 @@ export type {
 } from "./expressions";
 export type {
   ComponentModel,
+  ComponentSlot,
   ConfigOf,
   PropertyDefinition,
   PropertyGroup,
@@ -43,3 +44,4 @@ export { emailPattern } from "./validators";
 export { englishMessages, englishMessage } from "./messages";
 export { coreVersion } from "./plugins";
 export type { PluginRegistration } from "./plugins";
+export { resolveSlots } from "./slots";

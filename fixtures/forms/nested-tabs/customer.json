@@ -1,0 +1,78 @@
+{
+  "$formVersion": "1.0",
+  "id": "nested-tabs",
+  "display": "form",
+  "components": [
+    {
+      "id": "tabs",
+      "type": "tabs",
+      "label": "Customer details",
+      "properties": {
+        "tabs": [
+          { "value": "first", "label": "Profile" },
+          { "value": "second", "label": "Contact" }
+        ]
+      },
+      "components": [
+        {
+          "id": "panel",
+          "type": "panel",
+          "label": "Profile",
+          "components": [
+            {
+              "id": "columns",
+              "type": "columns",
+              "label": "Name and rating",
+              "components": [
+                {
+                  "id": "name",
+                  "type": "text",
+                  "key": "name",
+                  "label": "Full name",
+                  "validation": { "required": true },
+                  "layout": { "width": 6 }
+                },
+                {
+                  "id": "rating",
+                  "type": "rating",
+                  "key": "rating",
+                  "label": "Experience",
+                  "layout": { "width": 6 }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "contact",
+          "type": "container",
+          "key": "contact",
+          "label": "Contact",
+          "slot": "second",
+          "components": [
+            {
+              "id": "contact-group",
+              "type": "fieldset",
+              "label": "How to reach you",
+              "components": [
+                {
+                  "id": "email",
+                  "type": "email",
+                  "key": "email",
+                  "label": "Email",
+                  "validation": { "required": true }
+                },
+                {
+                  "id": "notes",
+                  "type": "textarea",
+                  "key": "notes",
+                  "label": "Notes"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

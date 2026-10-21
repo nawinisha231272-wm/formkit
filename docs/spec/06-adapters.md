@@ -123,3 +123,16 @@ Static portable SSR can be replaced by a fresh client mount. Native SSR/hydratio
 Invalid schema/appearance updates retain the last valid property. Removing the schema attribute clears
 the mounted form; setting schema again remounts with retained data. Initial connection errors also emit
 of-error. Object Theme properties remove the string theme attribute without callback recursion.
+
+## M09 reusable builder hosts
+
+`@ourform/builder.createBuilderController(root,BuilderOptions)` owns an empty customer mount and returns
+engine/builder/preview/load/selectSlot/setTheme/setMode/destroy. BuilderOptions carries HostOptions except
+response onChange/readOnly/mode, plus historyLimit/onSchemaChange/onPreviewReady. Changes publish
+`{definition,patch}` via callback and bubbling/composed of-schema-change; no empty patches or response
+edits are schema events. Element renderBuilder registers built-ins; defineOurFormBuilderElement supports
+light/open-shadow OurFormBuilderElement with schema/theme/engine/fields/controller and ready/error events.
+React FormBuilder preserves owner portals/context and current preview useForm; Angular standalone
+OurFormBuilderComponent preserves owner DI and exposes schemaChange/changed/diagnostics/ready.
+Controlled schema echoes are no-op; external schemas import atomically. Engine/field changes recreate
+history, appearance changes preserve identity, teardown destroys native instances and UI listeners.

@@ -61,3 +61,10 @@ Panel/Fieldset/Columns are data-transparent; Container nests values under its ke
 
 Run `pnpm dev` and open `/onboarding.html` for the 40-field fixture. All four themes share responsive
 12-column sizing (width 1–12, default 12), stacking at viewport widths up to 640px.
+
+M09 adds `tabsLayout` (type `tabs`) to builtinLayouts/builtinComponents. Its `tabs` options property
+uses stable values as slot names and literal editable labels as captions; default first/second slots
+accept fields/layouts/composites. Tabs is presentation-only: keyed descendants retain ordinary scopes.
+Runtime follows APG horizontal tabs (Left/Right wrap, Home/End, automatic activation); inactive panels
+remain mounted. Error focus reveals ancestor tabs; theme/tab changes preserve controls/session state.
+Design mode exposes all slots; removing/renaming an occupied slot is invalid. Fixture: fixtures/forms/nested-tabs/customer.json.

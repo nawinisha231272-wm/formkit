@@ -1,7 +1,7 @@
 import type { FormField } from "@ourform/schema";
 import type { ComponentModel, PropertyDefinition } from "@ourform/core";
 export { createBuilder } from "./builder";
-export type { Builder, PaletteGroup } from "./builder";
+export type { Builder, BuilderOptions, PaletteGroup } from "./builder";
 export { AddComponent, RemoveComponent, UpdateProperty } from "./commands";
 export type {
   BuilderState,
@@ -66,3 +66,14 @@ export function applyEditorProperty(
     };
   return { ...field, properties: { ...field.properties, [key]: value } };
 }
+
+export {
+  MoveComponent,
+  DuplicateComponent,
+  ChangeKey,
+  WrapInLayout,
+  Unwrap,
+  ReplaceDefinition,
+} from "./structural-commands";
+export { checkDrop } from "./structure";
+export type { DropTarget } from "./structure";

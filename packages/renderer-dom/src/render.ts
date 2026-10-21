@@ -5,9 +5,16 @@ export { resolveView } from "./native";
 export type { NativeHost, NativeUnit } from "./native";
 import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
 import { tailwindTheme } from "@ourform/theme-tailwind";
-import type { Engine, FormSession } from "@ourform/core";
-import { defaultMessage, escapeHtml, renderVNodeToString } from "@ourform/sdk";
-import type { FocusTarget, Theme, ThemeMode } from "@ourform/sdk";
+import type { Engine, FormSession, CompiledNode } from "@ourform/core";
+import {
+  defaultMessage,
+  escapeHtml,
+  renderVNodeToString,
+  resolveSlots,
+  h,
+} from "@ourform/sdk";
+import type { FocusTarget, Theme, ThemeMode, VNode } from "@ourform/sdk";
+import type { LayoutInteraction } from "./layout";
 import { fieldErrors, shellVNode } from "./shell";
 import type { FieldPresentation, Views } from "./shell";
 import { resolveTheme, themeStyle } from "./theme";
@@ -24,6 +31,7 @@ export type AppearanceTheme =
   | "bootstrap5"
   | "tailwind";
 export interface RenderOptions extends ThemeOptions {
+  mode?: "edit" | "design";
   views: Views;
   adapter?: string;
   nativeHost?: NativeHost;
@@ -75,6 +83,7 @@ function mountForm(
   let submitted = false;
   let updating = false;
   const pending = new Set<string>();
+  const activeTabs = new Map<string, string>();
   const fields = new Map<
     string,
     {
@@ -94,7 +103,7 @@ function mountForm(
   summary.setAttribute("aria-label", t("of.errorSummary"));
   const live = document.createElement("div");
   live.className = "of-sr-only";
-  live.setAttribute("aria-live", "polite");
+  live.setAttribute("aria-live", options.mode === "design" ? "off" : "polite");
   live.setAttribute("aria-atomic", "true");
   const originalClass = root.getAttribute("class");
   const originalAttributes = [
@@ -115,6 +124,16 @@ function mountForm(
   const focus = (id: string): void => {
     const field = fields.get(id);
     if (!field) throw new Error(`Unknown component id: ${id}`);
+    let child = session.form.byId[id]!;
+    while (child.parentId) {
+      const parent = session.form.byId[child.parentId]!;
+      if (options.views.get(parent.node.type)?.layout?.tabs) {
+        const slots = resolveSlots(parent.model, parent.node);
+        const slot = child.node.slot ?? slots[0]?.name;
+        if (slot) interaction(parent).selectSlot?.(slot, false);
+      }
+      child = parent;
+    }
     field.target?.focus();
     if (!field.unit.el.contains(document.activeElement))
       field.unit.el
@@ -180,6 +199,7 @@ function mountForm(
               t,
               actions(id),
               blur(id),
+              interaction(entry),
             ),
           );
           field.native?.update();
@@ -198,6 +218,26 @@ function mountForm(
       updating = false;
     }
   };
+  const interaction = (entry: CompiledNode): LayoutInteraction => ({
+    ...(options.mode ? { mode: options.mode } : {}),
+    ...(activeTabs.has(entry.node.id)
+      ? { activeSlot: activeTabs.get(entry.node.id)! }
+      : {}),
+    selectSlot: (slot, moveFocus) => {
+      if (destroyed) return;
+      activeTabs.set(entry.node.id, slot);
+      pending.add(entry.node.id);
+      flush();
+      if (moveFocus)
+        Array.from(
+          fields
+            .get(entry.node.id)!
+            .unit.el.querySelectorAll<HTMLElement>("[data-of-tab]"),
+        )
+          .find((button) => button.dataset.ofTab === slot)
+          ?.focus();
+    },
+  });
   // A blur can remove errors above the pointer target between down/up. Touch after
   // the activation completes so validation layout never cancels the user's click.
   const pointers = new Set<number>();
@@ -247,6 +287,7 @@ function mountForm(
     }
     fields.clear();
     pending.clear();
+    activeTabs.clear();
     root.replaceChildren();
     if (originalClass === null) root.removeAttribute("class");
     else root.setAttribute("class", originalClass);
@@ -294,10 +335,20 @@ function mountForm(
     applyTheme();
     for (const entry of session.form.nodes) {
       const source = options.views.get(entry.node.type);
-      const resolved =
+      const selected =
         entry.model.value || source?.portable || source?.native
           ? resolveView(entry.node.type, source, options.adapter ?? "dom")
           : undefined;
+      // Opaque native widgets use a renderer-owned design placeholder; preview remains native.
+      const resolved =
+        selected && options.mode === "design" && typeof selected !== "function"
+          ? () =>
+              h(
+                "span",
+                { class: "of-design-native" },
+                entry.node.label ?? entry.model.title,
+              )
+          : selected;
       if (resolved && typeof resolved !== "function" && !options.nativeHost)
         throw new Error(
           `no-view: Native host required for ${entry.node.type} in adapter ${options.adapter ?? "dom"}`,
@@ -339,12 +390,27 @@ function mountForm(
           t,
           actions(entry.node.id),
           blur(entry.node.id),
+          interaction(entry),
         ),
       );
       fields.set(entry.node.id, field);
-      (entry.parentId ? fields.get(entry.parentId)!.unit.el : root).append(
-        field.unit.el,
-      );
+      let parentRoot = entry.parentId
+        ? fields.get(entry.parentId)!.unit.el
+        : root;
+      if (entry.parentId) {
+        const parent = session.form.byId[entry.parentId]!;
+        const name =
+          entry.node.slot ?? resolveSlots(parent.model, parent.node)[0]?.name;
+        parentRoot =
+          Array.from(
+            parentRoot.querySelectorAll<HTMLElement>("[data-of-slot-owner]"),
+          ).find(
+            (el) =>
+              el.dataset.ofSlotOwner === entry.parentId &&
+              el.dataset.ofSlot === name,
+          ) ?? parentRoot;
+      }
+      parentRoot.append(field.unit.el);
     }
     root.append(live);
     summary.addEventListener("click", onSummaryClick);
@@ -410,8 +476,13 @@ export function renderToString(
       "SSR idPrefix must contain letters, digits, underscores or hyphens.",
     );
   const resolved = resolveTheme(options.theme, options);
-  const children = new Map<string | undefined, string[]>();
-  for (const entry of [...session.form.nodes].reverse()) {
+  const children = new Map<string | undefined, CompiledNode[]>();
+  for (const entry of session.form.nodes) {
+    const siblings = children.get(entry.parentId) ?? [];
+    siblings.push(entry);
+    children.set(entry.parentId, siblings);
+  }
+  const node = (entry: CompiledNode): VNode => {
     const shell = shellVNode(
       session,
       entry,
@@ -422,16 +493,42 @@ export function renderToString(
       options.presentation?.[entry.node.id],
       options.t ??
         ((key, params) => session.localize(key, params, defaultMessage)),
+      undefined,
+      undefined,
+      options.mode ? { mode: options.mode } : {},
     );
-    const html = renderVNodeToString(shell);
-    // Nested containers append already-escaped rendered child markup, never definition HTML.
-    const nested = html.replace(
-      /<\/(div|fieldset|section)>$/,
-      (closing) => `${(children.get(entry.node.id) ?? []).join("")}${closing}`,
-    );
-    const siblings = children.get(entry.parentId) ?? [];
-    siblings.unshift(nested);
-    children.set(entry.parentId, siblings);
-  }
-  return `<div class="of-root" data-of-theme="${escapeHtml(resolved.name)}" data-of-mode="${escapeHtml(options.themeMode ?? "light")}" data-of-instance="${instance}"><style>${themeStyle(resolved, instance)}</style>${(children.get(undefined) ?? []).join("")}<div class="of-sr-only" aria-live="polite" aria-atomic="true"></div></div>`;
+    const nested = children.get(entry.node.id) ?? [];
+    if (!nested.length) return shell;
+    const slots = resolveSlots(entry.model, entry.node);
+    let found = false;
+    const attach = (value: VNode): VNode => {
+      if (value.props["data-of-slot-owner"] === entry.node.id) {
+        found = true;
+        return h(
+          value.tag,
+          { ...value.props },
+          value.children,
+          nested
+            .filter(
+              (child) =>
+                (child.node.slot ?? slots[0]?.name) ===
+                value.props["data-of-slot"],
+            )
+            .map(node),
+        );
+      }
+      return h(
+        value.tag,
+        { ...value.props },
+        value.children.map((child) =>
+          typeof child === "string" ? child : attach(child),
+        ),
+      );
+    };
+    const slotted = attach(shell);
+    return found
+      ? slotted
+      : h(shell.tag, { ...shell.props }, shell.children, nested.map(node));
+  };
+  return `<div class="of-root" data-of-theme="${escapeHtml(resolved.name)}" data-of-mode="${escapeHtml(options.themeMode ?? "light")}" data-of-instance="${instance}"><style>${themeStyle(resolved, instance)}</style>${(children.get(undefined) ?? []).map((entry) => renderVNodeToString(node(entry))).join("")}<div class="of-sr-only" aria-live="polite" aria-atomic="true"></div></div>`;
 }

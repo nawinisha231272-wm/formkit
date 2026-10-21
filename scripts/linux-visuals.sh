@@ -13,12 +13,19 @@ case "$visual_suite" in
   themes) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
   author) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/authoring.spec.ts ;;
   boolean) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts ;;
+  m09) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/tabs.spec.ts ;;
+  builder) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts ;;
+  tabs) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/tabs.spec.ts ;;
   sdk) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts ;;
-  *) echo "Usage: sh scripts/linux-visuals.sh [record|check] [themes|sdk|author|boolean]" >&2; exit 2;;
+  *) echo "Usage: sh scripts/linux-visuals.sh [record|check] [themes|sdk|author|boolean|tabs|builder|m09]" >&2; exit 2;;
 esac
 mkdir -p "$visual_snapshot_dir"
 if [ "$visual_mode" = record ] && [ -n "$(find "$visual_snapshot_dir" -name '*.png' -print -quit)" ]; then
   echo "Refusing to overwrite existing Linux PNGs. Use check; baseline replacement requires review." >&2
+  exit 2
+fi
+if [ "$visual_mode" = record ] && [ "$visual_suite" = m09 ] && [ -n "$(find tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts -name '*.png' -print -quit 2>/dev/null)" ]; then
+  echo "Refusing to overwrite existing builder PNGs. Use check." >&2
   exit 2
 fi
 # Source is read-only. Container dependencies/builds live only in its disposable filesystem.
@@ -42,17 +49,32 @@ visual_file=tests/e2e/themes.spec.ts
 if [ "$OURFORM_VISUAL_SUITE" = sdk ]; then visual_file=tests/e2e/sdk-extensions.spec.ts; visual_filter="SDK composites/presets"; fi
 if [ "$OURFORM_VISUAL_SUITE" = author ]; then visual_file=tests/e2e/authoring.spec.ts; visual_filter="authoring:"; fi
 if [ "$OURFORM_VISUAL_SUITE" = boolean ]; then visual_file=tests/e2e/nullable-boolean.spec.ts; visual_filter="nullable boolean:"; fi
+if [ "$OURFORM_VISUAL_SUITE" = tabs ]; then visual_file=tests/e2e/tabs.spec.ts; visual_filter="visual conformance"; fi
+if [ "$OURFORM_VISUAL_SUITE" = builder ]; then visual_file=tests/e2e/builder-hosts.spec.ts; visual_filter="visual conformance"; fi
+# Only screenshot cases belong to image recording; full pnpm verify retains every functional/axe case.
+run_visual() {
+  local snapshot_args=()
+  if [ "$1" = record ]; then snapshot_args=(--update-snapshots=all); fi
+  if [ "$OURFORM_VISUAL_SUITE" = m09 ]; then
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/tabs.spec.ts --workers=1 --max-failures=1 --grep "visual conformance" "${snapshot_args[@]}" || return $?
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-hosts.spec.ts --project=chromium --workers=1 --max-failures=1 --grep "visual conformance" "${snapshot_args[@]}"
+  else
+    local project_args=()
+    if [ "$OURFORM_VISUAL_SUITE" = builder ]; then project_args=(--project=chromium); fi
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "$visual_file" --workers=1 --max-failures=1 --grep "$visual_filter" "${project_args[@]}" "${snapshot_args[@]}"
+  fi
+}
 : > /results/generation.log
 : > /results/themes.log
 set +e
 if [ "$OURFORM_VISUAL_MODE" = record ]; then
-  npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "$visual_file" --workers=1 --grep "$visual_filter" --update-snapshots=all > /results/generation.log 2>&1
+  run_visual record > /results/generation.log 2>&1
   result=$?
   cat /results/generation.log
 else result=0
 fi
 if [ "$result" -eq 0 ]; then
-  npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "$visual_file" --workers=1 --grep "$visual_filter" > /results/themes.log 2>&1
+  run_visual check > /results/themes.log 2>&1
   result=$?
 fi
 set -e

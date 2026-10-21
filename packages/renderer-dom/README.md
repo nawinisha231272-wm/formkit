@@ -85,3 +85,9 @@ view.reset();
 Rejected user edits on disabled/read-only fields trigger a core refresh patch. Portable rendering
 restores live value/checked properties even when VNode props are unchanged, preserving node identity.
 Field authors forward state/ARIA and can call setValue directly; no manual DOM restoration is needed.
+
+M09 adds `mode: 'design'` to RenderOptions: every authoring slot and hidden field is shown with inert
+portable controls and native placeholders. Runtime Tabs retains every panel/control while switching;
+focus(id) reveals ancestor panels. `defaultThemes` is a frozen array containing Bootstrap4/5/Tailwind
+(the Base fallback is built in), shared by the form host and builder. `@ourform/builder` mounts a design
+view and editable preview on one session, avoiding duplicate processor/provider runs.

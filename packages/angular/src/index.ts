@@ -40,6 +40,18 @@ import type {
 } from "@ourform/sdk";
 import { builtinComponents } from "@ourform/components";
 import type { StatePatch, SubmitResult } from "@ourform/core";
+import { createBuilderController } from "@ourform/builder";
+import type {
+  BuilderController,
+  BuilderOptions,
+  SchemaChange,
+} from "@ourform/builder";
+import type { Diagnostic, FormDefinition } from "@ourform/schema";
+export type {
+  BuilderController,
+  BuilderOptions,
+  SchemaChange,
+} from "@ourform/builder";
 export const OUR_FORM_OPTIONS = new InjectionToken<Partial<HostOptions>>(
   "OurForm options",
 );
@@ -305,6 +317,94 @@ export class OurFormComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
   focusField(id: string): void {
     this.active().focusField(id);
+  }
+  ngOnDestroy(): void {
+    this.controller?.destroy();
+    this.#controller.set(undefined);
+  }
+}
+@Component({
+  selector: "our-form-builder",
+  standalone: true,
+  template: '<div class="our-builder-mount"></div>',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class OurFormBuilderComponent
+  implements AfterViewInit, OnChanges, OnDestroy
+{
+  @Input() schema: unknown;
+  @Input() theme: BuilderOptions["theme"];
+  @Input() themeMode: BuilderOptions["themeMode"];
+  @Input() engine: BuilderOptions["engine"];
+  @Input() fields: readonly RegisteredField[] = [];
+  @Output() readonly schemaChange = new EventEmitter<FormDefinition>();
+  @Output() readonly changed = new EventEmitter<SchemaChange>();
+  @Output() readonly diagnostics = new EventEmitter<readonly Diagnostic[]>();
+  @Output() readonly ready = new EventEmitter<BuilderController>();
+  readonly #element = inject<ElementRef<HTMLElement>>(ElementRef);
+  readonly #environment = inject(EnvironmentInjector);
+  readonly #injector = inject(Injector);
+  readonly #application = inject(ApplicationRef);
+  readonly #options = inject(OUR_FORM_OPTIONS, { optional: true }) ?? {};
+  readonly #provided = inject(OUR_FORM_FIELDS, { optional: true }) ?? [];
+  readonly #controller = signal<BuilderController | undefined>(undefined);
+  #mounted = false;
+  get controller(): BuilderController | undefined {
+    return this.#controller();
+  }
+  ngAfterViewInit(): void {
+    this.#mounted = true;
+    this.rebuild();
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.#mounted) return;
+    if (["engine", "fields"].some((key) => changes[key])) {
+      this.rebuild();
+      return;
+    }
+    if (changes["schema"] && this.schema !== undefined) {
+      if (!this.controller) this.rebuild();
+      else this.diagnostics.emit(this.controller.load(this.schema));
+    }
+    if (changes["theme"])
+      this.controller?.setTheme(this.theme ?? this.#options.theme ?? "base");
+    if (changes["themeMode"])
+      this.controller?.setMode(
+        this.themeMode ?? this.#options.themeMode ?? "light",
+      );
+  }
+  private rebuild(): void {
+    this.controller?.destroy();
+    this.#controller.set(undefined);
+    if (!this.schema) return;
+    const next = createBuilderController(
+      this.#element.nativeElement.querySelector(".our-builder-mount")!,
+      {
+        ...this.#options,
+        schema: this.schema,
+        theme: this.theme ?? this.#options.theme ?? "base",
+        themeMode: this.themeMode ?? this.#options.themeMode ?? "light",
+        ...(this.engine ? { engine: this.engine } : {}),
+        fields: [
+          ...builtinComponents,
+          ...(this.#options.fields ?? []),
+          ...this.#provided,
+          ...this.fields,
+        ],
+        adapter: "angular",
+        nativeHost: createAngularNativeHost(
+          this.#environment,
+          this.#injector,
+          this.#application,
+        ),
+        onSchemaChange: (change) => {
+          this.schemaChange.emit(change.definition);
+          this.changed.emit(change);
+        },
+      },
+    );
+    this.#controller.set(next);
+    this.ready.emit(next);
   }
   ngOnDestroy(): void {
     this.controller?.destroy();

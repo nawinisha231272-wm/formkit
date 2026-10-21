@@ -23,12 +23,14 @@
     "registerNativeField",
     "renderVNodeToString",
     "resolveConfig",
+    "resolveSlots",
     "selectProperty",
     "stringProperty",
     "stringValue"
   ],
   "types": [
     "ComponentModel",
+    "ComponentSlot",
     "ComponentViews",
     "ConfigOf",
     "Expr",

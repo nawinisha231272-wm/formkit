@@ -392,3 +392,24 @@ implementing-agent Slider/Color rehearsals remain rehearsals. A human guide-usab
 in M11. Record author, context/provenance, times, commands, results and confusing steps; do not relabel
 AI evidence as human review or hide a No comfort verdict. M08's final recommendation and API-freeze
 status are recorded in docs/progress.md and ADR-0003. Stop for owner review before M09.
+
+### Add a container without builder code (M09)
+
+```ts
+import { defineLayout } from "@ourform/sdk";
+export const card = defineLayout({
+  type: "acme.card",
+  title: "Card",
+  slots: [{ name: "body", label: "Contents", accepts: ["field"], max: 3 }],
+});
+```
+
+Register `card` alongside fields. It immediately appears in the palette and exposes a nested drop slot.
+Slot names are stable safe keys; labels are captions; accepts lists kinds or exact registered types,
+max counts direct children. Child wire `slot` chooses a destination (omitted means first). Pure
+`slots(node)` resolvers support instance-configured destinations; the shared resolver validates at
+most64 descriptors. Use model-owned composite children for fixed expansion; editable slots are for
+layouts. See `@ourform/builder` README for keyboard authoring and lifecycle details.
+
+Slot captions are literal text by default, including text that matches a catalog key. Optional
+`labelKey: "acme.card.body"` opts into host translation with `label: "Contents"` as its English fallback.

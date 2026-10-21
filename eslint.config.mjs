@@ -18,9 +18,9 @@ const allowed = {
   ],
   "builder-core": ["schema", "core", "sdk"],
   builder: ["builder-core", "renderer-dom", "sdk", "core", "schema"],
-  element: ["renderer-dom", "sdk", "core", "schema", "components"],
-  react: ["renderer-dom", "sdk", "core", "schema", "components"],
-  angular: ["renderer-dom", "sdk", "core", "schema", "components"],
+  element: ["renderer-dom", "builder", "sdk", "core", "schema", "components"],
+  react: ["renderer-dom", "builder", "sdk", "core", "schema", "components"],
+  angular: ["renderer-dom", "builder", "sdk", "core", "schema", "components"],
   licensing: [],
   cli: ["sdk", "schema"],
 };

@@ -130,3 +130,7 @@ Child slot names select a parent's declared slot without changing the ordered co
 adding a data scope. Existing omitted-slot JSON stays unchanged. Root components do not carry a slot.
 Compilation and structural commands validate declared destinations, accepted kinds/types, capacities
 and root-only placement. Slot metadata/resolvers are registered model code, never executable wire JSON.
+
+M09's optional child slot is validated against registered model metadata by compilation, including
+accepts/direct-child max and rootOnly placement. Definition meta-schema validates its nonempty string
+shape; semantics need the engine registry. Tabs is transparent; Container still introduces object scope.
