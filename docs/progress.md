@@ -85,7 +85,11 @@ captures, while separate full-matrix authoring/lifecycle and accessibility cases
 checks and30-second deadline. The Linux image helper runs only screenshot cases: runtime Tabs in
 three browsers plus all host/theme previews in Chromium, matching the documented image matrix.
 Full pnpm verify still runs all three groups for every host/theme/browser. The final image log is
-`/tmp/m09-linux-visuals-only.log`. Original log: `/tmp/m09-linux-host-combined-timeout.log`.
+`/tmp/m09-linux-visuals-only.log`. Runtime Tabs also completed both images before an
+emulated WebKit case hit its deadline in a later caret assertion (`/tmp/m09-linux-tabs-combined-timeout.log`).
+Tabs image capture is now its own case too; every keyboard/validation/caret/reset/axe assertion remains
+in the functional matrix with the unchanged timeout. Final image evidence will be recorded from
+`/tmp/m09-linux-visuals-separated.log`. Original log: `/tmp/m09-linux-host-combined-timeout.log`.
 
 ## M09 plan amendment — implementation not started
 

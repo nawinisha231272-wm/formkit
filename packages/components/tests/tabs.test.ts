@@ -100,10 +100,16 @@ test("slot captions are literal unless labelKey opts into translation with an En
   const views = new Map([[layout.model.type, layout.views]]);
   const translated = renderToString(session, {
     views,
-    t: (key) => (key === "acme.second" ? "Translated second" : key),
+    t: (key) =>
+      key === "acme.second"
+        ? "Translated second"
+        : key === "of.required"
+          ? "Wrongly translated literal"
+          : key,
   });
   expect(translated).toContain(">of.required</button>");
   expect(translated).toContain(">Translated second</button>");
+  expect(translated).not.toContain("Wrongly translated literal");
   expect(renderToString(session, { views, t: (key) => key })).toContain(
     ">English second</button>",
   );

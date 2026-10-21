@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import type {} from "../../apps/playground/tabs";
 for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
-  test(`Tabs ${theme}: keyboard, retained state, error reveal and visual conformance`, async ({
+  test(`Tabs ${theme}: keyboard, retained state, error reveal, reset and accessibility`, async ({
     page,
   }) => {
     await page.goto("/tabs.html");
@@ -20,10 +20,6 @@ for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
     await expect(contact).toHaveAttribute("aria-selected", "true");
     const email = page.getByRole("textbox", { name: "Email", exact: true });
     await expect(email).toHaveValue("ada@example.test");
-    await expect(page.locator("#tabs-form")).toHaveScreenshot(
-      `tabs-${theme}-contact.png`,
-      { animations: "disabled", maxDiffPixelRatio: 0.02 },
-    );
     await email.fill("invalid");
     await contact.focus();
     await page.keyboard.press("Home");
@@ -48,10 +44,6 @@ for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
     await expect(email).toHaveAttribute("aria-invalid", "true");
     await email.fill("valid@example.test");
     await profile.click();
-    await expect(page.locator("#tabs-form")).toHaveScreenshot(
-      `tabs-${theme}-profile.png`,
-      { animations: "disabled", maxDiffPixelRatio: 0.02 },
-    );
     const axe = await new AxeBuilder({ page }).analyze();
     expect(
       axe.violations.filter((v) =>
@@ -93,3 +85,34 @@ for (const state of ["readonly", "disabled"])
     );
     await expect(name).toHaveValue("API answer");
   });
+
+for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+  test(`Tabs ${theme}: visual conformance`, async ({ page }) => {
+    await page.goto("/tabs.html");
+    await page.locator("#theme").selectOption(theme);
+    await page
+      .getByRole("textbox", { name: "Full name", exact: true })
+      .fill("Updated name");
+    const profile = page.getByRole("tab", { name: "Profile", exact: true });
+    await profile.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(
+      page.getByRole("tab", { name: "Contact", exact: true }),
+    ).toBeFocused();
+    await expect(
+      page.getByRole("textbox", { name: "Email", exact: true }),
+    ).toHaveValue("ada@example.test");
+    await expect(page.locator("#tabs-form")).toHaveScreenshot(
+      `tabs-${theme}-contact.png`,
+      { animations: "disabled", maxDiffPixelRatio: 0.02 },
+    );
+    await profile.click();
+    await expect(
+      page.getByRole("textbox", { name: "Full name", exact: true }),
+    ).toHaveValue("Updated name");
+    await expect(page.locator("#tabs-form")).toHaveScreenshot(
+      `tabs-${theme}-profile.png`,
+      { animations: "disabled", maxDiffPixelRatio: 0.02 },
+    );
+  });
+}
