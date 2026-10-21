@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OurForm builder: edit dialog</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+.ofb-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:1px solid #D5DBE3;border-radius:6px;background:#fff;color:#1B2430;font:500 13px Inter,system-ui,sans-serif;cursor:pointer}
+.ofb-label{display:block;margin:0 0 6px;font:600 12.5px Inter,system-ui,sans-serif;color:#1B2430}
+.ofb-input{display:block;width:100%;box-sizing:border-box;height:36px;padding:0 10px;border:1px solid #D5DBE3;border-radius:6px;font:13.5px Inter,system-ui,sans-serif;color:#1B2430;background:#fff}
+.ofb-hint{margin:5px 0 0;font:12px Inter,system-ui,sans-serif;color:#5B6675}
+.ofb-switch{position:relative;display:inline-block;width:34px;height:20px;border-radius:999px;background:#C3CBD6;flex:none}
+.ofb-switch-on{background:#2563EB}
+.ofb-knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.ofb-tab{padding:12px 2px;font:500 13px Inter,system-ui,sans-serif;color:#5B6675;border-bottom:2px solid transparent;white-space:nowrap}
+.ofb-skel{background:#E6EAF0;border-radius:4px}
+</style>
+</helmet>
+<div style="position: relative; min-height: 960px; background: #F3F5F8; font-family: Inter, system-ui, sans-serif; color: #1B2430; overflow: hidden">
+
+<div aria-hidden="true" style="display: flex; flex-direction: column; min-height: 960px">
+<div style="height: 52px; background: #FFFFFF; border-bottom: 1px solid #E2E6EC; display: flex; align-items: center; gap: 12px; padding: 0 20px">
+<span style="width: 28px; height: 28px; border-radius: 7px; background: #2563EB"></span><span class="ofb-skel" style="width: 220px; height: 12px"></span><span style="flex: 1"></span><span class="ofb-skel" style="width: 260px; height: 26px"></span>
+</div>
+<div style="display: flex; flex: 1">
+<div style="flex: 0 0 264px; background: #FFFFFF; border-right: 1px solid #E2E6EC"></div>
+<div style="flex: 1; padding: 40px"><div style="max-width: 880px; height: 640px; margin: 0 auto; background: #FFFFFF; border: 1px solid #E2E6EC; border-radius: 12px"></div></div>
+<div style="flex: 0 0 300px; background: #FFFFFF; border-left: 1px solid #E2E6EC"></div>
+</div>
+</div>
+
+<div style="position: absolute; inset: 0; background: rgba(16,24,40,.45); display: flex; align-items: flex-start; justify-content: center; padding: 48px 20px; box-sizing: border-box">
+<div role="dialog" aria-modal="true" aria-labelledby="dlg-title" style="width: 100%; max-width: 1040px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 24px 48px rgba(16,24,40,.25); display: flex; flex-direction: column; overflow: hidden">
+
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 18px 24px 0">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 7px; background: #EEF2F7; font: 600 13px Inter, sans-serif">@</span>
+<div style="display: flex; flex-direction: column">
+<h2 id="dlg-title" style="margin: 0; font-size: 16px; font-weight: 600">Email field · Email</h2>
+<span style="font-size: 12px; color: #5B6675">Key <code style="font-size: 12px">email</code> · Tabs › Profile › Contact details › Column 2</span>
+</div>
+<span style="flex: 1"></span>
+<span style="font-size: 12px; color: #B54708; background: #FEF0C7; border-radius: 999px; padding: 3px 9px">Unsaved changes</span>
+<button type="button" aria-label="Close" style="display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 0; border-radius: 6px; background: transparent; color: #1B2430; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+
+<div role="tablist" aria-label="Settings" style="display: flex; flex-wrap: wrap; gap: 0 22px; padding: 6px 24px 0; border-bottom: 1px solid #E2E6EC">
+<span role="tab" aria-selected="true" class="ofb-tab" style="color: #1B2430; font-weight: 600; border-bottom-color: #2563EB">Display</span>
+<span role="tab" aria-selected="false" class="ofb-tab">Data</span>
+<span role="tab" aria-selected="false" class="ofb-tab">Validation <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #B42318; vertical-align: 2px; margin-left: 3px" aria-label="has a problem"></span></span>
+<span role="tab" aria-selected="false" class="ofb-tab">Conditional</span>
+<span role="tab" aria-selected="false" class="ofb-tab">Logic <span style="font-size: 11px; color: #93370D; background: #FEF0C7; border-radius: 999px; padding: 1px 6px; margin-left: 2px">1</span></span>
+<span role="tab" aria-selected="false" class="ofb-tab">Layout</span>
+<span role="tab" aria-selected="false" class="ofb-tab">Accessibility</span>
+<span role="tab" aria-selected="false" class="ofb-tab">API</span>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; padding: 22px 24px 24px">
+
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div>
+<label class="ofb-label" for="f-label">Label</label>
+<input id="f-label" class="ofb-input" type="text" value="Email">
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<div>
+<label class="ofb-label" for="f-ph">Placeholder</label>
+<input id="f-ph" class="ofb-input" type="text" value="name@company.com">
+</div>
+<div>
+<label class="ofb-label" for="f-tip">Tooltip</label>
+<input id="f-tip" class="ofb-input" type="text" placeholder="Optional">
+</div>
+</div>
+<div>
+<label class="ofb-label" for="f-desc">Description</label>
+<input id="f-desc" class="ofb-input" type="text" value="We send receipts here.">
+<p class="ofb-hint">Shown under the field. Plain text, or a translation key such as <code>receipts.help</code>.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<div>
+<label class="ofb-label" for="f-pre">Prefix</label>
+<input id="f-pre" class="ofb-input" type="text" placeholder="e.g. icon or text">
+</div>
+<div>
+<label class="ofb-label" for="f-suf">Suffix</label>
+<input id="f-suf" class="ofb-input" type="text" placeholder="e.g. @company.com">
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 22px; padding-top: 4px">
+<label style="display: inline-flex; align-items: center; gap: 10px; font-size: 13.5px"><span class="ofb-switch"><span class="ofb-knob"></span></span>Hidden</label>
+<label style="display: inline-flex; align-items: center; gap: 10px; font-size: 13.5px"><span class="ofb-switch"><span class="ofb-knob"></span></span>Disabled</label>
+<label style="display: inline-flex; align-items: center; gap: 10px; font-size: 13.5px"><span class="ofb-switch"><span class="ofb-knob"></span></span>Read-only</label>
+</div>
+<div style="border-top: 1px solid #E2E6EC; padding-top: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
+<span style="font: 600 11.5px Inter, sans-serif; letter-spacing: .04em; text-transform: uppercase; color: #5B6675">Component options</span>
+<span style="font-size: 12px; color: #5B6675">From this component's properties</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 22px">
+<label style="display: inline-flex; align-items: center; gap: 10px; font-size: 13.5px"><span class="ofb-switch ofb-switch-on"><span class="ofb-knob" style="left: 16px"></span></span>Suggest common domains</label>
+<label style="display: inline-flex; align-items: center; gap: 10px; font-size: 13.5px"><span class="ofb-switch ofb-switch-on"><span class="ofb-knob" style="left: 16px"></span></span>Lower-case on blur</label>
+</div>
+</div>
+</div>
+
+<div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px">
+<span style="font-size: 12.5px; font-weight: 600">Live preview</span>
+<div role="group" aria-label="Preview state" style="display: flex; gap: 2px; background: #EEF2F7; border-radius: 7px; padding: 2px">
+<button type="button" aria-pressed="false" style="height: 24px; padding: 0 9px; border: 0; border-radius: 5px; background: transparent; font: 500 12px Inter, sans-serif; color: #5B6675">Default</button>
+<button type="button" aria-pressed="false" style="height: 24px; padding: 0 9px; border: 0; border-radius: 5px; background: transparent; font: 500 12px Inter, sans-serif; color: #5B6675">Focus</button>
+<button type="button" aria-pressed="true" style="height: 24px; padding: 0 9px; border: 0; border-radius: 5px; background: #FFFFFF; font: 600 12px Inter, sans-serif; color: #1B2430">Error</button>
+<button type="button" aria-pressed="false" style="height: 24px; padding: 0 9px; border: 0; border-radius: 5px; background: transparent; font: 500 12px Inter, sans-serif; color: #5B6675">Disabled</button>
+</div>
+</div>
+<div style="flex: 1; min-height: 300px; background: #F8FAFC; border: 1px solid #E2E6EC; border-radius: 10px; padding: 28px 24px; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+<div style="font: 500 11px Inter, sans-serif; color: #5B6675; margin-bottom: 18px">Bootstrap 5 · same renderer as the published form</div>
+<label style="display: block; margin: 0 0 6px; font-size: 14px; font-weight: 500; color: #212529">Email <span style="color: #dc3545">*</span></label>
+<input type="email" value="ana@exam" aria-label="Email preview" style="display: block; width: 100%; box-sizing: border-box; height: 38px; padding: 6px 12px; font-size: 15px; font-family: inherit; color: #212529; background: #ffffff; border: 1px solid #dc3545; border-radius: 6px">
+<div style="margin-top: 4px; font-size: 13px; color: #dc3545">Enter a valid email address.</div>
+<div style="margin-top: 4px; font-size: 13px; color: #6c757d">We send receipts here.</div>
+</div>
+<p style="margin: 0; font-size: 12px; color: #5B6675">Changes show here instantly and apply to the form when you save.</p>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 24px; border-top: 1px solid #E2E6EC; background: #FAFBFC">
+<button type="button" class="ofb-btn" style="color: #B42318; border-color: #F4C7C3">Delete</button>
+<span style="flex: 1; text-align: center; font-size: 12px; color: #5B6675">Esc cancels · Ctrl+Enter saves · Save is one undo step</span>
+<button type="button" class="ofb-btn">Cancel</button>
+<button type="button" class="ofb-btn" style="background: #2563EB; border-color: #2563EB; color: #FFFFFF">Save</button>
+</div>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

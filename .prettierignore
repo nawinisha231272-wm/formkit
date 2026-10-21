@@ -7,3 +7,8 @@ test-results
 playwright-report
 benchmark-results
 visual-results
+
+# Preserve approved design exports byte-for-byte.
+docs/design/builder-ux-2026-10-21/*.dc.html
+docs/design/builder-ux-2026-10-21/canvas.json
+docs/design/builder-ux-2026-10-21/SHA256SUMS

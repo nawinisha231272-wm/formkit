@@ -14,8 +14,12 @@ Normative contracts. Code must match these; change them only together with an AD
 | 07-builder.md          | builder-core commands, property panel, builder UI                         |
 | 08-licensing.md        | Offline keys, distribution                                                |
 | 09-standards.md        | Toolchain, tests, CI, security, versioning                                |
+| 10-builder-ux.md       | Approved builder UX, builder themes, Material theme, M09b delivery        |
+| 11-logic-rules.md      | Logic format, deterministic browser/Node semantics, M09c acceptance       |
 
-Spec [10-builder-ui.md](10-builder-ui.md) records the planned M09b replacement for the current harness; M09a implements engine/schema changes only.
+The owner approved the visual designs on 2026-10-21. References are in
+[builder-ux-2026-10-21](../design/builder-ux-2026-10-21/README.md). M09b delivers screens 1, 2 and 5;
+M09c delivers screen 3; M10a delivers screen 4. The HTML references are not implementation source.
 
 Milestones with tasks and acceptance criteria: `../milestones/M00.md` … `M12.md`;
 M10 is split into [M10a](../milestones/M10a.md) (data structures) and
