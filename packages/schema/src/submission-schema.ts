@@ -15,6 +15,8 @@ export interface SubmissionSchemaSource {
       properties?: Record<string, { default?: unknown }>;
       value?: {
         empty(): unknown;
+        normalize?(value: unknown): unknown;
+        isEmpty?(value: unknown): boolean;
         serialize?(value: unknown): unknown;
         jsonSchema?(config: unknown): object;
       };
@@ -93,10 +95,30 @@ export function toSubmissionSchema(form: SubmissionSchemaSource): JSONSchema {
         : adapter.empty();
       if (inspectJson(empty).length)
         throw new Error("Serialized empty value must be safe JSON.");
+      // Boolean adapters have a finite canonical domain. Consent adapters may
+      // regard both false and null as empty even though empty() returns null.
+      const types = Array.isArray(hint.type) ? hint.type : [hint.type];
+      const empties = [
+        ...new Set([
+          empty,
+          ...(types.includes("boolean") &&
+          types.every((type) => type === "boolean" || type === "null") &&
+          adapter.isEmpty
+            ? [false, true, ...(types.includes("null") ? [null] : [])].filter(
+                (value) =>
+                  adapter.isEmpty!(
+                    adapter.normalize ? adapter.normalize(value) : value,
+                  ),
+              )
+            : []),
+        ]),
+      ];
       const emptySchema =
         typeof empty === "string" && empty.trim() === ""
           ? { type: "string", pattern: "^\\s*$" }
-          : { const: empty };
+          : empties.length === 1
+            ? { const: empties[0] }
+            : { enum: empties };
       const nonempty: JSONSchema = {
         allOf: [field, constraints, { not: emptySchema }],
       };

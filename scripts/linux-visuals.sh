@@ -12,8 +12,9 @@ case "$visual_mode" in record|check) ;; *) echo "Usage: sh scripts/linux-visuals
 case "$visual_suite" in
   themes) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
   author) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/authoring.spec.ts ;;
+  boolean) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts ;;
   sdk) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts ;;
-  *) echo "Usage: sh scripts/linux-visuals.sh [record|check] [themes|sdk|author]" >&2; exit 2;;
+  *) echo "Usage: sh scripts/linux-visuals.sh [record|check] [themes|sdk|author|boolean]" >&2; exit 2;;
 esac
 mkdir -p "$visual_snapshot_dir"
 if [ "$visual_mode" = record ] && [ -n "$(find "$visual_snapshot_dir" -name '*.png' -print -quit)" ]; then
@@ -40,6 +41,7 @@ visual_filter="conformance states and visual snapshot|read-only prevents text, c
 visual_file=tests/e2e/themes.spec.ts
 if [ "$OURFORM_VISUAL_SUITE" = sdk ]; then visual_file=tests/e2e/sdk-extensions.spec.ts; visual_filter="SDK composites/presets"; fi
 if [ "$OURFORM_VISUAL_SUITE" = author ]; then visual_file=tests/e2e/authoring.spec.ts; visual_filter="authoring:"; fi
+if [ "$OURFORM_VISUAL_SUITE" = boolean ]; then visual_file=tests/e2e/nullable-boolean.spec.ts; visual_filter="nullable boolean:"; fi
 : > /results/generation.log
 : > /results/themes.log
 set +e

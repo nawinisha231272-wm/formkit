@@ -178,3 +178,8 @@ processor counters unchanged. It emits one refresh StatePatch: changedFields con
 changedPaths is empty, and data is the same stored snapshot. Renderers restore the control's live value
 from state without replacing its DOM node. Default/API-sourced writes continue to work. Equal API writes
 still emit nothing. This closes optimistic-control restoration without adding guards to field authors.
+
+Required validation calls ValueAdapter.isEmpty on canonical values. With nullableBooleanValue,
+ordinary answers accept false as nonempty; consent explicitly opts into requiredTrue:true, where
+false/null fail required but are never rewritten to true or dropped. Optional false remains valid.
+Generated boolean/null submission schemas mirror all empty states (ADR-0013).

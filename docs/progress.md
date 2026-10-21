@@ -11,15 +11,62 @@ deviations from spec, open questions.
 - **M00 complete** — clean installation and full verification pass.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
-- **M03–M07 complete** — local and Linux evidence is recorded below. M08 is in progress on `m08-sdk-complete`.
+- **M03–M07 complete** — local and Linux evidence is recorded below. **M08 GO under the owner-amended author criterion** — SDK 0.x freeze accepted; closure branch `m08-gate-close`, pending initial-green PR merge and owner review. Human guide usability is required in M11.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
-  [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 is now in progress on its separate milestone branch.
+  [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 delivery PR #5 is merged; the gate closure is recorded below under the revised owner decision.
 
 ## Open questions
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
+
+## M08 accepted author trial and gate closure — 2026-10-20 (GO)
+
+Owner decision: a fresh Codex session with no implementation context can meet the author criterion;
+the owner additionally accepts this specific Yes/No continued-session trial despite its failed
+fresh-session condition. Preserve the provenance correction and original No usability verdict.
+A human guide-usability pass moves to M11. This supersedes earlier human-only gate restrictions.
+Plan: document the complete value-adapter/shell/caption contracts, ship a nullable boolean adapter
+with explicit required semantics, fix CLI help status, test Node/browser/JSON Schema parity and all
+four themes, then re-verify and recommend GO/NO-GO before freezing ADR-0003. Record author/times,
+original failures and fixes. Open a closure PR, merge only on initial green CI, stop for review.
+M09 and M10 roadmap implementation/changes are deferred to the user's separate future prompt.
+
+### Gate result and accepted evidence
+
+**GO recommended. ADR-0003 accepted for the SDK 0.x freeze.** Owner acceptance of this specific
+continued-session trial satisfies the amended author criterion; the original fresh-session condition
+remains FAIL. Human guide usability is not claimed and remains an M11 task/acceptance criterion.
+
+Author: Codex trial agent in “Build Slider via author guide”, with prior Slider context still present.
+Clean f9587cb checkout; first command 19:38:24.920671 EDT, first toggle 19:42:30.615 EDT (reported
+4m 05s); total 17m 12s. Original 34-line control passed 3 Node/24 browser tests and four-theme native/
+Linux comparisons. Original No comfort verdict, failed adapter/help experiments, allowed-file audit,
+source/report commits and hashes are preserved in docs/rehearsals/yes-no/. The owner explicitly
+accepted the provenance exception; this is not a claim that a fresh session or human trial happened.
+
+| M08 criterion / correction                   | Result and evidence                                                                                                                                                                                          |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| SDK scenarios A–F                            | PASS — tests/sdk-scenarios.test.ts and tests/e2e/sdk-extensions.spec.ts in full verify.                                                                                                                      |
+| Three unedited scaffolds                     | PASS — built CLI, packed SDK, fresh install/frozen-offline reinstall and generated verify (including 48 nested browser cases).                                                                               |
+| Accepted author evidence                     | PASS by explicit owner exception, ADR-0013/M08.md; fresh-session condition FAIL remains recorded.                                                                                                            |
+| Nullable/tri-state adapter and full contract | PASS — public nullableBooleanValue({requiredTrue?}); seven Node adapter/caption/schema tests, canonical rejection, session/Node/Ajv parity including object-valued adapters.                                 |
+| Shell and caption guide                      | PASS — exact compiled inline example, all five shell references, literal caption defaults plus opt-in message keys/fallback. All four actual editors change the preview.                                     |
+| Help status                                  | PASS — built --help/-h exit 0 and leave an empty target untouched; invalid generation arguments still fail.                                                                                                  |
+| New conformance/visuals                      | PASS — 12 browser cases, four themes/three browsers. Native and pinned Linux each pass recording/comparison; 24 new PNGs. Existing 192 PNG bytes unchanged.                                                  |
+| Full pinned verify                           | PASS — Node 22.22.3/pnpm 10.10.0 CI=true pnpm verify exits zero: lint, 22 builds, 37 typechecks, 194 unit tests, 444 browser cases, 15 size budgets, five count cases. Core lines 95.15%; validation 99.25%. |
+| Freeze inventory                             | PASS — exact SDK TypeScript/runtime exports, including nullableBooleanValue, match docs/api/sdk-0.x.json; ADR-0003 accepted.                                                                                 |
+
+Complete gate report: [docs/m08-gate-report.md](m08-gate-report.md). Corrective full log:
+/tmp/m08-close-full-pinned-verify.log. No runtime dependency or correctness/pixel/size/coverage/count
+threshold changed. Original timing baselines and failed-run history remain intact. The closure PR
+records current-head initial CI and merge evidence; no failed CI workflow is re-run for green.
+
+Limits: the trial author has not reevaluated comfort after fixes; human usability moves to M11.
+Native checkbox null/false share unchecked appearance, explicitly documented with reset and alternative
+three-choice guidance. Prepublication kit/initial visual-review requirements remain documented.
+No M09/M10 plan change or implementation is included. Stop for owner review after the closure merge.
 
 ## M08 author rehearsal corrections — 2026-10-20 (implementation verified; human gate pending)
 

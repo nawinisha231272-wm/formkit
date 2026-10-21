@@ -1,0 +1,106 @@
+# TRIAL-REPORT — Yes/No toggle
+
+Author: Codex trial agent, fresh session, no implementation context
+
+**Provenance correction:** the requested author label is reproduced above, but this was not a fresh chat: prior Slider-trial context remained available. No earlier trial files were opened or reused. The fresh-session condition is **FAIL**; this is AI-assisted evidence, not the independent human M08 gate report.
+
+## Checkout, timing and code
+
+- Clean remote clone, branch `m08-sdk-complete`.
+- Commit: `f9587cb654601b2b32743335d47b4bc0965f1c3c`.
+- `git status --porcelain` was empty before setup and after authoring.
+- Start: 2026-10-20 23:38:24 UTC (19:38 EDT).
+- First visible toggle: 2026-10-20 23:42:30.615 UTC; **4m 05s** from the first clone command.
+- Total through report preparation: **17m 12s**; within 90 minutes.
+- Component: **34 physical lines / 33 nonblank lines** in `src/index.ts`.
+- No individual blocker exceeded ten minutes. Linux execution continued making progress; it was not an unresolved blocker.
+
+## Acceptance results
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| true/false values; unset is null | PASS | Adapter tests, browser values, reset returns null; optional No submits false |
+| Field label next to control | PASS | `shell: "inline"`; actual label text and input bounding boxes overlap vertically in every theme/browser; generated screenshots inspected |
+| yesLabel="Yes"; noLabel="No" | PASS | Resolved defaults tested; visible captions asserted |
+| Builder palette | PASS | Real mini-builder palette contains “Yes/No toggle”; Add works in every theme/browser |
+| Both property editors | PASS | `checkPropertyEditors` edits yesLabel to “Absolutely” and noLabel to “Never” through actual text controls and verifies changed captions |
+| Required true | PASS | Node and browser validation succeed |
+| Required false | PASS | Node/browser return required diagnostic while preserving stored false |
+| Required null/omitted | PASS | Node required diagnostics; browser initial null fails and reset restores null |
+| Optional false/null | PASS | Node cases pass; browser explicit No submits false |
+| Themes | PASS | Base, Bootstrap 4, Bootstrap 5, Tailwind |
+| Browsers | PASS | Chromium, Firefox, WebKit |
+| Accessibility and interaction | PASS in tested scope | No serious/critical axe violations in required-error state; accessible name/description, Space, focus/identity, reset, protected writes, API writes and cleanup |
+| macOS visual recording/check | PASS | Guide's visual:record and visual:check; 12 separate theme/browser images reviewed |
+| Linux visual recording/check | PASS | Guide's digest-pinned visual:linux:record and visual:linux:check; separate linux-x64 images |
+| Final verify | PASS | Build, strict typecheck, 3 Node tests, 24 browser cases |
+
+The nullable adapter preserves boolean false but treats false and null as empty for required validation; its schema permits boolean/null. This implementation was reached from compiler diagnostics, without opening a type declaration or implementation file. Initial No and unset share an unchecked appearance; their stored values differ. Base/Tailwind place the answer caption lower than Bootstrap; the actual field label remains inline.
+
+## Confusing, missing or wrong steps
+
+1. **Nullable boolean adapter is undocumented.** Guide: “Replace src/index.ts with this Quantity field (a number input, with empty = null).” Also: “Zero is a valid number; null is empty.” This explains numbers but not tri-state booleans or true-only required validation. `booleanValue({empty:null})` failed compilation; `booleanValue()` rejected null in validation. Best attempt: supplied a structural adapter. Compiler feedback disclosed function-shaped `empty` and `jsonSchema`; spreading the boolean helper also caused a nullable `equals` mismatch. A standalone adapter passed all requested cases.
+
+2. **Inline shell mode is missing.** Guide: “All imports, property helpers, defaults, events, theme classes and ARIA forwarding are included.” The guide demonstrates a numeric control but gives no shell-mode reference. Guessed `shell: "inline"`, then confirmed it with compilation, real layout measurements and screenshots. No shell markup was copied or reimplemented.
+
+3. **Configurable text translation is unclear.** Guide: “Keep a typed English dictionary in the component and use it when t returns the unknown key, as message() demonstrates.” That example covers a fixed message, not editable captions that default to literal “Yes”/“No”. Best attempt: pass configured captions to `p.t`; unknown keys retain the configured English text. Default and edited captions work. The guide should state whether configurable captions are literal text, message keys, or both.
+
+4. **Adapting the scaffold is necessary, but the advanced value contract is absent.** Guide: “After authoring a different control, update its value/interaction samples and metadata-editor cases in the generated tests.” The generated harness and editor helper worked as described. The nullable adapter's signatures and required semantics still had to be inferred through failed builds instead of a documented adapter contract.
+
+CLI issue, separate from guide wording: `--help` prints “Usage: ourform create-component|create-theme|create-plugin name [--directory path] [--local-packages path]” but exits 1. My optional help invocation stopped an `&&` chain after a successful SDK build/pack. Retried generation separately. This was not a failed documented generation step.
+
+## Files opened and rule audit
+
+- Allowed reference read: `repo/apps/docs/component-author-guide.md`, including its embedded numeric example. No standalone Quantity, Slider or Color example was opened.
+- Allowed generated files read: `src/index.ts`, `preview.ts`, `tests/extension.test.ts`, `browser/component.spec.ts`, `package.json`, `playwright.config.ts`, `index.html`, `README.md`, `.gitignore`, own trial notes/log/report files, and generated screenshots.
+- **SDK/source/reference files opened outside the allowed list: none in this trial.** No repository `packages/*/src`, `docs/spec`, `docs/adr`, `docs/progress.md`, repository `tests/`, or example implementation was opened. No repository search or declaration inspection was performed.
+- Administrative exception to a literal “every file” reading: I created and executed `$TRIAL/run.py` and wrote command logs outside the scaffold before it existed. These are my own logging files, not SDK information; copies live in this project.
+- No other agents, web documentation or human assistance were used.
+
+## Every command run, with pass/fail
+
+`$TRIAL` is `/Users/dharanesh/Documents/ChatGPT/ourform-toggle-trial-2026-10-20`; `$REPO=$TRIAL/repo`; `$PROJECT=$TRIAL/acme-yes-no`.
+
+The helper was redeclared in each shell as documented:
+
+```sh
+ofrun() { npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 "$@"; }
+```
+
+The table lists every logged top-level shell batch. File-writing heredoc bodies are abbreviated to avoid duplicating the component/tests/report; their exact text, all shell expansions supplied, full printed output and exits are in `trial-command-output.log` and `trial-command-index.jsonl`. Subcommands executed by pnpm are in the output log.
+
+Bootstrap, before logging: `mkdir -p $TRIAL; cat > $TRIAL/run.py` — PASS.
+
+| Batch | Command | Result |
+| --- | --- | --- |
+| 1 | `git clone --branch m08-sdk-complete https://github.com/nawinisha231272-wm/formkit $REPO` | PASS (0) |
+| 2 | `cd $REPO && git checkout m08-sdk-complete && cat apps/docs/component-author-guide.md` | PASS (0) |
+| 3 | `cd $REPO && git rev-parse HEAD && git status --porcelain && define ofrun; ofrun node --version && ofrun pnpm --version && ofrun pnpm install --frozen-lockfile && ofrun pnpm build && ofrun pnpm sdk:pack "$PWD/../ourform-sdk-kit" && ofrun node packages/cli/dist/cli.js --help && ofrun node packages/cli/dist/cli.js create-component acme-yes-no --directory ../acme-yes-no --local-packages "$PWD/../ourform-sdk-kit"` | FAIL (1) |
+| 4 | `cd $REPO && define ofrun; ofrun node packages/cli/dist/cli.js create-component acme-yes-no --directory ../acme-yes-no --local-packages "$PWD/../ourform-sdk-kit" && cd ../acme-yes-no && ofrun pnpm install && ofrun pnpm exec playwright install chromium firefox webkit && ofrun pnpm verify` | PASS (0) |
+| 5 | `cd $PROJECT && cat src/index.ts preview.ts tests/extension.test.ts browser/component.spec.ts package.json playwright.config.ts index.html README.md` | PASS (0) |
+| 6 | `python3 - (file-writing heredoc; full body in command log); cd $PROJECT; define ofrun; ofrun pnpm typecheck` | FAIL (2) |
+| 7 | `python3 - (file-writing heredoc; full body in command log); cd $PROJECT; define ofrun; ofrun pnpm typecheck && ofrun pnpm test` | FAIL (1) |
+| 8 | `python3 - (file-writing heredoc; full body in command log); cd $PROJECT; define ofrun; ofrun pnpm typecheck && ofrun pnpm test` | FAIL (2) |
+| 9 | `python3 - (file-writing heredoc; full body in command log); cd $PROJECT; define ofrun; ofrun pnpm typecheck && ofrun pnpm test` | FAIL (2) |
+| 10 | `python3 - (file-writing heredoc; full body in command log); cd $PROJECT; define ofrun; ofrun pnpm typecheck && ofrun pnpm test` | PASS (0) |
+| 11 | `python3 - (file-writing heredoc; full body in command log); cd $PROJECT; define ofrun; ofrun pnpm verify` | PASS (0) |
+| 12 | `cd $PROJECT && define ofrun; ofrun pnpm visual:record && ofrun pnpm visual:check` | PASS (0) |
+| 13 | `python3 - (file-writing heredoc; full body in command log); cd $PROJECT; wc -l src/index.ts; cat src/index.ts; git -C ../repo status --porcelain` | PASS (0) |
+| 14 | `cd $PROJECT && define ofrun; ofrun pnpm visual:linux:record && ofrun pnpm visual:linux:check` | PASS (0) |
+| 15 | `python3 - (file-writing heredoc; full body in command log); cd $PROJECT; ls -a` | PASS (0) |
+| 16 | `cd $PROJECT && define ofrun; ofrun pnpm install --frozen-lockfile && ofrun pnpm verify` | PASS (0) |
+| 17 | `cd $PROJECT && cat .gitignore && cp ../commands.log trial-command-output.log && cp ../commands.jsonl trial-command-index.jsonl` | PASS (0) |
+| 18 | `python3 - (file-writing heredoc; full body in command log)` | PASS (0) |
+| 19 | `python3 - (file-writing heredoc; full body in command log)` | PASS (0) |
+| 20 | `cd $PROJECT && git init -b tg/yes-no-author-trial && git add .gitignore .npmrc .nvmrc README.md package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json vitest.config.ts playwright.config.ts playwright-container.json index.html preview.ts scripts src tests browser && git -c user.name="Codex trial agent" -c user.email="codex@openai.com" commit -m "feat: add nullable yes-no toggle"` | PASS (0) |
+| 21 | `python3 - (file-writing heredoc; full body in command log)` | PASS (0) |
+
+Additional file-view operations: opened the 12 generated macOS PNGs and 12 Linux PNGs with the image viewer — PASS; these were inside the generated project. Administrative completion commands: cp ../commands.log trial-command-output.log; cp ../commands.jsonl trial-command-index.jsonl; python3 trial-report.py; cat TRIAL-REPORT.md; git add TRIAL-REPORT.md TRIAL-NOTES.md; git commit -m "docs: record yes-no author trial"; refresh the two log copies — PASS. Their execution output is retained in the command log.
+
+A failed batch does not imply all its earlier subcommands failed. Specifically: the SDK setup batch built and packed successfully, then --help exited 1; the authoring failures were the nullable-adapter compiler/validation experiments described above. The requested assertions were retained and passed in the final suite.
+
+## Verdict
+
+**No — a developer should not yet have to rely on this guide alone for the next unfamiliar component.** Setup, browser fixtures, real builder editors, themes and state handling now work. Nullable values, boolean required semantics and shell modes still required API guesses and compiler-led discovery. A public adapter contract and a small inline boolean example would make this path substantially more reliable.
+
+Source, lockfile and 24 agent-reviewed baselines were committed locally as 3f694e8. This trial built the requested component.

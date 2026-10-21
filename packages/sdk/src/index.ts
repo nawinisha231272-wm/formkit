@@ -9,7 +9,12 @@ export type {
 } from "@ourform/core";
 export type { FormDefinition, FormField, Expr } from "@ourform/schema";
 export type { FieldControlProps, FocusTarget, ShellVariant } from "./contracts";
-export { stringValue, numberValue, booleanValue } from "./value";
+export {
+  stringValue,
+  numberValue,
+  booleanValue,
+  nullableBooleanValue,
+} from "./value";
 export {
   stringProperty,
   numberProperty,

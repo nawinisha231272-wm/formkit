@@ -52,3 +52,7 @@ See @ourform/validation for shared runtime validation and ADR-0008 for annotatio
 Static options metadata now rejects duplicate/empty values, preserving stable keys and the empty sentinel.
 
 emailPattern is the shared Tier 1 email rule source used by core and JSON Schema output.
+
+Boolean value adapters may have more than one empty state (e.g. nullable consent treats false and
+null as empty). For a declared boolean/null JSON Schema domain, toSubmissionSchema normalizes each serialized boolean/null candidate before consulting isEmpty. Required excludes every empty candidate; optional values
+remain valid. This keeps nullableBooleanValue({requiredTrue:true}) aligned with runtime validation.
