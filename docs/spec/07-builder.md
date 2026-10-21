@@ -19,7 +19,9 @@ export interface Command {
     | "UpdateProperty"
     | "DuplicateComponent"
     | "ChangeKey"
-    | "WrapInLayout";
+    | "WrapInLayout"
+    | "Unwrap"
+    | "ReplaceDefinition";
   apply(
     state: BuilderState,
     ctx: BuilderContext,
@@ -69,6 +71,49 @@ label, group, value, options?, min?, max?, editor?, visible }`.
 - JSON view (read/write with diagnostics), preview (live session with sample data), diagnostics list.
 - Events: `of-schema-change` with `{ definition, patch }`.
 - The builder chrome has fixed styles of its own and never inherits the edited form's theme.
+
+## M09 nested builder amendment (ADR-0014)
+
+ComponentModel declares `slots: [{name,label,accepts,max?}]`, optionally derived by a trusted per-node
+resolver for instance-configured Tabs. Resolve slots through the shared headless contract (spec 04),
+never by recognizing built-in container types. Keep ordered components; optional child slot names
+select a parent's destination, with omission selecting the first slot. Existing single-slot layouts
+remain compatible. The root is an implicit destination accepting ordinary registered components.
+
+Insertion/move destinations are `{parentId?,slot?,index?}`. Index is within the selected slot, after
+removing the source for a move; omitted index appends. Refuse self/descendant moves, unknown parents/
+slots, unacceptable kinds/types, exceeded direct-child capacity and nested root-only components.
+Failed operations leave definition, selection, history and redo unchanged and show an accessible
+reason. Re-check destination scope keys, including transparent descendants. Moving into Container
+changes compiled data paths; conflicts are errors. Path-changing commands warn stale-path on runtime
+expressions using affected old paths, even if another field now occupies that path. Stable ref ids
+are preserved. Remove warns dangling-ref for removed subtree ids.
+
+Ship AddComponent, RemoveComponent, MoveComponent, UpdateProperty, DuplicateComponent (whole subtree),
+ChangeKey, WrapInLayout and Unwrap. Duplicates get fresh ids/unique scope keys and rebase internal
+runtime refs, preserving external refs/opaque properties. Wrapping/unwrapping retains existing child
+ids. ReplaceDefinition supplies safe atomic JSON import with diagnostics. All commands emit replayable
+RFC 6902 patches; snapshot inverses and forward snapshots retain exact bytes/ids on undo/redo. Bound
+history (default 100; finite configurable limit). Invalid and no-op edits never add history.
+
+The canvas uses the real renderer in design mode. Show empty/occupied slots and insertion indicators
+inside Panel, Fieldset, Container, Columns and Tabs; design mode exposes all tab panels. Registering
+any SDK layout with slots makes it a target without new builder code. Provide mouse drag/drop, an
+outline tree, keyboard cut/paste into the selected slot and Alt+arrows to reorder/reparent. Keep the
+existing keyboard selection/edit/delete behavior. Palette/native/property metadata remain generic.
+
+Generated editors include expression rows plus raw JSON. Editable definition JSON is validated before
+commit, with errors retaining the current draft/history. Live preview and diagnostics remain usable.
+The reusable @ourform/builder UI and custom-element/React/Angular wrappers publish of-schema-change
+with `{definition,patch}`; selection-only changes emit no schema patch. Chrome is independent of
+Base/Bootstrap 4/Bootstrap 5/Tailwind form appearance. Wrappers dispose listeners/controllers/native
+bridges when removed.
+
+Acceptance includes mouse and keyboard builds of Tabs > Panel > Columns > field, visible refusal of
+illegal drops, a third-party declared slot with zero builder code, scope/path conflict tests, and
+independent patch replay plus byte-identical undo/redo over 50 random nested command sequences.
+Tabs conformance/visuals cover all four themes and supported hosts; axe has no serious/critical issues.
+M10a structures extend the same slot contract without special builder integration.
 
 ## M05 implemented boundary (ADR-0007)
 

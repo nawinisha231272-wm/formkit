@@ -15,4 +15,6 @@ Normative contracts. Code must match these; change them only together with an AD
 | 08-licensing.md        | Offline keys, distribution                                                |
 | 09-standards.md        | Toolchain, tests, CI, security, versioning                                |
 
-Milestones with tasks and acceptance criteria: `../milestones/M00.md` … `M12.md`.
+Milestones with tasks and acceptance criteria: `../milestones/M00.md` … `M12.md`;
+M10 is split into [M10a](../milestones/M10a.md) (data structures) and
+[M10b](../milestones/M10b.md) (advanced inputs). M11/M12 retain their numbering.

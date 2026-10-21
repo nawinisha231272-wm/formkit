@@ -31,21 +31,21 @@ side packages: @ourform/licensing (offline keys), @ourform/testing (conformance)
 
 ## Allowed imports
 
-| Package                 | May import                                                  |
-| ----------------------- | ----------------------------------------------------------- |
-| schema                  | nothing internal                                            |
-| core                    | schema                                                      |
-| validation              | schema, core                                                |
-| sdk                     | schema, core                                                |
-| components              | sdk (and its re-exports)                                    |
-| renderer-dom            | schema, core, sdk, theme-\* presets (ADR-0005)              |
-| theme-\*                | sdk (types only)                                            |
-| builder-core            | schema, core, sdk                                           |
-| builder                 | builder-core, renderer-dom, sdk, core, schema               |
-| element, react, angular | renderer-dom, sdk, core, schema, components (optional peer) |
-| licensing               | nothing internal                                            |
-| testing                 | anything (dev only)                                         |
-| cli                     | sdk, schema                                                 |
+| Package                 | May import                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| schema                  | nothing internal                                                                    |
+| core                    | schema                                                                              |
+| validation              | schema, core                                                                        |
+| sdk                     | schema, core                                                                        |
+| components              | sdk (and its re-exports)                                                            |
+| renderer-dom            | schema, core, sdk, theme-\* presets (ADR-0005)                                      |
+| theme-\*                | sdk (types only)                                                                    |
+| builder-core            | schema, core, sdk                                                                   |
+| builder                 | builder-core, renderer-dom, sdk, core, schema                                       |
+| element, react, angular | renderer-dom, builder (M09 wrappers), sdk, core, schema, components (optional peer) |
+| licensing               | nothing internal                                                                    |
+| testing                 | anything (dev only)                                                                 |
+| cli                     | sdk, schema                                                                         |
 
 Enforce with ESLint import-boundary rules. A violation fails `pnpm lint`.
 
@@ -82,3 +82,7 @@ Register the model with the engine and pass a view map separately to the starter
 The full compile/session API and renderer mount contract arrive in M01–M03.
 
 M05 (ADR-0007) extends the renderer preset dependency exception to theme-bootstrap4; theme packages still import SDK types only.
+
+M09 (ADR-0014) adds optional declarative slot metadata in the headless model and a reusable builder UI.
+Element/React/Angular wrappers may depend on builder; builder depends only on builder-core,
+renderer-dom, sdk, core and schema. Runtime renderer/core packages never import builder.

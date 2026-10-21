@@ -1,6 +1,6 @@
 # 04 — Component SDK
 
-Status: normative for M2–M8. Packages: `@ourform/sdk` (contracts, definers), models consumed by `@ourform/core`.
+Status: normative for M2–M9. Packages: `@ourform/sdk` (contracts, definers), models consumed by `@ourform/core`.
 
 M05 adds optional FieldControlProps.placeholder, sourced from the node. controlAttributes forwards it
 for field controls (omitted for group controls); mapNativeProps forwards it to native components.
@@ -32,9 +32,25 @@ export interface ComponentModel<V = unknown, C = Record<string, unknown>> {
   value?: ValueAdapter<V>;
   properties: PropertyMap; // generates ConfigOf<P>, defaults, validation, builder panel
   dataScope?: "none" | "object" | "array";
+  slots?:
+    | readonly ComponentSlot[]
+    | ((node: Readonly<ComponentNode>) => readonly ComponentSlot[]);
   expand?: (node: ComponentNode) => ComponentNode[]; // composites
   validators?: string[]; // names of registered validators always applied
-  builder: { title: string; group: string; icon?: string; order?: number };
+  builder: {
+    title: string;
+    group: string;
+    icon?: string;
+    order?: number;
+    rootOnly?: boolean;
+  };
+}
+
+export interface ComponentSlot {
+  name: string;
+  label: string;
+  accepts: readonly string[]; // field/layout/composite kinds or exact registered type
+  max?: number; // direct children in this slot, not descendants
 }
 
 export interface ValueAdapter<V> {
@@ -328,3 +344,22 @@ shell choices and their accessibility responsibilities are documented there.
 CLI --help/-h are successful no-write operations (exit 0); malformed generation arguments still fail.
 Owner-approved author evidence and M11 human usability requirements are recorded in ADR-0013/M08/M11;
 this amendment does not add slots or any M09 functionality.
+
+## M09 declarative slots (ADR-0014; implementation follows the plan PR)
+
+Ordinary containers declare `slots: [{name,label,accepts,max?}]`. A trusted per-node resolver may
+derive the same descriptors from instance properties (Tabs). A shared headless resolver validates
+safe unique names, accepted kind/type strings, nonnegative integer capacities and a maximum of 64
+slots. Slots are immutable metadata, with no DOM/view references. Labels use the host translation
+callback with their declared English text as fallback.
+
+defineLayout gains optional slots and tab-layout presentation. Omitted slots keep a single children
+slot accepting all three kinds. Existing layout JSON and default-slot rendering remain compatible.
+An SDK layout declaring slots automatically becomes a canvas/outline drop target without builder
+changes. Values are still addressed by model.dataScope and node.key, not by slot names. builder.rootOnly
+restricts components such as future Wizard pages to the form root. Fixed composites remain fixed.
+
+Children stay in node.components and may specify node.slot; omission selects the parent's first slot.
+Configurable Tabs uses stable option values as slot names and editable option labels as captions.
+Deleting a slot with children is an invalid edit until those children are moved or removed.
+See spec 07 for structural commands, drop rules and keyboard authoring.

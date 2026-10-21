@@ -35,6 +35,7 @@ export interface ComponentNode {
   properties?: Record<string, unknown>; // validated against the model's property map
   layout?: { width?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 };
   components?: ComponentNode[]; // layouts and containers
+  slot?: string; // M09: parent's declared slot; omitted selects its first/default slot
   meta?: Record<string, unknown>; // never interpreted by the library
 }
 
@@ -122,3 +123,10 @@ internal shape and canonical checks. Unsafe input anywhere, malformed known scop
 and forged calculations remain errors. The result remains ValidationResult, not a filtered payload.
 Generated JSON Schema remains strict; hosts choosing strip use SDK preprocessing rather than expecting
 JSON Schema validators to remove properties. This option is not persisted in FormDefinition settings.
+
+## M09 slot placement amendment (ADR-0014)
+
+Child slot names select a parent's declared slot without changing the ordered components tree or
+adding a data scope. Existing omitted-slot JSON stays unchanged. Root components do not carry a slot.
+Compilation and structural commands validate declared destinations, accepted kinds/types, capacities
+and root-only placement. Slot metadata/resolvers are registered model code, never executable wire JSON.
