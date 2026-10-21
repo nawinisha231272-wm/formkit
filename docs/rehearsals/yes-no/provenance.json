@@ -1,0 +1,13 @@
+{
+  "TRIAL-REPORT.md": "f8ca297bf45c5be462a15a5ff60e2632c6b78ab5d5472b6ca9296332f268f0f6",
+  "TRIAL-NOTES.md": "19909a69cf561ef451bb04918be95b1a18566c125ec6656a9a6644c0cfbfb1ee",
+  "src/index.ts": "8acb6a917cb783cb72d59f2897613d99ca6155bcccdb1b1db96ffc8d86e7088d",
+  "trial-command-index.jsonl": "d7e1b2bbf3f92700581fc6a5ab63ad7cecda2b8391c83d243d17285414a26f61",
+  "trial-command-output.log": "63f4bd99fee4cbd2761e0b3dd405614fbfcef51bc3f5c963f81a60d1c0a2f7e7",
+  "sourceCommit": "3f694e8",
+  "reportCommit": "d0ec4c9",
+  "checkout": "f9587cb654601b2b32743335d47b4bc0965f1c3c",
+  "continuedSession": true,
+  "freshSessionCondition": "FAIL",
+  "ownerAcceptsForM08": true
+}

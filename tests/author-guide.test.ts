@@ -9,8 +9,10 @@ import {
 import type { FieldControlProps } from "@ourform/sdk";
 test("guide numeric example is complete, typed and resolves English or supplied translations", async () => {
   const source = await readFile("apps/docs/examples/quantity.ts", "utf8");
+  const inline = await readFile("apps/docs/examples/yes-no.ts", "utf8");
   const guide = await readFile("apps/docs/component-author-guide.md", "utf8");
   expect(guide).toContain(source.trim());
+  expect(guide).toContain(inline.trim());
   const config = resolveConfig(field.properties);
   expect(config.ok).toBe(true);
   if (!config.ok) return;

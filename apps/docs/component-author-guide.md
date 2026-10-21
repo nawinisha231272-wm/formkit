@@ -1,14 +1,14 @@
 # Component author guide
 
-This guide is the complete development path for the unpublished M08 SDK. The AI-assisted rehearsals
-are preparation only. The M08 gate still needs an independent human author report and review.
+This guide is the complete development path for the unpublished M08 SDK. The earlier Slider/Color rehearsals
+remain preparation only. M08 author evidence follows the owner decision in ADR-0013; human guide usability is required in M11.
 
 ## 1. Start from the pushed branch
 
 Use a fresh checkout; no working-tree overlay or files from another checkout are required:
 
 ```sh
-git clone --branch m08-sdk-complete --single-branch https://github.com/nawinisha231272-wm/formkit.git formkit
+git clone --branch m08-gate-close --single-branch https://github.com/nawinisha231272-wm/formkit.git formkit
 cd formkit
 git rev-parse HEAD
 git status --porcelain
@@ -30,6 +30,7 @@ ofrun pnpm --version
 ofrun pnpm install --frozen-lockfile
 ofrun pnpm build
 ofrun pnpm sdk:pack "$PWD/../ourform-sdk-kit"
+ofrun node packages/cli/dist/cli.js --help
 ofrun node packages/cli/dist/cli.js create-component acme-note --directory ../acme-note --local-packages "$PWD/../ourform-sdk-kit"
 cd ../acme-note
 ofrun pnpm install
@@ -137,6 +138,127 @@ component and use it when t returns the unknown key, as message() demonstrates. 
 translations through renderer t or engine providers.localization; known shell/validation keys retain
 the SDK's English catalog. The example's output says "Not set" without a provider and uses a supplied
 translation for acme.quantity.unset. No English string is passed as t's second argument.
+
+## 4a. Value adapters and nullable booleans
+
+A ValueAdapter<V> defines the canonical model value, separately from DOM input strings. These are
+function members, not values:
+
+```ts
+import type { ValueAdapter } from "@ourform/sdk";
+const answer: ValueAdapter<boolean | null> = {
+  empty: () => null,
+  normalize: (raw: unknown) =>
+    raw === true ? true : raw === false ? false : null,
+  isEmpty: (value) => value === null,
+  equals: (a, b) => Object.is(a, b),
+  serialize: (value) => value,
+  jsonSchema: (_config: unknown) => ({ type: ["boolean", "null"] }),
+};
+```
+
+| Member                  | Contract                                                                                                                                                                                                                                                                               |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| empty()                 | Return the canonical unset value. isEmpty(empty()) must be true. Return a fresh object/array for mutable empty values.                                                                                                                                                                 |
+| normalize(raw: unknown) | Convert input to canonical V; handle missing/null inputs. Session creation and setValue normalize. Server validateSubmission rejects noncanonical submitted values rather than silently accepting coercion.                                                                            |
+| isEmpty(value: V)       | Define required semantics. Required fails whenever isEmpty is true; optional empty values skip ordinary constraints. Never substitute Boolean(value). Numeric zero and a boolean false answer can be meaningful.                                                                       |
+| equals?(a,b)            | Compare canonical values before a write; default Object.is. Object adapters usually need structural equality to suppress unnecessary patches.                                                                                                                                          |
+| serialize?(value)       | Produce safe JSON for submit; default identity. serialize/normalize should preserve the canonical round trip. Do not return undefined, functions, cycles or unsafe object keys.                                                                                                        |
+| jsonSchema?(config)     | Return a safe JSON Schema object describing serialized values, not the adapter itself. Config contains resolved properties. Without a hint, generated schema marks the adapter as an extension and cannot infer its type. Dynamic/custom validation still requires validateSubmission. |
+
+Use the shipped `nullableBooleanValue()` for tri-state answers: empty=null, true and false are both
+nonempty, so either answer passes required. Use `nullableBooleanValue({requiredTrue:true})` for
+consent: true passes required; false and null fail required, but false remains false in the data.
+Optional false/null remain valid in both policies. The helper normalizes booleans and "true"/"false";
+other inputs become null. Canonical submissions must contain actual booleans/null. equals is Object.is,
+serialize is identity and jsonSchema permits boolean/null. Generated required JSON Schema excludes all
+boolean/null values recognized by isEmpty, including false for consent. `booleanValue()` stays
+nonnullable: empty=false, false fails required. It takes no options; do not spread it into a nullable
+adapter because equals/serialize then have the wrong value type.
+
+The following complete inline example uses the public helper. Replace the generated component source
+and adapt its test values/interactions/editor cases as described below; no shell markup is handwritten.
+
+```ts
+import {
+  defineField,
+  nullableBooleanValue,
+  stringProperty,
+  controlAttributes,
+  h,
+} from "@ourform/sdk";
+import type { FieldControlProps } from "@ourform/sdk";
+type Translate = FieldControlProps<
+  boolean | null,
+  Record<string, unknown>
+>["t"];
+export function caption(t: Translate, literal: string, key: string): string {
+  if (!key) return literal;
+  const translated = t(key);
+  return translated === key ? literal : translated;
+}
+export const field = defineField({
+  type: "acme-yes-no",
+  title: "Yes/No toggle",
+  shell: "inline",
+  value: nullableBooleanValue({ requiredTrue: true }),
+  properties: {
+    yesLabel: stringProperty({ label: "Yes caption", default: "Yes" }),
+    noLabel: stringProperty({ label: "No caption", default: "No" }),
+    yesLabelKey: stringProperty({ label: "Yes message key", default: "" }),
+    noLabelKey: stringProperty({ label: "No message key", default: "" }),
+  },
+  control: (p) =>
+    h(
+      "div",
+      {},
+      h("input", {
+        ...controlAttributes(p),
+        type: "checkbox",
+        checked: p.value === true,
+        class: p.theme.classFor("control"),
+        oninput: (event: Event) =>
+          p.setValue((event.target as HTMLInputElement).checked),
+        onblur: p.onBlur,
+      }),
+      h(
+        "span",
+        { "data-answer-label": "" },
+        p.value === true
+          ? caption(p.t, p.config.yesLabel, p.config.yesLabelKey)
+          : caption(p.t, p.config.noLabel, p.config.noLabelKey),
+      ),
+    ),
+});
+```
+
+Here Yes/No use a native checkbox: initial null and false are both unchecked. Reset restores null;
+interaction commits a boolean. Use a separate unset indication or a three-choice control when users
+must distinguish or select unset visually. This example's model and validation preserve the distinction.
+
+## 4b. Choose a shell
+
+| Shell           | When to use                                                 | Library-owned presentation                                                                                                                                              |
+| --------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| field (default) | A single text, number or lookup control                     | Label above control, description/help/errors and ARIA.                                                                                                                  |
+| group           | Multiple focusable options, radio/checkbox groups or Rating | Fieldset and legend name the group; controlAttributes forwards group ARIA.                                                                                              |
+| inline          | A checkbox or switch with its label beside it               | Control first, adjacent field label; no custom label HTML needed.                                                                                                       |
+| cell            | A field inside a future data-grid row                       | Compact shell without a visible field label. Supply renderer presentation.cellLabel with column/row context (node.label is the fallback); grid behavior belongs to M10. |
+| none            | A layout/display that supplies its own structure            | No visible field label. Children retain their own shells. The author must supply appropriate semantics if using it for an interactive control.                          |
+
+Set `shell` on defineField; keep spreading controlAttributes(p) and calling p.onBlur. Use `controlAttributes(p, "group")` on a group control wrapper and provide option semantics/keyboard behavior inside it. A shell changes
+presentation and accessible naming, never value/required semantics. Composites use their registered
+fieldset layout; do not change their data scope to choose a shell.
+
+## 4c. Editable captions: literal by default, message key by opt-in
+
+The inline example declares all captions in properties, so types/defaults/editors derive from the
+same metadata. yesLabel/noLabel are literal strings, even when a host catalog happens to contain that
+text as a key. Optional yesLabelKey/noLabelKey opt into translation. The typed caption(t,literal,key)
+function uses the literal as its English fallback when a key is blank or t returns the unknown key.
+For example `{yesLabel:"Yes", yesLabelKey:"acme.answer.yes"}` displays a supplied translation or Yes.
+Keep user-entered literal text out of t(); this avoids accidental translation. Changing either literal
+or key through the generated editor must change the preview; browser helpers below assert both.
 
 ## 5. Use the generated browser harness
 
@@ -261,10 +383,12 @@ The snapshot path includes linux-x64 or darwin-arm64 and browser; platforms are 
 Existing images are never automatically replaced. Root SDK author fixtures use
 `sh scripts/linux-visuals.sh record author` and `sh scripts/linux-visuals.sh check author` from the SDK checkout.
 
-## Human trial and gate
+## Author evidence and human usability
 
-A developer outside implementation must use this guide alone to build one component and report their
-name, exact checkout commit, commands/results, elapsed time and confusing steps. AI-assisted Slider
-and color rehearsals do not satisfy that requirement. M08 stays open until the actual report and
-human review; no M09 implementation is included. Timing investigation uses standalone
-pnpm benchmark:check in the SDK, outside verify.
+M08 accepts a fresh Codex session with no implementation context using only this guide, CLI and
+generated project. The owner also explicitly accepted the submitted continued-session Yes/No trial
+as a one-off exception; its failed fresh-session condition remains recorded (ADR-0013). Earlier
+implementing-agent Slider/Color rehearsals remain rehearsals. A human guide-usability pass is required
+in M11. Record author, context/provenance, times, commands, results and confusing steps; do not relabel
+AI evidence as human review or hide a No comfort verdict. M08's final recommendation and API-freeze
+status are recorded in docs/progress.md and ADR-0003. Stop for owner review before M09.

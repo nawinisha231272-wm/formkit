@@ -110,3 +110,12 @@ M08 author correction: portable controls can call setValue directly. Core reject
 writes and refreshes only the attempted field from stored state, without changing data/processors.
 API writes keep working. See the complete Quantity numeric/typed-English-default example and real
 required/disabled/top-level-readOnly fixtures in apps/docs/component-author-guide.md (ADR-0012).
+
+`nullableBooleanValue({requiredTrue?: boolean})` provides a tri-state `boolean | null` adapter:
+null is unset, true/false remain distinct. By default both boolean answers satisfy required; with
+requiredTrue:true only true satisfies required (false is preserved but considered empty). Optional
+false and null stay valid in either policy. normalize accepts booleans and "true"/"false", maps other
+inputs to null; canonical submissions must already be boolean/null. empty returns null, equals uses
+Object.is, serialize is identity, jsonSchema permits boolean/null. Existing booleanValue stays a
+nonnullable true-only-required checkbox. See the component author guide's complete adapter contract,
+inline Yes/No example and explicit literal-caption/message-key properties.

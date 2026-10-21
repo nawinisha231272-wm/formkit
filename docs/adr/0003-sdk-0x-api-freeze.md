@@ -1,6 +1,6 @@
 # ADR-0003 — SDK 0.x public API freeze
 
-Status: proposed for M08 gate review; independent author exercise pending. Date: 2026-10-20.
+Status: accepted — M08 GO under the owner-amended criterion (ADR-0013), after full corrective verification. Date: 2026-10-20.
 
 ## Context
 
@@ -21,7 +21,7 @@ Runtime exports:
 
 booleanProperty, booleanValue, controlAttributes, defaultMessage, defineComposite, defineDisplay,
 defineField, defineLayout, definePlugin, definePreset, englishMessages, escapeHtml, exprProperty, h,
-jsonProperty, mapNativeProps, numberProperty, numberValue, optionsProperty, registerNativeField,
+jsonProperty, mapNativeProps, nullableBooleanValue, numberProperty, numberValue, optionsProperty, registerNativeField,
 renderVNodeToString, resolveConfig, selectProperty, stringProperty, stringValue.
 
 Type exports:
@@ -79,8 +79,16 @@ assertion, pixel threshold or control source is weakened. The four-theme browser
 
 ## Gate
 
-Automated scenarios A–F and scaffold checks are recorded with final commands in docs/progress.md.
-The independent developer's name and guide-only authoring notes cannot be supplied by the implementing
-agent. Until that actual exercise and human review are recorded, the M08 recommendation is **NO-GO**
-for freezing the SDK gate. The user authorizes merging the implementation delivery after green CI
-while keeping M08 open for the human report (ADR-0012). No M09 implementation is authorized by this ADR.
+ADR-0013 records the owner decision: fresh context-free Codex sessions may satisfy the author criterion;
+the owner explicitly accepts this continued-session Yes/No trial despite its failed fresh-session
+condition. The original report's requested fresh-author label is corrected in place by its provenance
+note; it must not be treated as evidence of a fresh session. The original No usability verdict is kept.
+A human guide-usability pass is an M11 task and acceptance criterion.
+
+Adapters/shells/captions/help are corrected and full pinned verification passes; the M08 recommendation is GO. Final author/timing/result/gap/fix records
+and the GO/NO-GO recommendation live in docs/progress.md and docs/rehearsals/yes-no/. Earlier Slider/Color
+rehearsals remain AI-assisted rehearsals. This ADR is accepted after 194 unit tests, 444 browser cases, all size budgets/count checks and
+public export verification pass. The inventory above includes nullableBooleanValue in the freeze.
+
+No M09 implementation or plan amendment is authorized by this gate. Stop for owner review after the
+closure PR merges on its initial green CI checks.

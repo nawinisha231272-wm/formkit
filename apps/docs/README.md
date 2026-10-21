@@ -9,4 +9,9 @@ These are self-hosted SDK guides. No account, hosted API or network access is ne
 
 Open `/authoring.html` in the playground for the compiled Quantity example, simplified Slider and
 metadata-driven mini builder. Rehearsal records in `docs/rehearsals/` are AI-assisted evidence only;
-the independent human trial is still required for the M08 gate.
+M08 accepts the specific continued-session Yes/No trial by owner exception (ADR-0013); a human
+guide-usability pass is required in M11.
+
+The `/boolean-authoring.html` playground compiles the guide's inline nullable Yes/No field. It shows
+ordinary-answer versus true-only consent validation and literal/message-key caption property editors.
+The accepted trial's original provenance and owner exception are in docs/rehearsals/yes-no/.

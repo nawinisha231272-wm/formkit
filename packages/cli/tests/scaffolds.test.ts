@@ -8,6 +8,17 @@ import { createScaffold, runCli } from "../src/index";
 test("CLI rejects invalid arguments and existing targets without modifying caller files", async () => {
   const root = await mkdtemp(join(tmpdir(), "ourform-cli-errors-"));
   try {
+    for (const flag of ["--help", "-h"]) {
+      expect(await runCli([flag])).toContain("Usage: ourform");
+      // execFileSync throws on nonzero exit; test the executable authors invoke.
+      const help = execFileSync(
+        process.execPath,
+        [resolve("packages/cli/dist/cli.js"), flag],
+        { cwd: root, encoding: "utf8" },
+      );
+      expect(help).toContain("create-component|create-theme|create-plugin");
+    }
+    expect(await readdir(root)).toEqual([]);
     await expect(runCli([])).rejects.toThrow("Usage");
     await expect(
       runCli(["create-component", "name", "--directory"]),

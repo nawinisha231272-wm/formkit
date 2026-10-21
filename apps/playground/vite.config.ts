@@ -44,6 +44,7 @@ export default defineConfig({
         "theme-probe.html",
         "sdk-extensions.html",
         "authoring.html",
+        "boolean-authoring.html",
       ],
     },
   },

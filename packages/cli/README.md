@@ -35,3 +35,6 @@ preview effect. Missing visual baselines are captured as explicitly unapproved e
 The Linux image reference/digest and pins are in the generated playwright-container.json. Existing
 images are never automatically replaced. Install browsers once via the pinned Playwright command in
 the complete component author guide; initial dependency setup uses the registry before frozen installs.
+
+`ourform --help` and `ourform -h` print usage and exit 0 without creating a scaffold or making network
+calls. runCli(["--help"]) returns the same usage text. Missing/invalid generation arguments still fail.

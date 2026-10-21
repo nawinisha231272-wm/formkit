@@ -45,7 +45,8 @@ export interface ValueAdapter<V> {
   serialize?(value: V): unknown; // default identity
   jsonSchema?(config: unknown): object; // contributes to submission JSON Schema
 }
-// helpers: stringValue(), numberValue({ empty: null }), booleanValue(), arrayValue(item), objectValue({...})
+// shipped helpers: stringValue(), numberValue({ empty: null }), booleanValue(), nullableBooleanValue({ requiredTrue: false })
+// array helpers and further nullable inputs belong to M10; custom adapters use this interface.
 ```
 
 Rule: an "empty" value must be recognised by `isEmpty`. (Starter-kit bug: Rating used `0` as empty
@@ -299,3 +300,31 @@ mountComponentBuilder; @ourform/testing/playwright adds checkPropertyEditors and
 The helper requires observable preview assertions for every generated custom properties.\* editor.
 Missing baselines produce explicitly unapproved evidence; recording, comparison and review remain
 explicit. Existing visual/count/correctness thresholds are unchanged. AI rehearsals do not pass M08.
+
+## Final M08 adapter and caption additions (ADR-0013)
+
+`nullableBooleanValue(options?: {requiredTrue?: boolean}): ValueAdapter<boolean | null>` returns
+empty null, normalizes booleans/"true"/"false" (other inputs become null), compares with Object.is,
+serializes identity and contributes boolean/null JSON Schema. Default isEmpty recognizes only null;
+requiredTrue:true recognizes false and null as empty. Required always delegates to isEmpty: a consent
+field must opt into true-only required semantics, while an ordinary tri-state answer accepts false.
+Optional false/null remain valid. booleanValue is unchanged and takes no options.
+
+ValueAdapter members empty/normalize/isEmpty are required functions. equals defaults to Object.is;
+serialize defaults to identity and must produce safe JSON. jsonSchema(config) is an optional safe JSON
+Schema hint over serialized values, with resolved properties as config. Empty must be recognized;
+normalize/serialize must preserve canonical round trips. Session writes normalize input; canonical
+validateSubmission rejects coercible but noncanonical submissions. JSON Schema can describe static
+constraints; runtime conditional/custom rules remain authoritative in validateSubmission. For a
+boolean/null hint, required schema excludes every finite-domain value recognized by isEmpty after normalization, rather
+than assuming empty() is the only empty value.
+
+Editable control captions live in properties. Literal caption properties default to English text;
+separate optional message-key properties enable translation. A missing/unknown key falls back to the
+configured literal. Do not unconditionally translate arbitrary user-entered literal text. The typed
+inline Yes/No example in the author guide demonstrates this contract and shell: inline; all five
+shell choices and their accessibility responsibilities are documented there.
+
+CLI --help/-h are successful no-write operations (exit 0); malformed generation arguments still fail.
+Owner-approved author evidence and M11 human usability requirements are recorded in ADR-0013/M08/M11;
+this amendment does not add slots or any M09 functionality.

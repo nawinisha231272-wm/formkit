@@ -1,6 +1,6 @@
 # ADR-0012 — Protected write restoration and complete author fixtures
 
-Status: accepted for the M08 correction implementation, 2026-10-20. The independent M08 gate remains open.
+Status: accepted for the M08 correction implementation, 2026-10-20. Author-evidence policy is later superseded by ADR-0013; the correction implementation remains accepted.
 
 The AI-assisted Slider rehearsal is not human gate evidence. It exposed a core/UI mismatch: core
 ignored protected user writes, but a native range or optimistic input could keep an unstored DOM value.

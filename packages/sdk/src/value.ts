@@ -34,3 +34,28 @@ export function booleanValue(): ValueAdapter<boolean> {
     jsonSchema: () => ({ type: "boolean" }),
   };
 }
+
+/** Tri-state answers; opt into true-only required validation for consent controls. */
+export function nullableBooleanValue(
+  options: { requiredTrue?: boolean } = {},
+): ValueAdapter<boolean | null> {
+  if (
+    options.requiredTrue !== undefined &&
+    typeof options.requiredTrue !== "boolean"
+  )
+    throw new TypeError("requiredTrue must be a boolean.");
+  const requiredTrue = options.requiredTrue === true;
+  return {
+    empty: () => null,
+    normalize: (value) =>
+      value === true || value === "true"
+        ? true
+        : value === false || value === "false"
+          ? false
+          : null,
+    isEmpty: (value) => (requiredTrue ? value !== true : value === null),
+    equals: Object.is,
+    serialize: (value) => value,
+    jsonSchema: () => ({ type: ["boolean", "null"] }),
+  };
+}

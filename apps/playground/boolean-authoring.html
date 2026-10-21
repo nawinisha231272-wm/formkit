@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Nullable boolean author example</title>
+  </head>
+  <body>
+    <main>
+      <h1>Nullable boolean author example</h1>
+      <label
+        >Theme
+        <select id="theme">
+          <option>base</option>
+          <option>bootstrap4</option>
+          <option>bootstrap5</option>
+          <option>tailwind</option>
+        </select></label
+      >
+      <label
+        ><input id="required" type="checkbox" checked />Required consent</label
+      ><label><input id="disabled" type="checkbox" />Disabled</label
+      ><label><input id="read-only" type="checkbox" />Read only</label>
+      <h2>Consent: true required</h2>
+      <div id="consent"></div>
+      <button id="submit">Submit consent</button
+      ><button id="reset">Reset consent</button>
+      <pre id="result" aria-live="polite"></pre>
+      <h2>Answer: true or false required</h2>
+      <div id="answer"></div>
+      <h2>Caption property editors</h2>
+      <div id="builder"></div>
+    </main>
+    <script type="module" src="/boolean-authoring.ts"></script>
+  </body>
+</html>

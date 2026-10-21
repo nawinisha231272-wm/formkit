@@ -207,6 +207,8 @@ export const theme: Theme = {name: "${name}", extends: "base", tokens: {"--of-ac
 }
 
 export async function runCli(args: readonly string[]): Promise<string> {
+  if (args.length === 1 && ["--help", "-h"].includes(args[0]!))
+    return "Usage: ourform create-component|create-theme|create-plugin name [--directory path] [--local-packages path]";
   const [command, name, ...flags] = args;
   const kind = command?.replace(/^create-/, "") as ScaffoldKind;
   if (!command?.startsWith("create-") || !name || flags.length % 2)
