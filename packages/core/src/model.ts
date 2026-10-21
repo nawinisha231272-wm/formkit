@@ -44,9 +44,24 @@ export interface ComponentModel<T = unknown> {
   title: string;
   kind?: "field" | "layout" | "composite";
   dataScope?: "none" | "object" | "array";
+  slots?:
+    | readonly ComponentSlot[]
+    | ((node: Readonly<ComponentNode>) => readonly ComponentSlot[]);
   expand?: (node: ComponentNode) => ComponentNode[];
   value?: ValueAdapter<T>;
   validators?: readonly string[];
   properties?: PropertyMap;
-  builder?: { title: string; group: string; icon?: string; order?: number };
+  builder?: {
+    title: string;
+    group: string;
+    icon?: string;
+    order?: number;
+    rootOnly?: boolean;
+  };
+}
+export interface ComponentSlot {
+  readonly name: string;
+  readonly label: string;
+  readonly accepts: readonly string[];
+  readonly max?: number;
 }

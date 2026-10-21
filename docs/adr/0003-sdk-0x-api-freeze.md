@@ -92,3 +92,8 @@ public export verification pass. The inventory above includes nullableBooleanVal
 
 No M09 implementation or plan amendment is authorized by this gate. Stop for owner review after the
 closure PR merges on its initial green CI checks.
+
+M09 additive extension (ADR-0014): ComponentSlot/resolveSlots, ComponentModel.slots, builder.rootOnly,
+DefineLayoutOptions slots/tabs/rootOnly and LayoutView.tabs extend container authoring without changing
+existing field/value/translation contracts. `docs/api/sdk-0.x.json` records the updated inventory. Existing
+required native state mapping is additionally asserted by conformance; no mapping contract is removed.

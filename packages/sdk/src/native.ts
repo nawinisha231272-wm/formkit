@@ -29,6 +29,7 @@ export interface NativeView {
 export interface LayoutView {
   tag: "div" | "section" | "fieldset";
   columns?: boolean;
+  tabs?: boolean;
 }
 export interface ComponentViews {
   layout?: Readonly<LayoutView>;

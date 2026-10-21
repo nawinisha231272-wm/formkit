@@ -17,12 +17,15 @@ import { FormSession } from "./session";
 import { expandComposites } from "./composites";
 import { pluginVersions, meetsRequirement, mergePluginMap } from "./plugins";
 import type { PluginRegistration } from "./plugins";
+import { resolveSlots } from "./slots";
 export class Registry {
   #models = new Map<string, ComponentModel>();
   register<T>(model: ComponentModel<T>): this {
     if (this.#models.has(model.type))
       throw new Error(`Duplicate component type: ${model.type}`);
     if (!model.type) throw new Error("Component type must not be empty.");
+    if (Array.isArray(model.slots))
+      resolveSlots(model, { id: "registration", type: model.type });
     this.#models.set(
       model.type,
       Object.freeze({
@@ -30,6 +33,9 @@ export class Registry {
         ...(model.value ? { value: Object.freeze({ ...model.value }) } : {}),
         ...(model.properties ? { properties: snapshot(model.properties) } : {}),
         ...(model.builder ? { builder: snapshot(model.builder) } : {}),
+        ...(model.slots && typeof model.slots !== "function"
+          ? { slots: snapshot(model.slots) }
+          : {}),
         ...(model.validators
           ? { validators: Object.freeze([...model.validators]) }
           : {}),
@@ -225,6 +231,72 @@ export class Engine {
       }
     };
     visit(snapshot(expanded.components), []);
+    for (const entry of nodes) {
+      if (!entry.parentId && entry.node.slot !== undefined)
+        error(
+          "invalid-slot",
+          "Root components cannot select a parent slot.",
+          entry.node.id,
+        );
+      if (entry.parentId && entry.model.builder?.rootOnly)
+        error(
+          "root-only",
+          "This component can only be placed at the form root.",
+          entry.node.id,
+        );
+      if (!entry.model.slots && !entry.node.components?.length) continue;
+      try {
+        const slots = resolveSlots(entry.model, entry.node);
+        // Fixed composite children are expanded by the model, not author-editable slots.
+        if (entry.model.kind === "composite" && !entry.model.slots) continue;
+        if (
+          !slots.length &&
+          !entry.model.slots &&
+          !entry.model.value &&
+          !(entry.node.components ?? []).some(
+            (child) => child.slot !== undefined,
+          )
+        )
+          continue;
+        const counts = new Map<string, number>();
+        for (const child of entry.node.components ?? []) {
+          const name = child.slot ?? slots[0]?.name;
+          const slot = slots.find((s) => s.name === name);
+          if (!slot) {
+            error(
+              "invalid-slot",
+              `Unknown parent slot '${name ?? "(none)"}'. Move children before removing or renaming slots.`,
+              child.id,
+            );
+            continue;
+          }
+          const model = this.registry.get(child.type)!;
+          if (
+            !slot.accepts.includes(model.kind ?? "field") &&
+            !slot.accepts.includes(model.type)
+          )
+            error(
+              "slot-accepts",
+              `Slot '${slot.label}' does not accept ${model.type}.`,
+              child.id,
+            );
+          const count = (counts.get(slot.name) ?? 0) + 1;
+          counts.set(slot.name, count);
+          if (slot.max !== undefined && count > slot.max)
+            error(
+              "slot-capacity",
+              `Slot '${slot.label}' accepts at most ${slot.max} children.`,
+              child.id,
+            );
+        }
+      } catch (cause) {
+        error(
+          "invalid-slot",
+          cause instanceof Error ? cause.message : "Invalid slot metadata.",
+          entry.node.id,
+        );
+      }
+    }
     const dependenciesFor = (target: CompiledNode): string[] =>
       target.model.value
         ? [target.node.id]

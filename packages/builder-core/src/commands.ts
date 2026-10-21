@@ -1,11 +1,10 @@
 import { inspectJson, isSafeKey } from "@ourform/schema";
-import type {
-  ComponentNode,
-  Diagnostic,
-  FormDefinition,
-} from "@ourform/schema";
+import type { Diagnostic, FormDefinition } from "@ourform/schema";
 import type { Engine } from "@ourform/core";
 import { createPropertyPanel } from "./property-panel";
+import { locate, checkDrop, createNode, insertNode } from "./structure";
+import type { DropTarget } from "./structure";
+export { locate } from "./structure";
 
 export type JsonPatchOp =
   | { op: "add" | "replace"; path: string; value: unknown }
@@ -31,7 +30,13 @@ export interface Command {
     | "AddComponent"
     | "UpdateProperty"
     | "RemoveComponent"
-    | "RestoreSnapshot";
+    | "RestoreSnapshot"
+    | "MoveComponent"
+    | "DuplicateComponent"
+    | "ChangeKey"
+    | "WrapInLayout"
+    | "Unwrap"
+    | "ReplaceDefinition";
   apply(state: BuilderState, ctx: BuilderContext): CommandResult;
   invert(before: BuilderState): Command;
 }
@@ -44,29 +49,6 @@ export function freeze<T>(value: T): T {
     Object.freeze(value);
   }
   return value;
-}
-export function locate(definition: FormDefinition, id: string) {
-  function walk(
-    nodes: ComponentNode[],
-    path: string,
-  ):
-    | {
-        node: ComponentNode;
-        nodes: ComponentNode[];
-        index: number;
-        path: string;
-      }
-    | undefined {
-    for (const [index, node] of nodes.entries()) {
-      const pointer = `${path}/${index}`;
-      if (node.id === id) return { node, nodes, index, path: pointer };
-      const found =
-        node.components && walk(node.components, `${pointer}/components`);
-      if (found) return found;
-    }
-    return undefined;
-  }
-  return walk(definition.components, "/components");
 }
 export function failure(state: BuilderState, message: string): CommandResult {
   return {
@@ -103,92 +85,36 @@ export class AddComponent implements Command {
   readonly type = "AddComponent";
   constructor(
     readonly componentType: string,
-    readonly options: { parentId?: string; index?: number } = {},
+    readonly options: DropTarget = {},
   ) {
     this.options = Object.freeze({ ...options });
     Object.freeze(this);
   }
   apply(state: BuilderState, { engine }: BuilderContext): CommandResult {
-    const model = engine.getField(this.componentType);
-    if (!model)
-      return failure(state, `Unknown component type: ${this.componentType}`);
+    const diagnostics = checkDrop(
+      engine,
+      state.definition,
+      this.componentType,
+      this.options,
+    );
+    if (diagnostics.length) return { state, patch: [], diagnostics };
     const definition = copy(state.definition);
-    const parent = this.options.parentId
-      ? locate(definition, this.options.parentId)
-      : undefined;
-    if (
-      this.options.parentId &&
-      (!parent ||
-        (parent.node.type && engine.getField(parent.node.type)?.value))
-    )
-      return failure(state, "Parent must be an existing layout component.");
-    const nodes = parent
-      ? (parent.node.components ??= [])
-      : definition.components;
-    const index = this.options.index ?? nodes.length;
-    if (!Number.isInteger(index) || index < 0 || index > nodes.length)
-      return failure(state, "Invalid insertion index.");
-    let id: string;
-    do {
-      id = `cmp_${Math.random().toString(36).slice(2, 10).padEnd(8, "0")}`;
-    } while (locate(definition, id));
-    const title = model.builder?.title ?? model.title;
-    const node: ComponentNode = { id, type: model.type, label: title };
-    if (model.value || model.dataScope === "object") {
-      const slug = title
-        .replace(/[^A-Za-z0-9_]+/g, "_")
-        .replace(/^_+|_+$/g, "")
-        .replace(/^[^A-Za-z_]/, "_$&")
-        .toLowerCase();
-      const stem = isSafeKey(slug) ? slug : "field";
-      // Find data scopes structurally so unresolved-reference drafts remain editable.
-      let scopeNodes = definition.components;
-      function findScope(
-        children: ComponentNode[],
-        scope: ComponentNode[],
-      ): boolean {
-        for (const child of children) {
-          const nextScope =
-            engine.getField(child.type)?.dataScope === "object"
-              ? (child.components ?? [])
-              : scope;
-          if (child.id === parent?.node.id) {
-            scopeNodes = nextScope;
-            return true;
-          }
-          if (findScope(child.components ?? [], nextScope)) return true;
-        }
-        return false;
-      }
-      if (parent) findScope(definition.components, definition.components);
-      const keys = new Set<string>();
-      function collect(children: ComponentNode[]): void {
-        for (const child of children) {
-          if (child.key) keys.add(child.key);
-          if (engine.getField(child.type)?.dataScope !== "object")
-            collect(child.components ?? []);
-        }
-      }
-      collect(scopeNodes);
-      let key = stem;
-      for (let suffix = 2; keys.has(key); suffix++) key = `${stem}_${suffix}`;
-      node.key = key;
-    }
-    nodes.splice(index, 0, node);
-    const path = parent ? `${parent.path}/components` : "/components";
-    // RFC 6902 requires creating a previously absent parent array before inserting into it.
-    const originalParent = this.options.parentId
-      ? locate(state.definition, this.options.parentId)
-      : undefined;
+    const node = createNode(
+      definition,
+      engine,
+      this.componentType,
+      this.options.parentId,
+    );
+    const inserted = insertNode(definition, engine, node, this.options);
     return {
-      state: { ...state, definition, selection: id },
-      patch:
-        originalParent && !originalParent.node.components
-          ? [{ op: "add", path, value: nodes }]
-          : [{ op: "add", path: `${path}/${index}`, value: node }],
+      state: { ...state, definition, selection: node.id },
+      patch: inserted.created
+        ? [{ op: "add", path: inserted.arrayPath, value: inserted.nodes }]
+        : [{ op: "add", path: inserted.path, value: node }],
       diagnostics: [],
     };
   }
+
   invert(before: BuilderState): Command {
     return new RestoreSnapshot(before);
   }
@@ -273,4 +199,8 @@ export class UpdateProperty implements Command {
   invert(before: BuilderState): Command {
     return new RestoreSnapshot(before);
   }
+}
+
+export function restoreSnapshot(before: BuilderState): Command {
+  return new RestoreSnapshot(before);
 }

@@ -1,5 +1,6 @@
 export type {
   ComponentModel,
+  ComponentSlot,
   PropertyDefinition,
   PropertyMap,
   PropertyKind,
@@ -51,3 +52,4 @@ export { definePreset } from "./define-preset";
 export { defineComposite } from "./define-composite";
 export { definePlugin } from "./define-plugin";
 export type { Plugin } from "./define-plugin";
+export { resolveSlots } from "@ourform/core";

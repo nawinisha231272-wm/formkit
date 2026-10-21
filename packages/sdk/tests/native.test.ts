@@ -107,6 +107,7 @@ test("native mapping passes all control state and supports unusual change signat
     selected: "before",
     locked: false,
     frozen: false,
+    required: true,
     id: "id",
     "aria-labelledby": "label",
     "aria-describedby": "help",

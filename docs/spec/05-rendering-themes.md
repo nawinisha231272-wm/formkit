@@ -186,3 +186,14 @@ FormView.reset(data?) clears submitted/summary state and pending blur touches be
 Bootstrap 4 remains fully supported for 1.0. Every new component must pass conformance and visual checks
 in all four shipped themes: base, Bootstrap 4, Bootstrap 5 and Tailwind. Existing contrast/pixel thresholds
 and pinned framework stylesheet versions remain unchanged.
+
+## M09 authoring and Tabs
+
+RenderOptions.mode `edit | design` defaults edit. Design exposes every slot/hidden field, inert portable
+controls and native placeholders; its live region is off. Slot wrappers are resolved from headless
+metadata, without recognizing container types. LayoutView.tabs requests APG tablist/tab/tabpanel
+semantics; inactive child roots stay mounted. Focus(id) activates ancestor tabs, including error focus.
+Theme/tab changes retain child identity/session state. Shared defaultThemes supplies preset themes to
+form and builder hosts. `@ourform/builder` shares one session between design and preview; schema edits
+recreate transient state and preserve surviving field IDs' answers. Removed response values are not
+undo history. Generated chrome controls preserve identity/focus on appearance changes.

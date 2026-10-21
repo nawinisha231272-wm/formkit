@@ -104,3 +104,14 @@ Protected user-sourced setValue now emits a refresh-only StatePatch for that fie
 unchanged data/state and no normalization/validation/dependent processing. Renderers restore the live
 control from stored state. Default/API writes continue normally; equal API writes still emit nothing.
 See ADR-0012. Read-only is a session/host mode; disabled comes from disabledWhen (including parents).
+
+## Declarative child slots (M09)
+
+`ComponentModel.slots` accepts readonly `{name,label,accepts,max?}[]` or a pure per-node resolver.
+`resolveSlots(model,node)` returns frozen JSON snapshots, validates at most64 safe unique names and
+nonnegative capacities, and supplies legacy layouts' default `children` slot. Accepts entries are model
+kinds (`field`, `layout`, `composite`) or exact type names. Empty accepts refuses every type. Optional
+`builder.rootOnly` prevents nesting. Compile validates child `slot` membership/accepts/capacity; an
+omitted slot selects the first without rewriting JSON. Slots do not introduce data scopes. Dynamic
+resolvers are trusted customer code and must be deterministic; malformed results return compile
+diagnostics. Fixed composite expansions remain noneditable. See ADR-0014 and core slots tests.

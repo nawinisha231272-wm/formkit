@@ -2,6 +2,9 @@ import type { Diagnostic, FormDefinition } from "@ourform/schema";
 import { inspectJson } from "@ourform/schema";
 import type { Engine } from "@ourform/core";
 import { copy, freeze, locate } from "./commands";
+import { checkDrop } from "./structure";
+import type { DropTarget } from "./structure";
+import { pathWarnings } from "./structural-commands";
 import type { BuilderState, Command, JsonPatchOp } from "./commands";
 import { createPropertyPanel } from "./property-panel";
 import type { PropertyPanelModel } from "./property-panel";
@@ -10,7 +13,11 @@ export interface PaletteGroup {
   name: string;
   components: { type: string; title: string; order: number; icon?: string }[];
 }
+export interface BuilderOptions {
+  historyLimit?: number;
+}
 export interface Builder {
+  canDrop(type: string, target: DropTarget, movingId?: string): Diagnostic[];
   getState(): BuilderState;
   select(componentId: string | null): void;
   dispatch(command: Command): Diagnostic[];
@@ -26,7 +33,15 @@ export interface Builder {
 export function createBuilder(
   engine: Engine,
   definition: FormDefinition,
+  options: BuilderOptions = {},
 ): Builder {
+  const historyLimit = options.historyLimit ?? 100;
+  if (
+    !Number.isInteger(historyLimit) ||
+    historyLimit < 1 ||
+    historyLimit > 1000
+  )
+    throw new Error("historyLimit must be an integer between 1 and 1000.");
   const initial = engine.compile(definition);
   if (!initial.ok)
     throw new Error(
@@ -54,6 +69,8 @@ export function createBuilder(
   };
   return {
     getState: () => state,
+    canDrop: (type, target, movingId) =>
+      checkDrop(engine, state.definition, type, target, movingId),
     select(id) {
       if (id && !locate(state.definition, id))
         throw new Error(`Unknown component: ${id}`);
@@ -68,30 +85,49 @@ export function createBuilder(
       const signature = (d: Diagnostic) =>
         JSON.stringify([d.code, d.componentId, d.message]);
       const existing = new Set(
-        engine.compile(state.definition).diagnostics.map(signature),
+        command.type === "ReplaceDefinition"
+          ? []
+          : engine.compile(state.definition).diagnostics.map(signature),
       );
       const renaming =
-        command.type === "UpdateProperty" &&
-        "key" in command &&
-        command.key === "key";
+        command.type === "ChangeKey" ||
+        (command.type === "UpdateProperty" &&
+          "key" in command &&
+          command.key === "key");
+      const changingPaths =
+        renaming ||
+        ["MoveComponent", "WrapInLayout", "Unwrap"].includes(command.type);
+      const warnings = changingPaths
+        ? pathWarnings(state.definition, result.state.definition, engine)
+        : [];
       const diagnostics = [
         ...result.diagnostics,
-        ...compiled.diagnostics.map(
-          (d): Diagnostic =>
-            (d.code === "bad-ref" || d.code === "bad-path") &&
-            (existing.has(signature(d)) ||
-              command.type === "RemoveComponent" ||
-              renaming)
-              ? {
-                  ...d,
-                  severity: "warning",
-                  code:
-                    renaming && d.code === "bad-path"
-                      ? "stale-path"
-                      : "dangling-ref",
-                }
-              : d,
-        ),
+        ...warnings,
+        ...compiled.diagnostics
+          .map(
+            (d): Diagnostic =>
+              (d.code === "bad-ref" || d.code === "bad-path") &&
+              (existing.has(signature(d)) ||
+                command.type === "RemoveComponent" ||
+                command.type === "Unwrap" ||
+                (changingPaths && d.code === "bad-path"))
+                ? {
+                    ...d,
+                    severity: "warning",
+                    code:
+                      changingPaths && d.code === "bad-path"
+                        ? "stale-path"
+                        : "dangling-ref",
+                  }
+                : d,
+          )
+          .filter(
+            (d) =>
+              !(
+                d.code === "stale-path" &&
+                warnings.some((w) => w.componentId === d.componentId)
+              ),
+          ),
       ];
       if (diagnostics.some((d) => d.severity === "error")) return diagnostics;
       if (
@@ -103,6 +139,7 @@ export function createBuilder(
       // Snapshot the successful forward state too: redo never generates new ids or defaults.
       const forward = inverse.invert(result.state);
       past.push({ command, forward, inverse });
+      if (past.length > historyLimit) past.shift();
       future.length = 0;
       publish(result.state, result.patch);
       return diagnostics;

@@ -1,4 +1,5 @@
 import { defineLayout } from "@ourform/sdk";
+import { tabsLayout } from "./tabs";
 export const panelLayout = defineLayout({
   type: "panel",
   title: "Panel",
@@ -24,4 +25,5 @@ export const builtinLayouts = Object.freeze([
   columnsLayout,
   fieldsetLayout,
   containerLayout,
+  tabsLayout,
 ]);

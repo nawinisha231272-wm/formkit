@@ -119,3 +119,20 @@ inputs to null; canonical submissions must already be boolean/null. empty return
 Object.is, serialize is identity, jsonSchema permits boolean/null. Existing booleanValue stays a
 nonnullable true-only-required checkbox. See the component author guide's complete adapter contract,
 inline Yes/No example and explicit literal-caption/message-key properties.
+
+## Layout slots and Tabs (M09, additive 0.x API)
+
+```ts
+const card = defineLayout({
+  type: "acme.card",
+  title: "Card",
+  slots: [{ name: "body", label: "Contents", accepts: ["field"], max: 3 }],
+});
+```
+
+Register this binding normally: the builder renders a field-only drop target without extension code.
+`ComponentSlot` and `resolveSlots` are public headless exports. Layouts without metadata retain one
+`children` slot. `slots(node)` can derive up to64 validated descriptors from config; `tabs:true` requests
+tablist/panel rendering. Stable slot names are keys; labels are captions and may be translated by the
+host. `rootOnly:true` maps to headless builder placement metadata. Changing/removing an occupied slot
+must first move its children. Fixed composites remain model-owned, rather than inferred drop targets.

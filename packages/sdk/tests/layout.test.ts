@@ -1,5 +1,6 @@
 import { test, expect } from "vitest";
 import { defineLayout, stringProperty } from "../src/index";
+import { resolveSlots } from "@ourform/core";
 test("defineLayout composes frozen per-definition metadata without a value adapter", () => {
   const layout = defineLayout({
     type: "acme.section",
@@ -16,4 +17,19 @@ test("defineLayout composes frozen per-definition metadata without a value adapt
   expect(
     defineLayout({ type: "grid", title: "Grid", columns: true }).views.layout,
   ).toEqual({ tag: "div", columns: true });
+});
+test("declared SDK slots are frozen snapshots and discoverable without builder code", () => {
+  const slots = [{ name: "body", label: "Body", accepts: ["field"], max: 2 }];
+  const layout = defineLayout({
+    type: "acme.card",
+    title: "Card",
+    slots,
+    rootOnly: true,
+  });
+  slots[0]!.accepts.push("layout");
+  expect(resolveSlots(layout.model, { id: "card", type: "acme.card" })).toEqual(
+    [{ name: "body", label: "Body", accepts: ["field"], max: 2 }],
+  );
+  expect(Object.isFrozen(layout.model.slots)).toBe(true);
+  expect(layout.model.builder?.rootOnly).toBe(true);
 });

@@ -242,6 +242,10 @@
         },
         "ariaLabel": {
           "type": "string"
+        },
+        "slot": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "required": ["id", "type"],

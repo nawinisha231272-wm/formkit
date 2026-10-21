@@ -58,6 +58,7 @@ export interface ComponentNode {
   properties?: Record<string, unknown>;
   layout?: { width?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 };
   components?: ComponentNode[];
+  slot?: string;
   meta?: Record<string, unknown>;
 }
 export type FormField = ComponentNode;

@@ -7,6 +7,8 @@ import type {
   ShellVariant,
 } from "@ourform/sdk";
 import type { ResolvedTheme } from "./theme";
+import { layoutVNode } from "./layout";
+import type { LayoutInteraction } from "./layout";
 export type Views = ReadonlyMap<string, ComponentViews>;
 export interface FieldPresentation {
   help?: string;
@@ -43,7 +45,9 @@ export function shellVNode(
   t: typeof defaultMessage = defaultMessage,
   actions?: { submit(): void; reset(): void; emit(name: string): void },
   onBlur?: () => void,
+  layoutInteraction: LayoutInteraction = {},
 ): VNode {
+  const design = layoutInteraction.mode === "design";
   const state = session.getFieldState(entry.node.id);
   const view = views.get(entry.node.type);
   const variant: ShellVariant = entry.model.value
@@ -57,8 +61,11 @@ export function shellVNode(
     entry.node.label ??
     entry.node.key ??
     entry.node.id;
-  const accessibleLabel =
-    typeof entry.node.ariaLabel === "string" && entry.node.ariaLabel
+  const accessibleLabel = design
+    ? t("of.builder.designField", {
+        label: entry.node.ariaLabel ?? label,
+      })
+    : typeof entry.node.ariaLabel === "string" && entry.node.ariaLabel
       ? entry.node.ariaLabel
       : undefined;
   const rootProps = {
@@ -66,9 +73,10 @@ export function shellVNode(
     "data-field-id": entry.node.id,
     "data-of-shell": variant,
     "data-of-pending": String(state.pending),
-    "data-of-readonly": String(state.readOnly),
+    "data-of-readonly": String(state.readOnly || design),
     "data-of-disabled": String(state.disabled),
-    hidden: !state.visible,
+    ...(design ? { "data-of-design-node": entry.node.id } : {}),
+    hidden: !state.visible && !design,
     class: cl("root"),
     style: Object.entries({
       ...theme.tokens,
@@ -77,43 +85,16 @@ export function shellVNode(
       .map(([key, value]) => `${key}:${value}`)
       .join(";"),
   };
-  if (view?.layout) {
-    const layout = view.layout;
-    const heading = entry.node.label
-      ? h(
-          layout.tag === "fieldset" ? "legend" : "h3",
-          { key: "heading", id: `${id}_label`, class: "of-layout-title" },
-          entry.node.label,
-        )
-      : null;
-    return h(
-      layout.tag,
-      {
-        ...rootProps,
-        id,
-        class: `${cl("root")} of-layout of-${entry.node.type}${layout.columns ? " of-columns" : ""}`,
-        ...(entry.node.label && layout.tag !== "fieldset"
-          ? { "aria-labelledby": `${id}_label` }
-          : {}),
-        ...(entry.node.label && layout.tag === "div" ? { role: "group" } : {}),
-        ...(entry.node.description
-          ? { "aria-describedby": `${id}_description` }
-          : {}),
-      },
-      heading,
-      entry.node.description
-        ? h(
-            "p",
-            {
-              key: "description",
-              id: `${id}_description`,
-              class: "of-description",
-            },
-            entry.node.description,
-          )
-        : null,
+  if (view?.layout || (entry.model.slots && !entry.model.value))
+    return layoutVNode(
+      entry,
+      view?.layout ?? { tag: "div" },
+      rootProps,
+      state,
+      prefix,
+      layoutInteraction,
+      t,
     );
-  }
   if (!entry.model.value && !view?.portable)
     return h(
       "div",
@@ -139,22 +120,23 @@ export function shellVNode(
   const control = view.portable({
     value: state.value,
     setValue: (next) => {
-      if (entry.model.value)
+      if (!design && entry.model.value)
         session.setValue(state.path, next, { source: "user" });
     },
-    onBlur:
-      onBlur ??
-      (() => {
-        if (entry.model.value) session.touch(state.path);
-      }),
+    onBlur: design
+      ? () => {}
+      : (onBlur ??
+        (() => {
+          if (entry.model.value) session.touch(state.path);
+        })),
     config: config.config,
-    ...(actions ? { actions } : {}),
-    ...(entry.node.placeholder === undefined
+    ...(actions && !design ? { actions } : {}),
+    ...(entry.node.placeholder === undefined || design
       ? {}
       : { placeholder: entry.node.placeholder }),
     state: {
       disabled: state.disabled,
-      readOnly: state.readOnly,
+      readOnly: state.readOnly || design,
       invalid: !!errors.length,
       pending: state.pending,
       required: state.required,
@@ -170,7 +152,14 @@ export function shellVNode(
     theme: { classFor: (part) => cl(part as Parameters<typeof cl>[0]) },
     t,
   });
-  if (variant === "none") return h("div", rootProps, control);
+  if (variant === "none")
+    return h(
+      "div",
+      rootProps,
+      design
+        ? h("div", { inert: true, "aria-hidden": "true" }, control)
+        : control,
+    );
   const labelNode = h(
     variant === "group" ? "legend" : "label",
     {
@@ -201,7 +190,11 @@ export function shellVNode(
   );
   const controlWrapper = h(
     "div",
-    { key: "wrapper", class: cl("controlWrapper") },
+    {
+      key: "wrapper",
+      class: cl("controlWrapper"),
+      ...(design ? { inert: true, "aria-hidden": "true" } : {}),
+    },
     h(
       "span",
       { key: "prefix", class: cl("prefix"), hidden: !presentation.prefix },

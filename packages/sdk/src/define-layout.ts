@@ -1,4 +1,5 @@
 import type { ComponentModel, PropertyMap } from "@ourform/core";
+import { resolveSlots } from "@ourform/core";
 import type { LayoutView, RegisteredField } from "./native";
 import { defineDisplay } from "./define-display";
 import { h } from "./vnode";
@@ -10,6 +11,9 @@ export function defineLayout(spec: {
   tag?: LayoutView["tag"];
   columns?: boolean;
   properties?: PropertyMap;
+  slots?: ComponentModel["slots"];
+  tabs?: boolean;
+  rootOnly?: boolean;
 }): RegisteredField {
   const metadata = defineDisplay({
     type: spec.type,
@@ -21,7 +25,27 @@ export function defineLayout(spec: {
     ...metadata.model,
     kind: "layout",
     dataScope: spec.dataScope ?? "none",
-    builder: Object.freeze({ title: spec.title, group: "Layouts" }),
+    ...(spec.slots === undefined
+      ? {}
+      : {
+          slots:
+            typeof spec.slots === "function"
+              ? spec.slots
+              : resolveSlots(
+                  {
+                    type: spec.type,
+                    title: spec.title,
+                    kind: "layout",
+                    slots: spec.slots,
+                  },
+                  { id: "layout", type: spec.type },
+                ),
+        }),
+    builder: Object.freeze({
+      title: spec.title,
+      group: "Layouts",
+      ...(spec.rootOnly ? { rootOnly: true } : {}),
+    }),
   });
   return Object.freeze({
     model,
@@ -29,6 +53,7 @@ export function defineLayout(spec: {
       layout: Object.freeze({
         tag: spec.tag ?? "div",
         columns: spec.columns ?? false,
+        ...(spec.tabs ? { tabs: true } : {}),
       }),
     }),
   });

@@ -12,6 +12,11 @@ import type { RegisteredField } from "@ourform/sdk";
 import { mount } from "./render";
 import type { FormView, RenderOptions } from "./render";
 import type { Views } from "./shell";
+export const defaultThemes = Object.freeze([
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+]);
 export interface HostOptions extends Omit<RenderOptions, "views" | "onSubmit"> {
   schema: unknown;
   engine?: Engine;
@@ -52,7 +57,12 @@ export function createFormHost(
     else if (
       existing.value?.normalize !== field.model.value?.normalize ||
       (existing.kind ?? "field") !== (field.model.kind ?? "field") ||
-      (existing.dataScope ?? "none") !== (field.model.dataScope ?? "none")
+      (existing.dataScope ?? "none") !== (field.model.dataScope ?? "none") ||
+      existing.builder?.rootOnly !== field.model.builder?.rootOnly ||
+      (typeof existing.slots === "function" ||
+      typeof field.model.slots === "function"
+        ? existing.slots !== field.model.slots
+        : JSON.stringify(existing.slots) !== JSON.stringify(field.model.slots))
     )
       throw new Error(`Conflicting engine model: ${type}`);
     views.set(
@@ -114,11 +124,7 @@ export function createFormController(
   try {
     view = mount(root, session, {
       ...options,
-      themes: options.themes ?? [
-        bootstrap4Theme,
-        bootstrap5Theme,
-        tailwindTheme,
-      ],
+      themes: options.themes ?? defaultThemes,
       engine,
       views,
     });
