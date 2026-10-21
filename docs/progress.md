@@ -123,6 +123,33 @@ and three browsers, plus six builder host modes in four themes in Chromium. AI i
 clipping; this does not claim owner approval of M09 images. All 216 historical PNGs remain byte-identical
 and performance baselines are unchanged (`/tmp/m09-baseline-integrity.json`).
 
+### First CI submission and Linux drag-coordinate correction
+
+The initial M09 head 0a446bf passed full pinned macOS verify but failed both Linux submissions on
+attempt 1: [PR verify 39620569962](https://github.com/nawinisha231272-wm/formkit/actions/runs/39620569962)
+and [push verify 39620546736](https://github.com/nawinisha231272-wm/formkit/actions/runs/39620546736).
+Each ran 257 unit cases and 704/705 passing browser cases; the only failure was Firefox's first Tabs
+palette drag. Neither run was retried. Original logs are `/tmp/m09-ci-pr-first-failure.log` and
+`/tmp/m09-ci-push-first-failure.log`; GitHub retains their complete logs and error-context artifacts.
+The advisory [five-pair A/B run 39620570579](https://github.com/nawinisha231272-wm/formkit/actions/runs/39620570579)
+passed on attempt 1 (median PR/main ratios 0.974×–1.071×; advisory only).
+
+Reproduced the failure in the exact pinned Linux Playwright image. The source's hover action scrolled
+the long palette into view and moved the destination above the viewport (target y≈−133). Native
+dragstart fired, but no drop could occur at that off-screen coordinate. The same four-level test
+passes after using the existing palette search before each drag and a normal 1600×900 viewport.
+The mouse helper now asserts that both bounding boxes remain fully on screen after hover, before
+pressing the mouse. This preserves real gestures, every acceptance assertion and every deadline;
+there is no synthetic drag, retry loop, pixel change or production-code change in this correction.
+
+Reproduction log `/tmp/m09-linux-drag-diagnosis.log` preserves both the failing original and passing
+filtered case, including geometry and native event traces. Diagnostics copied the same portable built
+JavaScript into the official image and installed Linux dependencies from the frozen lockfile; they are
+interaction evidence, not a new clean-build claim. The corrected complete nested suite's pinned Linux
+result is PASS (15/15) in `/tmp/m09-linux-visible-endpoints.log`; the same 15/15 macOS cases pass
+in `/tmp/m09-mac-visible-endpoints.log`. Lint and strict test types pass. Current-head full clean Linux build/verify
+and final local verification must pass before merge; their links/results belong in the M09 PR evidence.
+
 ### Acceptance evidence — M09
 
 | Criterion                                                               | Result | Evidence                                                                                                                                                                                                                                                                       |

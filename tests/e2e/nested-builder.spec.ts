@@ -11,6 +11,19 @@ async function mouseDrag(
   const from = await source.boundingBox();
   const to = await target.boundingBox();
   if (!from || !to) throw new Error("Drag endpoints must be visible.");
+  const viewport = page.viewportSize();
+  if (!viewport) throw new Error("Drag tests require a bounded viewport.");
+  for (const [name, box] of [
+    ["source", from],
+    ["target", to],
+  ] as const)
+    expect(
+      box.x >= 0 &&
+        box.y >= 0 &&
+        box.x + box.width <= viewport.width &&
+        box.y + box.height <= viewport.height,
+      `${name} must stay on screen after hovering the palette`,
+    ).toBe(true);
   await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
   await page.mouse.down();
   await page.mouse.move(from.x + from.width / 2 + 8, from.y + from.height / 2, {
@@ -29,9 +42,11 @@ import type {} from "../../apps/playground/builder";
 test("mouse drag builds four levels in declared slots with zero container-specific builder code", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1600, height: 1200 });
+  await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto("/builder.html?empty");
   async function drag(title: string, type: string, parent = "", slot = "") {
+    // Search is a real author action and keeps source and destination visible together.
+    await page.getByRole("searchbox").fill(title);
     const source = page.getByRole("button", {
       name: `Add ${title}`,
       exact: true,
@@ -200,7 +215,7 @@ test("keyboard alone adds, configures, cuts into a slot, reparents, deletes and 
 test("illegal generic slot drops are visible and atomic; theme preserves authoring controls", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1600, height: 1200 });
+  await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto("/builder.html?empty");
   await page.getByRole("button", { name: "Add SDK card", exact: true }).click();
   const state = () =>
@@ -214,6 +229,7 @@ test("illegal generic slot drops are visible and atomic; theme preserves authori
     `#canvas .of-builder-drop[data-drop-parent="${id}"][data-drop-slot="body"][data-drop-index="0"]`,
   );
   const before = await state();
+  await page.getByRole("searchbox").fill("Panel");
   await mouseDrag(
     page,
     page.getByRole("button", { name: "Add Panel", exact: true }),
@@ -223,6 +239,7 @@ test("illegal generic slot drops are visible and atomic; theme preserves authori
     "does not accept Panel",
   );
   expect(await state()).toBe(before);
+  await page.getByRole("searchbox").fill("");
   await slot.click();
   await page.getByRole("button", { name: "Add Text", exact: true }).click();
   await page.getByRole("button", { name: "Add Text", exact: true }).click();
