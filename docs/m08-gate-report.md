@@ -1,6 +1,6 @@
 # M08 gate report — owner-accepted Yes/No author trial
 
-**Recommendation: GO for M08 under the owner-amended author criterion.** Full pinned corrective verification passes. ADR-0003 is accepted for SDK 0.x freeze. Stop for owner review after initial-green CI and merge; M09 remains unauthorized.
+**Recommendation: GO for M08 under the owner-amended author criterion.** Full pinned corrective verification passes. ADR-0003 is accepted for SDK 0.x freeze. The owner approved the M08 gate and all 24 Yes/No baseline images after the initial-green closure merge.
 
 ## Evidence policy and provenance
 
@@ -55,15 +55,15 @@ No runtime dependency, size/count/coverage/pixel threshold or existing baseline 
 
 ## Gate checklist
 
-| Criterion                                     | Status / evidence                                                                                                                                                                   |
-| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SDK scenarios A–F                             | PASS — full pinned verify, tests/sdk-scenarios.test.ts and tests/e2e/sdk-extensions.spec.ts.                                                                                        |
-| All CLI scaffolds work without edits          | PASS — full pinned verify exercises built CLI, fresh packed-package projects, frozen/offline reinstall and unedited verify for component/theme/plugin; help status is tested too.   |
-| Author evidence accepted                      | PASS under explicit owner exception, ADR-0013. Fresh-session condition remains FAIL.                                                                                                |
-| Reported guide/SDK findings resolved          | PASS — seven nullable/caption/schema regression tests, exact compiled guide examples, built CLI help and 12 new browser cases.                                                      |
-| Four-theme conformance and visual comparisons | PASS — macOS and pinned official Linux each pass 12 recording and 12 comparison cases; 24 new platform-specific images. All existing 192 PNG bytes are unchanged.                   |
-| Full pinned verify                            | PASS — pinned Node 22.22.3/pnpm 10.10.0 verify exits 0: 194 unit tests, 444 browser cases, 15 size budgets and five count cases. Local log and first-run Linux CI are linked below. |
-| SDK 0.x inventory/freeze                      | PASS — inventory includes nullableBooleanValue, exact TypeScript/runtime export check passes; ADR-0003 accepted after full corrective verification.                                 |
+| Criterion                                     | Status / evidence                                                                                                                                                                                                                                                                     |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SDK scenarios A–F                             | PASS — full pinned verify, tests/sdk-scenarios.test.ts and tests/e2e/sdk-extensions.spec.ts.                                                                                                                                                                                          |
+| All CLI scaffolds work without edits          | PASS — full pinned verify exercises built CLI, fresh packed-package projects, frozen/offline reinstall and unedited verify for component/theme/plugin; help status is tested too.                                                                                                     |
+| Author evidence accepted                      | PASS under explicit owner exception, ADR-0013. Fresh-session condition remains FAIL.                                                                                                                                                                                                  |
+| Reported guide/SDK findings resolved          | PASS — seven nullable/caption/schema regression tests, exact compiled guide examples, built CLI help and 12 new browser cases.                                                                                                                                                        |
+| Four-theme conformance and visual comparisons | PASS — macOS and pinned official Linux each pass 12 recording and 12 comparison cases; 24 new platform-specific images. All existing 192 PNG bytes are unchanged.                                                                                                                     |
+| Full pinned verify                            | PASS — pinned Node 22.22.3/pnpm 10.10.0 verify exits 0: 194 unit tests, 444 browser cases, 15 size budgets and five count cases. Log: `/tmp/m08-close-full-pinned-verify.log`; [closure PR #6 CI, attempt 1](https://github.com/nawinisha231272-wm/formkit/actions/runs/39523437523). |
+| SDK 0.x inventory/freeze                      | PASS — inventory includes nullableBooleanValue, exact TypeScript/runtime export check passes; ADR-0003 accepted after full corrective verification.                                                                                                                                   |
 
 ## Limits and review boundary
 
@@ -100,5 +100,7 @@ Chromium/Firefox/WebKit and Base/Bootstrap 4/Bootstrap 5/Tailwind. Each inspecte
 matches the corresponding file returned by GitHub for PR #6. Labels, captions, required markers and
 errors are readable throughout. The No caption sits below the checkbox in Base/Tailwind and beside
 it in Bootstrap 4/5; platform font weight and native checkbox styling differ. These observations are
-recorded for human review. This is AI inspection, not human visual approval; no person has approved
-these 24 baselines yet. No image or comparison threshold was changed.
+recorded for human review. That inspection was AI review. Subsequently, the owner confirmed they
+personally reviewed all 24 images and approved them. This approval concerns these baseline images;
+the separate M11 human guide-usability exercise remains required. No image or comparison threshold
+was changed.

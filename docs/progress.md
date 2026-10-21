@@ -11,7 +11,7 @@ deviations from spec, open questions.
 - **M00 complete** — clean installation and full verification pass.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
-- **M03–M08 complete** — local and Linux evidence is recorded below. **M08 accepted by the owner under the amended author criterion** — SDK 0.x freeze accepted; closure PR #6 merged on first-run green CI. Human guide usability is required in M11; human approval of the 24 new Yes/No screenshots remains outstanding. M09 awaits a separate prompt.
+- **M03–M08 complete** — local and Linux evidence is recorded below. **M08 accepted by the owner under the amended author criterion** — SDK 0.x freeze accepted; closure PR #6 merged on first-run green CI. Human guide usability is required in M11; the owner approved the 24 new Yes/No screenshots. M09 is authorized after the separate plan-amendment PR.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
@@ -20,6 +20,15 @@ deviations from spec, open questions.
 ## Open questions
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
+
+## M08 owner gate and baseline approval
+
+Owner reviewed the 24 Yes/No baseline images: approved.
+
+The owner approved the M08 gate. The Full pinned verify checklist now cites the exit-zero log
+`/tmp/m08-close-full-pinned-verify.log` and [closure PR #6 CI, attempt 1](https://github.com/nawinisha231272-wm/formkit/actions/runs/39523437523)
+directly. This docs-only change records that decision; the M11 human guide-usability task remains.
+The next authorized work is a separate plan-amendment PR, followed by M09 implementation.
 
 ## M08 record correction and closure checks
 
@@ -33,7 +42,7 @@ Codex opened all 24 added Yes/No PNGs individually (two platforms, three browser
 and verified their bytes against the GitHub PR file blob SHAs. All labels/errors are readable;
 Base/Tailwind place the No caption below the checkbox, while Bootstrap 4/5 place it beside the
 checkbox. Platform typography/native controls differ. This is AI inspection only; human visual
-approval remains outstanding. No baseline or threshold changed. The owner accepts M08 closure;
+approval was still outstanding at that checkpoint; the subsequent owner approval is recorded above. No baseline or threshold changed. The owner accepts M08 closure;
 no M09 plan changes or implementation are authorized by this record correction.
 
 ## M08 accepted author trial and gate closure — 2026-10-20 (GO)
