@@ -41,6 +41,11 @@ export interface ValidationRules {
   maxItems?: number;
   custom?: { validator: string; args?: Record<string, Expr> }[];
 }
+export type ColumnWidth = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+export interface ComponentColumn {
+  width: ColumnWidth;
+  components: ComponentNode[];
+}
 export interface ComponentNode {
   id: string;
   type: string;
@@ -58,6 +63,7 @@ export interface ComponentNode {
   properties?: Record<string, unknown>;
   layout?: { width?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 };
   components?: ComponentNode[];
+  columns?: ComponentColumn[];
   slot?: string;
   meta?: Record<string, unknown>;
 }

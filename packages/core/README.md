@@ -118,3 +118,13 @@ diagnostics. Fixed composite expansions remain noneditable. See ADR-0014 and cor
 
 Slot captions are literal text by default, including text that matches a catalog key. Optional
 `labelKey: "acme.card.body"` opts into host translation with `label: "Contents"` as its English fallback.
+
+M09a (ADR-0015): Columns uses `columns: [{width,components}]` (integer widths 1..12 totaling 12), with
+positional column_0/column_1 slots and no redundant child.slot. Legacy flat Columns/layout.width inputs
+migrate without mutation; multi-row spans retain order through nested transparent rows. Ordinary layout
+components/slot semantics and submission scopes remain. Builder palette eligibility requires an explicit
+nonblank builder title. The current UI is a harness; spec 10/M09b replaces its interactions.
+
+`CompiledNode.parentSlot` stores effective column membership separately from the source child.
+`resolveSlots` derives positional slots for layout nodes with column collections; explicit slot
+metadata must match those collections in order and count. Columns on non-layout models are rejected.

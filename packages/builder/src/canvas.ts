@@ -1,3 +1,4 @@
+import { componentChildren, childSlot } from "@ourform/schema";
 import {
   AddComponent,
   MoveComponent,
@@ -75,7 +76,7 @@ export class Canvas {
     function walk(nodes: ComponentNode[], parent?: ComponentNode) {
       for (const node of nodes) {
         result.push({ node, ...(parent ? { parent } : {}) });
-        walk(node.components ?? [], node);
+        walk(componentChildren(node), node);
       }
     }
     walk(this.ui.builder.getState().definition.components);
@@ -95,11 +96,18 @@ export class Canvas {
     const entry = this.entries().find((e) => e.node.id === id);
     if (!entry) return undefined;
     const first = entry.parent ? this.slots(entry.parent)[0]?.name : "children";
-    const slot = entry.node.slot ?? first;
+    const slot =
+      (entry.parent ? childSlot(entry.parent, entry.node) : entry.node.slot) ??
+      first;
     const siblings = (
-      entry.parent?.components ??
-      this.ui.builder.getState().definition.components
-    ).filter((n) => (n.slot ?? first) === slot);
+      entry.parent
+        ? componentChildren(entry.parent)
+        : this.ui.builder.getState().definition.components
+    ).filter(
+      (n) =>
+        ((entry.parent ? childSlot(entry.parent, n) : n.slot) ?? first) ===
+        slot,
+    );
     return {
       ...entry,
       slot,
@@ -115,8 +123,8 @@ export class Canvas {
     const slots = parent ? this.slots(parent) : [];
     const name = target.slot ?? slots[0]?.name;
     const count = parent
-      ? (parent.components ?? []).filter(
-          (n) => (n.slot ?? slots[0]?.name) === name,
+      ? componentChildren(parent).filter(
+          (n) => (childSlot(parent, n) ?? slots[0]?.name) === name,
         ).length
       : this.ui.builder.getState().definition.components.length;
     if (
@@ -244,8 +252,14 @@ export class Canvas {
     ) => {
       const first = parent ? this.slots(parent)[0]?.name : "children";
       const children = (
-        parent?.components ?? this.ui.builder.getState().definition.components
-      ).filter((n) => (n.slot ?? first) === (slot ?? first));
+        parent
+          ? componentChildren(parent)
+          : this.ui.builder.getState().definition.components
+      ).filter(
+        (n) =>
+          ((parent ? childSlot(parent, n) : n.slot) ?? first) ===
+          (slot ?? first),
+      );
       for (let index = 0; index <= children.length; index++) {
         const target: DropTarget = {
           ...(parent ? { parentId: parent.id, ...(slot ? { slot } : {}) } : {}),
@@ -341,7 +355,7 @@ export class Canvas {
           "",
           "of-builder-tree-name",
         );
-        if (node.components?.length) {
+        if (componentChildren(node).length) {
           const caret = element(
             this.ui.document,
             "span",
@@ -360,9 +374,9 @@ export class Canvas {
         this.#items.set(node.id, li);
         if (visible)
           this.#visible.push({ node, ...(parent ? { parent } : {}) });
-        if (node.components?.length) {
+        if (componentChildren(node).length) {
           const nested = walk(
-            node.components,
+            componentChildren(node),
             depth + 1,
             node,
             visible && !this.#collapsed.has(node.id),
@@ -607,9 +621,9 @@ export class Canvas {
     else if (event.key === "End") next = this.#visible.at(-1)?.node.id;
     else if (event.key === "ArrowRight") {
       if (this.#collapsed.delete(id)) this.drawOutline();
-      else next = location.node.components?.[0]?.id;
+      else next = componentChildren(location.node)[0]?.id;
     } else if (event.key === "ArrowLeft") {
-      if (location.node.components?.length && !this.#collapsed.has(id)) {
+      if (componentChildren(location.node).length && !this.#collapsed.has(id)) {
         this.#collapsed.add(id);
         this.drawOutline();
       } else next = location.parent?.id;

@@ -1,4 +1,8 @@
-import { isSafeKey } from "@ourform/schema";
+import {
+  isSafeKey,
+  childCollections,
+  componentChildren,
+} from "@ourform/schema";
 import type {
   ComponentNode,
   Diagnostic,
@@ -17,6 +21,7 @@ export function locate(definition: FormDefinition, id: string) {
     nodes: ComponentNode[],
     path: string,
     parentId?: string,
+    slot?: string,
   ):
     | {
         node: ComponentNode;
@@ -24,6 +29,7 @@ export function locate(definition: FormDefinition, id: string) {
         index: number;
         path: string;
         parentId?: string;
+        slot?: string;
       }
     | undefined {
     for (const [index, node] of nodes.entries()) {
@@ -35,11 +41,17 @@ export function locate(definition: FormDefinition, id: string) {
           index,
           path: pointer,
           ...(parentId === undefined ? {} : { parentId }),
+          ...(slot === undefined ? {} : { slot }),
         };
-      const found =
-        node.components &&
-        walk(node.components, `${pointer}/components`, node.id);
-      if (found) return found;
+      for (const group of childCollections(node)) {
+        const found = walk(
+          group.components,
+          `${pointer}/${group.path}`,
+          node.id,
+          group.slot,
+        );
+        if (found) return found;
+      }
     }
     return undefined;
   }
@@ -55,7 +67,7 @@ export function entries(definition: FormDefinition, engine: Engine) {
         engine.getField(node.type)?.dataScope ?? "none",
       );
       visit(
-        node.components ?? [],
+        componentChildren(node),
         object ? node.id : scope,
         object ? next : path,
       );
@@ -112,7 +124,19 @@ export function createNode(
 ): ComponentNode {
   const model = engine.getField(type)!;
   const title = model.builder?.title ?? model.title;
-  const node: ComponentNode = { id: newId(definition), type, label: title };
+  const node: ComponentNode = {
+    id: newId(definition),
+    type,
+    label: title,
+    ...(type === "columns"
+      ? {
+          columns: [
+            { width: 6, components: [] },
+            { width: 6, components: [] },
+          ],
+        }
+      : {}),
+  };
   if (
     model.value ||
     model.dataScope === "object" ||
@@ -164,12 +188,18 @@ export function destination(
     throw new Error(
       `No editable slot '${name ?? "(none)"}' in ${parent.node.label ?? parent.node.type}.`,
     );
+  const collection = parent.node.columns
+    ? childCollections(parent.node).find((group) => group.slot === slot.name)
+    : undefined;
+  if (parent.node.columns && !collection)
+    throw new Error("Column slot has no child collection.");
   return {
-    nodes: parent.node.components ?? [],
-    path: `${parent.path}/components`,
+    nodes: collection?.components ?? parent.node.components ?? [],
+    path: `${parent.path}/${collection?.path ?? "components"}`,
     slot,
-    first: slots[0]!.name,
+    first: collection ? slot.name : slots[0]!.name,
     parent,
+    column: !!collection,
   };
 }
 /** Pure preflight shared by pointer indicators, keyboard operations and structural commands. */
@@ -196,7 +226,7 @@ export function checkDrop(
       return fail("builder-command", `Unknown component: ${movingId}`);
     function contains(node: ComponentNode): boolean {
       return (
-        node.id === target.parentId || (node.components ?? []).some(contains)
+        node.id === target.parentId || componentChildren(node).some(contains)
       );
     }
     if (contains(moving.node))
@@ -248,17 +278,21 @@ export function insertNode(
   target: DropTarget,
 ) {
   const to = destination(definition, engine, target);
-  const created = !!to.parent && !to.parent.node.components;
-  const nodes = to.parent
-    ? (to.parent.node.components ??= [])
-    : definition.components;
+  const column = "column" in to && to.column;
+  const created = !!to.parent && !column && !to.parent.node.components;
+  const nodes = column
+    ? to.nodes
+    : to.parent
+      ? (to.parent.node.components ??= [])
+      : definition.components;
   const indices = nodes.flatMap((n, index) =>
     (n.slot ?? to.first) === to.slot.name ? [index] : [],
   );
   const ordinal = target.index ?? indices.length;
   const index =
     indices[ordinal] ?? (indices.length ? indices.at(-1)! + 1 : nodes.length);
-  if (to.parent && to.slot.name !== to.first) node.slot = to.slot.name;
+  if (to.parent && !column && to.slot.name !== to.first)
+    node.slot = to.slot.name;
   else delete node.slot;
   nodes.splice(index, 0, node);
   return { path: `${to.path}/${index}`, arrayPath: to.path, created, nodes };

@@ -60,3 +60,15 @@ remain valid. This keeps nullableBooleanValue({requiredTrue:true}) aligned with 
 M09 adds optional component `slot: string`: the parent's declared destination, omitted for its first
 slot. Root components cannot specify a slot. Children retain their ordered `components` array. Slot
 membership does not change data scopes; moving into a keyed Container does. Old JSON remains valid.
+
+M09a (ADR-0015): Columns uses `columns: [{width,components}]` (integer widths 1..12 totaling 12), with
+positional column_0/column_1 slots and no redundant child.slot. Legacy flat Columns/layout.width inputs
+migrate without mutation; multi-row spans retain order through nested transparent rows. Ordinary layout
+components/slot semantics and submission scopes remain. Builder palette eligibility requires an explicit
+nonblank builder title. The current UI is a harness; spec 10/M09b replaces its interactions.
+
+`ComponentColumn` and `ColumnWidth` describe the canonical wire collections. `childCollections(node)`
+returns real relative collection paths and effective column slot names; `componentChildren(node)`
+flattens immediate children in reading order; `childSlot(parent, child)` resolves placement without
+writing wire metadata. Returned collection arrays refer to the source. Treat compiled definitions as
+immutable and mutate only command-owned draft copies.

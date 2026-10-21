@@ -29,7 +29,13 @@ function engine() {
 }
 function nodes(definition: FormDefinition): ComponentNode[] {
   return definition.components.flatMap(function visit(node): ComponentNode[] {
-    return [node, ...(node.components ?? []).flatMap(visit)];
+    return [
+      node,
+      ...(node.components ?? []).flatMap(visit),
+      ...(node.columns ?? []).flatMap((column) =>
+        column.components.flatMap(visit),
+      ),
+    ];
   });
 }
 // Independent RFC 6902 interpreter: no production tree/history helpers are used.
@@ -91,7 +97,7 @@ test("declarative named slots build four levels; refused cycles/kinds/capacity/r
     field = add("text", columns);
   expect(
     b.getState().definition.components[0]?.components?.[0]?.components?.[0]
-      ?.components?.[0]?.id,
+      ?.columns?.[0]?.components?.[0]?.id,
   ).toBe(field);
   expect(b.getState().definition.components[0]?.components?.[0]?.slot).toBe(
     "second",

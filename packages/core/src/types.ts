@@ -50,6 +50,7 @@ export interface CompiledNode {
   model: ComponentModel;
   path: Path;
   parentId?: string;
+  parentSlot?: string;
   expressions: Readonly<
     Partial<
       Record<"calculate" | "visibleWhen" | "disabledWhen", CompiledExpression>

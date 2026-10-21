@@ -2,6 +2,8 @@ export type {
   Expr,
   ExprOp,
   ComponentNode,
+  ComponentColumn,
+  ColumnWidth,
   FormField,
   FormDefinition,
   ValidationRules,
@@ -20,3 +22,5 @@ export type { PropertyDescriptor } from "./types";
 
 export { toSubmissionSchema, emailPattern } from "./submission-schema";
 export type { JSONSchema, SubmissionSchemaSource } from "./submission-schema";
+
+export { childCollections, componentChildren, childSlot } from "./children";

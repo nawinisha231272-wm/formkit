@@ -1,4 +1,4 @@
-import { inspectJson } from "@ourform/schema";
+import { inspectJson, componentChildren, migrate } from "@ourform/schema";
 import type {
   ComponentNode,
   Expr,
@@ -39,7 +39,7 @@ abstract class SnapshotCommand {
 }
 function visit(node: ComponentNode, fn: (node: ComponentNode) => void) {
   fn(node);
-  node.components?.forEach((child) => visit(child, fn));
+  componentChildren(node).forEach((child) => visit(child, fn));
 }
 function transform(
   expr: Expr,
@@ -133,9 +133,9 @@ export class MoveComponent extends SnapshotCommand implements Command {
         ? {}
         : {
             parentId: source.parentId,
-            ...(source.node.slot === undefined
+            ...((source.slot ?? source.node.slot) === undefined
               ? {}
-              : { slot: source.node.slot }),
+              : { slot: source.slot ?? source.node.slot }),
           }),
     });
     const to = destination(state.definition, engine, this.options);
@@ -204,9 +204,9 @@ export class DuplicateComponent extends SnapshotCommand implements Command {
         ? {}
         : {
             parentId: source.parentId,
-            ...(source.node.slot === undefined
+            ...((source.slot ?? source.node.slot) === undefined
               ? {}
-              : { slot: source.node.slot }),
+              : { slot: source.slot ?? source.node.slot }),
           }),
     });
     const ordinal = original.nodes
@@ -217,9 +217,9 @@ export class DuplicateComponent extends SnapshotCommand implements Command {
         ? {}
         : {
             parentId: source.parentId,
-            ...(source.node.slot === undefined
+            ...((source.slot ?? source.node.slot) === undefined
               ? {}
-              : { slot: source.node.slot }),
+              : { slot: source.slot ?? source.node.slot }),
           }),
       index: ordinal + 1,
     };
@@ -341,7 +341,7 @@ export class Unwrap extends SnapshotCommand implements Command {
     const found = locate(definition, this.componentId);
     if (!found || engine.getField(found.node.type)?.kind !== "layout")
       return failure(state, "Only an existing layout can be unwrapped.");
-    const children = found.node.components ?? [];
+    const children = componentChildren(found.node);
     for (const child of children) {
       if (found.node.slot === undefined) delete child.slot;
       else child.slot = found.node.slot;
@@ -374,13 +374,16 @@ export class ReplaceDefinition extends SnapshotCommand implements Command {
     Object.freeze(this);
   }
   apply(state: BuilderState): CommandResult {
+    const migration = migrate(this.definition);
+    const errors = migration.diagnostics.filter((d) => d.code !== "bad-ref");
+    if (errors.length) return { state, patch: [], diagnostics: errors };
     return {
       state: {
         ...state,
-        definition: this.definition as FormDefinition,
+        definition: migration.definition,
         selection: null,
       },
-      patch: [{ op: "replace", path: "", value: this.definition }],
+      patch: [{ op: "replace", path: "", value: migration.definition }],
       diagnostics: [],
     };
   }

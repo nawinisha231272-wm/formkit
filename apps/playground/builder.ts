@@ -26,7 +26,9 @@ const rootSection = defineLayout({
 });
 const controller = renderBuilder(document.getElementById("builder")!, {
   schema,
-  fields: [...employeeFields, card, rootSection],
+  fields: query.has("demos")
+    ? [...employeeFields, card, rootSection]
+    : employeeFields.filter((field) => field.model.type !== "employeeObject"),
   idPrefix: "",
 });
 if (!query.has("empty") && !query.has("fixture"))

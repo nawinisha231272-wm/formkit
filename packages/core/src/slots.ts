@@ -17,6 +17,14 @@ export function resolveSlots<T>(
   node: Readonly<ComponentNode>,
 ): readonly ComponentSlot[] {
   const source = model.slots;
+  if (source === undefined && model.kind === "layout" && node.columns)
+    return snapshot(
+      node.columns.map((_, index) => ({
+        name: `column_${index}`,
+        label: `Column ${index + 1}`,
+        accepts: ["field", "layout", "composite"],
+      })),
+    );
   if (source === undefined)
     return model.kind === "layout" ? children : emptySlots;
   const slots = typeof source === "function" ? source(node) : source;
@@ -46,5 +54,13 @@ export function resolveSlots<T>(
       );
     names.add(slot.name);
   }
+  if (
+    node.columns &&
+    (slots.length !== node.columns.length ||
+      slots.some((slot, index) => slot.name !== `column_${index}`))
+  )
+    throw new Error(
+      "Column slots must match their positional child collections.",
+    );
   return snapshot(slots);
 }

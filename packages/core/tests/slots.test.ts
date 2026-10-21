@@ -213,3 +213,52 @@ test("empty accepts/zero capacity are enforced and legacy nonvalue nodes cannot 
       .diagnostics.map((d) => d.code),
   ).toEqual(expect.arrayContaining(["slot-accepts", "slot-capacity"]));
 });
+
+test("column collections derive effective slots without changing child JSON and reject non-layout owners", () => {
+  const columns: ComponentModel = {
+    type: "columns",
+    title: "Columns",
+    kind: "layout",
+  };
+  const input = form([
+    {
+      id: "g",
+      type: "columns",
+      columns: [
+        { width: 4, components: [] },
+        { width: 8, components: [{ id: "a", type: "text", key: "answer" }] },
+      ],
+    },
+  ]);
+  const before = JSON.stringify(input);
+  const slots = resolveSlots(columns, input.components[0]!);
+  expect(slots.map((s) => s.name)).toEqual(["column_0", "column_1"]);
+  expect(Object.isFrozen(slots[1])).toBe(true);
+  const e = createEngine().register(columns).register(text);
+  const result = e.compile(input);
+  if (!result.ok) throw Error(JSON.stringify(result.diagnostics));
+  expect(result.form.byId.a!.parentSlot).toBe("column_1");
+  expect(result.form.byId.a!.path).toEqual(["answer"]);
+  expect(result.form.byId.a!.node.slot).toBeUndefined();
+  expect(JSON.stringify(input)).toBe(before);
+  expect(
+    createEngine()
+      .register({ ...columns, slots: [slot] })
+      .register(text)
+      .compile(input).diagnostics,
+  ).toContainEqual(expect.objectContaining({ code: "invalid-slot" }));
+  const bad = e.compile(
+    form([
+      {
+        id: "a",
+        type: "text",
+        key: "a",
+        columns: [{ width: 12, components: [] }],
+      },
+    ]),
+  );
+  expect(bad.ok).toBe(false);
+  expect(bad.diagnostics).toContainEqual(
+    expect.objectContaining({ code: "invalid-columns" }),
+  );
+});

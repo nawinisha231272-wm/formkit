@@ -1,3 +1,5 @@
+import { componentChildren } from "./children";
+import { migrateColumns } from "./migrate-columns";
 import { shape } from "./shape";
 import { validateProperties } from "./properties";
 import schema from "./form-definition.schema.json";
@@ -113,9 +115,23 @@ function validateDefinitionInternal(
             node.properties ?? {},
           ).map((d) => ({ ...d, componentId: node.id })),
         );
-      if (node.components)
+      if (node.columns) {
+        if (node.columns.reduce((sum, column) => sum + column.width, 0) !== 12)
+          error("invalid-columns", "Column widths must sum to 12.", node.id);
+        if (
+          node.columns.some((column) =>
+            column.components.some((child) => child.slot !== undefined),
+          )
+        )
+          error(
+            "invalid-slot",
+            "Column membership determines placement; omit child.slot.",
+            node.id,
+          );
+      }
+      if (componentChildren(node).length)
         visit(
-          node.components,
+          componentChildren(node),
           !registry ||
             model?.dataScope === "object" ||
             model?.dataScope === "array"
@@ -152,6 +168,38 @@ export function migrate(input: unknown): {
   applied: string[];
   diagnostics: Diagnostic[];
 } {
-  const diagnostics = validateDefinition(input);
-  return { definition: input as FormDefinition, applied: [], diagnostics };
+  try {
+    const diagnostics = inspectJson(input);
+    if (diagnostics.length)
+      return { definition: input as FormDefinition, applied: [], diagnostics };
+    if (!shape(input, schema, true))
+      return {
+        definition: input as FormDefinition,
+        applied: [],
+        diagnostics: [
+          {
+            severity: "error",
+            code: "invalid-definition",
+            message: "Definition does not match version 1.0 shape.",
+          },
+        ],
+      };
+    const migrated = migrateColumns(input as FormDefinition);
+    return {
+      ...migrated,
+      diagnostics: validateDefinition(migrated.definition),
+    };
+  } catch {
+    return {
+      definition: input as FormDefinition,
+      applied: [],
+      diagnostics: [
+        {
+          severity: "error",
+          code: "invalid-definition",
+          message: "Unable to migrate definition safely.",
+        },
+      ],
+    };
+  }
 }

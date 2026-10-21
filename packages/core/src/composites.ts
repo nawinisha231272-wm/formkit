@@ -1,4 +1,4 @@
-import { inspectJson, validateDefinition } from "@ourform/schema";
+import { inspectJson, validateDefinition, migrate } from "@ourform/schema";
 import type {
   ComponentNode,
   Diagnostic,
@@ -30,6 +30,14 @@ export function expandComposites(
           ...(node.components
             ? { components: visit(node.components, depth + 1, stack) }
             : {}),
+          ...(node.columns
+            ? {
+                columns: node.columns.map((column) => ({
+                  ...column,
+                  components: visit(column.components, depth + 1, stack),
+                })),
+              }
+            : {}),
         };
       if (!model.expand) {
         diagnostics.push({
@@ -42,20 +50,21 @@ export function expandComposites(
       }
       if (stack.includes(node.type))
         throw new Error(`Recursive composite expansion: ${node.type}`);
-      if (node.components !== undefined)
+      if (node.components !== undefined || node.columns !== undefined)
         throw new Error(
           "Composite instances cannot override their registered children.",
         );
-      const children = model.expand(snapshot(node));
+      let children = model.expand(snapshot(node));
       if (!Array.isArray(children) || inspectJson(children).length)
         throw new Error(
           "Composite expansion must return bounded safe JSON children.",
         );
       // Validate shape before recursion, so malformed callbacks never enter the traversal.
-      const shapeErrors = validateDefinition({
-        ...definition,
-        components: children,
-      }).filter((d) => d.code !== "bad-ref");
+      const upgraded = migrate({ ...definition, components: children });
+      children = upgraded.definition.components;
+      const shapeErrors = upgraded.diagnostics.filter(
+        (d) => d.code !== "bad-ref",
+      );
       if (shapeErrors.length) {
         diagnostics.push(...shapeErrors);
         return node;

@@ -129,7 +129,7 @@ function mountForm(
       const parent = session.form.byId[child.parentId]!;
       if (options.views.get(parent.node.type)?.layout?.tabs) {
         const slots = resolveSlots(parent.model, parent.node);
-        const slot = child.node.slot ?? slots[0]?.name;
+        const slot = child.parentSlot ?? child.node.slot ?? slots[0]?.name;
         if (slot) interaction(parent).selectSlot?.(slot, false);
       }
       child = parent;
@@ -400,7 +400,9 @@ function mountForm(
       if (entry.parentId) {
         const parent = session.form.byId[entry.parentId]!;
         const name =
-          entry.node.slot ?? resolveSlots(parent.model, parent.node)[0]?.name;
+          entry.parentSlot ??
+          entry.node.slot ??
+          resolveSlots(parent.model, parent.node)[0]?.name;
         parentRoot =
           Array.from(
             parentRoot.querySelectorAll<HTMLElement>("[data-of-slot-owner]"),
@@ -511,7 +513,7 @@ export function renderToString(
           nested
             .filter(
               (child) =>
-                (child.node.slot ?? slots[0]?.name) ===
+                (child.parentSlot ?? child.node.slot ?? slots[0]?.name) ===
                 value.props["data-of-slot"],
             )
             .map(node),

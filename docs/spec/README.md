@@ -15,6 +15,8 @@ Normative contracts. Code must match these; change them only together with an AD
 | 08-licensing.md        | Offline keys, distribution                                                |
 | 09-standards.md        | Toolchain, tests, CI, security, versioning                                |
 
+Spec [10-builder-ui.md](10-builder-ui.md) records the planned M09b replacement for the current harness; M09a implements engine/schema changes only.
+
 Milestones with tasks and acceptance criteria: `../milestones/M00.md` … `M12.md`;
 M10 is split into [M10a](../milestones/M10a.md) (data structures) and
 [M10b](../milestones/M10b.md) (advanced inputs). M11/M12 retain their numbering.

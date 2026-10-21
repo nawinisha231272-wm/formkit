@@ -34,7 +34,11 @@ export interface ComponentNode {
   clearOnHide?: boolean; // default true
   properties?: Record<string, unknown>; // validated against the model's property map
   layout?: { width?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 };
-  components?: ComponentNode[]; // layouts and containers
+  components?: ComponentNode[]; // ordinary layouts and containers
+  columns?: {
+    width: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+    components: ComponentNode[];
+  }[]; // Columns, instead of components
   slot?: string; // M09: parent's declared slot; omitted selects its first/default slot
   meta?: Record<string, unknown>; // never interpreted by the library
 }
@@ -134,3 +138,24 @@ and root-only placement. Slot metadata/resolvers are registered model code, neve
 M09's optional child slot is validated against registered model metadata by compilation, including
 accepts/direct-child max and rootOnly placement. Definition meta-schema validates its nonempty string
 shape; semantics need the engine registry. Tabs is transparent; Container still introduces object scope.
+
+## M09a — Per-column storage (ADR-0015)
+
+Canonical Columns has `columns: [{width,components}]`, one to twelve columns, with integer widths 1..12
+summing to 12. It never also has flat components. Membership in the column array determines a child's
+slot; children do not carry redundant slot values. Ordinary layouts and Tabs retain components/slot.
+Columns and individual columns are transparent to submission data scopes. The definition meta-schema
+checks shape/exclusive storage; semantic validation checks the sum of widths. Submission JSON Schema
+still exposes value fields and object Containers, not visual column wrappers or arrays.
+
+migrate recognizes legacy type columns without columns, including the existing 1.0 version. It copies
+input, consumes direct children's layout.width (default 12), packs rows in order, fills trailing gaps
+with empty columns, and uses transparent nested Columns for mixed-width multiple rows. Full-width
+vertical lists share one width-12 column. Empty legacy Columns becomes two empty width-6 columns.
+New row IDs are deterministic and collision-free; field IDs/keys/refs/data scopes remain stable.
+It reports columns-per-column-v1 in applied; canonical input is byte-idempotent. Invalid mixed storage,
+widths and unknown legacy slots are rejected. See ADR-0015 and migration tests for exact examples.
+
+Schema exports ComponentColumn/ColumnWidth and childCollections/componentChildren/childSlot. These
+headless helpers expose real collection paths and effective placement; returned child arrays refer to
+the source, so only builder commands mutate draft copies. No migration writes to caller-owned JSON.
