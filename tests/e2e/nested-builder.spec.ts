@@ -42,7 +42,7 @@ import type {} from "../../apps/playground/builder";
 test("mouse drag builds four levels in declared slots with zero container-specific builder code", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.setViewportSize({ width: 1600, height: 1200 });
   await page.goto("/builder.html?empty");
   async function drag(title: string, type: string, parent = "", slot = "") {
     // Search is a real author action and keeps source and destination visible together.
@@ -64,7 +64,10 @@ test("mouse drag builds four levels in declared slots with zero container-specif
           ): string | undefined {
             for (const node of nodes) {
               if (node.id === state.selection) return node.type;
-              const nested = find(node.components ?? []);
+              const nested = find([
+                ...(node.components ?? []),
+                ...(node.columns ?? []).flatMap((column) => column.components),
+              ]);
               if (nested) return nested;
             }
           }
@@ -79,7 +82,7 @@ test("mouse drag builds four levels in declared slots with zero container-specif
   const tabs = await drag("Tabs", "tabs");
   const panel = await drag("Panel", "panel", tabs, "first");
   const columns = await drag("Columns", "columns", panel, "children");
-  await drag("Text", "text", columns, "children");
+  await drag("Text", "text", columns, "column_0");
   const definition = await page.evaluate(
     () => window.nestedBuilder.builder.getState().definition,
   );
@@ -89,8 +92,8 @@ test("mouse drag builds four levels in declared slots with zero container-specif
     "columns",
   );
   expect(
-    definition.components[0]?.components?.[0]?.components?.[0]?.components?.[0]
-      ?.type,
+    definition.components[0]?.components?.[0]?.components?.[0]?.columns?.[0]
+      ?.components?.[0]?.type,
   ).toBe("text");
   await page
     .locator("#preview")
@@ -215,8 +218,8 @@ test("keyboard alone adds, configures, cuts into a slot, reparents, deletes and 
 test("illegal generic slot drops are visible and atomic; theme preserves authoring controls", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1600, height: 900 });
-  await page.goto("/builder.html?empty");
+  await page.setViewportSize({ width: 1600, height: 1200 });
+  await page.goto("/builder.html?empty&demos");
   await page.getByRole("button", { name: "Add SDK card", exact: true }).click();
   const state = () =>
     page.evaluate(() =>
@@ -291,7 +294,8 @@ test("JSON import and generated expression rows commit replayable changes; inval
       page.evaluate(() =>
         JSON.stringify(
           window.nestedBuilder.builder.getState().definition.components[0]
-            ?.components?.[0]?.components?.[0]?.components?.[0]?.visibleWhen,
+            ?.components?.[0]?.components?.[0]?.columns?.[0]?.components?.[0]
+            ?.visibleWhen,
         ),
       ),
     )
@@ -313,7 +317,7 @@ test("JSON import and generated expression rows commit replayable changes; inval
 test("cut/paste refuses descendant cycles and root-only nesting with visible reasons; unknown destination is atomic", async ({
   page,
 }) => {
-  await page.goto("/builder.html?fixture");
+  await page.goto("/builder.html?fixture&demos");
   await page.locator('[data-tree-toggle="tabs"]').click();
   await expect(
     page.getByRole("treeitem", { name: "Customer details", exact: true }),
@@ -334,7 +338,7 @@ test("cut/paste refuses descendant cycles and root-only nesting with visible rea
   await page.getByRole("button", { name: "Cut", exact: true }).click();
   await page
     .getByRole("button", {
-      name: "Insert in Name and rating / Contents at position 3",
+      name: "Insert in Name and rating / Column 1 at position 2",
       exact: true,
     })
     .click();
@@ -371,4 +375,83 @@ test("cut/paste refuses descendant cycles and root-only nesting with visible rea
       JSON.stringify(window.nestedBuilder.builder.getState()),
     ),
   ).toBe(before);
+});
+
+test("column keyboard paste uses the selected collection, replays changes and restores history", async ({
+  page,
+  browserName,
+}) => {
+  await page.goto("/builder.html?empty");
+  await page.getByRole("button", { name: "Add Columns", exact: true }).click();
+  const grid = await page.evaluate(
+    () => window.nestedBuilder.builder.getState().selection!,
+  );
+  await page.getByRole("button", { name: "Add Text", exact: true }).click();
+  const id = await page.evaluate(
+    () => window.nestedBuilder.builder.getState().selection!,
+  );
+  const before = await page.evaluate(() =>
+    JSON.stringify(window.nestedBuilder.builder.getState().definition),
+  );
+  await page.locator(`#canvas .of-builder-handle[data-id="${id}"]`).focus();
+  await page.keyboard.press("ControlOrMeta+x");
+  const destination = page.locator(
+    `#canvas [data-drop-parent="${grid}"][data-drop-slot="column_1"][data-drop-index="0"]`,
+  );
+  const tab =
+    browserName === "webkit" && process.platform === "darwin"
+      ? "Alt+Tab"
+      : "Tab";
+  for (
+    let step = 0;
+    step < 30 &&
+    !(await destination.evaluate(
+      (el) => el === el.ownerDocument.activeElement,
+    ));
+    step++
+  )
+    await page.keyboard.press(tab);
+  await expect(destination).toBeFocused();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("ControlOrMeta+v");
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          window.nestedBuilder.builder.getState().definition.components[0]
+            ?.columns?.[1]?.components[0]?.id,
+      ),
+    )
+    .toBe(id);
+  const after = await page.evaluate(() =>
+    JSON.stringify(window.nestedBuilder.builder.getState().definition),
+  );
+  expect(after).not.toBe(before);
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  expect(
+    await page.evaluate(() =>
+      JSON.stringify(window.nestedBuilder.builder.getState().definition),
+    ),
+  ).toBe(before);
+  await page.getByRole("button", { name: "Redo", exact: true }).click();
+  expect(
+    await page.evaluate(() =>
+      JSON.stringify(window.nestedBuilder.builder.getState().definition),
+    ),
+  ).toBe(after);
+  await expect(page.locator("#builder-patch")).toContainText('"columns"');
+});
+
+test("default harness palette hides demos and opt-in restores their engine checks", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?empty");
+  await expect(
+    page.getByRole("button", { name: "Add Rating", exact: true }),
+  ).toBeVisible();
+  for (const type of ["employeeObject", "acme.card", "acme.root-section"])
+    await expect(page.locator(`#palette [data-type="${type}"]`)).toHaveCount(0);
+  await page.goto("/builder.html?empty&demos");
+  for (const type of ["employeeObject", "acme.card", "acme.root-section"])
+    await expect(page.locator(`#palette [data-type="${type}"]`)).toHaveCount(1);
 });

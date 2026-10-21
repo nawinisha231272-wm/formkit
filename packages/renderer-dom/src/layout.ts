@@ -108,7 +108,7 @@ export function layoutVNode(
           ),
         )
       : null,
-    layout.tabs || slots.length > 1
+    entry.node.columns || layout.tabs || slots.length > 1
       ? slots.map((slot) =>
           h(
             "div",
@@ -117,7 +117,12 @@ export function layoutVNode(
               id: panelId(slot.name),
               "data-of-slot": slot.name,
               "data-of-slot-owner": entry.node.id,
-              class: "of-slot",
+              class: entry.node.columns ? "of-column" : "of-slot",
+              ...(entry.node.columns
+                ? {
+                    style: `--of-column-span:${entry.node.columns[slots.indexOf(slot)]!.width}`,
+                  }
+                : {}),
               ...(tabs
                 ? {
                     role: "tabpanel",
@@ -127,10 +132,12 @@ export function layoutVNode(
                   }
                 : {
                     role: "group",
-                    "aria-labelledby": `${id}_slot_${slot.name}`,
+                    ...(entry.node.columns && interaction.mode !== "design"
+                      ? { "aria-label": caption(slot) }
+                      : { "aria-labelledby": `${id}_slot_${slot.name}` }),
                   }),
             },
-            tabs
+            tabs || (entry.node.columns && interaction.mode !== "design")
               ? null
               : h(
                   "h4",

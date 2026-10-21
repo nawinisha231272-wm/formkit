@@ -37,7 +37,7 @@ export interface ComponentModel<V = unknown, C = Record<string, unknown>> {
     | ((node: Readonly<ComponentNode>) => readonly ComponentSlot[]);
   expand?: (node: ComponentNode) => ComponentNode[]; // composites
   validators?: string[]; // names of registered validators always applied
-  builder: {
+  builder?: {
     title: string;
     group: string;
     icon?: string;
@@ -369,3 +369,18 @@ M09 ships the slots described above as additive SDK0.x APIs (`ComponentSlot`, `r
 slots/tabs/rootOnly options). Slot labels are literal by default. Optional labelKey explicitly opts into host translation
 with label as the English fallback. Tabs default slot names first/second are stable option values;
 labels can change independently. See the guide's typed card example and ADR-0014 implementation note.
+
+## M09a — Column collections and palette eligibility (ADR-0015)
+
+Columns' per-node slots are column_0, column_1, etc., matching its `node.columns` array. Every column
+owns its own components collection and width; the column widths total 12. Slot resolvers/compile and
+commands share this mapping. Layout models without explicit slots derive these destinations from
+column collections; explicit slot metadata must match the storage. Fixed composites still own their
+expansion; composite templates and expanded children also migrate/traverse column collections.
+CompiledNode.parentSlot records effective column membership without adding child.slot to wire JSON.
+
+A builder palette entry requires a nonblank `model.builder.title`; model.title alone is a renderer
+caption and does not opt into authoring. Missing metadata or an empty/whitespace builder title hides
+the entry without preventing schema compilation or explicit commands. SDK definers still generate
+builder titles from their title option. The playground excludes employeeObject/SDK card/Root section
+registrations by default; ?demos explicitly enables their conformance harness cases.

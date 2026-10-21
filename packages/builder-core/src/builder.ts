@@ -48,7 +48,7 @@ export function createBuilder(
       `Invalid initial builder definition: ${JSON.stringify(initial.diagnostics)}`,
     );
   let state: BuilderState = freeze({
-    definition: copy(definition),
+    definition: copy(initial.form.definition),
     selection: null,
     history: { past: [], future: [] },
   });
@@ -161,12 +161,17 @@ export function createBuilder(
     palette() {
       const groups: PaletteGroup[] = [];
       for (const model of engine.listFields()) {
+        if (
+          typeof model.builder?.title !== "string" ||
+          !model.builder.title.trim()
+        )
+          continue;
         const name = model.builder?.group ?? "Fields";
         let group = groups.find((g) => g.name === name);
         if (!group) groups.push((group = { name, components: [] }));
         group.components.push({
           type: model.type,
-          title: model.builder?.title ?? model.title,
+          title: model.builder.title,
           order: model.builder?.order ?? 0,
           ...(model.builder?.icon ? { icon: model.builder.icon } : {}),
         });

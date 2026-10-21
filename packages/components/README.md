@@ -68,3 +68,9 @@ accept fields/layouts/composites. Tabs is presentation-only: keyed descendants r
 Runtime follows APG horizontal tabs (Left/Right wrap, Home/End, automatic activation); inactive panels
 remain mounted. Error focus reveals ancestor tabs; theme/tab changes preserve controls/session state.
 Design mode exposes all slots; removing/renaming an occupied slot is invalid. Fixture: fixtures/forms/nested-tabs/customer.json.
+
+M09a (ADR-0015): Columns uses `columns: [{width,components}]` (integer widths 1..12 totaling 12), with
+positional column_0/column_1 slots and no redundant child.slot. Legacy flat Columns/layout.width inputs
+migrate without mutation; multi-row spans retain order through nested transparent rows. Ordinary layout
+components/slot semantics and submission scopes remain. Builder palette eligibility requires an explicit
+nonblank builder title. The current UI is a harness; spec 10/M09b replaces its interactions.

@@ -1,3 +1,8 @@
+import {
+  childCollections,
+  componentChildren,
+  childSlot,
+} from "@ourform/schema";
 import { builtinValidators } from "./validators";
 import type { CompiledValidator, Providers, ValidatorMap } from "./validators";
 import { migrate, validateDefinition } from "@ourform/schema";
@@ -191,6 +196,7 @@ export class Engine {
       children: ComponentNode[],
       scope: Path,
       parentId?: string,
+      parentSlot?: string,
     ): void => {
       for (const node of children) {
         const model = this.registry.get(node.type)!;
@@ -214,6 +220,7 @@ export class Engine {
           expressions: {},
           validators: [],
           ...(parentId === undefined ? {} : { parentId }),
+          ...(parentSlot === undefined ? {} : { parentSlot }),
           ...(node.validation?.pattern === undefined
             ? {}
             : { pattern: new RegExp(node.validation.pattern, "u") }),
@@ -223,11 +230,13 @@ export class Engine {
         dependents[node.id] = [];
         if (model.value || model.dataScope === "object")
           byPath[pathKey(path)] = entry;
-        visit(
-          node.components ?? [],
-          model.dataScope === "object" ? path : scope,
-          node.id,
-        );
+        for (const group of childCollections(node))
+          visit(
+            group.components,
+            model.dataScope === "object" ? path : scope,
+            node.id,
+            group.slot,
+          );
       }
     };
     visit(snapshot(expanded.components), []);
@@ -244,7 +253,13 @@ export class Engine {
           "This component can only be placed at the form root.",
           entry.node.id,
         );
-      if (!entry.model.slots && !entry.node.components?.length) continue;
+      if (entry.node.columns && entry.model.kind !== "layout")
+        error(
+          "invalid-columns",
+          "Only layout components may own columns.",
+          entry.node.id,
+        );
+      if (!entry.model.slots && !componentChildren(entry.node).length) continue;
       try {
         const slots = resolveSlots(entry.model, entry.node);
         // Fixed composite children are expanded by the model, not author-editable slots.
@@ -253,14 +268,14 @@ export class Engine {
           !slots.length &&
           !entry.model.slots &&
           !entry.model.value &&
-          !(entry.node.components ?? []).some(
+          !componentChildren(entry.node).some(
             (child) => child.slot !== undefined,
           )
         )
           continue;
         const counts = new Map<string, number>();
-        for (const child of entry.node.components ?? []) {
-          const name = child.slot ?? slots[0]?.name;
+        for (const child of componentChildren(entry.node)) {
+          const name = childSlot(entry.node, child) ?? slots[0]?.name;
           const slot = slots.find((s) => s.name === name);
           if (!slot) {
             error(

@@ -1,4 +1,4 @@
-import { inspectJson, validateDefinition } from "@ourform/schema";
+import { inspectJson, migrate, componentChildren } from "@ourform/schema";
 import type { ComponentNode, Expr } from "@ourform/schema";
 import type { RegisteredField } from "./native";
 
@@ -11,15 +11,15 @@ export function defineComposite(spec: {
 }): RegisteredField {
   if (!spec.type || inspectJson(spec.components).length)
     throw new Error("Composite components must be bounded safe JSON.");
-  const template = JSON.parse(
-    JSON.stringify(spec.components),
-  ) as ComponentNode[];
-  const diagnostics = validateDefinition({
+  let template = JSON.parse(JSON.stringify(spec.components)) as ComponentNode[];
+  const migration = migrate({
     $formVersion: "1.0",
     id: spec.type,
     display: "form",
     components: template,
-  }).filter((d) => d.code !== "bad-ref");
+  });
+  template = migration.definition.components;
+  const diagnostics = migration.diagnostics.filter((d) => d.code !== "bad-ref");
   if (diagnostics.length)
     throw new Error(diagnostics.map((d) => d.message).join("; "));
   const freeze = (value: unknown): void => {
@@ -42,7 +42,7 @@ export function defineComposite(spec: {
         const collect = (children: readonly ComponentNode[]): void => {
           for (const child of children) {
             ids.set(child.id, `${node.id}/${child.id}`);
-            collect(child.components ?? []);
+            collect(componentChildren(child));
           }
         };
         collect(template);
@@ -63,6 +63,14 @@ export function defineComposite(spec: {
           children.map((child) => ({
             ...child,
             id: ids.get(child.id)!,
+            ...(child.columns
+              ? {
+                  columns: child.columns.map((column) => ({
+                    ...column,
+                    components: expand(column.components),
+                  })),
+                }
+              : {}),
             ...(child.visibleWhen === undefined
               ? {}
               : { visibleWhen: refs(child.visibleWhen) as Expr }),

@@ -87,3 +87,9 @@ Tests include 50 deterministic random sequences with nested moves, wrapping/dupl
 undo/redo plus explicit capacity/cycle/scope/path/history checks. Public additions: BuilderOptions,
 DropTarget, MoveComponent, DuplicateComponent, ChangeKey, WrapInLayout, Unwrap, ReplaceDefinition.
 The full UI lives in `@ourform/builder`; no DOM types enter this package.
+
+M09a (ADR-0015): Columns uses `columns: [{width,components}]` (integer widths 1..12 totaling 12), with
+positional column_0/column_1 slots and no redundant child.slot. Legacy flat Columns/layout.width inputs
+migrate without mutation; multi-row spans retain order through nested transparent rows. Ordinary layout
+components/slot semantics and submission scopes remain. Builder palette eligibility requires an explicit
+nonblank builder title. The current UI is a harness; spec 10/M09b replaces its interactions.

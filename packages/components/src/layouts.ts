@@ -9,6 +9,12 @@ export const columnsLayout = defineLayout({
   type: "columns",
   title: "Columns",
   columns: true,
+  slots: (node) =>
+    (node.columns ?? []).map((_, index) => ({
+      name: `column_${index}`,
+      label: `Column ${index + 1}`,
+      accepts: ["field", "layout", "composite"],
+    })),
 });
 export const fieldsetLayout = defineLayout({
   type: "fieldset",

@@ -91,3 +91,9 @@ portable controls and native placeholders. Runtime Tabs retains every panel/cont
 focus(id) reveals ancestor panels. `defaultThemes` is a frozen array containing Bootstrap4/5/Tailwind
 (the Base fallback is built in), shared by the form host and builder. `@ourform/builder` mounts a design
 view and editable preview on one session, avoiding duplicate processor/provider runs.
+
+M09a (ADR-0015): Columns uses `columns: [{width,components}]` (integer widths 1..12 totaling 12), with
+positional column_0/column_1 slots and no redundant child.slot. Legacy flat Columns/layout.width inputs
+migrate without mutation; multi-row spans retain order through nested transparent rows. Ordinary layout
+components/slot semantics and submission scopes remain. Builder palette eligibility requires an explicit
+nonblank builder title. The current UI is a harness; spec 10/M09b replaces its interactions.

@@ -1,10 +1,11 @@
+import { componentChildren } from "@ourform/schema";
 import { UpdateProperty, ChangeKey } from "@ourform/builder-core";
 import type { PanelProperty } from "@ourform/builder-core";
 import type { Expr, ComponentNode } from "@ourform/schema";
 import { element, button } from "./types";
 import type { UI } from "./types";
 function all(nodes: ComponentNode[]): ComponentNode[] {
-  return nodes.flatMap((node) => [node, ...all(node.components ?? [])]);
+  return nodes.flatMap((node) => [node, ...all(componentChildren(node))]);
 }
 const operators = ["eq", "neq", "gt", "gte", "lt", "lte", "empty"] as const;
 type Row = { field: string; op: (typeof operators)[number]; value: string };

@@ -12,7 +12,7 @@ deviations from spec, open questions.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
 - **M03–M08 complete** — local and Linux evidence is recorded below. **M08 accepted by the owner under the amended author criterion** — SDK 0.x freeze accepted; closure PR #6 merged on first-run green CI. Human guide usability is required in M11; the owner approved the 24 new Yes/No screenshots. M09 is authorized after the separate plan-amendment PR.
-- **M09 implemented and locally verified** — declarative slots, nested builder/commands, Tabs and wrappers; acceptance evidence below. First-attempt current-head Linux CI is required before merge. M10a/M10b are not started.
+- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is the engine/schema follow-up; M09b UI replacement and M10a/M10b are not started.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
@@ -21,6 +21,95 @@ deviations from spec, open questions.
 ## Open questions
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
+
+## M09a — Column storage and palette contract (locally verified)
+
+Branch: m09a-columns, from merged M09 (PR #10, 5e1a5f2). Plan: introduce canonical per-column
+wire storage and shared traversal; migrate legacy flat width spans without mutating input; route
+compile, structural commands and submission schema through column children; filter palette by explicit
+builder titles and hide demo registrations by default; add focused migration/drop/move/paste/history
+and JSON Schema tests, then full pinned verify and first-attempt current-head CI before PR merge.
+No M09b interaction implementation or visual polish belongs to this change.
+
+The current builder UI is a **harness**. Spec 10 (M09b) replaces it with Pointer Events dragging,
+drop indicators only while dragging, selection by click, only the active tab on the canvas, and a
+tabbed edit dialog. Its existing controls remain here only to exercise engine/schema behavior.
+
+Migration must also handle legacy multi-row grids in onboarding. Preserve field IDs, data scopes,
+expressions, widths and reading order; pack old spans into rows and represent multiple mixed-width
+rows as nested transparent Columns. Empty trailing space becomes an empty column. Canonical column
+widths are integers 1..12 summing to 12. ADR-0015 records the wire/slot and migration decisions.
+
+### Implementation and development checks
+
+Canonical storage is consumed by schema migration/validation, compiled parent-slot metadata,
+composite expansion, structural commands, runtime attachment and the existing authoring harness.
+Ordinary layouts/Tabs retain components plus optional child slot. All column descendants remain
+transparent to data scope; keyed Containers still introduce object paths. JSON Patch points at actual
+columns/<index>/components arrays. The default playground excludes employeeObject, SDK card and
+Root section registrations; ?demos explicitly restores the existing demo tests. A registered model
+without a nonblank builder.title remains usable by the engine but is absent from the palette.
+
+Focused evidence: `packages/schema/tests/columns.test.ts` covers legacy migration, multiple rows,
+malformed/mixed storage and immutable/idempotent traversal; `packages/builder-core/tests/columns.test.ts`
+covers drops, cross-column moves, exact patches/history, subtree commands, scoped uniqueness,
+canonical import, submission JSON Schema and explicit palette titles. Core slots and SDK layout tests
+cover effective slots and namespaced composite IDs/references inside columns. The real keyboard paste
+case is `column keyboard paste uses the selected collection, replays changes and restores history`.
+The existing 50 seeded command sequences now also traverse canonical columns.
+
+Development failure records: `/tmp/m09a-columns-unit.log` (a new test collided with the built-in
+hidden type), `/tmp/m09a-columns-integration.log` (a test used an ID where setValue takes a data path),
+and `/tmp/m09a-browser-focused.log` (two old flat-fixture/default-demo assumptions, an off-screen
+Firefox drag destination and WebKit flex-wrapper intrinsic sizing). Tests use the canonical path and
+explicit ?demos; the mouse viewport accommodates both endpoints while retaining the visibility
+assertion. Grid column wrappers fix the WebKit extra space, diagnosed in
+`/tmp/m09a-column-sizing.log` and `/tmp/m09a-column-sizing2.log`. No screenshot baseline, timeout,
+pixel tolerance, size budget or work-count expectation is changed. The interrupted
+`/tmp/m09a-browser-fixed.log` exposed one remaining old Contents indicator selector; it now names
+Column 1 and retains the same cycle/root-only/atomicity assertions. The corrected focused browser run
+passes all 51 cases (`/tmp/m09a-browser-fixed2.log`).
+
+### Acceptance and final local verification — PASS
+
+| Criterion                                                                        | Status / evidence                                                                                                                                                                                                                 |
+| -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Canonical per-column storage, valid width sum and immutable/idempotent migration | PASS — schema columns tests: legacy single/multiple rows, gaps/ID collisions, mixed/malformed storage and shared traversal                                                                                                        |
+| Drop and move target the selected column                                         | PASS — builder-core `column drops and cross-column moves patch actual collections and undo/redo every byte`; browser `mouse drag builds four levels in declared slots with zero container-specific builder code`                  |
+| Keyboard paste and exact history                                                 | PASS — browser `column keyboard paste uses the selected collection, replays changes and restores history`, all three browsers; 50 seeded command sequences include column descendants                                             |
+| Submission JSON Schema and composite traversal                                   | PASS — builder-core `submission JSON Schema is transparent across columns including nested object scopes`; SDK `composite column templates migrate and namespace nested ids and references per instance`                          |
+| Explicit palette title and hidden default demos                                  | PASS — builder-core `palette requires an explicit nonblank builder title independently of renderer title`; browser `default harness palette hides demos and opt-in restores their engine checks`                                  |
+| Contract documentation and M09b boundary                                         | PASS — ADR-0015, specs 01/04/07/10, package READMEs and changeset; harness replacement requirements recorded above                                                                                                                |
+| Full pinned verify locally (initial implementation 174663f)                      | PASS — `CI=true caffeinate -i npx --offline --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify`, exit 0, `/tmp/m09a-verify.log`: 267 unit tests, 711 browser tests, 16 size budgets and 5 deterministic count checks |
+
+Core line coverage is 91.01%; validation is 99.25%, above the unchanged 90% requirement. All 312
+committed macOS/Linux PNGs are unchanged. Local visual comparisons use darwin-arm64 only; the native
+Linux CI checks linux-x64 against its own baselines in the pinned official Playwright image. Wall-clock
+benchmarks remain isolated advisory CI jobs. Final documentation formatting/lint is checked after
+these evidence notes. The PR delivery record holds the exact current-head CI URLs and merge evidence;
+merge is permitted only after first-attempt green CI, without reruns to obtain green. M09b is not started.
+
+### Advisory timing follow-up
+
+Initial head 174663f passed all three workflows on attempt 1:
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39637930580),
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39637909414), and the advisory
+run below. The follow-up head must independently pass before merge; these runs are never rerun.
+
+The first implementation's [isolated Linux A/B run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39637930385)
+passed on attempt 1, but reported compile ratios of 1.400/1.547/1.719 for 100/500/1,000 fields. Mount,
+edit and theme ratios remained approximately 1.0. This is advisory evidence, not a failed hard gate;
+all baselines and this record are retained. Profiling identified repeated column-only schema
+condition checks on ordinary fields. The follow-up skips those provably inapplicable conditions,
+avoids a JSON copy when no legacy Columns exists, and avoids allocating intermediate collections for
+ordinary child traversal. Published-schema parity tests protect the discriminator shortcut; column
+shape, width and semantic checks remain intact. All 86 focused tests pass (`/tmp/m09a-fast-unit.log`). The final full unit run also
+passes all 268 tests with core line coverage 91.01%; final browser/CI outcomes are in the PR delivery record.
+A same-host Node 22.22.3 diagnostic with identical profiling flags measured 16.08 ms before and 11.50 ms
+after for 1,000 ordinary fields (`/tmp/m09a-compile-profile.log`, `/tmp/m09a-compile-fast-profile.log`).
+These diagnostic samples do not replace any stored platform baseline. The revised source gets a new
+commit and first-attempt CI, never a workflow rerun. Final full local verification is logged in
+`/tmp/m09a-verify-final.log`; the PR delivery record records its outcome and the final CI URLs.
 
 ## M09 — Builder with nested drag and drop
 

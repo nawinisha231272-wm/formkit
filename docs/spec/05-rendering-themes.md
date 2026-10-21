@@ -197,3 +197,7 @@ Theme/tab changes retain child identity/session state. Shared defaultThemes supp
 form and builder hosts. `@ourform/builder` shares one session between design and preview; schema edits
 recreate transient state and preserve surviving field IDs' answers. Removed response values are not
 undo history. Generated chrome controls preserve identity/focus on appearance changes.
+
+M09a compatibility wiring: canonical column wrappers own widths and child mounts. Runtime columns do
+not add visible captions; design slots retain their existing harness descriptions. Responsive stacking,
+child identity/theme behavior and submission semantics remain. This is storage wiring, not M09b polish.

@@ -9,8 +9,14 @@
       "label": "Customer details",
       "properties": {
         "tabs": [
-          { "value": "first", "label": "Profile" },
-          { "value": "second", "label": "Contact" }
+          {
+            "value": "first",
+            "label": "Profile"
+          },
+          {
+            "value": "second",
+            "label": "Contact"
+          }
         ]
       },
       "components": [
@@ -23,21 +29,31 @@
               "id": "columns",
               "type": "columns",
               "label": "Name and rating",
-              "components": [
+              "columns": [
                 {
-                  "id": "name",
-                  "type": "text",
-                  "key": "name",
-                  "label": "Full name",
-                  "validation": { "required": true },
-                  "layout": { "width": 6 }
+                  "width": 6,
+                  "components": [
+                    {
+                      "id": "name",
+                      "type": "text",
+                      "key": "name",
+                      "label": "Full name",
+                      "validation": {
+                        "required": true
+                      }
+                    }
+                  ]
                 },
                 {
-                  "id": "rating",
-                  "type": "rating",
-                  "key": "rating",
-                  "label": "Experience",
-                  "layout": { "width": 6 }
+                  "width": 6,
+                  "components": [
+                    {
+                      "id": "rating",
+                      "type": "rating",
+                      "key": "rating",
+                      "label": "Experience"
+                    }
+                  ]
                 }
               ]
             }
@@ -60,7 +76,9 @@
                   "type": "email",
                   "key": "email",
                   "label": "Email",
-                  "validation": { "required": true }
+                  "validation": {
+                    "required": true
+                  }
                 },
                 {
                   "id": "notes",

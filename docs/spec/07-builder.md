@@ -38,7 +38,7 @@ export interface Builder {
   dispatch(cmd: Command): Diagnostic[];
   undo(): void;
   redo(): void;
-  palette(): PaletteGroup[]; // from registry models' builder metadata
+  palette(): PaletteGroup[]; // registered models with a nonblank builder title
   propertyPanel(componentId: string): PropertyPanelModel; // base groups + model properties
   subscribe(l: (s: BuilderState, patch: JsonPatchOp[]) => void): () => void;
 }
@@ -63,7 +63,7 @@ label, group, value, options?, min?, max?, editor?, visible }`.
 
 ## Builder UI (`@ourform/builder`, `<our-form-builder>`)
 
-- Palette: groups from `builder.group`, ordered by `builder.order`; search by title/type.
+- Palette: only registrations with a nonblank builder.title; groups from `builder.group`, ordered by `builder.order`; search by title/type.
 - Canvas: the real renderer in `design` mode, drop zones between and inside containers,
   selection outline, keyboard: arrows to select, Alt+Up/Down to move, Enter to edit, Delete to remove.
 - Property panel: generated editors per kind; expression editor for `expr` kind that builds the
@@ -76,7 +76,7 @@ label, group, value, options?, min?, max?, editor?, visible }`.
 
 ComponentModel declares `slots: [{name,label,accepts,max?}]`, optionally derived by a trusted per-node
 resolver for instance-configured Tabs. Resolve slots through the shared headless contract (spec 04),
-never by recognizing built-in container types. Keep ordered components; optional child slot names
+never by recognizing built-in container types. Ordinary layouts keep ordered components; optional child slot names
 select a parent's destination, with omission selecting the first slot. Existing single-slot layouts
 remain compatible. The root is an implicit destination accepting ordinary registered components.
 
@@ -129,8 +129,7 @@ undo/redo use internal RestoreSnapshot commands with a root replace operation. R
 successful after-snapshot, including generated ids. This is intentionally unbounded snapshot history
 for Phase 0; optimize/bound it in M09. Command invert(before) restores the exact definition and selection.
 
-PaletteGroup is { name, components: [{ type, title, order, icon? }] }; missing builder metadata falls
-back to model title and Fields group. PropertyPanelModel is { componentId, groups: [{ name, properties }] }.
+PaletteGroup is { name, components: [{ type, title, order, icon? }] }; missing/blank builder.title is excluded (M09a supersedes the M05 fallback). PropertyPanelModel is { componentId, groups: [{ name, properties }] }.
 PanelProperty is the entry shape above. Model keys are properties.<name>; base keys match wire paths.
 hidden aliases visibleWhen: false (clearing removes it), accessibility uses optional ariaLabel, and
 clearOnHide defaults true. Validation editors use the value adapter's empty/type hints. Model visibleWhen
@@ -150,3 +149,20 @@ public. `@ourform/builder.createBuilderController` adds the DOM implementation d
 views share one session; schema edits preserve surviving stable field IDs' answers but recreate transient
 state. Removed answers are not history. Theme/mode changes preserve preview and authoring controls.
 Wrapper APIs are in spec06; package READMEs give commands/examples. M05 limitations above are historical.
+
+## M09a — Column targets and harness boundary (ADR-0015)
+
+Columns now stores `columns: [{width,components}]`, with widths totaling 12. A destination's slot name
+column_0/column_1 selects the corresponding child array. Insertion/move patches point to the real
+`/columns/<index>/components/<index>` path. No redundant child.slot is stored. Compile, lookup, cycle
+checks, scope uniqueness, duplicates, wrap/unwrap, outline traversal, cut/paste and history traverse all
+column collections. Cross-column moves retain IDs/keys/data paths; undo/redo restores exact bytes.
+Initial builder input and ReplaceDefinition imports normalize legacy columns before storing state.
+Default AddComponent(columns) creates two width-6 columns. Column width editing remains schema/API
+configuration in this follow-up; the old field layout.width control is legacy harness metadata and
+has no effect on canonical column widths. The replacement edit dialog belongs to M09b.
+
+The current UI is a **harness**, not the final builder interaction design. Spec 10 (M09b) replaces it
+with Pointer Events dragging, drop indicators only while dragging, selection by click, only the active
+tab shown on the canvas, and a tabbed edit dialog. M09a only adapts existing harness routing to column
+storage and hides demo palette registrations by default. It includes no UI polish or M09b behavior.

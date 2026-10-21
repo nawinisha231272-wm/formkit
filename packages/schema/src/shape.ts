@@ -1,12 +1,42 @@
 import schema from "./form-definition.schema.json";
 import { isRecord } from "./json";
-export function shape(value: unknown, rule: Record<string, unknown>): boolean {
+export function shape(
+  value: unknown,
+  rule: Record<string, unknown>,
+  legacyColumns = false,
+): boolean {
+  // The component's two allOf branches apply only to Columns/column collections.
+  // Avoid recursively testing both discriminators for every ordinary field.
+  const skipColumnRules =
+    rule === schema.$defs.component &&
+    (legacyColumns ||
+      (isRecord(value) &&
+        value.type !== "columns" &&
+        !Object.hasOwn(value, "columns")));
+  if (!skipColumnRules) {
+    if (
+      Array.isArray(rule.allOf) &&
+      !rule.allOf.every((r) => shape(value, r, legacyColumns))
+    )
+      return false;
+    if (rule.not && isRecord(rule.not) && shape(value, rule.not, legacyColumns))
+      return false;
+    if (rule.if && isRecord(rule.if)) {
+      const branch = shape(value, rule.if, legacyColumns)
+        ? rule.then
+        : rule.else;
+      if (isRecord(branch) && !shape(value, branch, legacyColumns))
+        return false;
+    }
+  }
   if (typeof rule.$ref === "string")
     return shape(
       value,
       schema.$defs[rule.$ref.slice(8) as keyof typeof schema.$defs],
+      legacyColumns,
     );
-  if (Array.isArray(rule.anyOf)) return rule.anyOf.some((r) => shape(value, r));
+  if (Array.isArray(rule.anyOf))
+    return rule.anyOf.some((r) => shape(value, r, legacyColumns));
   if ("const" in rule && value !== rule.const) return false;
   if (Array.isArray(rule.enum) && !rule.enum.includes(value)) return false;
   if (rule.type) {
@@ -39,13 +69,20 @@ export function shape(value: unknown, rule: Record<string, unknown>): boolean {
   )
     return false;
   if (Array.isArray(value)) {
-    if (typeof rule.minItems === "number" && value.length < rule.minItems)
+    if (
+      (typeof rule.minItems === "number" && value.length < rule.minItems) ||
+      (typeof rule.maxItems === "number" && value.length > rule.maxItems)
+    )
       return false;
     return value.every((v, i) => {
       const r = Array.isArray(rule.prefixItems)
         ? rule.prefixItems[i]
         : undefined;
-      return shape(v, (r ?? rule.items ?? {}) as Record<string, unknown>);
+      return shape(
+        v,
+        (r ?? rule.items ?? {}) as Record<string, unknown>,
+        legacyColumns,
+      );
     });
   }
   if (isRecord(value)) {
@@ -59,11 +96,11 @@ export function shape(value: unknown, rule: Record<string, unknown>): boolean {
     const props = isRecord(rule.properties) ? rule.properties : {};
     return Object.entries(value).every(([k, v]) =>
       Object.hasOwn(props, k)
-        ? shape(v, props[k] as Record<string, unknown>)
+        ? shape(v, props[k] as Record<string, unknown>, legacyColumns)
         : rule.additionalProperties === false
           ? false
           : isRecord(rule.additionalProperties)
-            ? shape(v, rule.additionalProperties)
+            ? shape(v, rule.additionalProperties, legacyColumns)
             : true,
     );
   }
