@@ -20,7 +20,9 @@ export function childCollections(node: Readonly<ComponentNode>): {
 export function componentChildren(
   node: Readonly<ComponentNode>,
 ): ComponentNode[] {
-  return childCollections(node).flatMap((group) => group.components);
+  return node.columns
+    ? node.columns.flatMap((column) => column.components)
+    : (node.components ?? []);
 }
 /** Effective placement; column membership has no redundant child.slot on the wire. */
 export function childSlot(

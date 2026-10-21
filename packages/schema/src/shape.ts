@@ -5,15 +5,23 @@ export function shape(
   rule: Record<string, unknown>,
   legacyColumns = false,
 ): boolean {
-  if (!(legacyColumns && rule === schema.$defs.component)) {
+  // The component's two allOf branches apply only to Columns/column collections.
+  // Avoid recursively testing both discriminators for every ordinary field.
+  const skipColumnRules =
+    rule === schema.$defs.component &&
+    (legacyColumns ||
+      (isRecord(value) &&
+        value.type !== "columns" &&
+        !Object.hasOwn(value, "columns")));
+  if (!skipColumnRules) {
     if (
       Array.isArray(rule.allOf) &&
       !rule.allOf.every((r) => shape(value, r, legacyColumns))
     )
       return false;
-    if (isRecord(rule.not) && shape(value, rule.not, legacyColumns))
+    if (rule.not && isRecord(rule.not) && shape(value, rule.not, legacyColumns))
       return false;
-    if (isRecord(rule.if)) {
+    if (rule.if && isRecord(rule.if)) {
       const branch = shape(value, rule.if, legacyColumns)
         ? rule.then
         : rule.else;

@@ -80,7 +80,7 @@ passes all 51 cases (`/tmp/m09a-browser-fixed2.log`).
 | Submission JSON Schema and composite traversal                                   | PASS — builder-core `submission JSON Schema is transparent across columns including nested object scopes`; SDK `composite column templates migrate and namespace nested ids and references per instance`                          |
 | Explicit palette title and hidden default demos                                  | PASS — builder-core `palette requires an explicit nonblank builder title independently of renderer title`; browser `default harness palette hides demos and opt-in restores their engine checks`                                  |
 | Contract documentation and M09b boundary                                         | PASS — ADR-0015, specs 01/04/07/10, package READMEs and changeset; harness replacement requirements recorded above                                                                                                                |
-| Full pinned verify locally                                                       | PASS — `CI=true caffeinate -i npx --offline --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify`, exit 0, `/tmp/m09a-verify.log`: 267 unit tests, 711 browser tests, 16 size budgets and 5 deterministic count checks |
+| Full pinned verify locally (initial implementation 174663f)                      | PASS — `CI=true caffeinate -i npx --offline --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify`, exit 0, `/tmp/m09a-verify.log`: 267 unit tests, 711 browser tests, 16 size budgets and 5 deterministic count checks |
 
 Core line coverage is 91.01%; validation is 99.25%, above the unchanged 90% requirement. All 312
 committed macOS/Linux PNGs are unchanged. Local visual comparisons use darwin-arm64 only; the native
@@ -88,6 +88,28 @@ Linux CI checks linux-x64 against its own baselines in the pinned official Playw
 benchmarks remain isolated advisory CI jobs. Final documentation formatting/lint is checked after
 these evidence notes. The PR delivery record holds the exact current-head CI URLs and merge evidence;
 merge is permitted only after first-attempt green CI, without reruns to obtain green. M09b is not started.
+
+### Advisory timing follow-up
+
+Initial head 174663f passed all three workflows on attempt 1:
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39637930580),
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39637909414), and the advisory
+run below. The follow-up head must independently pass before merge; these runs are never rerun.
+
+The first implementation's [isolated Linux A/B run](https://github.com/nawinisha231272-wm/formkit/actions/runs/39637930385)
+passed on attempt 1, but reported compile ratios of 1.400/1.547/1.719 for 100/500/1,000 fields. Mount,
+edit and theme ratios remained approximately 1.0. This is advisory evidence, not a failed hard gate;
+all baselines and this record are retained. Profiling identified repeated column-only schema
+condition checks on ordinary fields. The follow-up skips those provably inapplicable conditions,
+avoids a JSON copy when no legacy Columns exists, and avoids allocating intermediate collections for
+ordinary child traversal. Published-schema parity tests protect the discriminator shortcut; column
+shape, width and semantic checks remain intact. All 86 focused tests pass (`/tmp/m09a-fast-unit.log`). The final full unit run also
+passes all 268 tests with core line coverage 91.01%; final browser/CI outcomes are in the PR delivery record.
+A same-host Node 22.22.3 diagnostic with identical profiling flags measured 16.08 ms before and 11.50 ms
+after for 1,000 ordinary fields (`/tmp/m09a-compile-profile.log`, `/tmp/m09a-compile-fast-profile.log`).
+These diagnostic samples do not replace any stored platform baseline. The revised source gets a new
+commit and first-attempt CI, never a workflow rerun. Final full local verification is logged in
+`/tmp/m09a-verify-final.log`; the PR delivery record records its outcome and the final CI URLs.
 
 ## M09 — Builder with nested drag and drop
 

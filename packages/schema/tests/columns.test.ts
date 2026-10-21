@@ -178,3 +178,41 @@ test("shared child collections expose actual column paths and effective slots wi
     childSlot({ id: "p", type: "tabs" }, { ...child, slot: "second" }),
   ).toBe("second");
 });
+
+test("column discriminators agree with the published JSON Schema for ordinary and column nodes", () => {
+  const validate = new Ajv2020({ strict: false }).compile(formDefinitionSchema);
+  const variants: unknown[] = [null, [], {}, { id: "node" }, { type: "text" }];
+  for (const type of ["text", "panel", "columns"])
+    for (const columns of [
+      undefined,
+      null,
+      [],
+      [{ width: 12, components: [] }],
+      [{ width: 0, components: [] }],
+    ])
+      for (const components of [undefined, [], [{ id: "child", type: "text" }]])
+        variants.push({
+          id: "node",
+          type,
+          ...(columns === undefined ? {} : { columns }),
+          ...(components === undefined ? {} : { components }),
+        });
+  for (const node of variants) {
+    const input = {
+      $formVersion: "1.0",
+      id: "parity",
+      display: "form",
+      components: [node],
+    };
+    expect(
+      validateDefinition(input).some((d) => d.code === "invalid-definition"),
+      JSON.stringify(node),
+    ).toBe(!validate(input));
+  }
+  const canonical = form({
+    id: "g",
+    type: "columns",
+    columns: [{ width: 12, components: [] }],
+  });
+  expect(migrate(canonical).definition).toBe(canonical);
+});

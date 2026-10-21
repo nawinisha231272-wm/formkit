@@ -11,6 +11,15 @@ export function migrateColumns(input: FormDefinition): {
   definition: FormDefinition;
   applied: string[];
 } {
+  function needsMigration(nodes: ComponentNode[]): boolean {
+    return nodes.some(
+      (node) =>
+        (node.type === "columns" && node.columns === undefined) ||
+        needsMigration(componentChildren(node)),
+    );
+  }
+  if (!needsMigration(input.components))
+    return { definition: input, applied: [] };
   const definition = JSON.parse(JSON.stringify(input)) as FormDefinition;
   const reserved = new Set<string>();
   function collect(nodes: ComponentNode[]): void {
