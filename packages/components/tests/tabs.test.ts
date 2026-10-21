@@ -1,4 +1,5 @@
 import { expect, test } from "vitest";
+import { defineLayout } from "@ourform/sdk";
 import { createEngine, resolveSlots } from "@ourform/core";
 import { builtinComponents, tabsLayout } from "@ourform/components";
 import { renderToString } from "@ourform/renderer-dom";
@@ -70,4 +71,41 @@ test("tab labels can change but removing populated slot names is rejected atomic
       components: [{ id: "empty", type: "tabs", properties: { tabs: [] } }],
     }).ok,
   ).toBe(false);
+});
+
+test("slot captions are literal unless labelKey opts into translation with an English fallback", () => {
+  const layout = defineLayout({
+    type: "translated-tabs",
+    title: "Translated tabs",
+    tabs: true,
+    slots: [
+      { name: "first", label: "of.required", accepts: ["field"] },
+      {
+        name: "second",
+        label: "English second",
+        labelKey: "acme.second",
+        accepts: ["field"],
+      },
+    ],
+  });
+  const e = createEngine().register(layout.model);
+  const compiled = e.compile({
+    $formVersion: "1.0",
+    id: "captions",
+    display: "form",
+    components: [{ id: "tabs", type: layout.model.type }],
+  });
+  if (!compiled.ok) throw new Error(JSON.stringify(compiled.diagnostics));
+  const session = e.createSession(compiled.form);
+  const views = new Map([[layout.model.type, layout.views]]);
+  const translated = renderToString(session, {
+    views,
+    t: (key) => (key === "acme.second" ? "Translated second" : key),
+  });
+  expect(translated).toContain(">of.required</button>");
+  expect(translated).toContain(">Translated second</button>");
+  expect(renderToString(session, { views, t: (key) => key })).toContain(
+    ">English second</button>",
+  );
+  session.dispose();
 });

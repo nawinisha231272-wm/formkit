@@ -164,6 +164,8 @@ test("derived slots validate instance metadata and report resolver failures as d
     [slot, slot],
     [{ ...slot, name: 3 }],
     [{ ...slot, label: "" }],
+    [{ ...slot, labelKey: 3 }],
+    [{ ...slot, labelKey: "" }],
     [{ ...slot, accepts: "field" }],
     [{ ...slot, accepts: [null] }],
     [{ ...slot, max: 0.5 }],

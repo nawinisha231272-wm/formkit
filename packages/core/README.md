@@ -115,3 +115,6 @@ kinds (`field`, `layout`, `composite`) or exact type names. Empty accepts refuse
 omitted slot selects the first without rewriting JSON. Slots do not introduce data scopes. Dynamic
 resolvers are trusted customer code and must be deterministic; malformed results return compile
 diagnostics. Fixed composite expansions remain noneditable. See ADR-0014 and core slots tests.
+
+Slot captions are literal text by default, including text that matches a catalog key. Optional
+`labelKey: "acme.card.body"` opts into host translation with `label: "Contents"` as its English fallback.

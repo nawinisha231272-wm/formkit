@@ -57,13 +57,13 @@ if [ "$OURFORM_VISUAL_SUITE" = m09 ]; then visual_files=(tests/e2e/tabs.spec.ts 
 : > /results/themes.log
 set +e
 if [ "$OURFORM_VISUAL_MODE" = record ]; then
-  npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "${visual_files[@]}" --workers=1 --grep "$visual_filter" --update-snapshots=all > /results/generation.log 2>&1
+  npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "${visual_files[@]}" --workers=1 --max-failures=1 --grep "$visual_filter" --update-snapshots=all > /results/generation.log 2>&1
   result=$?
   cat /results/generation.log
 else result=0
 fi
 if [ "$result" -eq 0 ]; then
-  npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "${visual_files[@]}" --workers=1 --grep "$visual_filter" > /results/themes.log 2>&1
+  npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "${visual_files[@]}" --workers=1 --max-failures=1 --grep "$visual_filter" > /results/themes.log 2>&1
   result=$?
 fi
 set -e

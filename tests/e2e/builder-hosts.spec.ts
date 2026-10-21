@@ -53,10 +53,7 @@ for (const [host, url] of hosts)
       ).toBeVisible();
       await page.evaluate((t) => window.builderTheme(t), theme);
       const preview = page.locator('[data-builder-part="preview"]');
-      await expect(preview.locator(".of-root")).toHaveAttribute(
-        "data-of-theme",
-        theme,
-      );
+      await expect(preview).toHaveAttribute("data-of-theme", theme);
       await expect(
         preview.getByRole("textbox", { name: "Full name", exact: true }),
       ).toHaveValue("Ada Lovelace");
@@ -156,12 +153,6 @@ for (const [host, url] of hosts)
           JSON.stringify(change.definition),
         );
       }
-      const axe = await new AxeBuilder({ page }).analyze();
-      expect(
-        axe.violations.filter((v) =>
-          ["serious", "critical"].includes(v.impact ?? ""),
-        ),
-      ).toEqual([]);
       const old = await page
         .getByRole("button", { name: "Add Native text", exact: true })
         .elementHandle();
@@ -181,5 +172,50 @@ for (const [host, url] of hosts)
       expect(await page.evaluate(() => window.builderChanges.length)).toBe(
         count,
       );
+    });
+  }
+
+for (const [host, url] of hosts)
+  for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+    test(`${host} builder ${theme}: native and chrome accessibility`, async ({
+      page,
+    }) => {
+      await page.goto(url);
+      await expect(
+        page.getByRole("tab", { name: "Profile", exact: true }),
+      ).toBeVisible();
+      await page.evaluate((t) => window.builderTheme(t), theme);
+      const preview = page.locator('[data-builder-part="preview"]');
+      await expect(preview).toHaveAttribute("data-of-theme", theme);
+      const schema = structuredClone(fixture) as { components: unknown[] };
+      schema.components.push({
+        id: "native-accessibility",
+        key: "native_text",
+        type: "acme.native",
+        label: "Native text",
+        properties: { hint: "Generated native hint" },
+        validation: { required: true },
+        disabledWhen: true,
+      });
+      expect(
+        await page.evaluate(
+          (schema) => window.builderHost.load(schema),
+          schema,
+        ),
+      ).toEqual([]);
+      await page.getByRole("tab", { name: "Contact", exact: true }).click();
+      const native = preview.locator("input[data-builder-native]");
+      await expect(native).toBeDisabled();
+      await expect(native).toHaveAccessibleName("Native text");
+      await expect(native).toHaveAttribute("aria-required", "true");
+      await page
+        .getByRole("treeitem", { name: "Native text", exact: true })
+        .click();
+      const axe = await new AxeBuilder({ page }).analyze();
+      expect(
+        axe.violations.filter((v) =>
+          ["serious", "critical"].includes(v.impact ?? ""),
+        ),
+      ).toEqual([]);
     });
   }

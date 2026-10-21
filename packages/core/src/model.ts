@@ -62,6 +62,7 @@ export interface ComponentModel<T = unknown> {
 export interface ComponentSlot {
   readonly name: string;
   readonly label: string;
+  readonly labelKey?: string;
   readonly accepts: readonly string[];
   readonly max?: number;
 }

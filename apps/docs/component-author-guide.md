@@ -410,3 +410,6 @@ max counts direct children. Child wire `slot` chooses a destination (omitted mea
 `slots(node)` resolvers support instance-configured destinations; the shared resolver validates at
 most64 descriptors. Use model-owned composite children for fixed expansion; editable slots are for
 layouts. See `@ourform/builder` README for keyboard authoring and lifecycle details.
+
+Slot captions are literal text by default, including text that matches a catalog key. Optional
+`labelKey: "acme.card.body"` opts into host translation with `label: "Contents"` as its English fallback.

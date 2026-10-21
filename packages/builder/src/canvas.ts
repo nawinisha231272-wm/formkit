@@ -71,6 +71,12 @@ export class Canvas {
     const model = this.ui.engine.getField(node.type)!;
     return model.kind === "composite" ? [] : resolveSlots(model, node);
   }
+  caption(slot: ReturnType<Canvas["slots"]>[number]): string {
+    const translated = slot.labelKey ? this.ui.t(slot.labelKey) : undefined;
+    return translated === undefined || translated === slot.labelKey
+      ? slot.label
+      : translated;
+  }
   location(id: string) {
     const entry = this.entries().find((e) => e.node.id === id);
     if (!entry) return undefined;
@@ -124,7 +130,7 @@ export class Canvas {
     this.ui.announce(
       this.ui.t("of.builder.targetSelected", {
         label: parent
-          ? `${parent.label ?? parent.type} / ${this.ui.t(slots.find((s) => s.name === name)!.label)}`
+          ? `${parent.label ?? parent.type} / ${this.caption(slots.find((s) => s.name === name)!)}`
           : this.ui.t("of.builder.formRoot"),
       }),
     );
@@ -247,7 +253,7 @@ export class Canvas {
           "aria-label",
           this.ui.t("of.builder.dropLocation", {
             label: parent
-              ? `${parent.label ?? parent.type} / ${this.ui.t(this.slots(parent).find((s) => s.name === slot)?.label ?? slot ?? "")}`
+              ? `${parent.label ?? parent.type} / ${this.caption(this.slots(parent).find((s) => s.name === slot)!)}`
               : this.ui.t("of.builder.formRoot"),
             index: index + 1,
           }),
@@ -364,7 +370,7 @@ export class Canvas {
     for (const { node } of this.entries())
       for (const slot of this.slots(node)) {
         this.#choices.push({ parentId: node.id, slot: slot.name });
-        labels.push(`${node.label ?? node.type} / ${this.ui.t(slot.label)}`);
+        labels.push(`${node.label ?? node.type} / ${this.caption(slot)}`);
       }
     labels.forEach((label, index) => {
       const option = element(this.ui.document, "option", label);

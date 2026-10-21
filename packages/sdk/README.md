@@ -136,3 +136,6 @@ Register this binding normally: the builder renders a field-only drop target wit
 tablist/panel rendering. Stable slot names are keys; labels are captions and may be translated by the
 host. `rootOnly:true` maps to headless builder placement metadata. Changing/removing an occupied slot
 must first move its children. Fixed composites remain model-owned, rather than inferred drop targets.
+
+Slot captions are literal text by default, including text that matches a catalog key. Optional
+`labelKey: "acme.card.body"` opts into host translation with `label: "Contents"` as its English fallback.

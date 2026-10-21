@@ -18,6 +18,12 @@ export function layoutVNode(
 ): VNode {
   const id = `${prefix}${entry.node.id}`;
   const slots = resolveSlots(entry.model, entry.node);
+  const caption = (slot: (typeof slots)[number]): string => {
+    const translated = slot.labelKey ? t(slot.labelKey) : undefined;
+    return translated === undefined || translated === slot.labelKey
+      ? slot.label
+      : translated;
+  };
   const tabs = !!layout.tabs && interaction.mode !== "design";
   const active = slots.some((slot) => slot.name === interaction.activeSlot)
     ? interaction.activeSlot
@@ -97,7 +103,7 @@ export function layoutVNode(
                   }
                 },
               },
-              t(slot.label),
+              caption(slot),
             ),
           ),
         )
@@ -133,7 +139,7 @@ export function layoutVNode(
                     id: `${id}_slot_${slot.name}`,
                     class: "of-slot-title",
                   },
-                  t(slot.label),
+                  caption(slot),
                 ),
           ),
         )

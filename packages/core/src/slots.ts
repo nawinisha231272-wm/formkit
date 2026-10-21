@@ -32,6 +32,8 @@ export function resolveSlots<T>(
       names.has(slot.name) ||
       typeof slot.label !== "string" ||
       !slot.label.trim() ||
+      (slot.labelKey !== undefined &&
+        (typeof slot.labelKey !== "string" || !slot.labelKey.trim())) ||
       !Array.isArray(slot.accepts) ||
       slot.accepts.some(
         (kind: unknown) => typeof kind !== "string" || !kind.trim(),

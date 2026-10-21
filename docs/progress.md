@@ -34,7 +34,8 @@ full pinned verify and initial-green CI. Preserve old images/counts and stop aft
 
 Shared ComponentSlot/resolveSlots and optional child slot placement are consumed by compile, commands,
 renderer and UI. Slots validate names/kinds/types/capacity/root-only placement; default old layouts keep
-omitted wire slots. Tabs uses configurable stable option values; all panels remain mounted at runtime
+omitted wire slots. Optional slot labelKey preserves M08 literal-by-default captions with an English fallback.
+Tabs uses configurable stable option values; all panels remain mounted at runtime
 and visible in design mode. The UI has generic nested indicators/palette, generated property and
 expression-row editors, editable JSON, live preview, outline and mouse/keyboard authoring. The new
 @ourform/builder package has only internal runtime dependencies. DOM, light/shadow custom-element,
@@ -66,7 +67,13 @@ deadline while recording browser images; final verify runs alone. No timeout, pi
 correctness assertion, old baseline or deterministic count is relaxed. The initial pinned Linux image
 run stopped before test discovery because the new host test directly imported JSON without Node's
 required import attribute (`/tmp/m09-linux-new-visuals.log`). It now reads the shared fixture with
-readFileSync/JSON.parse, matching existing browser tests; the corrected run has its own log.
+readFileSync/JSON.parse, matching existing browser tests; the corrected run has its own log. A newly added theme
+assertion then selected a descendant .of-root instead of the preview mount itself; corrected that test
+selector. The interrupted diagnostic log is `/tmp/m09-linux-theme-selector-failure.log`; the final
+record/comparison run is `/tmp/m09-linux-visuals-split-hosts.log`. Existing assertions are unchanged. The combined React/Tailwind host scenario
+then exceeded its unchanged30-second deadline during axe under x64 emulation. The new host suite now
+separates authoring/lifecycle from accessibility, retaining every assertion and timeout; native/chrome
+axe coverage still spans every host/theme/browser. Original log: `/tmp/m09-linux-host-combined-timeout.log`.
 
 ## M09 plan amendment — implementation not started
 
