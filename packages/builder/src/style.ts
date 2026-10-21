@@ -14,6 +14,8 @@ export const builderStyle = `
 .of-builder-panel{min-inline-size:0;background:#fff;border:1px solid #c6ced8;border-radius:6px;padding:12px}
 .of-builder-panel>h2{font-size:16px;margin:0 0 12px}.of-builder-panel>h3{font-size:14px;margin-block:14px 6px}
 .of-builder-palette{max-block-size:70vh;overflow:auto;display:grid;gap:6px;padding:3px}
+.of-builder-palette button,.of-builder-handle{position:relative}
+.of-builder-drag-surface{position:absolute;inset:0}
 .of-builder-palette h3{font-size:13px;margin:10px 0 2px}.of-builder-palette button{text-align:start}
 .of-builder-outline{max-block-size:45vh;overflow:auto;margin-block-start:12px}.of-builder-outline ul{list-style:none;padding-inline-start:16px;margin:0}
 .of-builder-outline>[role=tree]{padding:0}.of-builder-outline [role=treeitem]{padding:4px;border-radius:3px;cursor:pointer;outline-offset:-2px}

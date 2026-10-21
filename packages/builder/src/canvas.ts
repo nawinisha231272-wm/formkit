@@ -52,9 +52,23 @@ export class Canvas {
         );
         // Preserve the familiar visible palette names while making purpose explicit to AT.
         add.textContent = ui.t(item.title);
+        this.dragSurface(add);
         palette.append(add);
       }
     }
+  }
+  // Firefox in the pinned Playwright release only starts button drags from inner content.
+  // Cover the hit area without replacing its semantic button or its in-flow caption.
+  dragSurface(button: HTMLElement): void {
+    if (button.querySelector(".of-builder-drag-surface")) return;
+    const surface = element(
+      this.ui.document,
+      "span",
+      "",
+      "of-builder-drag-surface",
+    );
+    surface.setAttribute("aria-hidden", "true");
+    button.append(surface);
   }
   entries(): Entry[] {
     const result: Entry[] = [];
@@ -219,6 +233,7 @@ export class Canvas {
       handle.dataset.dragId = node.id;
       handle.dataset.id = node.id;
       handle.draggable = true;
+      this.dragSurface(handle);
       root.prepend(handle);
       this.#handles.set(node.id, handle);
     }

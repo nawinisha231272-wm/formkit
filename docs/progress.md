@@ -12,6 +12,7 @@ deviations from spec, open questions.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
 - **M03–M08 complete** — local and Linux evidence is recorded below. **M08 accepted by the owner under the amended author criterion** — SDK 0.x freeze accepted; closure PR #6 merged on first-run green CI. Human guide usability is required in M11; the owner approved the 24 new Yes/No screenshots. M09 is authorized after the separate plan-amendment PR.
+- **M09 implemented and locally verified** — declarative slots, nested builder/commands, Tabs and wrappers; acceptance evidence below. First-attempt current-head Linux CI is required before merge. M10a/M10b are not started.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
@@ -21,7 +22,7 @@ deviations from spec, open questions.
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
 
-## M09 — Builder with nested drag and drop (in progress)
+## M09 — Builder with nested drag and drop
 
 Prerequisites merged on first-run green CI: [M08 approval PR #8](https://github.com/nawinisha231272-wm/formkit/pull/8)
 (2976f54) and [plan amendment PR #9](https://github.com/nawinisha231272-wm/formkit/pull/9) (ee57b3e).
@@ -41,7 +42,7 @@ expression-row editors, editable JSON, live preview, outline and mouse/keyboard 
 @ourform/builder package has only internal runtime dependencies. DOM, light/shadow custom-element,
 React and Angular22/21 wrappers preserve owner context/DI and publish nonempty schema patches only.
 
-Focused evidence (final full verify/remote evidence follows after completion):
+Focused evidence (final full verification follows below):
 
 - Headless slots, commands and runtime: `/tmp/m09-runtime-node.log`, 76 passing cases, including
   50 seeded sequences with 50 operations each, independent patch replay and byte-identical undo/redo.
@@ -50,7 +51,7 @@ Focused evidence (final full verify/remote evidence follows after completion):
   `/tmp/m09-expression-fixed.log` passes. No builder code recognizes built-in container types.
 - Tabs runtime: `/tmp/m09-mac-tabs-record.log`, 18 passing cases (three browsers, four themes plus
   read-only/disabled cases). Error summary links reveal hidden targets; API writes stay available.
-- Native builder hosts: all24 Chromium host/theme cases passed during baseline recording. Final
+- Native builder hosts: all 24 Chromium host/theme cases passed during baseline recording. Final
   host matrix also independently replays every emitted patch and checks controlled echoes/context,
   native generated editors, focus/caret, teardown and zero serious/critical axe violations.
 - Public contracts/readmes/specs and additive SDK inventory are updated; ADR-0014 implements the
@@ -62,7 +63,7 @@ and automatic field focus/initial-data reset instead of the existing summary-foc
 Corrected tests preserve those contracts. Angular's new fixture initially used untransformed decorator
 syntax; it now follows the existing examples' explicit Component registration. Shared form/data fixtures
 now live together under forms/nested-tabs, matching the onboarding convention; 34 affected Node cases
-pass in `/tmp/m09-fixture-fixed.log`. A concurrent initial unit run hit the existing180-second CLI proof
+pass in `/tmp/m09-fixture-fixed.log`. A concurrent initial unit run hit the existing 180-second CLI proof
 deadline while recording browser images; final verify runs alone. No timeout, pixel tolerance,
 correctness assertion, old baseline or deterministic count is relaxed. The initial pinned Linux image
 run stopped before test discovery because the new host test directly imported JSON without Node's
@@ -71,7 +72,7 @@ readFileSync/JSON.parse, matching existing browser tests; the corrected run has 
 assertion then selected a descendant .of-root instead of the preview mount itself; corrected that test
 selector. The interrupted diagnostic log is `/tmp/m09-linux-theme-selector-failure.log`; the final
 record/comparison run is `/tmp/m09-linux-visuals-split-hosts.log`. Existing assertions are unchanged. The combined React/Tailwind host scenario
-then exceeded its unchanged30-second deadline during axe under x64 emulation. The new host suite now
+then exceeded its unchanged 30-second deadline during axe under x64 emulation. The new host suite now
 separates authoring/lifecycle from accessibility, retaining every assertion and timeout; native/chrome
 axe coverage still spans every host/theme/browser. A later emulated Angular bootstrap5 case observed
 Base while the initial controlled-theme update was pending; the fixture's builderTheme helper now
@@ -82,7 +83,7 @@ then pass in `/tmp/m09-angular-controlled-theme-repetition.log`; the emulated ru
 emulated React case consumed its deadline after snapshot capture, before native authoring began
 (`/tmp/m09-linux-host-image-authoring-timeout.log`). Dedicated image cases now preserve those same
 captures, while separate full-matrix authoring/lifecycle and accessibility cases retain the original
-checks and30-second deadline. The Linux image helper runs only screenshot cases: runtime Tabs in
+checks and 30-second deadline. The Linux image helper runs only screenshot cases: runtime Tabs in
 three browsers plus all host/theme previews in Chromium, matching the documented image matrix.
 Full pnpm verify still runs all three groups for every host/theme/browser. The final image log is
 `/tmp/m09-linux-visuals-only.log`. Runtime Tabs also completed both images before an
@@ -90,6 +91,60 @@ emulated WebKit case hit its deadline in a later caret assertion (`/tmp/m09-linu
 Tabs image capture is now its own case too; every keyboard/validation/caret/reset/axe assertion remains
 in the functional matrix with the unchanged timeout. Final image evidence will be recorded from
 `/tmp/m09-linux-visuals-separated.log`. Original log: `/tmp/m09-linux-host-combined-timeout.log`.
+
+### Final verification and interaction corrections
+
+The first full pinned verify reached 257 passing unit cases (core 92.11%, validation 99.25% line coverage)
+and 698/705 passing browser cases. Its seven failures were confined to the new nested-builder
+interaction tests; the original cases and every new screenshot comparison passed. Preserve the log:
+`/tmp/m09-full-pinned-verify-nested-failures.log`. A preceding strict-type failure caused by Playwright's
+recursive FormDefinition argument serialization was fixed by transporting the fixture as JSON text
+(`/tmp/m09-full-pinned-verify-type-failure.log`). No public type was weakened.
+
+The interaction fixes target the actual causes. The cycle test now clicks the selected tree item's own
+caption, instead of its descendant-containing LI center. On macOS WebKit, keyboard-only traversal uses
+Safari's native Option+Tab (Shift+Option+Tab backwards); other platforms use Tab. After a canvas paste,
+Shift+Tab returns to the preceding outline without leaving the document into browser chrome. No mouse
+or focus API substitutes for the keyboard-only authoring exercise.
+
+Firefox's pinned engine starts a button drag from inner content but ignores empty button space,
+matching [Mozilla bug 568313](https://bugzilla.mozilla.org/show_bug.cgi?id=568313#c23).
+An invisible, aria-hidden inner span covers palette buttons and selection handles, retaining their
+semantic buttons, in-flow captions, size and appearance. Real mouse gestures now start from the full
+hit area, not just the text. No synthetic DragEvent or injected DataTransfer is used. Diagnostic logs
+`/tmp/m09-firefox-*.log` retain the unsuccessful threshold, viewport, CSS and ancestor experiments.
+The corrected nested suite passes all 15 cases across Chromium, Firefox and WebKit:
+`/tmp/m09-nested-native-drag-surface.log`. No user Safari preferences were changed.
+
+Linux visuals were generated and compared successfully in the exact official Playwright 1.56.1 image
+recorded by scripts/linux-visuals.sh; final log `/tmp/m09-linux-visuals-separated.log`.
+The new 96 images comprise 48 darwin-arm64 and 48 linux-x64 captures: Tabs' two panels in all four themes
+and three browsers, plus six builder host modes in four themes in Chromium. AI inspection found no
+clipping; this does not claim owner approval of M09 images. All 216 historical PNGs remain byte-identical
+and performance baselines are unchanged (`/tmp/m09-baseline-integrity.json`).
+
+### Acceptance evidence — M09
+
+| Criterion                                                               | Result | Evidence                                                                                                                                                                                                                                                                       |
+| ----------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Shared slots and legacy default-slot JSON                               | PASS   | core `headless static slots are snapshotted; default legacy slots do not alter JSON`; derived-slot/schema-shape tests.                                                                                                                                                         |
+| Registry-only Rating/native palette and generated properties            | PASS   | `builder.spec.ts`; every builder-host authoring case edits native generated properties without builder extension code.                                                                                                                                                         |
+| Four-level mouse and independent keyboard construction                  | PASS   | `mouse drag builds four levels in declared slots with zero container-specific builder code`; `keyboard alone adds, configures, cuts into a slot, reparents, deletes and undoes`, all three browsers.                                                                           |
+| Atomic visible drop refusals and SDK field-only slots                   | PASS   | core `compile validates accepts, capacity, missing slots, root placement and children of fields`; builder-core `declarative named slots build four levels; refused cycles/kinds/capacity/root-only drops preserve redo`; nested-browser generic-slot/cycle/root-only tests.    |
+| All commands, scoped keys, stale paths and stable refs                  | PASS   | `cross-scope moves and ChangeKey re-check conflicts, warn stale paths and preserve ref ids`; subtree-duplicate and slot-local wrap/unwrap patch tests.                                                                                                                         |
+| 50 random sequences, independent patch replay and byte-exact history    | PASS   | `seed %i: nested commands replay patches and undo/redo every JSON byte`, seeds 1–50 with 50 operations each; `bounded history and atomic JSON import retain exact snapshots and reject malformed drafts`.                                                                      |
+| Accessible outline, keyboard move/delete and undo                       | PASS   | nested-builder keyboard and cycle tests use real keys; outline disclosure/selection and toolbar alternatives are covered.                                                                                                                                                      |
+| Tabs conformance and visuals in all four themes/hosts                   | PASS   | `Tabs <theme>: keyboard, retained state, error reveal, reset and accessibility`; protected-write/API tests; Node validation/SSR tests; `builder-hosts.spec.ts` six host modes × four themes × three browsers.                                                                  |
+| Wrappers, context/DI, replayable schema events, JSON/expression editors | PASS   | builder-host `Tabs, generated native editors, schema events, context, focus and teardown`; nested JSON/expression-row case and existing builder regression. Response edits and controlled echoes emit no schema changes.                                                       |
+| Builder axe                                                             | PASS   | `native and chrome accessibility` for every host/theme/browser plus independent four-level builder axe. No serious/critical violations.                                                                                                                                        |
+| Preserved baselines and deterministic budgets                           | PASS   | `/tmp/m09-baseline-integrity.json`: 216 old PNGs byte-identical, 96 new PNGs; existing count/size limits unchanged.                                                                                                                                                            |
+| Full pinned verify                                                      | PASS   | `CI=true pnpm verify` with Node 22.22.3/pnpm 10.10.0 exits 0: lint, 23 builds, 39 typecheck tasks, 257 unit tests, 705 browser cases, 16 size budgets and five unchanged count cases. Core 92.11% and validation 99.25% line coverage. Log: `/tmp/m09-full-pinned-verify.log`. |
+
+Runtime scope is explicit: schema edits recreate transient session/view state while retaining answers
+for surviving field IDs; undo does not restore removed response data. Fixed composites remain
+model-owned. There are no M10a/M10b features or external runtime dependencies. M11 retains the human
+guide-usability pass. Delivery must pass current-head Linux verify on attempt 1 before merge; exact
+remote run links are recorded in the M09 PR verification section. No workflow rerun is used for green.
 
 ## M09 plan amendment — implementation not started
 

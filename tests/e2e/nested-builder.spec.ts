@@ -1,4 +1,28 @@
 import { test, expect } from "@playwright/test";
+import type { Page, Locator } from "@playwright/test";
+
+// Real pointer path: some engines require two moves over a native HTML drop target.
+async function mouseDrag(
+  page: Page,
+  source: Locator,
+  target: Locator,
+): Promise<void> {
+  await source.hover();
+  const from = await source.boundingBox();
+  const to = await target.boundingBox();
+  if (!from || !to) throw new Error("Drag endpoints must be visible.");
+  await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(from.x + from.width / 2 + 8, from.y + from.height / 2, {
+    steps: 3,
+  });
+  await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, {
+    steps: 12,
+  });
+  await page.mouse.move(to.x + to.width / 2 + 1, to.y + to.height / 2);
+  await page.mouse.up();
+}
+
 import AxeBuilder from "@axe-core/playwright";
 import type {} from "../../apps/playground/builder";
 
@@ -15,8 +39,7 @@ test("mouse drag builds four levels in declared slots with zero container-specif
     const target = page.locator(
       `#canvas .of-builder-drop[data-drop-parent="${parent}"][data-drop-slot="${slot}"][data-drop-index="0"]`,
     );
-    await source.hover();
-    await source.dragTo(target);
+    await mouseDrag(page, source, target);
     await expect
       .poll(() =>
         page.evaluate(() => {
@@ -74,8 +97,13 @@ test("mouse drag builds four levels in declared slots with zero container-specif
 
 test("keyboard alone adds, configures, cuts into a slot, reparents, deletes and undoes", async ({
   page,
+  browserName,
 }) => {
   await page.goto("/builder.html?empty");
+  const tabKey =
+    browserName === "webkit" && process.platform === "darwin"
+      ? "Alt+Tab"
+      : "Tab";
   async function tabTo(
     locator: import("@playwright/test").Locator,
     backwards = false,
@@ -83,7 +111,13 @@ test("keyboard alone adds, configures, cuts into a slot, reparents, deletes and 
     for (let i = 0; i < 180; i++) {
       if (await locator.evaluate((el) => el === el.ownerDocument.activeElement))
         return;
-      await page.keyboard.press(backwards ? "Shift+Tab" : "Tab");
+      await page.keyboard.press(backwards ? `Shift+${tabKey}` : tabKey);
+      await page.evaluate(
+        () =>
+          new Promise<void>((resolve) =>
+            requestAnimationFrame(() => resolve()),
+          ),
+      );
     }
     throw new Error(
       `Keyboard could not reach ${await locator.getAttribute("aria-label")}`,
@@ -127,7 +161,8 @@ test("keyboard alone adds, configures, cuts into a slot, reparents, deletes and 
       ),
     )
     .toBe("second");
-  await tabTo(renamed);
+  // The outline precedes the canvas; Shift+Tab avoids leaving the document into browser chrome.
+  await tabTo(renamed, true);
   await page.keyboard.press("Alt+ArrowLeft");
   await expect
     .poll(() =>
@@ -179,10 +214,11 @@ test("illegal generic slot drops are visible and atomic; theme preserves authori
     `#canvas .of-builder-drop[data-drop-parent="${id}"][data-drop-slot="body"][data-drop-index="0"]`,
   );
   const before = await state();
-  await page.getByRole("button", { name: "Add Panel", exact: true }).hover();
-  await page
-    .getByRole("button", { name: "Add Panel", exact: true })
-    .dragTo(slot);
+  await mouseDrag(
+    page,
+    page.getByRole("button", { name: "Add Panel", exact: true }),
+    slot,
+  );
   await expect(page.locator("#diagnostics")).toContainText(
     "does not accept Panel",
   );
@@ -272,9 +308,12 @@ test("cut/paste refuses descendant cycles and root-only nesting with visible rea
   await expect(
     page.getByRole("treeitem", { name: "Full name", exact: true }),
   ).toBeVisible();
-  await page
-    .getByRole("treeitem", { name: "Customer details", exact: true })
-    .click();
+  const tabsItem = page.getByRole("treeitem", {
+    name: "Customer details",
+    exact: true,
+  });
+  await tabsItem.locator(":scope > .of-builder-tree-name").click();
+  await expect(tabsItem).toHaveAttribute("aria-selected", "true");
   await page.getByRole("button", { name: "Cut", exact: true }).click();
   await page
     .getByRole("button", {

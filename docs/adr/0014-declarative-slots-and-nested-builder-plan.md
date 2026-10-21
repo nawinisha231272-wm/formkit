@@ -104,3 +104,9 @@ do not rebuild or loop. Tabs keeps inactive panels mounted; focus reveals error 
 There is no external runtime library: the new package depends only on existing OurForm layers. The
 existing boundary lint rule explicitly allows adapters to import the builder UI for their wrappers.
 No existing deterministic counts, screenshot tolerances, correctness checks or size limits increase.
+
+Native HTML drag is retained. The pinned Firefox engine does not start button drags from empty space
+([Mozilla bug 568313](https://bugzilla.mozilla.org/show_bug.cgi?id=568313#c23)); transparent inner content
+covers palette/selection button hit areas without changing their appearance or button semantics.
+The acceptance tests use real mouse movement and native keyboard traversal, including Safari's
+Option+Tab on macOS; no synthetic drag events or application-specific focus preferences are required.

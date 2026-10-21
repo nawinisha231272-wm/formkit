@@ -192,8 +192,8 @@ for (const [host, url] of hosts)
       });
       expect(
         await page.evaluate(
-          (schema) => window.builderHost.load(schema),
-          schema,
+          (json: string) => window.builderHost.load(JSON.parse(json)),
+          JSON.stringify(schema),
         ),
       ).toEqual([]);
       await page.getByRole("tab", { name: "Contact", exact: true }).click();
