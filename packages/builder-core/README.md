@@ -93,3 +93,43 @@ positional column_0/column_1 slots and no redundant child.slot. Legacy flat Colu
 migrate without mutation; multi-row spans retain order through nested transparent rows. Ordinary layout
 components/slot semantics and submission scopes remain. Builder palette eligibility requires an explicit
 nonblank builder title. The current UI is a harness; spec 10/M09b replaces its interactions.
+
+## Host component locks (M09b)
+
+`createBuilder(engine, definition, {locked, readOnlyKeys})` snapshots host-owned locks. `locked` is
+an id/key-to-level map, or a list (structure by default). readOnlyKeys is a list shorthand. If both
+id and key match, or shorthand and explicit config overlap, the stronger level wins: all > structure > key.
+`builder.lockLevel(id)` exposes the effective level to chrome. Unknown ids have no lock.
+
+`key` protects a surviving component's key; deleting it or editing other properties remains allowed.
+`structure` also protects deletion/type and data-scope identity. Transparent layouts/columns remain
+inside their existing scope, so moves among them are allowed; moves into/out of keyed Containers are
+refused. An ancestor command/import cannot bypass a descendant's scope/deletion protection.
+`all` freezes the component subtree and placement, including ancestor moves. Unrelated insertions or
+removals do not count as moving a frozen component; changing its order among surviving siblings does.
+JSON can inspect it read-only. `canDrop` returns lock refusals; dispatch centrally compares before/after
+and returns `locked-component` without changing definition, selection, events or history.
+Locks never enter wire JSON. They constrain the host's builder instance; they do not protect against
+trusted application code replacing the instance or its own configuration.
+
+`UpdateComponent(id,node)` validates a dialog/JSON draft atomically, preserving its id and replacing
+that component in one patch/history step. `dispatch(edit,{historyGroup})` publishes each edit immediately
+and coalesces same-session UpdateProperty/UpdateComponent edits less than 500 ms apart; another group,
+selection change or undo/redo ends the group. Undo/redo return diagnostics and also respect locks.
+`AddComponent(type,{naming:"camel"})` opts into unique numbered labels/camel-case keys for the new UI;
+the default preserves legacy naming. `suggestKey(id,label)` suggests a valid unique key in the current
+scope, excluding the component itself. UI stops following labels once a key is manually edited.
+`MoveComponent(id,{...,renameConflicts:true})` opts into scoped city→city2 collision resolution with
+key-renamed warnings. The existing strict default still rejects conflicting moves. Locks take precedence
+and stable id references survive. JSON Patch and byte-identical undo/redo cover these operations.
+
+`new AddComponent(type, {node, ...target})` commits a prepared component in one Add step. The command
+snapshots safe JSON on construction, requires the same component type, and validates normal schema,
+slot, uniqueness and lock constraints before publishing. Undo restores the previous schema and selection;
+redo restores the prepared settings exactly. This supports a private modal draft without temporary edits.
+
+`PasteComponent(node, target)` snapshots a copied subtree, generates fresh stable ids, remaps internal
+references and checks keys in the destination data scope. Copy itself does not enter history; Paste
+commits once and remains usable after the source is edited or removed. Invalid drops publish nothing.
+Generated Logic metadata exposes `calculate.expr` and `calculate.allowOverride`; clearing the expression
+removes the whole calculation (including its override), with one reversible patch.

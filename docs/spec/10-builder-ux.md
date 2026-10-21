@@ -14,7 +14,7 @@ Modal (default) or right-side drawer (editor.mode: 'drawer').
 - Conditional and Logic tabs: rule builder rows "field · operator · value", joined by All/Any, producing the compact expression format (spec 03); a raw expression view is available.
 - Right pane: live preview rendered by the real renderer in the form's theme, updating as you type.
 - Footer: Delete (danger, left) · hint "Esc cancels · Ctrl+Enter saves" · Cancel · Save (primary).
-- Modal: changes preview instantly, commit on Save as one undo step; Cancel/Esc discards. A tab with a validation problem shows a red dot; Save is disabled until fixed.
+- Modal: changes preview instantly, commit on Save as one undo step; Cancel/Esc discards. When adding, the component stays in a private draft: Save commits the component and settings together as one step labelled “Add Email” (using its builder title); Cancel, Escape and Close discard it, publish no schema change, create no history, and restore the selection and focus from before the drop. Drawer mode commits the addition on drop as one step; later live edits are separate steps and closing never discards. `openOnAdd: false` commits defaults immediately without opening an editor. Paste, Duplicate and Wrap in layout each create one step and never open the editor. A tab with a validation problem shows a red dot; Save is disabled until fixed.
 - Drawer: changes apply live; undo steps are debounced (one per field edit session, 500 ms).
 - Focus: trapped in modal; returns to the component on close.
 
@@ -71,11 +71,32 @@ createBuilder(el, definition, {
     tabs: { hide: ["logic"] },
     properties: { text: { hide: ["tooltip"] } },
   },
-  readOnlyKeys: ["submit"],
+  locked: { submit: "structure", customerId: "all", legacyRef: "key" },
+  readOnlyKeys: ["submit"], // compatible shorthand for structure locks
   icons: customIconSet,
   messages: { "ofb.toolbar.edit": "Configure" },
 });
 ```
+
+## Host component locks (owner clarification, 2026-10-21)
+
+`locked` maps a component's stable id or data key to `key`, `structure` or `all`.
+A listed selector defaults to `structure`; `readOnlyKeys: ["submit"]` remains shorthand for
+`locked: {submit: "structure"}`. Locks belong to the host, never the wire definition.
+
+- `key`: the data key cannot change; other edits are allowed.
+- `structure`: the component cannot be deleted, change key/type, or move to a different data scope
+  (into/out of a Container or grid). Moves within its scope and display/validation/logic/layout edits
+  remain allowed.
+- `all`: nothing can change. Editing selection, movement and deletion are blocked; Edit JSON may
+  inspect the component read-only.
+
+Canvas and outline show a lock icon. Blocked toolbar actions are disabled with an explanatory tooltip
+(e.g. "Locked by your app: can't delete"). Settings grey out protected properties. Builder-core commands
+must return `locked-component` for a forbidden Remove, ChangeKey, type change, cross-scope Move or JSON
+apply, including an equivalent change through an ancestor edit/import; UI checks alone are insufficient.
+Tests cover each level. Lock configuration is not a security boundary against an application replacing
+its own builder instance/options.
 
 Events: of-select, of-schema-change ({ definition, patch }), of-before-delete (cancellable), of-editor-open. All chrome strings are message keys.
 

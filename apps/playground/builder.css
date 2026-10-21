@@ -1,31 +1,7 @@
-:root {
-  font-family: system-ui, sans-serif;
-  color: #17232b;
-  background: #eef2f6;
-}
+/* The demo host supplies geometry and self-hosted fonts; the SDK owns chrome tokens. */
 body {
   margin: 0;
 }
 main {
-  max-width: 1600px;
-  margin: auto;
-  padding: 20px;
-}
-header {
-  margin-block-end: 20px;
-}
-header h1 {
-  font-size: 28px;
-  margin: 10px 0;
-}
-header p {
-  max-width: 75ch;
-}
-a {
-  color: #174fbc;
-}
-@media (max-width: 640px) {
-  main {
-    padding: 10px;
-  }
+  min-height: 100vh;
 }

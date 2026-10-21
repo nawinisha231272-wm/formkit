@@ -201,3 +201,21 @@ undo history. Generated chrome controls preserve identity/focus on appearance ch
 M09a compatibility wiring: canonical column wrappers own widths and child mounts. Runtime columns do
 not add visible captions; design slots retain their existing harness descriptions. Responsive stacking,
 child identity/theme behavior and submission semantics remain. This is storage wiring, not M09b polish.
+
+## M09b Material and builder appearance (ADR-0016)
+
+Material is a portable CSS appearance, not a Material framework renderer pack. `materialTheme` is a
+standard renderer preset, preserving shell DOM and state updates while adding outlined floating-label
+fields, underline tabs, pill buttons, elevated panels and light/dark/high-contrast tokens. Hosts may
+self-host Roboto; no package fetches fonts. It has a separate 10 kB theme budget; existing budgets stand.
+
+Every shipped theme exports `builderTheme` as well as its form descriptor. Base exports Neutral chrome.
+Builder themes use SDK `BuilderTheme`/`BuilderTokens`/`BuilderPrimitive`; defineBuilderTheme snapshots
+safe --ofb-\* tokens, dark overrides and primitive token recipes. The builder resolves inheritance and
+match-form per instance; form themes and builder themes do not modify one another. See spec 10.
+New controls now pass Material conformance/visuals in addition to the four established themes.
+
+M09b design canvases opt into `designTabs: 'active'` to display only the active tab while preserving inert
+portable controls, real theme rendering, and native design placeholders. The default remains all-slot
+for existing render integrations. Native hosts may bind framework context per form instance through
+`forController(controller)`, so a settings preview's hooks use its isolated controller and session.

@@ -3,17 +3,50 @@ import type {
   Command,
   DropTarget,
   JsonPatchOp,
+  LockOptions,
+  DispatchOptions,
 } from "@ourform/builder-core";
-import type { Engine } from "@ourform/core";
+import type { Engine, CompiledForm } from "@ourform/core";
 import type { Diagnostic, FormDefinition } from "@ourform/schema";
 import type { FormController, HostOptions } from "@ourform/renderer-dom";
-import type { Theme, ThemeMode } from "@ourform/sdk";
+import type { Theme, ThemeMode, BuilderTheme } from "@ourform/sdk";
+import type { ChromeOptions } from "./theme";
+import type { BuilderIcons } from "./icons";
+import { actionButton } from "./primitives";
+export type ToolbarAction =
+  | "edit"
+  | "move"
+  | "duplicate"
+  | "copy"
+  | "paste"
+  | "json"
+  | "more"
+  | "delete";
+export interface PaletteOptions {
+  groups?: readonly string[];
+  hidden?: readonly string[];
+  order?: Readonly<Record<string, number>>;
+}
+export interface EditorOptions {
+  mode?: "modal" | "drawer";
+  openOnAdd?: boolean;
+  tabs?: { hide?: readonly string[] };
+  properties?: Readonly<Record<string, { hide?: readonly string[] }>>;
+}
 export interface SchemaChange {
   readonly definition: FormDefinition;
   readonly patch: readonly JsonPatchOp[];
 }
 export interface BuilderOptions
-  extends Omit<HostOptions, "onChange" | "readOnly" | "mode"> {
+  extends Omit<HostOptions, "onChange" | "readOnly" | "mode">,
+    LockOptions {
+  chrome?: ChromeOptions;
+  builderThemes?: readonly BuilderTheme[];
+  palette?: PaletteOptions;
+  toolbar?: { actions?: readonly ToolbarAction[] };
+  editor?: EditorOptions;
+  icons?: BuilderIcons;
+  messages?: Readonly<Record<string, string>>;
   historyLimit?: number;
   onSchemaChange?: (change: SchemaChange) => void;
   onPreviewReady?: (controller: FormController | undefined) => void;
@@ -26,6 +59,7 @@ export interface BuilderController {
   selectSlot(target: DropTarget): Diagnostic[];
   setTheme(theme: Theme | string): void;
   setMode(mode: ThemeMode): void;
+  setChrome(options: ChromeOptions): void;
   destroy(): void;
 }
 export interface UI {
@@ -34,8 +68,22 @@ export interface UI {
   engine: Engine;
   builder: Builder;
   t(key: string, params?: Record<string, unknown>): string;
-  dispatch(command: Command): Diagnostic[];
+  dispatch(command: Command, options?: DispatchOptions): Diagnostic[];
   announce(message: string): void;
+  liveProperties?: boolean;
+  propertyIssue?: (key: string, message: string | undefined) => void;
+  form?: () => CompiledForm | undefined;
+  reveal?: (id: string) => void;
+  edit?: (id: string, json?: boolean) => void;
+  palette?: PaletteOptions;
+  actions?: readonly ToolbarAction[];
+  icons?: BuilderIcons;
+  added?: (id: string) => void;
+  add?: (
+    type: string,
+    target: DropTarget,
+    origin?: HTMLElement,
+  ) => Diagnostic[];
 }
 export function element<K extends keyof HTMLElementTagNameMap>(
   document: Document,
@@ -53,8 +101,5 @@ export function button(
   text: string,
   action: () => void,
 ): HTMLButtonElement {
-  const el = element(ui.document, "button", text);
-  el.type = "button";
-  el.addEventListener("click", action, { signal: ui.signal });
-  return el;
+  return actionButton(ui, text, action);
 }

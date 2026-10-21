@@ -166,3 +166,27 @@ The current UI is a **harness**, not the final builder interaction design. Spec 
 with Pointer Events dragging, drop indicators only while dragging, selection by click, only the active
 tab shown on the canvas, and a tabbed edit dialog. M09a only adapts existing harness routing to column
 storage and hides demo palette registrations by default. It includes no UI polish or M09b behavior.
+
+## M09b host locks (owner decision, 2026-10-21)
+
+Headless builder options include locked (id/key-to-key/structure/all map, or a selector list) and
+readOnlyKeys (structure shorthand). The strongest matching restriction wins. Configuration is
+snapshotted per instance, never stored in the definition. lockLevel(id) informs presentation.
+Key locks protect surviving keys; structure also protects deletion/type/data-scope identity; all
+protects the whole subtree and placement. Compare before/after centrally so equivalent JSON imports,
+ancestor removals and scope-changing moves cannot bypass a lock. Return locked-component and retain
+state/history on refusal. canDrop includes lock diagnostics. Same-scope structure moves remain valid.
+The builder UI follows spec 10; lock checks in the UI do not replace command enforcement.
+
+M09b dialog drafts use UpdateComponent to commit one id-preserving component replacement. Explicit
+historyGroup property/component edits coalesce within 500 ms while publishing every patch; unrelated
+commands, selection changes, undo/redo and inactivity end an edit session. Undo/redo return diagnostics
+and enforce host locks. The approved UI opts into camel-case naming and MoveOptions.renameConflicts;
+legacy command defaults remain compatible. suggestKey computes scoped uniqueness in builder-core.
+
+M09b editor history: prepared `AddComponent(type, {node, ...target})` snapshots and validates a private
+modal draft, committing settings and addition together. `PasteComponent(node, target)` snapshots copied
+subtrees independently of the original; ids/internal references are remapped and destination keys
+rechecked, using the same implementation as Duplicate. Generated Logic properties edit existing
+`calculate.expr` and `calculate.allowOverride`; clearing the expression removes the calculation atomically.
+There is no new root logic-rule format in M09b.

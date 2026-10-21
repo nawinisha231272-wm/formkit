@@ -1,3 +1,9 @@
+/// <reference types="vite/client" />
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
 import { renderBuilder } from "@ourform/element";
 import type { BuilderController } from "@ourform/builder";
 import type { FormController } from "@ourform/renderer-dom";
@@ -30,6 +36,10 @@ const controller = renderBuilder(document.getElementById("builder")!, {
     ? [...employeeFields, card, rootSection]
     : employeeFields.filter((field) => field.model.type !== "employeeObject"),
   idPrefix: "",
+  editor: {
+    mode: query.has("drawer") ? "drawer" : "modal",
+    openOnAdd: !query.has("no-open"),
+  },
 });
 if (!query.has("empty") && !query.has("fixture"))
   controller.builder.select("cmp_rating");

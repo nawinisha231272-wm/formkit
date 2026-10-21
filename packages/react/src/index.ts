@@ -91,7 +91,10 @@ export const Form = forwardRef<FormController, FormProps>(
     useImperativeHandle(ref, () => handle!, [handle]);
     useLayoutEffect(() => {
       let active = true;
-      const nativeHost: NativeHost = {
+      const makeNativeHost = (
+        owner: FormController | null = null,
+      ): NativeHost => ({
+        forController: (controller) => makeNativeHost(controller),
         mount(slot, view, initial) {
           const publish = (p: typeof initial) => {
             if (!active) return;
@@ -101,8 +104,12 @@ export const Form = forwardRef<FormController, FormProps>(
                 key: p.a11y.id,
                 slot,
                 node: createElement(
-                  view.component as ComponentType<Record<string, unknown>>,
-                  mapNativeProps(view, p),
+                  Session.Provider,
+                  { value: owner },
+                  createElement(
+                    view.component as ComponentType<Record<string, unknown>>,
+                    mapNativeProps(view, p),
+                  ),
                 ),
               });
               return next;
@@ -121,7 +128,8 @@ export const Form = forwardRef<FormController, FormProps>(
             },
           };
         },
-      };
+      });
+      const nativeHost = makeNativeHost();
       const next = createFormController(container.current!, {
         ...current.current,
         data:
@@ -224,7 +232,10 @@ export const FormBuilder = forwardRef<BuilderController, FormBuilderProps>(
     useImperativeHandle(ref, () => handle as BuilderController, [handle]);
     useLayoutEffect(() => {
       let active = true;
-      const nativeHost: NativeHost = {
+      const makeNativeHost = (
+        owner: FormController | null = null,
+      ): NativeHost => ({
+        forController: (controller) => makeNativeHost(controller),
         mount(slot, view, initial) {
           const publish = (p: typeof initial) => {
             if (!active) return;
@@ -234,8 +245,12 @@ export const FormBuilder = forwardRef<BuilderController, FormBuilderProps>(
                 key: p.a11y.id,
                 slot,
                 node: createElement(
-                  view.component as ComponentType<Record<string, unknown>>,
-                  mapNativeProps(view, p),
+                  Session.Provider,
+                  { value: owner },
+                  createElement(
+                    view.component as ComponentType<Record<string, unknown>>,
+                    mapNativeProps(view, p),
+                  ),
                 ),
               });
               return next;
@@ -254,7 +269,8 @@ export const FormBuilder = forwardRef<BuilderController, FormBuilderProps>(
             },
           };
         },
-      };
+      });
+      const nativeHost = makeNativeHost();
       const next = createBuilderController(container.current!, {
         ...current.current,
         ...(engine ? { engine } : {}),
@@ -295,6 +311,9 @@ export const FormBuilder = forwardRef<BuilderController, FormBuilderProps>(
     useLayoutEffect(() => {
       controller.current?.setMode(props.themeMode ?? "light");
     }, [props.themeMode, handle]);
+    useLayoutEffect(() => {
+      controller.current?.setChrome(props.chrome ?? {});
+    }, [props.chrome, handle]);
     return createElement(
       Session.Provider,
       { value: preview },

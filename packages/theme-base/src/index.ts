@@ -1,4 +1,5 @@
 import type { Theme } from "@ourform/sdk";
+export { builderTheme } from "./builder-theme";
 export const baseTheme: Theme = {
   name: "base",
   tokens: {

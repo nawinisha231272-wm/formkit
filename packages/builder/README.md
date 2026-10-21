@@ -74,3 +74,35 @@ PNGs; `sh scripts/linux-visuals.sh check m09` thereafter. Both use the digest-pi
 image in scripts/playwright-container.json. Runtime Tabs captures both panels in three browsers and
 four themes; builder preview images cover all six hosts and four themes in Chromium. Functional and
 axe host conformance runs in all three browsers. Mac/Linux baselines are always separate.
+
+## M09b host lock contract
+
+`locked: {submit: "structure", customerId: "all", legacyRef: "key"}` matches stable ids or data keys.
+`key` locks only the key. `structure` locks deletion, key/type and moves across data scopes while
+allowing same-scope moves and other properties. `all` freezes editing/moving/deletion; JSON inspection
+is read-only. A listed selector defaults to structure; readOnlyKeys is its compatibility shorthand.
+These host-owned constraints are enforced by builder-core (`locked-component`), including imports,
+and displayed through canvas/outline lock icons, explanatory disabled actions and protected editors.
+See spec 10 for the owner decision; implementation acceptance is tracked in progress.md.
+
+### Adding and settings history
+
+With the default modal editor, palette additions stay private until Save. Save commits the component
+and its settings as one Add command; Cancel, Escape and Close discard it and restore the previous
+selection and focus. No schema event or history entry is published before Save. In drawer mode,
+the addition commits immediately, later live edits have their own history steps, and Close retains it.
+`editor: {openOnAdd: false}` adds defaults without opening settings. Paste, Duplicate and Wrap never
+open settings and each commits once.
+
+### Modes and appearance
+
+The header switches Build, Data, Preview and JSON without remounting the form. Data shows the existing
+submission JSON Schema and current sample answers. JSON applies only a validated definition. Save emits
+`of-save` with `{definition}`; persistence belongs to your application and the builder makes no network
+request. Logic mode remains disabled until M09c. Build uses active layout tabs; selecting a hidden field
+in the outline reveals its tab. Component actions share toolbar, context-menu and shortcut handlers.
+
+Use `palette: {groups: ["basic", "layout", "acme"], hidden: ["password"], order: {acme: 0}}` to filter
+registered builder entries. Default Fields/Layouts metadata maps to Basic/Layout; object scopes appear
+under Data. Empty-slot buttons open a searchable mini palette with six frequently used types from this
+editing session. Modal additions from either palette remain private until Save.

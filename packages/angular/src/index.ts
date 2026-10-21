@@ -334,6 +334,7 @@ export class OurFormBuilderComponent
 {
   @Input() schema: unknown;
   @Input() theme: BuilderOptions["theme"];
+  @Input() chrome: BuilderOptions["chrome"];
   @Input() themeMode: BuilderOptions["themeMode"];
   @Input() engine: BuilderOptions["engine"];
   @Input() fields: readonly RegisteredField[] = [];
@@ -368,6 +369,7 @@ export class OurFormBuilderComponent
     }
     if (changes["theme"])
       this.controller?.setTheme(this.theme ?? this.#options.theme ?? "base");
+    if (changes["chrome"]) this.controller?.setChrome(this.chrome ?? {});
     if (changes["themeMode"])
       this.controller?.setMode(
         this.themeMode ?? this.#options.themeMode ?? "light",
@@ -384,6 +386,7 @@ export class OurFormBuilderComponent
         schema: this.schema,
         theme: this.theme ?? this.#options.theme ?? "base",
         themeMode: this.themeMode ?? this.#options.themeMode ?? "light",
+        ...(this.chrome ? { chrome: this.chrome } : {}),
         ...(this.engine ? { engine: this.engine } : {}),
         fields: [
           ...builtinComponents,

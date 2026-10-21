@@ -10,11 +10,13 @@ import { mount } from "@ourform/renderer-dom";
 import type { ThemeMode, FormDefinition } from "@ourform/sdk";
 import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
 import { tailwindTheme } from "@ourform/theme-tailwind";
+import { materialTheme } from "@ourform/theme-material";
 export const themeNames = [
   "base",
   "bootstrap4",
   "bootstrap5",
   "tailwind",
+  "material",
 ] as const;
 export const themeModes = ["light", "dark", "high-contrast"] as const;
 /** States available through M03; later milestones add real multi-value/grid/wizard cases. */
@@ -118,7 +120,7 @@ export function createThemeConformance(
   const view = mount(root, session, {
     engine,
     views,
-    themes: [bootstrap4Theme, bootstrap5Theme, tailwindTheme],
+    themes: [bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
     theme: options.theme ?? "base",
     themeMode: options.mode ?? "light",
     presentation: {

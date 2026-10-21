@@ -14,6 +14,7 @@ const packages = [
   "theme-bootstrap4",
   "theme-bootstrap5",
   "theme-tailwind",
+  "theme-material",
   "validation",
   "testing",
 ];

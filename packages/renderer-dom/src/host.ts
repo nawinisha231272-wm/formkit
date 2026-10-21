@@ -1,6 +1,20 @@
-import { bootstrap4Theme } from "@ourform/theme-bootstrap4";
-import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
-import { tailwindTheme } from "@ourform/theme-tailwind";
+import {
+  bootstrap4Theme,
+  builderTheme as bootstrap4BuilderTheme,
+} from "@ourform/theme-bootstrap4";
+import {
+  bootstrap5Theme,
+  builderTheme as bootstrap5BuilderTheme,
+} from "@ourform/theme-bootstrap5";
+import {
+  tailwindTheme,
+  builderTheme as tailwindBuilderTheme,
+} from "@ourform/theme-tailwind";
+import {
+  materialTheme,
+  builderTheme as materialBuilderTheme,
+} from "@ourform/theme-material";
+import { builderTheme as neutralBuilderTheme } from "@ourform/theme-base";
 import { createEngine } from "@ourform/core";
 import type {
   Engine,
@@ -16,6 +30,14 @@ export const defaultThemes = Object.freeze([
   bootstrap4Theme,
   bootstrap5Theme,
   tailwindTheme,
+  materialTheme,
+]);
+export const defaultBuilderThemes = Object.freeze([
+  neutralBuilderTheme,
+  bootstrap4BuilderTheme,
+  bootstrap5BuilderTheme,
+  tailwindBuilderTheme,
+  materialBuilderTheme,
 ]);
 export interface HostOptions extends Omit<RenderOptions, "views" | "onSubmit"> {
   schema: unknown;
@@ -121,23 +143,14 @@ export function createFormController(
     mode: options.readOnly ? "readOnly" : "edit",
   });
   let view: FormView;
-  try {
-    view = mount(root, session, {
-      ...options,
-      themes: options.themes ?? defaultThemes,
-      engine,
-      views,
-    });
-  } catch (error) {
-    session.dispose();
-    throw error;
-  }
-  const unsubscribe = session.subscribe((patch) => options.onChange?.(patch));
   let destroyed = false;
-  return {
+  let unsubscribe = () => {};
+  const controller: FormController = {
     engine,
     session,
-    view,
+    get view() {
+      return view;
+    },
     submit: () => view.submit(),
     validate: () => session.validate(),
     reset: (data) => view.reset(data),
@@ -151,4 +164,20 @@ export function createFormController(
       session.dispose();
     },
   };
+  try {
+    const nativeHost =
+      options.nativeHost?.forController?.(controller) ?? options.nativeHost;
+    view = mount(root, session, {
+      ...options,
+      ...(nativeHost ? { nativeHost } : {}),
+      themes: options.themes ?? defaultThemes,
+      engine,
+      views,
+    });
+  } catch (error) {
+    session.dispose();
+    throw error;
+  }
+  unsubscribe = session.subscribe((patch) => options.onChange?.(patch));
+  return controller;
 }

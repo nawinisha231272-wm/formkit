@@ -87,3 +87,7 @@ history; schema echoes are no-ops. Theme updates preserve controller/control ide
 the controller; `of-error` reports invalid schema/attributes. Disconnect destroys listeners/controllers;
 reconnect restores current definition with new history. Light and open-shadow modes are supported;
 schema events bubble/composed. Use controller.preview for response data. No global field registry.
+
+M09b builder elements expose `chrome` as a JavaScript property. Setting it calls `setChrome` in place;
+it is retained across disconnect/reconnect. The imperative `renderBuilder` factory accepts the full
+builder options, including palette, toolbar, editor and locks. Native elements stay in the owner's DOM.

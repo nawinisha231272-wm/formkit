@@ -64,3 +64,8 @@ changes are atomic undoable imports. Keep engine/fields identities stable; chang
 controller/history. Theme/mode updates preserve session/control identity. StrictMode/unmount cleans
 controllers/portals. Native fields render through owner React portals and retain context plus useForm()
 for the current preview session. Demo `/builder.html`; tests/e2e/builder-hosts.spec.ts.
+
+M09b: `FormBuilder` accepts the builder's chrome, palette, toolbar, editor and lock options.
+Controlled `chrome` changes call `setChrome` in place, preserving controller, draft and native portals.
+Native `useForm`/`useField` inside settings refer to that preview's isolated controller, with the owner's
+React context retained. Cancel never writes preview answers into the main form.

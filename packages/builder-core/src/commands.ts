@@ -1,5 +1,9 @@
 import { inspectJson, isSafeKey } from "@ourform/schema";
-import type { Diagnostic, FormDefinition } from "@ourform/schema";
+import type {
+  Diagnostic,
+  FormDefinition,
+  ComponentNode,
+} from "@ourform/schema";
 import type { Engine } from "@ourform/core";
 import { createPropertyPanel } from "./property-panel";
 import { locate, checkDrop, createNode, insertNode } from "./structure";
@@ -29,10 +33,12 @@ export interface Command {
   readonly type:
     | "AddComponent"
     | "UpdateProperty"
+    | "UpdateComponent"
     | "RemoveComponent"
     | "RestoreSnapshot"
     | "MoveComponent"
     | "DuplicateComponent"
+    | "PasteComponent"
     | "ChangeKey"
     | "WrapInLayout"
     | "Unwrap"
@@ -81,13 +87,22 @@ class RestoreSnapshot implements Command {
     return new RestoreSnapshot(before);
   }
 }
+export interface AddOptions extends DropTarget {
+  readonly naming?: "camel";
+  readonly node?: ComponentNode;
+}
 export class AddComponent implements Command {
   readonly type = "AddComponent";
   constructor(
     readonly componentType: string,
-    readonly options: DropTarget = {},
+    readonly options: AddOptions = {},
   ) {
-    this.options = Object.freeze({ ...options });
+    if (options.node && inspectJson(options.node).length)
+      throw new Error("Initial component must be safe JSON.");
+    this.options = Object.freeze({
+      ...options,
+      ...(options.node ? { node: freeze(copy(options.node)) } : {}),
+    });
     Object.freeze(this);
   }
   apply(state: BuilderState, { engine }: BuilderContext): CommandResult {
@@ -99,12 +114,20 @@ export class AddComponent implements Command {
     );
     if (diagnostics.length) return { state, patch: [], diagnostics };
     const definition = copy(state.definition);
-    const node = createNode(
-      definition,
-      engine,
-      this.componentType,
-      this.options.parentId,
-    );
+    const node = this.options.node
+      ? copy(this.options.node)
+      : createNode(
+          definition,
+          engine,
+          this.componentType,
+          this.options.parentId,
+          this.options.naming,
+        );
+    if (node.type !== this.componentType)
+      return failure(
+        state,
+        "Initial component type must match the added type.",
+      );
     const inserted = insertNode(definition, engine, node, this.options);
     return {
       state: { ...state, definition, selection: node.id },
@@ -190,6 +213,8 @@ export class UpdateProperty implements Command {
     const last = parts.at(-1)!;
     if (value === undefined) delete target[last];
     else target[last] = copy(value);
+    if (this.key === "calculate.expr" && value === undefined)
+      delete found.node.calculate;
     return {
       state: { ...state, definition },
       patch: [{ op: "replace", path: found.path, value: found.node }],
@@ -203,4 +228,34 @@ export class UpdateProperty implements Command {
 
 export function restoreSnapshot(before: BuilderState): Command {
   return new RestoreSnapshot(before);
+}
+
+/** Commit a validated dialog/JSON draft as one component replacement and one undo step. */
+export class UpdateComponent implements Command {
+  readonly type = "UpdateComponent";
+  readonly node: ComponentNode;
+  constructor(
+    readonly componentId: string,
+    node: ComponentNode,
+  ) {
+    if (inspectJson(node).length)
+      throw new Error("Component must be safe JSON.");
+    this.node = freeze(copy(node));
+    Object.freeze(this);
+  }
+  apply(state: BuilderState): CommandResult {
+    const definition = copy(state.definition);
+    const found = locate(definition, this.componentId);
+    if (!found || this.node.id !== this.componentId)
+      return failure(state, "Component edits must preserve the existing id.");
+    found.nodes[found.index] = copy(this.node);
+    return {
+      state: { ...state, definition, selection: this.componentId },
+      patch: [{ op: "replace", path: found.path, value: this.node }],
+      diagnostics: [],
+    };
+  }
+  invert(before: BuilderState): Command {
+    return new RestoreSnapshot(before);
+  }
 }

@@ -1,3 +1,4 @@
+export { builderTheme } from "./builder-theme";
 import type { Theme } from "@ourform/sdk";
 export const bootstrap4Theme: Theme = {
   name: "bootstrap4",

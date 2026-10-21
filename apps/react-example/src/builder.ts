@@ -33,6 +33,9 @@ interface Props {
 function NativeText(p: Props) {
   const context = useContext(Context),
     form = useForm();
+  const nativeEntry = form?.session.form.nodes.find(
+    (entry) => entry.node.type === "acme.native",
+  );
   return h(
     "div",
     { style: { flex: 1, minWidth: 0 } },
@@ -42,6 +45,29 @@ function NativeText(p: Props) {
       { hidden: true, "data-builder-session": "" },
       form?.session.form.definition.id ?? "missing",
     ),
+    h(
+      "span",
+      { hidden: true, "data-builder-session-native": "" },
+      nativeEntry?.node.id ?? "missing",
+    ),
+    new URLSearchParams(location.search).has("context-trial")
+      ? h(
+          "button",
+          {
+            type: "button",
+            "data-write-via-hook": "",
+            onClick: () => {
+              if (nativeEntry)
+                form!.session.setValue(
+                  nativeEntry.path,
+                  "Written through draft hook",
+                  { source: "api" },
+                );
+            },
+          },
+          "Write through form hook",
+        )
+      : null,
     h("input", {
       type: "text",
       "data-builder-native": "",

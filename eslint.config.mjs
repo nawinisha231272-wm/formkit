@@ -15,6 +15,7 @@ const allowed = {
     "theme-bootstrap4",
     "theme-bootstrap5",
     "theme-tailwind",
+    "theme-material",
   ],
   "builder-core": ["schema", "core", "sdk"],
   builder: ["builder-core", "renderer-dom", "sdk", "core", "schema"],

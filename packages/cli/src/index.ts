@@ -85,6 +85,7 @@ export async function createScaffold(
           "@ourform/theme-bootstrap4": version,
           "@ourform/theme-bootstrap5": version,
           "@ourform/theme-tailwind": version,
+          "@ourform/theme-material": version,
         }
       : {}),
   };

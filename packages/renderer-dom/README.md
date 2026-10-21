@@ -97,3 +97,12 @@ positional column_0/column_1 slots and no redundant child.slot. Legacy flat Colu
 migrate without mutation; multi-row spans retain order through nested transparent rows. Ordinary layout
 components/slot semantics and submission scopes remain. Builder palette eligibility requires an explicit
 nonblank builder title. The current UI is a harness; spec 10/M09b replaces its interactions.
+
+M09b design canvases may opt into `designTabs: "active"` with `mode: "design"` to show one interactive
+tab panel. The default `"all"` preserves existing all-slot design views. Portable controls still use
+the real form theme and inert design semantics. `focus(id)` reveals ancestor tab panels.
+
+A framework `NativeHost` may implement `forController(controller): NativeHost` to bind native context
+to each form instance. The renderer calls it for the main form and every isolated editor preview;
+React portals use that controller for `useForm`/`useField`, while retaining the host's own providers.
+The controller's view is ready after mounting; native components render within their framework lifecycle.

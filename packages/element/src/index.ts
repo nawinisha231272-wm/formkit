@@ -99,6 +99,7 @@ export function renderBuilder(
 export interface OurFormBuilderElement extends HTMLElement {
   schema: unknown;
   theme: BuilderOptions["theme"];
+  chrome: BuilderOptions["chrome"];
   engine: BuilderOptions["engine"];
   fields: NonNullable<BuilderOptions["fields"]>;
   readonly controller: BuilderController | undefined;
@@ -118,6 +119,7 @@ export function defineOurFormBuilderElement(
     static observedAttributes = ["schema", "theme"];
     #schema: unknown = empty();
     #theme: BuilderOptions["theme"] = "base";
+    #chrome: BuilderOptions["chrome"];
     #engine: BuilderOptions["engine"];
     #fields: NonNullable<BuilderOptions["fields"]> = [];
     #controller: BuilderController | undefined;
@@ -160,6 +162,13 @@ export function defineOurFormBuilderElement(
       } finally {
         this.#reflecting = false;
       }
+    }
+    get chrome() {
+      return this.#chrome;
+    }
+    set chrome(value: BuilderOptions["chrome"]) {
+      this.#controller?.setChrome(value ?? {});
+      this.#chrome = value;
     }
     get engine() {
       return this.#engine;
@@ -249,6 +258,7 @@ export function defineOurFormBuilderElement(
         engine,
         fields: this.#fields,
         ...(this.#theme ? { theme: this.#theme } : {}),
+        ...(this.#chrome ? { chrome: this.#chrome } : {}),
         onSchemaChange: ({ definition }) => {
           this.#schema = definition;
         },

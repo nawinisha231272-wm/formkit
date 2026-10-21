@@ -12,18 +12,18 @@ export function browserFiles(
     "index.html": `<!doctype html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Component author preview</title></head>
 <body><main><h1>Component author preview</h1>
-<label>Theme <select id="theme"><option>base</option><option>bootstrap4</option><option>bootstrap5</option><option>tailwind</option></select></label>
+<label>Theme <select id="theme"><option>base</option><option>bootstrap4</option><option>bootstrap5</option><option>tailwind</option><option>material</option></select></label>
 <h2>State fixture</h2><label><input type="checkbox" id="required" checked>Required</label><label><input type="checkbox" id="disabled">Disabled</label><label><input type="checkbox" id="read-only">Read only</label>
 <div id="fixture"></div><button id="submit">Submit fixture</button><button id="reset">Reset fixture</button><pre id="result" aria-live="polite"></pre>
 <h2>Mini builder</h2><div id="builder"></div></main><script type="module" src="/preview.ts"></script></body></html>\n`,
     "preview.ts": `import { field${authoredTheme ? ", theme as authoredTheme" : ""} } from "./src/index";
-${authoredTheme ? 'import {bootstrap4Theme} from "@ourform/theme-bootstrap4";\nimport {bootstrap5Theme} from "@ourform/theme-bootstrap5";\nimport {tailwindTheme} from "@ourform/theme-tailwind";' : ""}
+${authoredTheme ? 'import {bootstrap4Theme} from "@ourform/theme-bootstrap4";\nimport {bootstrap5Theme} from "@ourform/theme-bootstrap5";\nimport {tailwindTheme} from "@ourform/theme-tailwind";\nimport {materialTheme} from "@ourform/theme-material";' : ""}
 import { renderComponent, mountComponentBuilder } from "@ourform/testing";
 import type { RenderComponentOptions } from "@ourform/testing";
 const element = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const host = element("fixture");
 const theme = element<HTMLSelectElement>("theme");
-${authoredTheme ? 'const option = document.createElement("option"); option.value = authoredTheme.name; option.textContent = authoredTheme.name; theme.append(option);\nconst themes = [bootstrap4Theme,bootstrap5Theme,tailwindTheme,authoredTheme];' : ""}
+${authoredTheme ? 'const option = document.createElement("option"); option.value = authoredTheme.name; option.textContent = authoredTheme.name; theme.append(option);\nconst themes = [bootstrap4Theme,bootstrap5Theme,tailwindTheme,materialTheme,authoredTheme];' : ""}
 let fixture: ReturnType<typeof renderComponent>;
 let mini: ReturnType<typeof mountComponentBuilder>;
 function render() {
@@ -60,7 +60,7 @@ import AxeBuilder from "@axe-core/playwright";
 import {existsSync} from "node:fs";
 import {checkPropertyEditors} from "@ourform/testing/playwright";
 import type {} from "../preview";
-for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind", "material"]) {
   test(\`sample: \${theme} values, state, a11y and visual evidence\`, async ({page}, info) => {
     await page.goto("/"); await page.locator("#theme").selectOption(theme);
     const input = page.locator("#fixture input");
