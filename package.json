@@ -69,7 +69,8 @@
     "@angular/forms": "22.2.3",
     "@ourform/theme-bootstrap4": "workspace:*",
     "bootstrap4": "npm:bootstrap@4.6.2",
-    "@ourform/validation": "workspace:*"
+    "@ourform/validation": "workspace:*",
+    "@ourform/builder": "workspace:*"
   },
   "size-limit": [
     {
@@ -145,6 +146,11 @@
     {
       "name": "cli",
       "path": "packages/cli/dist/*.js",
+      "limit": "30 kB"
+    },
+    {
+      "name": "builder",
+      "path": "packages/builder/dist/index.js",
       "limit": "30 kB"
     }
   ]

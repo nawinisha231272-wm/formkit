@@ -21,7 +21,8 @@
     "@ourform/schema": "workspace:*",
     "@ourform/sdk": "workspace:*",
     "@ourform/renderer-dom": "workspace:*",
-    "@ourform/components": "workspace:*"
+    "@ourform/components": "workspace:*",
+    "@ourform/builder": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0",

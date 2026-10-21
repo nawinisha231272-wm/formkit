@@ -21,6 +21,53 @@ deviations from spec, open questions.
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
 
+## M09 — Builder with nested drag and drop (in progress)
+
+Prerequisites merged on first-run green CI: [M08 approval PR #8](https://github.com/nawinisha231272-wm/formkit/pull/8)
+(2976f54) and [plan amendment PR #9](https://github.com/nawinisha231272-wm/formkit/pull/9) (ee57b3e).
+Implementation branch: m09-builder. Follow ADR-0014 and the amended M09 acceptance checklist.
+Plan: shared slot contracts/validation; nested commands, scoped keys and bounded history; Tabs and
+renderer design mode; reusable builder UI and wrappers; automated mouse/keyboard/host/theme evidence;
+full pinned verify and initial-green CI. Preserve old images/counts and stop after M09.
+
+### Implementation and focused evidence
+
+Shared ComponentSlot/resolveSlots and optional child slot placement are consumed by compile, commands,
+renderer and UI. Slots validate names/kinds/types/capacity/root-only placement; default old layouts keep
+omitted wire slots. Tabs uses configurable stable option values; all panels remain mounted at runtime
+and visible in design mode. The UI has generic nested indicators/palette, generated property and
+expression-row editors, editable JSON, live preview, outline and mouse/keyboard authoring. The new
+@ourform/builder package has only internal runtime dependencies. DOM, light/shadow custom-element,
+React and Angular22/21 wrappers preserve owner context/DI and publish nonempty schema patches only.
+
+Focused evidence (final full verify/remote evidence follows after completion):
+
+- Headless slots, commands and runtime: `/tmp/m09-runtime-node.log`, 76 passing cases, including
+  50 seeded sequences with 50 operations each, independent patch replay and byte-identical undo/redo.
+- Mouse and keyboard four-level authoring, atomic generic SDK field-only slot rejection and
+  authoring-button identity: `tests/e2e/nested-builder.spec.ts`; expression JSON/row regression
+  `/tmp/m09-expression-fixed.log` passes. No builder code recognizes built-in container types.
+- Tabs runtime: `/tmp/m09-mac-tabs-record.log`, 18 passing cases (three browsers, four themes plus
+  read-only/disabled cases). Error summary links reveal hidden targets; API writes stay available.
+- Native builder hosts: all24 Chromium host/theme cases passed during baseline recording. Final
+  host matrix also independently replays every emitted patch and checks controlled echoes/context,
+  native generated editors, focus/caret, teardown and zero serious/critical axe violations.
+- Public contracts/readmes/specs and additive SDK inventory are updated; ADR-0014 implements the
+  accepted plan. Starter review row8 is closed by full commands plus command-only production UI.
+
+Development failures are retained in `/tmp/m09-*.log`. Initial new-test assumptions used diagnostic
+codes where drag preflight shows an English reason, an implicit select label instead of role/name,
+and automatic field focus/initial-data reset instead of the existing summary-focus/empty-reset contract.
+Corrected tests preserve those contracts. Angular's new fixture initially used untransformed decorator
+syntax; it now follows the existing examples' explicit Component registration. Shared form/data fixtures
+now live together under forms/nested-tabs, matching the onboarding convention; 34 affected Node cases
+pass in `/tmp/m09-fixture-fixed.log`. A concurrent initial unit run hit the existing180-second CLI proof
+deadline while recording browser images; final verify runs alone. No timeout, pixel tolerance,
+correctness assertion, old baseline or deterministic count is relaxed. The initial pinned Linux image
+run stopped before test discovery because the new host test directly imported JSON without Node's
+required import attribute (`/tmp/m09-linux-new-visuals.log`). It now reads the shared fixture with
+readFileSync/JSON.parse, matching existing browser tests; the corrected run has its own log.
+
 ## M09 plan amendment — implementation not started
 
 The owner authorizes nested drag and drop after the M08 approval docs PR. Plan-only changes rename

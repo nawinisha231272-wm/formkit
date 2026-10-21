@@ -158,7 +158,11 @@ test("offline runtime: native builder editing and client validation/submission n
   await context.setOffline(true);
   await page.getByRole("button", { name: "Submit preview" }).click();
   await expect(page.locator("#builder-result")).toContainText('"ok": false');
-  await page.getByLabel("Name", { exact: true }).fill("Offline user");
+  // The outline now names the same component; edit the live response input.
+  await page
+    .locator("#preview")
+    .getByLabel("Name", { exact: true })
+    .fill("Offline user");
   await page.getByRole("button", { name: "4 of 5 stars" }).click();
   await page.locator('#palette [data-type="employee"]').click();
   await page.getByRole("button", { name: "Choose Ana" }).click();

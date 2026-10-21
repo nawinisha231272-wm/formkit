@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>OurForm Tabs conformance</title>
+    <link rel="icon" href="data:," />
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 20px;
+        max-width: 1100px;
+      }
+      #tabs-form {
+        margin-block: 16px;
+      }
+      pre {
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Tabbed customer form</h1>
+      <label
+        >Theme
+        <select id="theme">
+          <option value="base">Base</option>
+          <option value="bootstrap4">Bootstrap 4</option>
+          <option value="bootstrap5">Bootstrap 5</option>
+          <option value="tailwind">Tailwind</option>
+        </select></label
+      >
+      <div id="tabs-form"></div>
+      <button id="submit" type="button">Submit</button
+      ><button id="reset" type="button">Reset</button>
+      <pre id="result" role="region" aria-label="Submission result"></pre>
+    </main>
+    <script type="module" src="./tabs.ts"></script>
+  </body>
+</html>

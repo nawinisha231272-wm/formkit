@@ -7,6 +7,13 @@ import type {
 import { registerNativeField, mapNativeProps } from "@ourform/sdk";
 import type { NativeFieldOptions } from "@ourform/sdk";
 import { builtinComponents } from "@ourform/components";
+import { createBuilderController } from "@ourform/builder";
+import type { BuilderController, BuilderOptions } from "@ourform/builder";
+export type {
+  BuilderController,
+  BuilderOptions,
+  SchemaChange,
+} from "@ourform/builder";
 export type { FormController, HostOptions } from "@ourform/renderer-dom";
 export function registerElementField<V = string>(
   type: string,
@@ -75,6 +82,188 @@ export function renderForm(
     nativeHost,
     fields: [...builtins, ...(options.fields ?? [])],
   });
+}
+export function renderBuilder(
+  root: string | Element,
+  options: BuilderOptions,
+): BuilderController {
+  const target = typeof root === "string" ? document.querySelector(root) : root;
+  if (!target) throw new Error(`Builder container not found: ${root}`);
+  return createBuilderController(target, {
+    ...options,
+    adapter: "element",
+    nativeHost,
+    fields: [...builtins, ...(options.fields ?? [])],
+  });
+}
+export interface OurFormBuilderElement extends HTMLElement {
+  schema: unknown;
+  theme: BuilderOptions["theme"];
+  engine: BuilderOptions["engine"];
+  fields: NonNullable<BuilderOptions["fields"]>;
+  readonly controller: BuilderController | undefined;
+}
+export function defineOurFormBuilderElement(
+  tag = "our-form-builder",
+): CustomElementConstructor {
+  if (!tag.includes("-") || customElements.get(tag))
+    throw new Error(`Invalid or already registered builder tag: ${tag}`);
+  const empty = () => ({
+    $formVersion: "1.0",
+    id: "builder",
+    display: "form",
+    components: [],
+  });
+  class OurBuilder extends HTMLElement implements OurFormBuilderElement {
+    static observedAttributes = ["schema", "theme"];
+    #schema: unknown = empty();
+    #theme: BuilderOptions["theme"] = "base";
+    #engine: BuilderOptions["engine"];
+    #fields: NonNullable<BuilderOptions["fields"]> = [];
+    #controller: BuilderController | undefined;
+    #mount: HTMLElement | undefined;
+    #reflecting = false;
+    get controller() {
+      return this.#controller;
+    }
+    get schema() {
+      return this.#controller?.builder.getState().definition ?? this.#schema;
+    }
+    set schema(value: unknown) {
+      const previous = this.#schema;
+      if (this.#controller) {
+        const diagnostics = this.#controller.load(value);
+        if (diagnostics.some((d) => d.severity === "error"))
+          throw new Error(diagnostics.map((d) => d.message).join("; "));
+        this.#schema = value;
+      } else {
+        this.#schema = value;
+        try {
+          if (this.isConnected) this.rebuild();
+        } catch (cause) {
+          this.#schema = previous;
+          throw cause;
+        }
+      }
+    }
+
+    get theme() {
+      return this.#theme;
+    }
+    set theme(value: BuilderOptions["theme"]) {
+      this.#controller?.setTheme(value ?? "base");
+      this.#theme = value;
+      this.#reflecting = true;
+      try {
+        if (typeof value === "string") this.setAttribute("theme", value);
+        else this.removeAttribute("theme");
+      } finally {
+        this.#reflecting = false;
+      }
+    }
+    get engine() {
+      return this.#engine;
+    }
+    set engine(value: BuilderOptions["engine"]) {
+      const previous = this.#engine;
+      this.#engine = value;
+      try {
+        this.rebuild();
+      } catch (cause) {
+        this.#engine = previous;
+        throw cause;
+      }
+    }
+    get fields() {
+      return this.#fields;
+    }
+    set fields(value: NonNullable<BuilderOptions["fields"]>) {
+      const previous = this.#fields;
+      this.#fields = value;
+      try {
+        this.rebuild();
+      } catch (cause) {
+        this.#fields = previous;
+        throw cause;
+      }
+    }
+    attributeChangedCallback(
+      name: string,
+      old: string | null,
+      value: string | null,
+    ) {
+      if (old === value || this.#reflecting) return;
+      try {
+        if (name === "schema")
+          this.schema = value === null ? empty() : JSON.parse(value);
+        else this.theme = value ?? "base";
+      } catch (cause) {
+        this.error(cause);
+      }
+    }
+    connectedCallback() {
+      try {
+        this.rebuild();
+      } catch (cause) {
+        this.error(cause);
+      }
+    }
+    disconnectedCallback() {
+      this.#schema = this.schema;
+      this.#controller?.destroy();
+      this.#controller = undefined;
+    }
+    private error(cause: unknown) {
+      this.dispatchEvent(
+        new CustomEvent("of-error", {
+          detail: {
+            message:
+              cause instanceof Error
+                ? cause.message
+                : "Invalid builder configuration",
+          },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    }
+    private rebuild() {
+      if (!this.isConnected) return;
+      const fields = [...builtins, ...this.#fields];
+      const { engine } = createFormHost(fields, this.#engine);
+      const compiled = engine.compile(this.schema);
+      if (!compiled.ok)
+        throw new Error(compiled.diagnostics.map((d) => d.message).join("; "));
+      this.#schema = this.schema;
+      this.#controller?.destroy();
+      this.#controller = undefined;
+      if (!this.#mount) {
+        this.#mount = this.ownerDocument.createElement("div");
+        (this.hasAttribute("shadow")
+          ? (this.shadowRoot ?? this.attachShadow({ mode: "open" }))
+          : this
+        ).append(this.#mount);
+      }
+      this.#controller = renderBuilder(this.#mount, {
+        schema: this.#schema,
+        engine,
+        fields: this.#fields,
+        ...(this.#theme ? { theme: this.#theme } : {}),
+        onSchemaChange: ({ definition }) => {
+          this.#schema = definition;
+        },
+      });
+      this.dispatchEvent(
+        new CustomEvent("of-ready", {
+          detail: this.#controller,
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    }
+  }
+  customElements.define(tag, OurBuilder);
+  return OurBuilder;
 }
 export interface OurFormElement extends HTMLElement {
   schema: unknown;

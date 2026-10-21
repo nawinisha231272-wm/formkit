@@ -53,3 +53,14 @@ const [data, setData] = useState({});
 Keep schema/fields/engine identities stable. Controlled full snapshots are diffed per leaf, preserving
 controls/caret on echoes; rapid typing is tested. defaultData initializes an uncontrolled mount;
 subsequent edits belong to its session. ref.current.reset() also clears the error summary.
+
+## Visual builder (M09)
+
+`FormBuilder` (forwardRef<BuilderController>) and `FormBuilderProps` add the reusable authoring UI.
+Use `<FormBuilder schema={definition} fields={stableFields} onSchemaChange={c=>setDefinition(c.definition)} />`.
+`onReady` exposes the controller and `onPreviewReady` tracks session replacements. `of-schema-change`
+also bubbles with the same `{definition,patch}` detail. Controlled echoes load as no-ops; external schema
+changes are atomic undoable imports. Keep engine/fields identities stable; changing either recreates the
+controller/history. Theme/mode updates preserve session/control identity. StrictMode/unmount cleans
+controllers/portals. Native fields render through owner React portals and retain context plus useForm()
+for the current preview session. Demo `/builder.html`; tests/e2e/builder-hosts.spec.ts.

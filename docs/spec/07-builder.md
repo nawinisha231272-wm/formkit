@@ -141,3 +141,12 @@ stored for later layout support. The original starter property helpers remain co
 The playground builder is a list canvas with generated panels, read-only JSON/patch views and native
 preview. Schema edits retain data but recreate the preview session, resetting transient state. Theme
 changes retain the same session/DOM. No drag/drop, moves, duplicate or expression-row UI ships in M05.
+
+## M09 implemented lifecycle
+
+`createBuilder(engine,definition,{historyLimit?})` adds `canDrop(type,target,movingId?)`; limit defaults100
+and must be an integer1..1000. `select` remains selection-only. New commands and shared checkDrop are
+public. `@ourform/builder.createBuilderController` adds the DOM implementation described above. Two
+views share one session; schema edits preserve surviving stable field IDs' answers but recreate transient
+state. Removed answers are not history. Theme/mode changes preserve preview and authoring controls.
+Wrapper APIs are in spec06; package READMEs give commands/examples. M05 limitations above are historical.

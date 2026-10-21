@@ -67,4 +67,4 @@ uses stable values as slot names and literal editable labels as captions; defaul
 accept fields/layouts/composites. Tabs is presentation-only: keyed descendants retain ordinary scopes.
 Runtime follows APG horizontal tabs (Left/Right wrap, Home/End, automatic activation); inactive panels
 remain mounted. Error focus reveals ancestor tabs; theme/tab changes preserve controls/session state.
-Design mode exposes all slots; removing/renaming an occupied slot is invalid. Fixture: nested-tabs.json.
+Design mode exposes all slots; removing/renaming an occupied slot is invalid. Fixture: fixtures/forms/nested-tabs/customer.json.

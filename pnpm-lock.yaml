@@ -35,6 +35,9 @@ importers:
       '@ourform/angular':
         specifier: workspace:*
         version: link:packages/angular
+      '@ourform/builder':
+        specifier: workspace:*
+        version: link:packages/builder
       '@ourform/builder-core':
         specifier: workspace:*
         version: link:packages/builder-core
@@ -167,6 +170,9 @@ importers:
       '@ourform/angular':
         specifier: workspace:*
         version: link:../../packages/angular
+      '@ourform/builder':
+        specifier: workspace:*
+        version: link:../../packages/builder
       '@ourform/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -200,6 +206,9 @@ importers:
       '@ourform/angular':
         specifier: workspace:*
         version: link:../../packages/angular
+      '@ourform/builder':
+        specifier: workspace:*
+        version: link:../../packages/builder
       '@ourform/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -237,6 +246,9 @@ importers:
       '@ourform/angular':
         specifier: workspace:*
         version: link:../../packages/angular
+      '@ourform/builder':
+        specifier: workspace:*
+        version: link:../../packages/builder
       '@ourform/builder-core':
         specifier: workspace:*
         version: link:../../packages/builder-core
@@ -286,6 +298,9 @@ importers:
 
   apps/react-example:
     dependencies:
+      '@ourform/builder':
+        specifier: workspace:*
+        version: link:../../packages/builder
       '@ourform/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -307,6 +322,9 @@ importers:
 
   apps/vanilla-example:
     dependencies:
+      '@ourform/builder':
+        specifier: workspace:*
+        version: link:../../packages/builder
       '@ourform/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -331,6 +349,9 @@ importers:
       '@angular/forms':
         specifier: ^21.0.0 || ^22.0.0
         version: 22.2.3(@angular/common@22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(@angular/platform-browser@22.2.3(@angular/common@22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2)))(rxjs@7.8.2)
+      '@ourform/builder':
+        specifier: workspace:*
+        version: link:../builder
       '@ourform/components':
         specifier: workspace:*
         version: link:../components
@@ -362,6 +383,24 @@ importers:
       typescript:
         specifier: 6.0.2
         version: 6.0.2
+
+  packages/builder:
+    dependencies:
+      '@ourform/builder-core':
+        specifier: workspace:*
+        version: link:../builder-core
+      '@ourform/core':
+        specifier: workspace:*
+        version: link:../core
+      '@ourform/renderer-dom':
+        specifier: workspace:*
+        version: link:../renderer-dom
+      '@ourform/schema':
+        specifier: workspace:*
+        version: link:../schema
+      '@ourform/sdk':
+        specifier: workspace:*
+        version: link:../sdk
 
   packages/builder-core:
     dependencies:
@@ -399,6 +438,9 @@ importers:
 
   packages/element:
     dependencies:
+      '@ourform/builder':
+        specifier: workspace:*
+        version: link:../builder
       '@ourform/components':
         specifier: workspace:*
         version: link:../components
@@ -417,6 +459,9 @@ importers:
 
   packages/react:
     dependencies:
+      '@ourform/builder':
+        specifier: workspace:*
+        version: link:../builder
       '@ourform/components':
         specifier: workspace:*
         version: link:../components

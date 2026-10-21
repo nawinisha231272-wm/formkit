@@ -45,6 +45,7 @@ export default defineConfig({
         "sdk-extensions.html",
         "authoring.html",
         "boolean-authoring.html",
+        "tabs.html",
       ],
     },
   },

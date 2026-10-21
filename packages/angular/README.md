@@ -58,3 +58,13 @@ The Angular 21 compatibility example uses port 4184. Both run the shared 40-valu
 
 Controlled input is a complete snapshot; unchanged leaves are no-ops. Uncontrolled defaultData is read
 at mount. Rapid typing, read-only data, theme/child identity and public reset summary behavior are tested.
+
+## Visual builder (M09)
+
+Standalone `OurFormBuilderComponent` uses selector `our-form-builder`. Inputs: schema, theme, themeMode,
+engine, fields. Outputs: schemaChange (definition, suitable for `[(schema)]`), changed (`{definition,patch}`),
+diagnostics and ready (BuilderController). `of-schema-change` also bubbles/composed through the host.
+Native controls use the existing Angular bridge and owner DI. Provider-configured sample data reaches
+preview; response edits never emit schemaChange. Stable engine/fields reuse the controller; external
+schema loads atomically, equal echoes are no-ops, theme/mode retains identity. Destroy releases native
+component refs, listeners and controller. Angular22 and21 are tested via each example's `/builder.html`.

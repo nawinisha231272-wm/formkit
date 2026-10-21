@@ -85,3 +85,21 @@ Stop after M09; no M10 implementation is included.
 
 Keyboard reference patterns: [W3C APG Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/)
 and [W3C APG Tree View](https://www.w3.org/WAI/ARIA/apg/patterns/treeview/).
+
+## M09 implementation
+
+The shared headless resolver, optional wire slot, complete structural commands and bounded snapshot
+history implement the planned contract. Slot labels are literal English captions by default; passing
+them through host translation supports catalog keys, with the unchanged caption as fallback. No code
+recognizes built-in types in builder drop handling. Fixed model-owned composites remain uneditable.
+
+The new @ourform/builder owns chrome and delegates forms/native bridges to renderer/adapters. Design
+and preview share one session. Schema edits remount transient view/session state while preserving
+answers for surviving value-field IDs; removed answers are not history. Theme/mode updates preserve
+controls, selection handles and insertion buttons. Wrappers keep native owner context/DI and publish
+nonempty patches only. Engine/registration changes rebuild the controller; controlled schema echoes
+do not rebuild or loop. Tabs keeps inactive panels mounted; focus reveals error targets in ancestors.
+
+There is no external runtime library: the new package depends only on existing OurForm layers. The
+existing boundary lint rule explicitly allows adapters to import the builder UI for their wrappers.
+No existing deterministic counts, screenshot tolerances, correctness checks or size limits increase.

@@ -3,86 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>OurForm Mini builder</title>
+    <title>OurForm nested builder</title>
+    <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./builder.css" />
   </head>
   <body>
     <main>
       <header>
-        <div>
-          <a href="/">OurForm playground</a>
-          <h1>Mini builder</h1>
-          <p>Add fields, edit their properties and try your form.</p>
-        </div>
-        <span>Phase 0 · M05</span>
+        <a href="/">OurForm playground</a>
+        <h1>Form builder</h1>
+        <p>
+          Build nested forms with mouse or keyboard.
+          <a href="/builder.html?empty">Start an empty form</a> ·
+          <a href="/builder.html?fixture">Open the nested example</a>
+        </p>
       </header>
-      <div class="toolbar">
-        <button id="undo" type="button">Undo</button
-        ><button id="redo" type="button">Redo</button>
-        <label
-          >Preview theme
-          <select id="builder-theme">
-            <option value="base">Base</option>
-            <option value="bootstrap4">Bootstrap 4</option>
-            <option value="bootstrap5">Bootstrap 5</option>
-            <option value="tailwind">Tailwind</option>
-          </select></label
-        >
-        <label
-          >Appearance
-          <select id="builder-mode">
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-            <option value="high-contrast">High contrast</option>
-          </select></label
-        >
-      </div>
-      <p id="diagnostics" role="status" aria-live="polite"></p>
-      <div class="workspace">
-        <section aria-labelledby="palette-title">
-          <h2 id="palette-title">Add a field</h2>
-          <div id="palette"></div>
-        </section>
-        <section aria-labelledby="canvas-title">
-          <h2 id="canvas-title">Form fields</h2>
-          <p class="hint">Select a field to edit it.</p>
-          <ol id="canvas"></ol>
-          <button id="remove" type="button">Remove selected field</button>
-        </section>
-        <section aria-labelledby="properties-title">
-          <h2 id="properties-title">Field properties</h2>
-          <div id="builder-properties"></div>
-        </section>
-      </div>
-      <div class="results">
-        <section aria-labelledby="preview-title">
-          <h2 id="preview-title">Live preview</h2>
-          <div id="preview"></div>
-          <button id="builder-submit" type="button">Submit preview</button>
-          <pre
-            id="builder-result"
-            tabindex="0"
-            role="region"
-            aria-label="Preview submission"
-          ></pre>
-        </section>
-        <section aria-labelledby="json-title">
-          <h2 id="json-title">Form JSON</h2>
-          <pre
-            id="builder-json"
-            tabindex="0"
-            role="region"
-            aria-label="Form JSON"
-          ></pre>
-          <h3>Latest JSON Patch</h3>
-          <pre
-            id="builder-patch"
-            tabindex="0"
-            role="region"
-            aria-label="Latest JSON Patch"
-          ></pre>
-        </section>
-      </div>
+      <div id="builder"></div>
     </main>
     <script type="module" src="./builder.ts"></script>
   </body>

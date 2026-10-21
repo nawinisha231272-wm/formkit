@@ -8,6 +8,7 @@
     "@ourform/schema",
     "@ourform/sdk",
     "@ourform/renderer-dom",
-    "@ourform/components"
+    "@ourform/components",
+    "@ourform/builder"
   ]
 }

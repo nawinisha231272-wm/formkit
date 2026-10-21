@@ -16,7 +16,8 @@
     "@ourform/sdk": "workspace:*",
     "@ourform/renderer-dom": "workspace:*",
     "@ourform/components": "workspace:*",
-    "tslib": "2.8.1"
+    "tslib": "2.8.1",
+    "@ourform/builder": "workspace:*"
   },
   "peerDependencies": {
     "@angular/core": "^21.0.0 || ^22.0.0",

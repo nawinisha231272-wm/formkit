@@ -22,7 +22,8 @@
     "@ourform/element": "workspace:*",
     "@ourform/validation": "workspace:*",
     "@ourform/react": "workspace:*",
-    "@ourform/angular": "workspace:*"
+    "@ourform/angular": "workspace:*",
+    "@ourform/builder": "workspace:*"
   },
   "devDependencies": {
     "@ourform/testing": "workspace:*",
