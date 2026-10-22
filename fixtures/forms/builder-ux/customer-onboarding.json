@@ -1,0 +1,199 @@
+{
+  "$formVersion": "1.0",
+  "id": "customer-onboarding-builder",
+  "title": "Customer onboarding",
+  "display": "form",
+  "components": [
+    {
+      "id": "customerTabs",
+      "type": "tabs",
+      "label": "Customer onboarding",
+      "properties": {
+        "tabs": [
+          {
+            "value": "profile",
+            "label": "Profile"
+          },
+          {
+            "value": "company",
+            "label": "Company"
+          },
+          {
+            "value": "orders",
+            "label": "Orders"
+          }
+        ]
+      },
+      "components": [
+        {
+          "id": "contactPanel",
+          "type": "panel",
+          "slot": "profile",
+          "label": "Contact details",
+          "components": [
+            {
+              "id": "contactColumns",
+              "type": "columns",
+              "columns": [
+                {
+                  "width": 6,
+                  "components": [
+                    {
+                      "id": "fullName",
+                      "type": "text",
+                      "key": "fullName",
+                      "label": "Full name",
+                      "validation": {
+                        "required": true
+                      }
+                    },
+                    {
+                      "id": "phone",
+                      "type": "text",
+                      "key": "phone",
+                      "label": "Phone"
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "components": [
+                    {
+                      "id": "email",
+                      "type": "email",
+                      "key": "email",
+                      "label": "Email",
+                      "description": "We send receipts here.",
+                      "validation": {
+                        "required": true
+                      }
+                    },
+                    {
+                      "id": "customerType",
+                      "type": "radio",
+                      "key": "customerType",
+                      "label": "Customer type",
+                      "properties": {
+                        "options": [
+                          {
+                            "value": "individual",
+                            "label": "Individual"
+                          },
+                          {
+                            "value": "business",
+                            "label": "Business"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "companyDetails",
+          "type": "panel",
+          "slot": "profile",
+          "label": "Company details",
+          "visibleWhen": [
+            "eq",
+            {
+              "ref": "customerType"
+            },
+            "business"
+          ],
+          "components": [
+            {
+              "id": "companyName",
+              "type": "text",
+              "key": "companyName",
+              "label": "Company name"
+            },
+            {
+              "id": "taxId",
+              "type": "text",
+              "key": "taxId",
+              "label": "Tax ID"
+            },
+            {
+              "id": "customerReference",
+              "type": "acme.customer-reference",
+              "key": "customerReference",
+              "label": "Customer reference"
+            },
+            {
+              "id": "satisfaction",
+              "type": "rating",
+              "key": "satisfaction",
+              "label": "Rating"
+            }
+          ]
+        },
+        {
+          "id": "companyScope",
+          "type": "container",
+          "slot": "company",
+          "key": "company",
+          "label": "Company",
+          "components": [
+            {
+              "id": "industry",
+              "type": "select",
+              "key": "industry",
+              "label": "Industry",
+              "properties": {
+                "options": [
+                  {
+                    "value": "software",
+                    "label": "Software"
+                  },
+                  {
+                    "value": "services",
+                    "label": "Services"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "terms",
+              "type": "checkbox",
+              "key": "terms",
+              "label": "Accept company terms"
+            }
+          ]
+        },
+        {
+          "id": "orderPanel",
+          "type": "panel",
+          "slot": "orders",
+          "label": "Order details",
+          "components": [
+            {
+              "id": "orderReference",
+              "type": "text",
+              "key": "orderReference",
+              "label": "Order reference"
+            },
+            {
+              "id": "notes",
+              "type": "textarea",
+              "key": "notes",
+              "label": "Notes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "submit",
+      "type": "button",
+      "label": "Submit",
+      "properties": {
+        "action": "submit",
+        "text": "Submit"
+      }
+    }
+  ]
+}

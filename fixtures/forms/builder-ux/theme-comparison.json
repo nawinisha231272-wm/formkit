@@ -1,0 +1,45 @@
+{
+  "$formVersion": "1.0",
+  "id": "theme-comparison",
+  "display": "form",
+  "components": [
+    {
+      "id": "contact",
+      "type": "panel",
+      "label": "Contact details",
+      "components": [
+        {
+          "id": "fullName",
+          "type": "text",
+          "key": "fullName",
+          "label": "Full name"
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "validation": { "required": true }
+        },
+        {
+          "id": "customerType",
+          "type": "radio",
+          "key": "customerType",
+          "label": "Customer type",
+          "properties": {
+            "options": [
+              { "value": "individual", "label": "Individual" },
+              { "value": "business", "label": "Business" }
+            ]
+          }
+        },
+        {
+          "id": "submit",
+          "type": "button",
+          "label": "Submit",
+          "properties": { "action": "submit" }
+        }
+      ]
+    }
+  ]
+}
