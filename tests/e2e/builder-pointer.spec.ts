@@ -122,3 +122,75 @@ test("empty-slot mini palette offers six types and searches registered component
     page.locator('[data-builder-part="canvas"] .ofb-empty-slot'),
   ).toBeFocused();
 });
+
+test("outline exposes per-column slots and keyboard paste moves into the selected column with one undo step", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?fixture");
+  const tree = page.getByRole("tree", { name: "Outline", exact: true });
+  const name = tree.getByRole("treeitem", { name: "Full name", exact: true });
+  await name.click();
+  await name.press("Control+x");
+  const column = tree.getByRole("treeitem", { name: "Column 2", exact: true });
+  await column.click();
+  await column.press("Enter");
+  await column.press("Control+v");
+  const values = await page.evaluate(() => {
+    const columns =
+      window.miniBuilder.builder.getState().definition.components[0]!
+        .components![0]!.components![0]!.columns!;
+    return columns.map((column) => column.components.map((n) => n.id));
+  });
+  expect(values).toEqual([[], ["rating", "name"]]);
+  expect(
+    await page.evaluate(() =>
+      window.miniBuilder.builder.getState().history.past.map((c) => c.type),
+    ),
+  ).toEqual(["MoveComponent"]);
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  expect(
+    await page.evaluate(
+      () =>
+        window.miniBuilder.builder.getState().definition.components[0]!
+          .components![0]!.components![0]!.columns![0]!.components[0]!.id,
+    ),
+  ).toBe("name");
+});
+
+test("virtual outline slots collapse and expand by keyboard without editing their owner", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?fixture");
+  const column = page.getByRole("treeitem", { name: "Column 2", exact: true });
+  const before = await page.evaluate(() =>
+    JSON.stringify(window.miniBuilder.builder.getState().definition),
+  );
+  await column.locator(":scope > .of-builder-tree-name").click();
+  await column.press("ArrowLeft");
+  await expect(column).toHaveAttribute("aria-expanded", "false");
+  await expect(
+    page.getByRole("treeitem", { name: "Experience", exact: true }),
+  ).toBeHidden();
+  await column.press("ArrowRight");
+  await expect(column).toHaveAttribute("aria-expanded", "true");
+  await column.press("ArrowRight");
+  await expect(
+    page.getByRole("treeitem", { name: "Experience", exact: true }),
+  ).toBeFocused();
+  await column.click({ button: "right" });
+  await expect(page.getByRole("menu")).toHaveCount(0);
+  await column.press("Delete");
+  await expect(page.getByRole("status")).toHaveText(
+    "Select a component for this action. You can paste into this slot.",
+  );
+  expect(
+    await page.evaluate(() =>
+      JSON.stringify(window.miniBuilder.builder.getState().definition),
+    ),
+  ).toBe(before);
+  expect(
+    await page.evaluate(
+      () => window.miniBuilder.builder.getState().history.past.length,
+    ),
+  ).toBe(0);
+});

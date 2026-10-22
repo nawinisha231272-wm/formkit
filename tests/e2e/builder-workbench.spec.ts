@@ -197,3 +197,167 @@ test("React native settings preview receives its draft form context and hook wri
   await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
   expect(await page.evaluate(() => window.builderChanges.length)).toBe(0);
 });
+
+test("approved demo is a real twelve-field nested form with a custom SDK field and existing conditional logic", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?approved&theme=material");
+  const canvas = page.locator('[data-builder-part="canvas"]');
+  await expect(canvas).toHaveAttribute("data-of-theme", "material");
+  await expect(
+    page.getByRole("button", { name: "Edit settings", exact: true }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        window.miniBuilder.preview!.session.form.nodes.filter(
+          (e) => e.model.value,
+        ).length,
+    ),
+  ).toBe(12);
+  await expect(
+    canvas.locator('[data-field-id="contactColumns"] [data-field-id="email"]'),
+  ).toBeVisible();
+  await expect(canvas.locator('[data-field-id="customerType"]')).toContainText(
+    "Controls 4 fields",
+  );
+  await expect(
+    canvas.locator('[data-field-id="companyDetails"]'),
+  ).toContainText("Shown when Customer type is business");
+  await page.getByRole("tab", { name: "Preview", exact: true }).click();
+  const preview = page.locator('[data-builder-part="preview"]');
+  await expect(
+    preview.getByRole("textbox", { name: "Email", exact: true }),
+  ).toHaveValue("ana@example.com");
+  await expect(
+    preview.getByRole("textbox", { name: "Customer reference", exact: true }),
+  ).toHaveValue("CRM-1042");
+  await preview.getByRole("radio", { name: "Individual", exact: true }).check();
+  await expect(
+    preview.getByRole("textbox", { name: "Company name", exact: true }),
+  ).toBeHidden();
+  await preview.getByRole("radio", { name: "Business", exact: true }).check();
+  await expect(
+    preview.getByRole("textbox", { name: "Customer reference", exact: true }),
+  ).toHaveValue("");
+});
+
+test("public browser factory builds registered components without a framework wrapper", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?factory&approved&theme=material");
+  await expect(
+    page.getByRole("button", { name: "Edit settings", exact: true }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        window.miniBuilder.preview!.session.form.nodes.filter(
+          (e) => e.model.value,
+        ).length,
+    ),
+  ).toBe(12);
+  await page
+    .getByRole("button", { name: "Add Customer reference", exact: true })
+    .click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("Label", { exact: true }).fill("External reference");
+  await dialog.getByRole("tab", { name: "Reference", exact: true }).click();
+  await dialog
+    .getByLabel("Reference hint", { exact: true })
+    .fill("ERP reference");
+  await expect(
+    dialog.getByRole("textbox", { name: "External reference", exact: true }),
+  ).toHaveAttribute("placeholder", "ERP reference");
+  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  expect(
+    await page.evaluate(() =>
+      window.miniBuilder.builder.getState().history.past.map((c) => c.type),
+    ),
+  ).toEqual(["AddComponent"]);
+});
+
+test("phone widths expose an accessible read-only preview and retain schema/history when resized", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/builder.html");
+  await expect(
+    page.getByRole("tab", { name: "Build", exact: true }),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole("tab", { name: "Preview", exact: true }),
+  ).toHaveAttribute("aria-selected", "true");
+  const input = page.locator('#preview input[type="text"]');
+  await expect(input).toHaveAttribute("readonly", "");
+  await expect(input).toHaveAccessibleName("Name");
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  const before = await page.evaluate(() =>
+    JSON.stringify(window.miniBuilder.builder.getState()),
+  );
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(input).not.toHaveAttribute("readonly", "");
+  expect(
+    await page.evaluate(() =>
+      JSON.stringify(window.miniBuilder.builder.getState()),
+    ),
+  ).toBe(before);
+  await input.fill("Mobile reader");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(input).toHaveAttribute("readonly", "");
+  await expect(input).toHaveValue("Mobile reader");
+  const result = await new AxeBuilder({ page }).analyze();
+  expect(
+    result.violations.filter((v) =>
+      ["serious", "critical"].includes(v.impact ?? ""),
+    ),
+  ).toEqual([]);
+});
+
+test("design controls retain real enabled appearance while inert, and signals do not accumulate on restyle", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?approved");
+  const canvas = page.locator("#canvas"),
+    name = canvas.locator('[data-field-id="fullName"] input');
+  await expect(name).not.toHaveAttribute("readonly");
+  await expect(name.locator("xpath=ancestor::*[@inert][1]")).toHaveCount(1);
+  const type = canvas.locator('[data-field-id="customerType"]');
+  await expect(type.locator(".ofb-signal-row")).toHaveCount(1);
+  for (const theme of ["bootstrap4", "material", "base"])
+    await page.evaluate((t) => window.nestedBuilder.setTheme(t), theme);
+  await expect(type.locator(".ofb-signal-row")).toHaveCount(1);
+  await expect(
+    type.getByText("Controls 4 fields", { exact: true }),
+  ).toHaveCount(1);
+  const company = canvas.locator('[data-field-id="companyDetails"]');
+  await company.locator(":scope > .of-layout-title").click({ button: "right" });
+  await page
+    .getByRole("menuitem", { name: "Collapse or expand", exact: true })
+    .click();
+  await expect(company.locator('[data-field-id="companyName"]')).toBeHidden();
+  await expect(
+    company.getByText("Shown when Customer type is business", { exact: true }),
+  ).toBeVisible();
+});
+
+test("Material uses elevated rounded cards and a larger outer Tabs title", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?approved&theme=material");
+  const panel = page.locator('#canvas [data-field-id="contactPanel"]');
+  await expect(panel).toHaveCSS("border-radius", "12px");
+  await expect(panel).not.toHaveCSS("box-shadow", "none");
+  const submit = page.locator(
+    '#canvas [data-field-id="submit"] > button.of-control',
+  );
+  await expect(submit).toHaveJSProperty("inert", true);
+  await expect(submit).toHaveCSS("background-color", "rgb(103, 80, 164)");
+  await expect(
+    page.locator('#canvas [data-field-id="customerTabs"] > .of-layout-title'),
+  ).toHaveCSS("font-size", "26px");
+});

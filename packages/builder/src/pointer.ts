@@ -129,6 +129,8 @@ export class PointerDrag {
   }
   #source(target: Element): Source | undefined {
     const { palette, outline, host } = this.context;
+    if (target.closest<HTMLElement>('[role="treeitem"]')?.dataset.builderSlot)
+      return;
     const add = target.closest<HTMLElement>("[data-type]");
     if (add && palette.contains(add))
       return {

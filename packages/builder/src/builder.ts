@@ -23,6 +23,7 @@ import { pointerStyle } from "./pointer-style";
 import type { Theme, ThemeMode } from "@ourform/sdk";
 import { Canvas } from "./canvas";
 import { icon } from "./icons";
+import { sidebar } from "./sidebar";
 import { workbench } from "./workbench";
 import { workbenchStyle } from "./workbench-style";
 import { builderStyle } from "./style";
@@ -45,6 +46,7 @@ export function createBuilderController(
   if (root.childNodes.length)
     throw new Error("Builder mount must be empty and caller-owned.");
   const document = root.ownerDocument;
+  const phone = document.defaultView!.matchMedia("(max-width: 767px)");
   const events = new AbortController();
   const host = createFormHost(options.fields ?? [], options.engine);
   const core = createBuilder(host.engine, options.schema as FormDefinition, {
@@ -232,15 +234,9 @@ export function createBuilderController(
       const option = element(
         document,
         "option",
-        name === "base"
-          ? "Base"
-          : name === "bootstrap4"
-            ? "Bootstrap 4"
-            : name === "bootstrap5"
-              ? "Bootstrap 5"
-              : name === "tailwind"
-                ? "Tailwind"
-                : name,
+        t(`ofb.theme.${name}`) === `ofb.theme.${name}`
+          ? name
+          : t(`ofb.theme.${name}`),
       );
       option.value = name;
       appearance.append(option);
@@ -417,8 +413,11 @@ export function createBuilderController(
     if (
       options.editor?.openOnAdd !== false &&
       options.editor?.mode !== "drawer"
-    )
-      return settings.add(type, target, origin);
+    ) {
+      const diagnostics = settings.add(type, target, origin);
+      report(diagnostics);
+      return diagnostics;
+    }
     const diagnostics = dispatch(
       new AddComponent(type, { ...target, naming: "camel" }),
     );
@@ -436,7 +435,7 @@ export function createBuilderController(
     if (id) settings.open(id);
   });
   toolbar.prepend(edit);
-  inspector.append(toolbar);
+  const side = sidebar({ host: inspector, outline, legacy: toolbar, ui });
   const bench = workbench({
     root,
     shell,
@@ -499,6 +498,7 @@ export function createBuilderController(
         data,
         theme,
         themeMode: mode,
+        readOnly: phone.matches,
         idPrefix: `${prefix}preview-`,
       });
       // Two views share one session: preview edits run processors/providers once.
@@ -541,6 +541,23 @@ export function createBuilderController(
     }
     canvas.refresh(!!ops.length);
     bench.update(!!ops.length);
+    side.update();
+    const selected = core.getState().selection;
+    if (selected && preview) {
+      const crumbs: string[] = [];
+      let entry = preview.session.form.byId[selected];
+      while (entry) {
+        crumbs.unshift(entry.node.label ?? t(entry.model.title));
+        entry = entry.parentId
+          ? preview.session.form.byId[entry.parentId]
+          : undefined;
+      }
+      canvasPanel.querySelector("h2")!.textContent = [
+        t("ofb.formRoot"),
+        ...crumbs,
+      ].join(" › ");
+    } else
+      canvasPanel.querySelector("h2")!.textContent = t("of.builder.canvas");
     updateButtons();
     if (ops.length && (focusedPart === "canvas" || focusedPart === "outline"))
       canvas.focusSelected(focusedPart === "outline");
@@ -652,10 +669,25 @@ export function createBuilderController(
     },
     { signal: events.signal },
   );
+  phone.addEventListener(
+    "change",
+    () => {
+      if (destroyed) return;
+      settings.close();
+      rebuild();
+      canvas.refresh(true);
+      bench.update();
+      side.update();
+      submit.disabled = phone.matches;
+    },
+    { signal: events.signal },
+  );
   rebuild();
+  submit.disabled = phone.matches;
   json.value = JSON.stringify(core.getState().definition, null, 2);
   canvas.refresh(true);
   bench.update();
+  side.update();
   updateButtons();
   return {
     engine: host.engine,

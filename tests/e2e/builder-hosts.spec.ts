@@ -1,3 +1,4 @@
+import type { Page } from "@playwright/test";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
@@ -35,6 +36,20 @@ function replay(input: unknown, patch: readonly JsonPatchOp[]): unknown {
   return result;
 }
 import type {} from "../../apps/shared/builder-types";
+const mode = (page: Page, name: string) =>
+  page.getByRole("tab", { name, exact: true }).click();
+async function save(page: Page) {
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Save", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+}
+const contact = (page: Page) =>
+  page
+    .locator('[data-builder-part="preview"]')
+    .getByRole("tab", { name: "Contact", exact: true })
+    .click();
 const hosts = [
   ["DOM", "http://127.0.0.1:4181/builder.html"],
   ["element light", "http://127.0.0.1:4181/builder.html?element"],
@@ -44,7 +59,13 @@ const hosts = [
   ["Angular 21", "http://127.0.0.1:4184/builder.html"],
 ] as const;
 for (const [host, url] of hosts)
-  for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+  for (const theme of [
+    "base",
+    "bootstrap4",
+    "bootstrap5",
+    "tailwind",
+    "material",
+  ]) {
     test(`${host} builder ${theme}: Tabs, generated native editors, schema events, context, focus and teardown`, async ({
       page,
     }) => {
@@ -55,21 +76,38 @@ for (const [host, url] of hosts)
       await page.evaluate((t) => window.builderTheme(t), theme);
       const preview = page.locator('[data-builder-part="preview"]');
       await expect(preview).toHaveAttribute("data-of-theme", theme);
+      await mode(page, "Preview");
       await expect(
         preview.getByRole("textbox", { name: "Full name", exact: true }),
       ).toHaveValue("Ada Lovelace");
-      await page.getByRole("tab", { name: "Contact", exact: true }).click();
+      await contact(page);
       await expect(
         preview.getByRole("textbox", { name: "Email", exact: true }),
       ).toHaveValue("ada@example.test");
+      await mode(page, "Build");
       await page
-        .getByRole("treeitem", { name: "Contact", exact: true })
+        .locator(
+          '[role="treeitem"][data-drag-id="contact"] > .of-builder-tree-name',
+        )
         .click();
       const changes = await page.evaluate(() => window.builderChanges.length);
       await page
         .getByRole("button", { name: "Add Native text", exact: true })
         .click();
-      await page.getByRole("tab", { name: "Contact", exact: true }).click();
+      const dialog = page.getByRole("dialog");
+      await dialog
+        .locator('[data-property="properties.hint"]')
+        .fill("Generated native hint");
+      await dialog
+        .getByRole("tab", { name: "Validation", exact: true })
+        .click();
+      await dialog.locator('[data-property="validation.required"]').check();
+      expect(await page.evaluate(() => window.builderChanges.length)).toBe(
+        changes,
+      );
+      await save(page);
+      await mode(page, "Preview");
+      await contact(page);
       const native = preview.locator("input[data-builder-native]");
       await expect(native).toBeVisible();
       await expect(preview.locator("[data-builder-context]")).toContainText(
@@ -83,23 +121,17 @@ for (const [host, url] of hosts)
         await expect(preview.locator("[data-builder-session]")).toHaveText(
           "nested-tabs",
         );
-      await page
-        .locator('[data-property="properties.hint"]')
-        .fill("Generated native hint");
-      await page.locator('[data-property="properties.hint"]').press("Tab");
-      await page.getByRole("tab", { name: "Contact", exact: true }).click();
       await expect(native).toHaveAttribute(
         "placeholder",
         "Generated native hint",
       );
-      await page.locator('[data-property="validation.required"]').check();
-      await page.getByRole("tab", { name: "Contact", exact: true }).click();
       await expect(native).toHaveAttribute("aria-required", "true");
       await native.fill("Native answer");
       const schemaEvents = await page.evaluate(
         () => window.builderChanges.length,
       );
-      expect(schemaEvents).toBe(changes + 3);
+      // Owner decision: Add plus its initial settings is one atomic command/event.
+      expect(schemaEvents).toBe(changes + 1);
       expect(await page.evaluate(() => window.builderDomEvents.length)).toBe(
         schemaEvents,
       );
@@ -124,20 +156,32 @@ for (const [host, url] of hosts)
       expect(await page.evaluate(() => window.builderChanges.length)).toBe(
         schemaEvents,
       );
-      await page.locator('[data-property="disabledWhen"]').fill("true");
-      await page.locator('[data-property="disabledWhen"]').press("Tab");
-      await page.getByRole("tab", { name: "Contact", exact: true }).click();
+      await mode(page, "Build");
+      await page
+        .getByRole("button", { name: "Edit settings", exact: true })
+        .click();
+      await page
+        .getByRole("dialog")
+        .getByRole("tab", { name: "Conditional", exact: true })
+        .click();
+      await page
+        .getByRole("dialog")
+        .locator('[data-property="disabledWhen"]')
+        .fill("true");
+      await save(page);
+      await mode(page, "Preview");
+      await contact(page);
       await expect(native).toBeDisabled();
       await page.evaluate(() => {
         const c = window.builderHost;
-        c.preview!.session.setValue("contact.native_text", "API answer");
+        c.preview!.session.setValue("contact.nativeText", "API answer");
       });
       await expect(native).toHaveValue("API answer");
       await page.getByRole("button", { name: "Undo", exact: true }).click();
-      await page.getByRole("tab", { name: "Contact", exact: true }).click();
+      await contact(page);
       await expect(native).toBeEnabled();
       await page.getByRole("button", { name: "Redo", exact: true }).click();
-      await page.getByRole("tab", { name: "Contact", exact: true }).click();
+      await contact(page);
       await expect(native).toBeDisabled();
       let replayed: unknown = fixture;
       for (const change of await page.evaluate(() => window.builderChanges)) {
@@ -146,6 +190,7 @@ for (const [host, url] of hosts)
           JSON.stringify(change.definition),
         );
       }
+      await mode(page, "Build");
       const old = await page
         .getByRole("button", { name: "Add Native text", exact: true })
         .elementHandle();
@@ -169,7 +214,13 @@ for (const [host, url] of hosts)
   }
 
 for (const [host, url] of hosts)
-  for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+  for (const theme of [
+    "base",
+    "bootstrap4",
+    "bootstrap5",
+    "tailwind",
+    "material",
+  ]) {
     test(`${host} builder ${theme}: native and chrome accessibility`, async ({
       page,
     }) => {
@@ -180,6 +231,7 @@ for (const [host, url] of hosts)
       await page.evaluate((t) => window.builderTheme(t), theme);
       const preview = page.locator('[data-builder-part="preview"]');
       await expect(preview).toHaveAttribute("data-of-theme", theme);
+      await mode(page, "Preview");
       const schema = structuredClone(fixture) as FormDefinition;
       schema.components[0]!.components![1]!.components![0]!.components!.push({
         id: "native-accessibility",
@@ -196,7 +248,7 @@ for (const [host, url] of hosts)
           JSON.stringify(schema),
         ),
       ).toEqual([]);
-      await page.getByRole("tab", { name: "Contact", exact: true }).click();
+      await contact(page);
       const native = preview.locator("input[data-builder-native]");
       await page.evaluate(() =>
         window.builderHost.preview!.session.setValue(
@@ -207,9 +259,12 @@ for (const [host, url] of hosts)
       await expect(native).toBeDisabled();
       await expect(native).toHaveAccessibleName("Native text");
       await expect(native).toHaveAttribute("aria-required", "true");
+      await mode(page, "Build");
       await page
         .getByRole("treeitem", { name: "Native text", exact: true })
         .click();
+      await mode(page, "Preview");
+      await contact(page);
       const axe = await new AxeBuilder({ page }).analyze();
       expect(
         axe.violations.filter((v) =>
@@ -231,16 +286,32 @@ for (const [host, url] of hosts)
       await page.evaluate((t) => window.builderTheme(t), theme);
       const preview = page.locator('[data-builder-part="preview"]');
       await expect(preview).toHaveAttribute("data-of-theme", theme);
+      await mode(page, "Preview");
       await expect(
         preview.getByRole("textbox", { name: "Full name", exact: true }),
       ).toHaveValue("Ada Lovelace");
-      await page.getByRole("tab", { name: "Contact", exact: true }).click();
+      await contact(page);
       await expect(
         preview.getByRole("textbox", { name: "Email", exact: true }),
       ).toHaveValue("ada@example.test");
+      await mode(page, "Build");
       await page
-        .getByRole("treeitem", { name: "Contact", exact: true })
+        .locator(
+          '[role="treeitem"][data-drag-id="contact"] > .of-builder-tree-name',
+        )
         .click();
+      await mode(page, "Preview");
+      await contact(page);
+      // Normalize the runtime viewport to the existing 575px reference crop. Builder chrome
+      // now uses Inter/14px; runtime controls retain their theme font and original line height.
+      await preview.evaluate((el) => {
+        el.style.width = "574.5px";
+        el.style.lineHeight = "1.45";
+        el.style.minHeight = `${Math.ceil(el.getBoundingClientRect().height)}px`;
+      });
+      await preview
+        .getByRole("textbox", { name: "Email", exact: true })
+        .hover();
       if (testInfo.project.name === "chromium")
         await expect(preview).toHaveScreenshot(
           `builder-${host.replaceAll(" ", "-")}-${theme}.png`,

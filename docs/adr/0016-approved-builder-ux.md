@@ -60,3 +60,19 @@ Builder production output uses tsup minification and retains source maps. The or
 budget stays unchanged; an intermediate unminified workbench exceeded it by 470 bytes. The retained
 size report is /tmp/m09b-checkpoint-size.log. Existing correctness, count and screenshot thresholds are
 unchanged; production output must pass the same tests.
+
+### Verification and view behavior
+
+Mutation actions produce one command; opening an editor/JSON inspector, Copy and starting/cancelling
+Move publish no schema history. Pointer capture and selection remain independent of theme changes.
+The outline includes virtual rows for each declared tab/column slot, so keyboard paste can target an
+inactive tab or empty column without an application-specific builder extension. Enter on an empty
+slot chooses that destination; Enter on a toolbar button activates its action rather than editing
+its ancestor. Virtual slot context actions cannot accidentally delete the owning container.
+
+Existing runtime visual tests retain their original crop width, theme font, line height, hover state
+and outward-rounded capture height inside the new full-width Preview mode. No old PNG is regenerated
+and no pixel threshold changes. The new workbench screenshots are separate approval evidence.
+The 500-field Chromium trace is collected by `pnpm benchmark:builder`, isolated from `pnpm verify`;
+wall-clock results remain advisory in CI under the owner's performance-gate redesign. The milestone's
+50ms requirement still needs actual trace evidence and cannot be passed with an empty trace.

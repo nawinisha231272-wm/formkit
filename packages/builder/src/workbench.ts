@@ -22,7 +22,11 @@ interface WorkbenchContext {
 /** Header and mode panels share the existing controller; switching never remounts a form. */
 export function workbench(context: WorkbenchContext) {
   const { ui, shell, grid, bottom, previewPanel, jsonPanel } = context;
-  const primitiveContext = { document: ui.document, signal: ui.signal };
+  const primitiveContext = {
+    document: ui.document,
+    signal: ui.signal,
+    ...(ui.icons ? { icons: ui.icons } : {}),
+  };
   const header = element(ui.document, "header", "", "ofb-header");
   const brand = element(ui.document, "div", "", "ofb-brand");
   const mark = element(ui.document, "span", "O", "ofb-brand-mark");
@@ -179,7 +183,6 @@ export function workbench(context: WorkbenchContext) {
         b.dataset.tab === "logic" ||
         (media.matches && b.dataset.tab !== "preview");
     actions.hidden = media.matches;
-    previewPanel.inert = media.matches;
   };
   media.addEventListener("change", mobile, { signal: ui.signal });
   mobile();

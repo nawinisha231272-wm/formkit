@@ -17,9 +17,12 @@ import { PointerDrag } from "./pointer";
 import { ComponentActions } from "./component-actions";
 import { icon, isIconName } from "./icons";
 import { paletteGroups } from "./palette";
-import { describeExpression } from "./signals";
+import { describeExpression, controlledFields } from "./signals";
 import { chip, labelledInput } from "./primitives";
 type Entry = { node: ComponentNode; parent?: ComponentNode };
+const attribute = (element: HTMLElement, name: string, value: string) => {
+  if (element.getAttribute(name) !== value) element.setAttribute(name, value);
+};
 export class Canvas {
   target: DropTarget = {};
   cutId: string | undefined;
@@ -32,10 +35,14 @@ export class Canvas {
   readonly pointer: PointerDrag;
   #targets = new Map<HTMLElement, DropTarget>();
   #items = new Map<string, HTMLElement>();
+  #slotItems = new Map<string, HTMLElement>();
+  #slotSelection: string | undefined;
   #outlineDefinition: FormDefinition | undefined;
   #outlineExpansion = "";
   #handles = new Map<string, HTMLElement>();
+  #roots = new Map<string, HTMLElement>();
   #collapsed = new Set<string>();
+  #collapsedSlots = new Set<string>();
   #visible: Entry[] = [];
   #selectedLocation = "";
   #choices: DropTarget[] = [];
@@ -153,6 +160,7 @@ export class Canvas {
       collapse: (id) => {
         if (!this.#collapsed.delete(id)) this.#collapsed.add(id);
         this.decorate(true);
+        this.drawOutline();
         this.updateTargets();
       },
     });
@@ -160,6 +168,14 @@ export class Canvas {
       "contextmenu",
       (event) => {
         const target = event.target as Element;
+        const slotRow = target.closest<HTMLElement>(
+          '[role="treeitem"][data-builder-slot]',
+        );
+        if (slotRow && this.outline.contains(slotRow)) {
+          event.preventDefault();
+          this.selectTreeRow(slotRow);
+          return;
+        }
         const id =
           target.closest<HTMLElement>("[data-field-id],[data-drag-id]")?.dataset
             .fieldId ??
@@ -339,6 +355,10 @@ export class Canvas {
       return diagnostics;
     }
     this.target = { ...target, ...(parent && name ? { slot: name } : {}) };
+    this.#slotSelection =
+      parent && name
+        ? JSON.stringify({ parentId: parent.id, slot: name })
+        : undefined;
     this.updateTargets();
     this.drawPicker();
     this.ui.announce(
@@ -360,6 +380,7 @@ export class Canvas {
     );
     if (signature !== this.#selectedLocation) {
       this.#selectedLocation = signature;
+      this.#slotSelection = undefined;
       if (!location) this.target = {};
       if (location) {
         const own = this.slots(location.node);
@@ -413,7 +434,7 @@ export class Canvas {
     this.#toolbars.clear();
     this.host
       .querySelectorAll(
-        ".of-builder-handle,.of-builder-drop,.ofb-component-toolbar",
+        ".of-builder-handle,.of-builder-drop,.ofb-component-toolbar,.ofb-canvas-lock,.ofb-signal-row",
       )
       .forEach((el) => el.remove());
     this.#handles.clear();
@@ -422,6 +443,7 @@ export class Canvas {
     this.host
       .querySelectorAll<HTMLElement>("[data-field-id]")
       .forEach((root) => roots.set(root.dataset.fieldId!, root));
+    this.#roots = roots;
     const wire = this.entries();
     for (const { node } of wire) {
       const root = roots.get(node.id);
@@ -435,6 +457,9 @@ export class Canvas {
           }),
           () => {},
         );
+      handle.textContent = node.key
+        ? `${node.label ?? node.type} · ${node.key}`
+        : (node.label ?? node.type);
       handle.className = "of-builder-handle";
       handle.dataset.dragId = node.id;
       handle.dataset.id = node.id;
@@ -457,7 +482,9 @@ export class Canvas {
       if (form) {
         const row = element(this.ui.document, "div", "", "ofb-signal-row");
         const context = { document: this.ui.document, signal: this.ui.signal };
-        const count = new Set(form.dependents[node.id] ?? []).size;
+        const count = form.byId[node.id]?.model.value
+          ? controlledFields(form, node.id)
+          : 0;
         if (count)
           row.append(
             chip(context, this.ui.t("ofb.controls", { count }), "logic"),
@@ -557,32 +584,48 @@ export class Canvas {
           ?.dataset.dragId
       : undefined;
     const selected = this.ui.builder.getState().selection;
-    let parent = selected ? this.location(selected)?.parent : undefined;
-    while (parent) {
+    let location = selected ? this.location(selected) : undefined;
+    while (location?.parent) {
+      const parent = location.parent;
       this.#collapsed.delete(parent.id);
-      parent = this.location(parent.id)?.parent;
+      this.#collapsedSlots.delete(
+        JSON.stringify({
+          parentId: parent.id,
+          slot: location.slot ?? this.slots(parent)[0]?.name,
+        }),
+      );
+      location = this.location(parent.id);
     }
     const definition = this.ui.builder.getState().definition;
-    const expansion = [...this.#collapsed].sort().join("\n");
+    const expansion = JSON.stringify([
+      [...this.#collapsed].sort(),
+      [...this.#collapsedSlots].sort(),
+    ]);
     if (
       this.#outlineDefinition === definition &&
       this.#outlineExpansion === expansion
     ) {
       for (const [id, item] of this.#items) {
-        const value = String(id === selected);
+        const value = String(id === selected && !this.#slotSelection);
         if (item.getAttribute("aria-selected") !== value)
           item.setAttribute("aria-selected", value);
-        item.tabIndex =
-          id === selected || (!selected && id === this.#visible[0]?.node.id)
-            ? 0
-            : -1;
-        item.dataset.cut = String(id === this.cutId);
+        attribute(
+          item,
+          "tabindex",
+          String(
+            id === selected || (!selected && id === this.#visible[0]?.node.id)
+              ? 0
+              : -1,
+          ),
+        );
+        attribute(item, "data-cut", String(id === this.cutId));
       }
       return;
     }
     this.#outlineDefinition = definition;
     this.#outlineExpansion = expansion;
     this.#items.clear();
+    this.#slotItems.clear();
     this.#visible = [];
     this.outline.replaceChildren();
     const walk = (
@@ -601,7 +644,10 @@ export class Canvas {
         li.setAttribute("aria-level", String(depth));
         li.setAttribute("aria-posinset", String(index + 1));
         li.setAttribute("aria-setsize", String(nodes.length));
-        li.setAttribute("aria-selected", String(selected === node.id));
+        li.setAttribute(
+          "aria-selected",
+          String(selected === node.id && !this.#slotSelection),
+        );
         li.setAttribute("aria-label", node.label ?? node.type);
         li.tabIndex =
           selected === node.id || (!selected && depth === 1 && index === 0)
@@ -615,11 +661,14 @@ export class Canvas {
           "",
           "of-builder-tree-name",
         );
-        if (componentChildren(node).length) {
-          const caret = element(
-            this.ui.document,
-            "span",
-            this.#collapsed.has(node.id) ? "▸ " : "▾ ",
+        if (componentChildren(node).length || this.slots(node).length > 1) {
+          const caret = element(this.ui.document, "span", "", "ofb-tree-caret");
+          caret.append(
+            icon(
+              this.ui.document,
+              this.#collapsed.has(node.id) ? "collapse" : "expand",
+              this.ui.icons,
+            ),
           );
           caret.setAttribute("aria-hidden", "true");
           caret.dataset.treeToggle = node.id;
@@ -640,7 +689,67 @@ export class Canvas {
         this.#items.set(node.id, li);
         if (visible)
           this.#visible.push({ node, ...(parent ? { parent } : {}) });
-        if (componentChildren(node).length) {
+        const slots = this.slots(node);
+        if (slots.length > 1) {
+          const slotList = element(this.ui.document, "ul");
+          slotList.setAttribute("role", "group");
+          slotList.hidden = this.#collapsed.has(node.id);
+          for (const [slotIndex, slot] of slots.entries()) {
+            const row = element(this.ui.document, "li");
+            const key = JSON.stringify({ parentId: node.id, slot: slot.name });
+            row.dataset.builderSlot = key;
+            row.setAttribute("role", "treeitem");
+            row.setAttribute("aria-label", this.caption(slot));
+            row.setAttribute("aria-level", String(depth + 1));
+            row.setAttribute("aria-posinset", String(slotIndex + 1));
+            row.setAttribute("aria-setsize", String(slots.length));
+            row.setAttribute(
+              "aria-selected",
+              String(this.#slotSelection === key),
+            );
+            row.tabIndex = this.#slotSelection === key ? 0 : -1;
+            const name = element(
+              this.ui.document,
+              "span",
+              "",
+              "of-builder-tree-name ofb-slot-name",
+            );
+            const children = this.children(node, slot.name);
+            if (children.length) {
+              const closed = this.#collapsedSlots.has(key);
+              row.setAttribute("aria-expanded", String(!closed));
+              const caret = element(
+                this.ui.document,
+                "span",
+                "",
+                "ofb-tree-caret",
+              );
+              caret.append(
+                icon(
+                  this.ui.document,
+                  closed ? "collapse" : "expand",
+                  this.ui.icons,
+                ),
+              );
+              caret.dataset.slotToggle = key;
+              caret.setAttribute("aria-hidden", "true");
+              name.append(caret);
+              const nested = walk(
+                children,
+                depth + 2,
+                node,
+                visible && !this.#collapsed.has(node.id) && !closed,
+              );
+              nested.hidden = closed;
+              row.append(nested);
+            }
+            name.append(this.caption(slot));
+            row.prepend(name);
+            this.#slotItems.set(key, row);
+            slotList.append(row);
+          }
+          li.append(slotList);
+        } else if (componentChildren(node).length) {
           const nested = walk(
             componentChildren(node),
             depth + 1,
@@ -692,7 +801,8 @@ export class Canvas {
   }
   updateTargets(): void {
     for (const [button, target] of this.#targets)
-      button.setAttribute(
+      attribute(
+        button,
         "aria-pressed",
         String(
           target.parentId === this.target.parentId &&
@@ -701,12 +811,35 @@ export class Canvas {
         ),
       );
     const selected = this.ui.builder.getState().selection;
+    for (const [key, row] of this.#slotItems) {
+      attribute(row, "aria-selected", String(key === this.#slotSelection));
+      attribute(row, "tabindex", String(key === this.#slotSelection ? 0 : -1));
+    }
+    for (const [id, row] of this.#items) {
+      attribute(
+        row,
+        "aria-selected",
+        String(id === selected && !this.#slotSelection),
+      );
+      attribute(
+        row,
+        "tabindex",
+        String(
+          !this.#slotSelection &&
+            (id === selected || (!selected && id === this.#visible[0]?.node.id))
+            ? 0
+            : -1,
+        ),
+      );
+    }
     for (const [id, handle] of this.#handles) {
-      handle.setAttribute("aria-pressed", String(id === selected));
-      const root = handle.closest<HTMLElement>("[data-field-id]")!;
-      root.dataset.ofSelected = String(id === selected);
-      root.tabIndex = id === selected ? 0 : -1;
-      root.classList.toggle("of-builder-cut", id === this.cutId);
+      attribute(handle, "aria-pressed", String(id === selected));
+      const root = this.#roots.get(id)!;
+      attribute(root, "data-of-selected", String(id === selected));
+      attribute(root, "tabindex", String(id === selected ? 0 : -1));
+      const cut = id === this.cutId;
+      if (root.classList.contains("of-builder-cut") !== cut)
+        root.classList.toggle("of-builder-cut", cut);
     }
   }
   focusSelected(outline = false): void {
@@ -717,7 +850,11 @@ export class Canvas {
     }
     if (id) {
       this.ui.reveal?.(id);
-      if (outline) this.#items.get(id)?.focus();
+      if (outline)
+        (this.#slotSelection
+          ? this.#slotItems.get(this.#slotSelection)
+          : this.#items.get(id)
+        )?.focus();
       else
         this.#handles.get(id)?.closest<HTMLElement>("[data-field-id]")?.focus();
     } else this.#targets.keys().next().value?.focus();
@@ -780,6 +917,31 @@ export class Canvas {
     const target = this.#choices[Number(this.picker.value)];
     if (target) this.choose(target);
   };
+  selectTreeRow(row: HTMLElement): void {
+    if (row.dataset.builderSlot) {
+      const target = JSON.parse(row.dataset.builderSlot) as DropTarget;
+      if (
+        target.parentId &&
+        this.ui.builder.lockLevel(target.parentId) === "all"
+      ) {
+        this.ui.announce(this.ui.t("ofb.lock.edit"));
+        return;
+      }
+      this.ui.builder.select(target.parentId ?? null);
+      this.choose(target);
+      this.#slotItems.get(row.dataset.builderSlot)?.focus();
+    } else if (row.dataset.dragId) {
+      if (this.ui.builder.lockLevel(row.dataset.dragId) === "all") {
+        row.focus();
+        this.ui.announce(this.ui.t("ofb.lock.edit"));
+        return;
+      }
+      this.#slotSelection = undefined;
+      this.ui.builder.select(row.dataset.dragId);
+      this.ui.reveal?.(row.dataset.dragId);
+      this.#items.get(row.dataset.dragId)?.focus();
+    }
+  }
   click = (event: MouseEvent) => {
     const target = event.target as Element;
     if (
@@ -788,6 +950,20 @@ export class Canvas {
       )
     )
       return;
+    const slotToggle = target.closest<HTMLElement>("[data-slot-toggle]");
+    if (slotToggle && this.outline.contains(slotToggle)) {
+      const key = slotToggle.dataset.slotToggle!;
+      this.selectTreeRow(slotToggle.closest<HTMLElement>('[role="treeitem"]')!);
+      if (!this.#collapsedSlots.delete(key)) this.#collapsedSlots.add(key);
+      this.drawOutline();
+      this.#slotItems.get(key)?.focus();
+      return;
+    }
+    const tree = target.closest<HTMLElement>('[role="treeitem"]');
+    if (tree?.dataset.builderSlot && this.outline.contains(tree)) {
+      this.selectTreeRow(tree);
+      return;
+    }
     const marker = target.closest<HTMLElement>(".of-builder-drop");
     if (marker && this.#targets.has(marker)) {
       this.choose(this.#targets.get(marker)!);
@@ -803,6 +979,7 @@ export class Canvas {
     const toggle = target.closest<HTMLElement>("[data-tree-toggle]");
     if (toggle && this.outline.contains(toggle)) {
       const id = toggle.dataset.treeToggle!;
+      this.#slotSelection = undefined;
       if (!this.#collapsed.delete(id)) this.#collapsed.add(id);
       this.ui.builder.select(id);
       this.focusSelected(true);
@@ -817,6 +994,7 @@ export class Canvas {
         this.ui.announce(this.ui.t("ofb.lock.edit"));
         return;
       }
+      this.#slotSelection = undefined;
       this.ui.builder.select(handle.dataset.dragId!);
       if (this.outline.contains(handle))
         this.ui.reveal?.(handle.dataset.dragId!);
@@ -829,6 +1007,7 @@ export class Canvas {
           this.ui.announce(this.ui.t("ofb.lock.edit"));
           return;
         }
+        this.#slotSelection = undefined;
         this.ui.builder.select(field.dataset.fieldId!);
         break;
       }
@@ -846,7 +1025,106 @@ export class Canvas {
       target.matches("input,textarea,[contenteditable=true]")
     )
       return;
+    // Let native buttons activate their own action; Enter must not bubble into Edit.
+    if (
+      target.closest("[data-ofb-action]") &&
+      ["Enter", " "].includes(event.key)
+    )
+      return;
+    const marker = target.closest<HTMLElement>(".of-builder-drop");
+    if (
+      marker &&
+      this.#targets.has(marker) &&
+      ["Enter", " "].includes(event.key)
+    ) {
+      event.preventDefault();
+      this.choose(this.#targets.get(marker)!);
+      return;
+    }
     const command = event.ctrlKey || event.metaKey;
+    const tree = target.closest<HTMLElement>('[role="treeitem"]');
+    if (tree && this.outline.contains(tree) && !event.altKey) {
+      if (tree.dataset.builderSlot && ["Enter", " "].includes(event.key)) {
+        event.preventDefault();
+        this.selectTreeRow(tree);
+        return;
+      }
+      if (
+        !command &&
+        [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "Home",
+          "End",
+        ].includes(event.key)
+      ) {
+        event.preventDefault();
+        // Collapse the focused row, even if focus entered it from a selected descendant.
+        if (["ArrowLeft", "ArrowRight"].includes(event.key))
+          this.selectTreeRow(tree);
+        const rows = [
+          ...this.outline.querySelectorAll<HTMLElement>('[role="treeitem"]'),
+        ].filter((row) => !row.closest("[hidden]"));
+        const index = rows.indexOf(tree);
+        let next: HTMLElement | undefined;
+        if (event.key === "ArrowUp") next = rows[index - 1];
+        else if (event.key === "ArrowDown") next = rows[index + 1];
+        else if (event.key === "Home") next = rows[0];
+        else if (event.key === "End") next = rows.at(-1);
+        else if (event.key === "ArrowRight") {
+          if (
+            tree.dataset.builderSlot &&
+            this.#collapsedSlots.delete(tree.dataset.builderSlot)
+          ) {
+            this.drawOutline();
+            next = this.#slotItems.get(tree.dataset.builderSlot);
+          } else if (
+            tree.dataset.dragId &&
+            this.#collapsed.delete(tree.dataset.dragId)
+          ) {
+            this.drawOutline();
+            next = this.#items.get(tree.dataset.dragId);
+          } else
+            next =
+              tree.querySelector<HTMLElement>(
+                ':scope>[role="group"]>[role="treeitem"]',
+              ) ?? undefined;
+        } else if (event.key === "ArrowLeft") {
+          if (
+            tree.dataset.builderSlot &&
+            tree.getAttribute("aria-expanded") === "true"
+          ) {
+            this.#collapsedSlots.add(tree.dataset.builderSlot);
+            this.drawOutline();
+            next = this.#slotItems.get(tree.dataset.builderSlot);
+          } else if (
+            tree.dataset.dragId &&
+            tree.getAttribute("aria-expanded") === "true"
+          ) {
+            this.#collapsed.add(tree.dataset.dragId);
+            this.drawOutline();
+            next = this.#items.get(tree.dataset.dragId);
+          } else
+            next =
+              tree.parentElement?.closest<HTMLElement>('[role="treeitem"]') ??
+              undefined;
+        }
+        if (next) this.selectTreeRow(next);
+        return;
+      }
+      if (
+        tree.dataset.builderSlot &&
+        (event.key === "Delete" ||
+          event.key === "Backspace" ||
+          (command && ["x", "c", "d"].includes(event.key.toLowerCase())))
+      ) {
+        event.preventDefault();
+        this.ui.announce(this.ui.t("ofb.slotActions"));
+        return;
+      }
+    }
     const selected = this.ui.builder.getState().selection;
     const node = this.entries().find((e) => e.node.id === selected)?.node;
     if (node) {

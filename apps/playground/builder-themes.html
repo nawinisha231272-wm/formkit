@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OurForm builder themes</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./builder.css" />
+    <link rel="stylesheet" href="./builder-themes.css" />
+  </head>
+  <body>
+    <main class="theme-gallery">
+      <h1>Same form definition, three themes</h1>
+      <p>
+        Only the theme changes: no component code or definition changes. Each
+        form keeps its own values, focus and errors.
+      </p>
+      <p>
+        The builder canvas renders the selected form theme, so authors see what
+        end users get.
+      </p>
+      <div class="theme-comparisons">
+        <section aria-label="Bootstrap 4">
+          <h2>Bootstrap 4</h2>
+          <div id="bootstrap4" class="theme-form"></div>
+        </section>
+        <section aria-label="Bootstrap 5">
+          <h2>Bootstrap 5</h2>
+          <div id="bootstrap5" class="theme-form"></div>
+        </section>
+        <section aria-label="Material">
+          <h2>Material</h2>
+          <div id="material" class="theme-form"></div>
+        </section>
+      </div>
+      <h2>Builder chrome · dark · compact density</h2>
+      <p>
+        Chrome follows Material; the form canvas keeps its own light appearance.
+      </p>
+      <div id="builder"></div>
+      <p>
+        <a href="./builder.html?approved">Open the complete nested builder</a>
+      </p>
+    </main>
+    <script type="module" src="./builder-themes.ts"></script>
+  </body>
+</html>

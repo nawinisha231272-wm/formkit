@@ -5,18 +5,50 @@ import "@fontsource/inter/600.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import { renderBuilder } from "@ourform/element";
+import { createBuilder as createPortableBuilder } from "@ourform/builder";
+import { builtinComponents } from "@ourform/components";
 import type { BuilderController } from "@ourform/builder";
 import type { FormController } from "@ourform/renderer-dom";
 import { defineLayout } from "@ourform/sdk";
+import { customerReference } from "./builder-fields";
+import approved from "../../fixtures/forms/builder-ux/customer-onboarding.json";
+import approvedData from "../../fixtures/forms/builder-ux/customer-onboarding.data.json";
 import feedback from "../../fixtures/forms/feedback.json";
 import nested from "../../fixtures/forms/nested-tabs/customer.json";
 import { employeeFields } from "../vanilla-example/src/employee-fields";
 const query = new URLSearchParams(location.search);
 const schema = query.has("empty")
   ? { $formVersion: "1.0", id: "new-form", display: "form", components: [] }
-  : query.has("fixture")
-    ? nested
-    : feedback;
+  : query.has("large")
+    ? {
+        $formVersion: "1.0",
+        id: "large-builder",
+        display: "form",
+        components: Array.from({ length: 500 }, (_, i) => ({
+          id: `field_${i}`,
+          type: "text",
+          key: `field${i}`,
+          label: `Field ${i + 1}`,
+        })),
+      }
+    : query.has("approved")
+      ? approved
+      : query.has("fixture")
+        ? nested
+        : query.has("locks")
+          ? {
+              ...feedback,
+              components: [
+                ...feedback.components,
+                {
+                  id: "cmp_comment",
+                  type: "textarea",
+                  key: "comment",
+                  label: "Comment",
+                },
+              ],
+            }
+          : feedback;
 const card = defineLayout({
   type: "acme.card",
   title: "SDK card",
@@ -30,19 +62,68 @@ const rootSection = defineLayout({
   title: "Root section",
   rootOnly: true,
 });
-const controller = renderBuilder(document.getElementById("builder")!, {
+const options = {
   schema,
   fields: query.has("demos")
-    ? [...employeeFields, card, rootSection]
-    : employeeFields.filter((field) => field.model.type !== "employeeObject"),
+    ? [...employeeFields, customerReference, card, rootSection]
+    : [
+        ...employeeFields.filter(
+          (field) => field.model.type !== "employeeObject",
+        ),
+        customerReference,
+      ],
   idPrefix: "",
-  editor: {
-    mode: query.has("drawer") ? "drawer" : "modal",
-    openOnAdd: !query.has("no-open"),
+  ...(query.has("approved") ? { data: approvedData } : {}),
+  theme: query.get("theme") ?? "base",
+  themeMode: query.get("mode") === "dark" ? "dark" : "light",
+  chrome: {
+    theme: query.get("chrome") ?? "match-form",
+    density: query.has("compact") ? "compact" : "comfortable",
   },
-});
-if (!query.has("empty") && !query.has("fixture"))
-  controller.builder.select("cmp_rating");
+  ...(query.has("locks")
+    ? {
+        locked: {
+          cmp_name: "structure" as const,
+          cmp_rating: "all" as const,
+          cmp_comment: "key" as const,
+        },
+      }
+    : {}),
+  ...(query.has("filtered")
+    ? { palette: { groups: ["basic"], hidden: ["password"] } }
+    : {}),
+  ...(query.has("host-options")
+    ? {
+        palette: {
+          groups: ["basic", "acme components"],
+          hidden: ["password"],
+          order: { "acme components": -10 },
+        },
+        toolbar: { actions: ["edit", "json", "delete"] as const },
+        messages: { "ofb.save": "Keep changes", "ofb.edit": "Configure" },
+        icons: { save: [["circle", { cx: 12, cy: 12, r: 5 }]] as const },
+      }
+    : {}),
+  editor: {
+    mode: query.has("drawer") ? ("drawer" as const) : ("modal" as const),
+    openOnAdd: !query.has("no-open"),
+    ...(query.has("host-options")
+      ? {
+          tabs: { hide: ["Layout"] },
+          properties: { rating: { hide: ["placeholder"] } },
+        }
+      : {}),
+  },
+} satisfies import("@ourform/builder").BuilderOptions;
+const controller = query.has("factory")
+  ? createPortableBuilder(document.getElementById("builder")!, schema, {
+      ...options,
+      fields: [...builtinComponents, customerReference],
+    })
+  : renderBuilder(document.getElementById("builder")!, options);
+if (query.has("approved")) controller.builder.select("email");
+else if (!query.has("empty") && !query.has("fixture") && !query.has("large"))
+  controller.builder.select(query.has("locks") ? "cmp_name" : "cmp_rating");
 window.miniBuilder = {
   builder: controller.builder,
   get preview() {

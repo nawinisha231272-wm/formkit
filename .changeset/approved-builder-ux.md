@@ -22,3 +22,7 @@ primitives for the approved M09b UX. Form and chrome appearance remain independe
 Add atomic modal additions, grouped live drawer edits, prepared Add and clipboard subtree commands,
 component lock enforcement, active-tab design canvases, shared component actions and mode panels.
 Bind native React preview hooks to their own draft controller while preserving application providers.
+
+Expose the public createBuilder mount convenience, keyboard-addressable tab/column slots and selected
+component sidebar. Preserve schema state and theme structure for inert design controls. Add the
+12-field author guide, matching-theme gallery, all-host/theme/gesture checks and isolated drag trace.

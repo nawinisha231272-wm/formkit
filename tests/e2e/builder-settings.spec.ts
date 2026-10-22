@@ -11,7 +11,7 @@ test("settings drafts update a real preview, cancel cleanly and save all edits a
   );
   await page
     .locator('[data-builder-part="inspector"]')
-    .getByRole("button", { name: "Edit", exact: true })
+    .getByRole("button", { name: "Edit settings", exact: true })
     .click();
   const dialog = page.getByRole("dialog");
   await dialog.getByLabel("Number of stars", { exact: true }).fill("7");
@@ -32,7 +32,7 @@ test("settings drafts update a real preview, cancel cleanly and save all edits a
   await page.getByRole("tab", { name: "Build", exact: true }).click();
   await page
     .locator('[data-builder-part="inspector"]')
-    .getByRole("button", { name: "Edit", exact: true })
+    .getByRole("button", { name: "Edit settings", exact: true })
     .click();
   await dialog.getByLabel("Number of stars", { exact: true }).fill("7");
   await dialog.getByLabel("Label", { exact: true }).fill("Your rating");
@@ -60,7 +60,7 @@ test("modal focus, tab errors, Escape cancellation and appearance changes preser
   await page.goto("/builder.html");
   await page
     .locator('[data-builder-part="inspector"]')
-    .getByRole("button", { name: "Edit", exact: true })
+    .getByRole("button", { name: "Edit settings", exact: true })
     .click();
   const dialog = page.getByRole("dialog");
   const label = dialog.getByLabel("Label", { exact: true });
@@ -111,7 +111,7 @@ test("drawer applies live and consecutive property edits undo together", async (
   await page.goto("/builder.html?drawer");
   await page
     .locator('[data-builder-part="inspector"]')
-    .getByRole("button", { name: "Edit", exact: true })
+    .getByRole("button", { name: "Edit settings", exact: true })
     .click();
   const drawer = page.getByRole("complementary", { name: /Rating/ });
   const max = drawer.getByLabel("Number of stars", { exact: true });
@@ -143,7 +143,7 @@ for (const cancel of ["Cancel", "Close", "Escape"]) {
     await page.goto("/builder.html");
     const edit = page
       .locator('[data-builder-part="inspector"]')
-      .getByRole("button", { name: "Edit", exact: true });
+      .getByRole("button", { name: "Edit settings", exact: true });
     await edit.focus();
     const before = await page.evaluate(() =>
       JSON.stringify(window.miniBuilder.builder.getState()),
@@ -263,7 +263,10 @@ test("openOnAdd false commits defaults without settings; duplicate and wrap neve
   ).toEqual(["AddComponent"]);
   await page.goto("/builder.html");
   await page
-    .getByRole("button", { name: "Duplicate subtree", exact: true })
+    .locator(
+      '[data-builder-part="canvas"] [data-of-selected="true"]>.ofb-component-toolbar',
+    )
+    .getByRole("button", { name: "Duplicate", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(
@@ -272,10 +275,13 @@ test("openOnAdd false commits defaults without settings; duplicate and wrap neve
     ),
   ).toEqual(["DuplicateComponent"]);
   await page
-    .getByLabel("Layout to wrap in", { exact: true })
-    .selectOption("panel");
+    .locator(
+      '[data-builder-part="canvas"] [data-of-selected="true"]>.ofb-component-toolbar',
+    )
+    .getByRole("button", { name: "More", exact: true })
+    .click();
   await page
-    .getByRole("button", { name: "Wrap in layout", exact: true })
+    .getByRole("menuitem", { name: "Wrap in layout", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(

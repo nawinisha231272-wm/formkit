@@ -90,6 +90,134 @@ new modal/mode UI while retaining every prior assertion's intent. Remaining M09b
 outline/selected-component panel, complete keyboard slots/actions/host option coverage, the 12-field
 nested task, theme/density and visual QA, the 500-field trace, fresh-author evidence and owner sign-off.
 
+### Nested workbench follow-up (work continues)
+
+The sidebar now provides Outline/Issues/History and compiled selected-component details. Virtual tab
+and column rows expose every declared slot to keyboard paste, including inactive tabs. The approved
+playground fixture has exactly 12 value fields and an SDK-only Customer reference registration.
+A public `createBuilder(element, definition, options)` convenience factory is documented/tested;
+phone widths use a real read-only preview and retain data/schema/history across resize.
+
+Evidence: 63 pointer/settings/workbench checks passed in all three browsers
+(/tmp/m09b-demo-outline-browser.log). Six retained builder acceptance flows and nine workbench checks
+passed in Chromium (/tmp/m09b-legacy-builder-browser.log). All seven nested-builder flows passed
+(/tmp/m09b-nested-browser-2.log), including mouse and keyboard four-level construction, illegal slots,
+JSON/expression atomicity, descendant refusal and per-column paste/undo/redo. The existing DOM runtime
+visuals pass in all four original themes with their unchanged baseline bytes and 2% threshold
+(/tmp/m09b-host-dom-visual-5.log); captures retain the original runtime viewport/font/hover geometry.
+Native host tests now expect one Add event for initial settings, as the owner explicitly required;
+all patch replay, context, accessibility, lifecycle and focus assertions remain. Material joins the
+six-host interaction/accessibility matrix. The full host matrix has not passed yet.
+
+The twelve-field task is constructed from empty by actual pointer drops and keyboard input, without
+command injection. Mouse passed in all three engines in /tmp/m09b-task-options-nested-matrix.log;
+keyboard then passed in all three in /tmp/m09b-task-keyboard-matrix-3.log. Tests include six fields per
+column, the exact stable-id conditional expression, custom component, 15 atomic Adds and live Preview.
+Host palette/toolbar/editor/message/icon and all three lock levels passed in all browsers in the first
+matrix (30 PASS / 3 keyboard task test-author failures). The keyboard test now uses native select
+label typeahead rather than assuming identical native popup arrow behavior across engines.
+
+All 20 Chromium theme/mode/density combinations pass axe with dialogs both open and closed, and
+active pointer capture/drop survives appearance changes (/tmp/m09b-appearance-task-chromium.log,
+22 PASS / 1 old keyboard-select test failure). Further coverage and full pinned verification remain.
+The guide is apps/docs/builder-author-guide.md. `pnpm benchmark:builder` records an isolated 500-field
+Chromium timeline outside verify; its actual 50ms acceptance evidence is still pending.
+
+Retained failures: /tmp/m09b-nested-browser.log found Enter on an empty column opened its parent's
+settings (fixed), a hidden/unselected handle test setup and the wrong draft error selector (fixed).
+/tmp/m09b-task-options-browser.log caught Enter on toolbar buttons bubbling into Edit (fixed), plus
+incorrect single-slot test selectors and expression key/id confusion. The -2 task log and keyboard
+matrix -2 retained incorrect native-select assumptions; -3 passes after choosing the visible label.
+Visual diagnostics /tmp/m09b-host-dom-browser.log and -visual-2/3/4 retain crop/font/hover differences;
+-visual-5 compares successfully without baseline or threshold changes. A code inspection caught
+repeated signal/lock decorations on restyle (removed before each decorate) and synthetic read-only
+appearance on inert design controls (now schema state only). New regressions still need verification.
+M09b is not complete: full verify, remaining host/visual/drag checks, independent author evidence and
+owner implementation-screenshot sign-off remain. M09c has not started.
+
+### Expanded verification and source comparison (work continues)
+
+Frozen install, complete typecheck and lint pass (/tmp/m09b-final-install.log,
+/tmp/m09b-final-typecheck.log, /tmp/m09b-final-lint.log). The full unit run passes **298 tests in 42 files**;
+core coverage is **91.04%** and validation **99.25%** (/tmp/m09b-current-unit.log). All 95 Chromium
+host/workbench checks pass, including original preview PNGs, Material host interactions/axe, protected
+state, active tabs, phone resize and rounded/elevated Material cards (/tmp/m09b-host-workbench-chromium.log).
+Each of eight actions is exercised through toolbar, context menu and shortcut, with exact undo/redo:
+24 Chromium checks pass (/tmp/m09b-actions-chromium.log). These results do not replace full pinned verify.
+
+The 500-field trace now includes pickup and existing-field movement. Initial 127.921ms palette pickup
+was a real full-tree style invalidation; changing inherited selection/cursor styles is removed.
+An expanded workload found a 53.985ms existing-field task; unchanged selection attributes are no longer
+rewritten, roots are cached and hidden toolbars take no layout work. Final largest overlapping tasks:
+**47.981ms palette, 15.856ms existing field**, including actual edge auto-scroll (80 moves each).
+Retained traces, hashes, commands and interpretation are in docs/performance/m09b-builder-drag.md.
+The command remains separate from verify/CI deterministic count gates; Linux calibration is untouched.
+
+Visual inspection caught and fixed the demo's outer-page scroll, artificial read-only appearance in
+inert controls, repeated signal/lock decorations, rounded Material card specificity and a design-only
+wrapper that broke filled submit-button selectors. The direct button root is now inert without changing
+theme DOM. Dialogs align with the source's top inset. Error preview validates only the selected subtree
+and cannot call the host submission callback. Virtual slots can collapse/expand by keyboard and cannot
+accidentally run their owner's Delete/context actions. Their caret icons use the same Lucide library.
+
+New workbench images cover screens 1/2/5 at the source viewports; the screen-5 page renders one definition
+in Bootstrap 4, Bootstrap 5 and Material plus a dark compact builder. Initial missing-image captures and
+intermediate, unreviewed images are retained in visual-results; only these new uncommitted captures
+have been replaced during design iteration. No original baseline byte or threshold changes.
+Seven final macOS captures passed generation (/tmp/m09b-workbench-visual-record-final.log); they still
+need the final icon capture, Linux generation/comparison and owner approval. Source-vs-implementation
+comparisons are being recorded in design-qa.md. The earlier -record.log intentionally retained six
+missing-image failures; -record-2/3 record explicit new-only revisions. A new inert assertion initially
+expected the empty-string serialization; the corrected check asserts the actual inert DOM property.
+
+Owner authorization for the independent trial: start an isolated sub-agent only after the verified
+M09b branch is pushed, clone GitHub at a recorded SHA, provide no conversation/implementation context
+or local files, and permit only builder docs, CLI help and the running builder. Forbid package sources,
+specs, ADRs, tests and progress.md. Timebox 90 minutes; retain TRIAL-REPORT.md verbatim with the exact
+prompt in docs/rehearsals/m09b-builder/; responses belong in fixes.md. Record provenance exactly as
+“isolated sub-agent, no conversation context, clean clone at <SHA>”. Fix all gaps, re-verify and merge
+before stopping for owner review. The trial has **not started** and M09b remains open.
+
+### Final visual checkpoint and pinned verification (work continues)
+
+All seven new macOS workbench captures are recorded. Linux generation and immediate comparison both
+pass **7/7** inside the official digest-pinned Playwright 1.56.1 image
+(`/tmp/m09b-linux-workbench.log`, retained `visual-results/generation.log` and `themes.log`). The
+existing 338 committed screenshots are unchanged; seven platform-specific workbench images were added
+on each platform. Root `design-qa.md` records full-view/focused source comparisons, fixed findings,
+intentional metadata/runtime-theme differences and pending owner implementation-image approval.
+The gallery's compact builder fits completely within 1440×1000 (bottom 994.90px), has no horizontal
+overflow and no browser console errors. Its heading styles no longer leak into SDK content. Material
+submit buttons retain content-width pills. New image generation is not owner screenshot sign-off.
+
+Full pinned local verify is running with CI=true and fresh owned servers
+(`/tmp/m09b-full-pinned-verify.log`). No verified implementation branch has been pushed yet; the
+isolated author exercise remains pending until that prerequisite passes. No M09c work has begun.
+
+### Verified checkpoint before independent author trial
+
+**PASS — full pinned verify, exit 0**, with fresh servers and CI=true:
+`npx --offline --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify`.
+Log: `/tmp/m09b-full-pinned-verify.log`. Lint/build/typecheck, **298 unit tests (42 files)**,
+**1,017 browser tests** across Chromium/Firefox/WebKit, **17 size budgets** and **five deterministic
+count checks** all pass. Core line coverage 91.04%; validation 99.25%. Builder is **27.83 kB** against
+the unchanged 30 kB budget; Material is 1.20 kB against its 10 kB budget. No correctness, coverage,
+visual, count, timing or size threshold was relaxed. Earlier failures remain recorded above.
+
+The task script passes both actual pointer-only and keyboard-only routes in all three browsers.
+`builder-actions.spec.ts` checks all eight toolbar/context/shortcut routes and exact history replay;
+`builder-appearance.spec.ts` covers all five themes × two modes × two densities with open/closed axe,
+focus/history/dialog identity and active-drag switching. `builder-hosts.spec.ts` covers six real hosts,
+all five themes, native context/events/focus/teardown and original platform PNGs. Pointer/gesture,
+settings, locks/options, sidebar/slots/phone and custom-component checks pass in the same full matrix.
+`packages/builder/tests/theme.test.ts` checks tokens-only chrome and all-theme contrast; SDK safe-theme
+and Material conformance/visual checks pass. The separate 500-field trace result remains as recorded.
+
+This checkpoint is eligible to push for the owner's isolated guide-only trial. It is **not** M09b
+closure: the trial, any resulting fixes, first-attempt current-head PR CI/merge and owner screenshot
+review remain outstanding. The verbatim trial report is excluded from automatic formatting only to
+honour the owner's preservation requirement. M09c has not started.
+
 ### Foundation checks (work continues)
 
 Safe descriptor/Neutral checks passed initially (7 tests); expanded command/theme/lock/edit-session

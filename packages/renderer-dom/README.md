@@ -106,3 +106,6 @@ A framework `NativeHost` may implement `forController(controller): NativeHost` t
 to each form instance. The renderer calls it for the main form and every isolated editor preview;
 React portals use that controller for `useForm`/`useField`, while retaining the host's own providers.
 The controller's view is ready after mounting; native components render within their framework lifecycle.
+
+Design controls are inert and their setValue/onBlur callbacks cannot mutate the session. They retain
+the actual schema read-only/disabled appearance; design mode does not fake a read-only field state.

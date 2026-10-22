@@ -54,7 +54,8 @@ export const materialTheme: Theme = {
     },
   },
   css: `
-.of-root .of-panel,.of-root .of-fieldset{--of-material-label-bg:var(--of-material-panel-bg);background:var(--of-material-panel-bg);border-color:var(--of-color-border);border-radius:12px;box-shadow:var(--of-material-elevation);padding:20px}
+.of-root .of-field.of-panel,.of-root .of-field.of-fieldset{--of-material-label-bg:var(--of-material-panel-bg);background:var(--of-material-panel-bg);border-color:var(--of-color-border);border-radius:12px;box-shadow:var(--of-material-elevation);padding:20px}
+.of-root>.of-tabs>.of-layout-title{font-size:26px;line-height:1.3;margin-block-end:18px}
 .of-root .of-layout-title{font-size:16px;font-weight:500;line-height:1.5;margin-block-end:18px}
 .of-root [data-of-shell="field"]{position:relative;padding-block-start:8px;gap:6px}
 .of-root [data-of-shell="field"]>.of-label{position:absolute;inset-block-start:0;inset-inline-start:12px;z-index:1;max-inline-size:calc(100% - 28px);padding-inline:4px;background:var(--of-material-label-bg);font-size:12px;font-weight:400;line-height:16px}
@@ -73,7 +74,7 @@ export const materialTheme: Theme = {
 .of-root .of-tablist>[role="tab"]{background:transparent;border:0;border-block-end:3px solid transparent;border-radius:0;padding:12px 20px;font-size:14px;font-weight:500}
 .of-root .of-tablist>[role="tab"][aria-selected="true"]{color:var(--of-color-primary);border-block-end-color:var(--of-color-primary);background:transparent}
 .of-root button.of-control{min-block-size:40px;border-radius:20px;font-weight:500;font-size:14px;padding:8px 20px}
-.of-root .of-none>button.of-control{background:var(--of-color-primary);color:var(--of-color-on-primary);border-color:var(--of-color-primary)}
+.of-root .of-none>button.of-control{align-self:flex-start;background:var(--of-color-primary);color:var(--of-color-on-primary);border-color:var(--of-color-primary)}
 .of-root [role="group"]>label{min-block-size:32px}
 .of-root input[type="checkbox"],.of-root input[type="radio"]{accent-color:var(--of-color-primary)}
 @media(forced-colors:active){.of-root .of-control{border:1px solid ButtonText}.of-root :focus-visible{outline:3px solid Highlight}.of-root .of-panel{box-shadow:none}}

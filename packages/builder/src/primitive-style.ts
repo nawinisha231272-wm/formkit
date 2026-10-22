@@ -30,7 +30,7 @@ export const primitiveStyle = `
 .of-builder [data-ofb-primitive="SegmentedControl"]{padding:3px;background:var(--ofb-surface-raised);border-radius:var(--ofb-radius)}
 .of-builder [data-ofb-primitive="SegmentedControl"]>button{min-block-size:28px;border-color:var(--ofb-transparent);background:var(--ofb-transparent);padding:4px 10px}
 .of-builder [data-ofb-primitive="SegmentedControl"]>button[aria-pressed="true"]{background:var(--ofb-surface);box-shadow:var(--ofb-shadow-1)}
-.of-builder [data-ofb-primitive="Dialog"]{padding:0;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-panel);background:var(--ofb-surface);color:var(--ofb-text);box-shadow:var(--ofb-shadow-2);inline-size:min(1040px,calc(100% - 48px));max-inline-size:none;max-block-size:calc(100% - 48px);overflow:auto}
+.of-builder [data-ofb-primitive="Dialog"]{margin-block:48px auto;padding:0;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-panel);background:var(--ofb-surface);color:var(--ofb-text);box-shadow:var(--ofb-shadow-2);inline-size:min(1040px,calc(100% - 48px));max-inline-size:none;max-block-size:calc(100% - 48px);overflow:auto}
 .of-builder dialog::backdrop{background:var(--ofb-overlay)}
 .of-builder [data-ofb-primitive="Drawer"]{position:absolute;inset:0 0 0 auto;inline-size:min(560px,100%);z-index:30;overflow:auto;background:var(--ofb-surface);border-inline-start:1px solid var(--ofb-border);box-shadow:var(--ofb-shadow-2)}
 .of-builder [data-ofb-primitive="Menu"]{position:absolute;z-index:50;min-inline-size:200px;padding:5px;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius);background:var(--ofb-surface);box-shadow:var(--ofb-shadow-2)}

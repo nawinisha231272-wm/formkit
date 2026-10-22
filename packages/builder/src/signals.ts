@@ -29,3 +29,15 @@ export function describeExpression(
   if (expr === true || expr === false) return t(expr ? "ofb.yes" : "ofb.no");
   return String(expr ?? "");
 }
+
+export function controlledFields(form: CompiledForm, id: string): number {
+  const seen = new Set<string>(),
+    pending = [...(form.dependents[id] ?? [])];
+  for (let index = 0; index < pending.length; index++) {
+    const current = pending[index]!;
+    if (seen.has(current)) continue;
+    seen.add(current);
+    pending.push(...(form.dependents[current] ?? []));
+  }
+  return [...seen].filter((id) => !!form.byId[id]?.model.value).length;
+}

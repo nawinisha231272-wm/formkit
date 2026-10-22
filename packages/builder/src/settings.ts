@@ -477,13 +477,25 @@ export class Settings {
           themeMode: appearance.mode,
           ...(readonly ? { readOnly: true } : {}),
           idPrefix: `ofb-editor-${session}-`,
+          onSubmit: () => {},
           onChange: () =>
             queueMicrotask(() => {
               if (!disposed) isolatePreview();
             }),
         });
         isolatePreview();
-        if (state === "error") void preview.submit();
+        if (state === "error") {
+          const selected = new Set<string>();
+          const collect = (entry: ComponentNode) => {
+            selected.add(entry.id);
+            componentChildren(entry).forEach(collect);
+          };
+          collect(node());
+          const paths = preview.session.form.nodes
+            .filter((entry) => selected.has(entry.node.id) && entry.model.value)
+            .map((entry) => entry.path);
+          void preview.session.validate({ paths });
+        }
       } catch (cause) {
         previewRoot.textContent =
           cause instanceof Error ? cause.message : String(cause);

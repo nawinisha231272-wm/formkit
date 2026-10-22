@@ -1,0 +1,52 @@
+.theme-gallery {
+  font:
+    14px/1.5 Inter,
+    system-ui,
+    sans-serif;
+  color: #17232b;
+  background: #f5f7fa;
+  padding: 32px 40px;
+}
+.theme-gallery > h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+.theme-gallery > p {
+  margin: 0 0 4px;
+  color: #505d70;
+}
+.theme-gallery > h2,
+.theme-comparisons > section > h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #505d70;
+  margin: 12px 0 12px;
+}
+.theme-comparisons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-bottom: 8px;
+}
+.theme-form {
+  border: 1px solid #c6ced8;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+}
+.theme-gallery #builder > .of-builder {
+  block-size: 272px;
+  border-radius: 12px;
+  margin-top: 12px;
+}
+.theme-gallery #builder .of-builder-grid {
+  grid-template-columns: 210px minmax(0, 1fr) 230px;
+}
+@media (max-width: 900px) {
+  .theme-comparisons {
+    grid-template-columns: 1fr;
+  }
+  .theme-gallery {
+    padding: 20px;
+  }
+}
