@@ -1,4 +1,5 @@
 import { h } from "@ourform/sdk";
+import type { FormController } from "./host";
 import type {
   ComponentViews,
   FieldControlProps,
@@ -10,6 +11,8 @@ export interface NativeUnit {
   destroy(): void;
 }
 export interface NativeHost {
+  /** Bind framework context to this form instance, including an isolated editor preview. */
+  forController?(controller: FormController): NativeHost;
   mount(
     slot: HTMLElement,
     view: NativeView,

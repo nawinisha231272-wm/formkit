@@ -4,5 +4,6 @@ export {
   createFormController,
   syncData,
   defaultThemes,
+  defaultBuilderThemes,
 } from "./host";
 export type { FormController, HostOptions } from "./host";

@@ -107,10 +107,10 @@ export function pathWarnings(
 }
 export class MoveComponent extends SnapshotCommand implements Command {
   readonly type = "MoveComponent";
-  readonly options: DropTarget;
+  readonly options: MoveOptions;
   constructor(
     readonly componentId: string,
-    options: DropTarget = {},
+    options: MoveOptions = {},
   ) {
     super();
     this.options = Object.freeze({ ...options });
@@ -155,6 +155,41 @@ export class MoveComponent extends SnapshotCommand implements Command {
     const found = locate(definition, this.componentId)!;
     found.nodes.splice(found.index, 1);
     const inserted = insertNode(definition, engine, found.node, this.options);
+    const warnings: Diagnostic[] = [];
+    if (this.options.renameConflicts) {
+      const oldScopes = new Map(
+        entries(state.definition, engine).map((entry) => [
+          entry.node.id,
+          entry.scope,
+        ]),
+      );
+      const moved = new Set<string>();
+      visit(found.node, (node) => moved.add(node.id));
+      for (const entry of entries(definition, engine)) {
+        if (
+          !moved.has(entry.node.id) ||
+          oldScopes.get(entry.node.id) === entry.scope ||
+          !entry.node.key
+        )
+          continue;
+        const previous = entry.node.key;
+        entry.node.key = uniqueKey(
+          definition,
+          engine,
+          previous,
+          entry.scope,
+          new Set([entry.node.id]),
+          "",
+        );
+        if (previous !== entry.node.key)
+          warnings.push({
+            severity: "warning",
+            code: "key-renamed",
+            componentId: entry.node.id,
+            message: `Data key '${previous}' was renamed to '${entry.node.key}' in its new scope.`,
+          });
+      }
+    }
     const patch: JsonPatchOp[] = [
       { op: "remove", path: found.path },
       inserted.created
@@ -164,9 +199,12 @@ export class MoveComponent extends SnapshotCommand implements Command {
     return {
       state: { ...state, definition, selection: this.componentId },
       patch,
-      diagnostics: [],
+      diagnostics: warnings,
     };
   }
+}
+export interface MoveOptions extends DropTarget {
+  readonly renameConflicts?: boolean;
 }
 export class ChangeKey extends SnapshotCommand implements Command {
   readonly type = "ChangeKey";
@@ -223,72 +261,97 @@ export class DuplicateComponent extends SnapshotCommand implements Command {
           }),
       index: ordinal + 1,
     };
-    const diagnostics = checkDrop(
-      engine,
-      state.definition,
-      source.node.type,
-      target,
-    );
-    if (diagnostics.length) return { state, patch: [], diagnostics };
-    const definition = copy(state.definition);
-    const cloned = copy(source.node);
-    const mapping = new Map<string, string>();
-    const compositeIds: string[] = [];
-    const reserved = new Set(entries(definition, engine).map((e) => e.node.id));
-    visit(cloned, (node) => {
-      const old = node.id;
-      const id = newId(definition, reserved);
-      reserved.add(id);
-      mapping.set(old, id);
-      if (engine.getField(node.type)?.kind === "composite")
-        compositeIds.push(old);
-      node.id = id;
-    });
-    const wireIds = new Set(
-      entries(state.definition, engine).map((e) => e.node.id),
-    );
-    visit(cloned, (node) =>
-      expressions(node, (leaf) => {
-        if (!("ref" in leaf)) return leaf;
-        const exact = mapping.get(leaf.ref);
-        if (exact) return { ref: exact };
-        if (!wireIds.has(leaf.ref)) {
-          const composite = compositeIds.find((id) =>
-            leaf.ref.startsWith(`${id}/`),
-          );
-          if (composite)
-            return {
-              ref: `${mapping.get(composite)!}${leaf.ref.slice(composite.length)}`,
-            };
-        }
-        return leaf;
-      }),
-    );
-    const inserted = insertNode(definition, engine, cloned, target);
-    const unprocessed = new Set(mapping.values());
-    for (const entry of entries(definition, engine))
-      if (unprocessed.has(entry.node.id)) {
-        if (entry.node.key)
-          entry.node.key = uniqueKey(
-            definition,
-            engine,
-            entry.node.key,
-            entry.scope,
-            unprocessed,
-          );
-        unprocessed.delete(entry.node.id);
-      }
-    return {
-      state: { ...state, definition, selection: cloned.id },
-      patch: [
-        inserted.created
-          ? { op: "add", path: inserted.arrayPath, value: inserted.nodes }
-          : { op: "add", path: inserted.path, value: cloned },
-      ],
-      diagnostics: [],
-    };
+    return cloneInto(state, engine, source.node, target);
   }
 }
+
+/** Clipboard contents are captured independently of their source's later edits/deletion. */
+export class PasteComponent extends SnapshotCommand implements Command {
+  readonly type = "PasteComponent";
+  readonly node: ComponentNode;
+  readonly target: DropTarget;
+  constructor(node: ComponentNode, target: DropTarget = {}) {
+    super();
+    if (inspectJson(node).length)
+      throw new Error("Clipboard component must be safe JSON.");
+    this.node = freeze(copy(node));
+    this.target = Object.freeze({ ...target });
+    Object.freeze(this);
+  }
+  apply(state: BuilderState, { engine }: BuilderContext): CommandResult {
+    if (!engine.getField(this.node.type))
+      return failure(state, `Unknown component type: ${this.node.type}`);
+    return cloneInto(state, engine, this.node, this.target);
+  }
+}
+
+function cloneInto(
+  state: BuilderState,
+  engine: Engine,
+  source: ComponentNode,
+  target: DropTarget,
+): CommandResult {
+  const diagnostics = checkDrop(engine, state.definition, source.type, target);
+  if (diagnostics.length) return { state, patch: [], diagnostics };
+  const definition = copy(state.definition);
+  const cloned = copy(source);
+  const mapping = new Map<string, string>();
+  const compositeIds: string[] = [];
+  const reserved = new Set(entries(definition, engine).map((e) => e.node.id));
+  visit(cloned, (node) => {
+    const old = node.id;
+    const id = newId(definition, reserved);
+    reserved.add(id);
+    mapping.set(old, id);
+    if (engine.getField(node.type)?.kind === "composite")
+      compositeIds.push(old);
+    node.id = id;
+  });
+  const wireIds = new Set(
+    entries(state.definition, engine).map((e) => e.node.id),
+  );
+  visit(cloned, (node) =>
+    expressions(node, (leaf) => {
+      if (!("ref" in leaf)) return leaf;
+      const exact = mapping.get(leaf.ref);
+      if (exact) return { ref: exact };
+      if (!wireIds.has(leaf.ref)) {
+        const composite = compositeIds.find((id) =>
+          leaf.ref.startsWith(`${id}/`),
+        );
+        if (composite)
+          return {
+            ref: `${mapping.get(composite)!}${leaf.ref.slice(composite.length)}`,
+          };
+      }
+      return leaf;
+    }),
+  );
+  const inserted = insertNode(definition, engine, cloned, target);
+  const unprocessed = new Set(mapping.values());
+  for (const entry of entries(definition, engine))
+    if (unprocessed.has(entry.node.id)) {
+      if (entry.node.key)
+        entry.node.key = uniqueKey(
+          definition,
+          engine,
+          entry.node.key,
+          entry.scope,
+          unprocessed,
+        );
+      unprocessed.delete(entry.node.id);
+    }
+  return {
+    state: { ...state, definition, selection: cloned.id },
+    patch: [
+      inserted.created
+        ? { op: "add", path: inserted.arrayPath, value: inserted.nodes }
+        : { op: "add", path: inserted.path, value: cloned },
+    ],
+    diagnostics: [],
+  };
+}
+
 export class WrapInLayout extends SnapshotCommand implements Command {
   readonly type = "WrapInLayout";
   constructor(

@@ -145,7 +145,7 @@ export async function checkComponentConformance(
     '"ok": true',
   );
   for (const theme of options.themeSelect
-    ? ["base", "bootstrap4", "bootstrap5", "tailwind"]
+    ? ["base", "bootstrap4", "bootstrap5", "tailwind", "material"]
     : [null]) {
     if (theme && options.themeSelect)
       await page.locator(options.themeSelect).selectOption(theme);

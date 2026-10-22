@@ -27,7 +27,10 @@ const views = new Map([
 ]);
 import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
 import { tailwindTheme } from "@ourform/theme-tailwind";
-const themes = [bootstrap4Theme, bootstrap5Theme, tailwindTheme];
+import { materialTheme } from "@ourform/theme-material";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+const themes = [bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme];
 function renderForm(root, session, views, theme = "base") {
   return mount(root, session, {
     engine,

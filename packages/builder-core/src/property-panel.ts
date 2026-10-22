@@ -29,6 +29,8 @@ const base: [string, PropertyDefinition["kind"], string][] = [
   ["validation.required", "boolean", "Validation"],
   ["visibleWhen", "expr", "Conditional"],
   ["disabledWhen", "expr", "Conditional"],
+  ["calculate.expr", "expr", "Logic"],
+  ["calculate.allowOverride", "boolean", "Logic"],
   ["layout.width", "number", "Layout"],
   ["ariaLabel", "string", "Accessibility"],
 ];
@@ -80,7 +82,13 @@ export function createPropertyPanel(
           : [];
   for (const [key, kind, group] of base) {
     if (
-      (!model.value && ["defaultValue", "validation.required"].includes(key)) ||
+      (!model.value &&
+        [
+          "defaultValue",
+          "validation.required",
+          "calculate.expr",
+          "calculate.allowOverride",
+        ].includes(key)) ||
       (key === "key" && !model.value && model.dataScope !== "object")
     )
       continue;
@@ -90,7 +98,8 @@ export function createPropertyPanel(
       label: `of.builder.${key}`,
       group,
       value: propertyValue(node, key),
-      visible: true,
+      visible:
+        key !== "calculate.allowOverride" || node.calculate?.expr !== undefined,
       ...(key === "layout.width" ? { min: 1, max: 12 } : {}),
     });
     if (key === "validation.required")

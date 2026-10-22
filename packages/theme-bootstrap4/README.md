@@ -22,3 +22,8 @@ Reference: [Bootstrap 4 form classes](https://getbootstrap.com/docs/4.6/componen
 
 Bootstrap 4 is fully supported for 1.0 (ADR-0011). Every new component must pass conformance and
 visual checks in base, Bootstrap 4, Bootstrap 5 and Tailwind, with unchanged accessibility/pixel gates.
+
+`builderTheme` exports matching light/dark builder chrome, inheriting Neutral tokens and adding
+this theme's accent, typography and primitive recipes. It is separate from the form descriptor.
+Use `chrome.theme: "match-form"` or pin it by name; density is applied by the builder runtime.
+No global CSS, DOM side effects or runtime SDK import is introduced.

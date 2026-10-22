@@ -12,3 +12,6 @@ visual-results
 docs/design/builder-ux-2026-10-21/*.dc.html
 docs/design/builder-ux-2026-10-21/canvas.json
 docs/design/builder-ux-2026-10-21/SHA256SUMS
+
+# Owner requires the isolated author report to remain verbatim.
+docs/rehearsals/m09b-builder/TRIAL-REPORT.md

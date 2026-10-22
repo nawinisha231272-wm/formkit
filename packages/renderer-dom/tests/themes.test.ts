@@ -6,6 +6,7 @@ import { renderToString, resolveTheme } from "@ourform/renderer-dom";
 import { baseTheme } from "@ourform/theme-base";
 import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
 import { tailwindTheme } from "@ourform/theme-tailwind";
+import { materialTheme } from "@ourform/theme-material";
 import type { Theme, ThemeOverride } from "@ourform/sdk";
 const override = (color: string): ThemeOverride => ({
   tokens: { "--of-color-primary": color },
@@ -65,7 +66,13 @@ test("registries reject duplicates, cycles and missing themes, with no state sha
     "cannot close",
   );
 });
-test.each([baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme])(
+test.each([
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+])(
   "$name ships required tokens, compiled scoped CSS and readable modes",
   (theme) => {
     const required = [

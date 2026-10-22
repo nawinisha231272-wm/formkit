@@ -384,3 +384,12 @@ caption and does not opt into authoring. Missing metadata or an empty/whitespace
 the entry without preventing schema compilation or explicit commands. SDK definers still generate
 builder titles from their title option. The playground excludes employeeObject/SDK card/Root section
 registrations by default; ?demos explicitly enables their conformance harness cases.
+
+## M09b builder theme descriptors (ADR-0016)
+
+SDK exports BuilderTheme, BuilderTokens, BuilderPrimitive and defineBuilderTheme. Tokens are safe
+--ofb-\* string values; modes.dark supplies overrides; recipes maps primitive names to token overrides.
+The helper freezes snapshots and rejects unsafe names/JSON, CSS escapes/network values and unknown
+primitive names. It resolves no DOM or registry. Renderer preset descriptors and the builder runtime
+apply appearance per owner instance, independently from form definition JSON. Material joins the
+four existing form themes for new-component conformance. No M09c rule engine is introduced here.

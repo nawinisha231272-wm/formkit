@@ -2,27 +2,34 @@ import type { Diagnostic, FormDefinition } from "@ourform/schema";
 import { inspectJson } from "@ourform/schema";
 import type { Engine } from "@ourform/core";
 import { copy, freeze, locate } from "./commands";
-import { checkDrop } from "./structure";
+import { checkDrop, keyFromLabel, uniqueKey, entries } from "./structure";
 import type { DropTarget } from "./structure";
-import { pathWarnings } from "./structural-commands";
+import { pathWarnings, MoveComponent } from "./structural-commands";
 import type { BuilderState, Command, JsonPatchOp } from "./commands";
 import { createPropertyPanel } from "./property-panel";
 import type { PropertyPanelModel } from "./property-panel";
+import { createLocks, checkLocks, lockedDrop } from "./locks";
+import type { LockOptions, LockLevel } from "./locks";
 
 export interface PaletteGroup {
   name: string;
   components: { type: string; title: string; order: number; icon?: string }[];
 }
-export interface BuilderOptions {
+export interface BuilderOptions extends LockOptions {
   historyLimit?: number;
 }
+export interface DispatchOptions {
+  historyGroup?: string;
+}
 export interface Builder {
+  suggestKey(componentId: string, label: string): string | undefined;
+  lockLevel(componentId: string): LockLevel | undefined;
   canDrop(type: string, target: DropTarget, movingId?: string): Diagnostic[];
   getState(): BuilderState;
   select(componentId: string | null): void;
-  dispatch(command: Command): Diagnostic[];
-  undo(): void;
-  redo(): void;
+  dispatch(command: Command, options?: DispatchOptions): Diagnostic[];
+  undo(): Diagnostic[];
+  redo(): Diagnostic[];
   palette(): PaletteGroup[];
   propertyPanel(componentId: string): PropertyPanelModel;
   subscribe(
@@ -43,6 +50,10 @@ export function createBuilder(
   )
     throw new Error("historyLimit must be an integer between 1 and 1000.");
   const initial = engine.compile(definition);
+  const locks = createLocks({
+    ...(options.locked ? { locked: options.locked } : {}),
+    ...(options.readOnlyKeys ? { readOnlyKeys: options.readOnlyKeys } : {}),
+  });
   if (!initial.ok)
     throw new Error(
       `Invalid initial builder definition: ${JSON.stringify(initial.diagnostics)}`,
@@ -57,6 +68,7 @@ export function createBuilder(
   const listeners = new Set<
     (state: BuilderState, patch: JsonPatchOp[]) => void
   >();
+  let editGroup: { key: string; time: number } | undefined;
   const publish = (next: BuilderState, patch: JsonPatchOp[]) => {
     state = freeze({
       ...next,
@@ -68,17 +80,78 @@ export function createBuilder(
     for (const listener of [...listeners]) listener(state, freeze(patch));
   };
   return {
+    suggestKey: (id, label) => {
+      const entry = entries(state.definition, engine).find(
+        (entry) => entry.node.id === id,
+      );
+      if (!entry) throw new Error(`Unknown component: ${id}`);
+      if (!entry.node.key) return undefined;
+      return uniqueKey(
+        state.definition,
+        engine,
+        keyFromLabel(label),
+        entry.scope,
+        new Set([id]),
+        "",
+      );
+    },
+    lockLevel: (id) => {
+      let found = locate(state.definition, id);
+      const level = found ? locks(found.node) : undefined;
+      while (found?.parentId) {
+        found = locate(state.definition, found.parentId);
+        if (found && locks(found.node) === "all") return "all";
+      }
+      return level;
+    },
     getState: () => state,
-    canDrop: (type, target, movingId) =>
-      checkDrop(engine, state.definition, type, target, movingId),
+    canDrop: (type, target, movingId) => {
+      const diagnostics = [
+        ...checkDrop(engine, state.definition, type, target, movingId),
+        ...lockedDrop(state.definition, engine, locks, target, movingId),
+      ];
+      if (!diagnostics.length && movingId) {
+        const result = new MoveComponent(movingId, target).apply(state, {
+          engine,
+        });
+        diagnostics.push(
+          ...checkLocks(
+            state.definition,
+            result.state.definition,
+            engine,
+            locks,
+          ),
+        );
+      }
+      return diagnostics;
+    },
     select(id) {
       if (id && !locate(state.definition, id))
         throw new Error(`Unknown component: ${id}`);
+      if (id !== state.selection) editGroup = undefined;
       publish({ ...state, selection: id }, []);
     },
-    dispatch(command) {
+    dispatch(command, dispatchOptions = {}) {
+      const group = dispatchOptions.historyGroup;
+      if (
+        group !== undefined &&
+        (!group.trim() ||
+          !["UpdateProperty", "UpdateComponent"].includes(command.type))
+      )
+        throw new Error(
+          "History grouping requires a named property/component edit session.",
+        );
       const result = command.apply(state, { engine });
       const jsonErrors = inspectJson(result.state.definition);
+      if (!jsonErrors.length) {
+        const violations = checkLocks(
+          state.definition,
+          result.state.definition,
+          engine,
+          locks,
+        );
+        if (violations.length) return violations;
+      }
       const compiled = jsonErrors.length
         ? { diagnostics: jsonErrors }
         : engine.compile(result.state.definition);
@@ -91,6 +164,7 @@ export function createBuilder(
       );
       const renaming =
         command.type === "ChangeKey" ||
+        command.type === "UpdateComponent" ||
         (command.type === "UpdateProperty" &&
           "key" in command &&
           command.key === "key");
@@ -138,25 +212,55 @@ export function createBuilder(
       const inverse = command.invert(state);
       // Snapshot the successful forward state too: redo never generates new ids or defaults.
       const forward = inverse.invert(result.state);
-      past.push({ command, forward, inverse });
+      const previous = past.at(-1);
+      const now = Date.now();
+      if (
+        previous &&
+        group !== undefined &&
+        editGroup?.key === group &&
+        now - editGroup.time < 500
+      )
+        past[past.length - 1] = { command, forward, inverse: previous.inverse };
+      else past.push({ command, forward, inverse });
+      editGroup = group === undefined ? undefined : { key: group, time: now };
       if (past.length > historyLimit) past.shift();
       future.length = 0;
       publish(result.state, result.patch);
       return diagnostics;
     },
     undo() {
-      const entry = past.pop();
-      if (!entry) return;
+      editGroup = undefined;
+      const entry = past.at(-1);
+      if (!entry) return [];
       const result = entry.inverse.apply(state, { engine });
+      const violations = checkLocks(
+        state.definition,
+        result.state.definition,
+        engine,
+        locks,
+      );
+      if (violations.length) return violations;
+      past.pop();
       future.push(entry);
       publish(result.state, result.patch);
+      return [];
     },
     redo() {
-      const entry = future.pop();
-      if (!entry) return;
+      editGroup = undefined;
+      const entry = future.at(-1);
+      if (!entry) return [];
       const result = entry.forward.apply(state, { engine });
+      const violations = checkLocks(
+        state.definition,
+        result.state.definition,
+        engine,
+        locks,
+      );
+      if (violations.length) return violations;
+      future.pop();
       past.push(entry);
       publish(result.state, result.patch);
+      return [];
     },
     palette() {
       const groups: PaletteGroup[] = [];

@@ -4,6 +4,7 @@
     "booleanValue",
     "controlAttributes",
     "defaultMessage",
+    "defineBuilderTheme",
     "defineComposite",
     "defineDisplay",
     "defineField",
@@ -29,6 +30,9 @@
     "stringValue"
   ],
   "types": [
+    "BuilderPrimitive",
+    "BuilderTheme",
+    "BuilderTokens",
     "ComponentModel",
     "ComponentSlot",
     "ComponentViews",

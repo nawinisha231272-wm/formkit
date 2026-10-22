@@ -2,7 +2,13 @@ import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import type {} from "../../apps/playground/sdk-extensions";
 
-for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+for (const theme of [
+  "base",
+  "bootstrap4",
+  "bootstrap5",
+  "tailwind",
+  "material",
+]) {
   test(`SDK composites/presets: ${theme} conformance and visual`, async ({
     page,
   }) => {
@@ -51,7 +57,7 @@ for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
       },
       rating: 3,
     });
-    // Native registrations are new components too: validate and compare all four themes.
+    // Native registrations are new components too: validate and compare all five themes.
     expect(
       await page.evaluate(
         async () => (await window.sdkExtensions.react!.submit()).ok,
@@ -141,7 +147,13 @@ test("SDK scenario E and test kit: four-theme identity, required errors, reset a
       '#test-harness button[aria-label="2 of 3 stars"]',
     )!;
     button.focus();
-    for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+    for (const theme of [
+      "base",
+      "bootstrap4",
+      "bootstrap5",
+      "tailwind",
+      "material",
+    ]) {
       controller.view.setTheme(theme);
       if (
         button !==
@@ -239,7 +251,13 @@ test("SDK scenario F: unchanged portable Rating in the actual Angular host", asy
   ).toBe(4);
   const same = await page.evaluate(() => {
     const control = document.activeElement;
-    for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"])
+    for (const theme of [
+      "base",
+      "bootstrap4",
+      "bootstrap5",
+      "tailwind",
+      "material",
+    ])
       window.hostDemo.form.view.setTheme(theme);
     return control === document.activeElement;
   });

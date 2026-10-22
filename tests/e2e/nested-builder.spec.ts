@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import type { Page, Locator } from "@playwright/test";
 
-// Real pointer path: some engines require two moves over a native HTML drop target.
+// Exercise the actual Pointer Events pickup and drop path.
 async function mouseDrag(
   page: Page,
   source: Locator,
@@ -39,6 +39,16 @@ async function mouseDrag(
 import AxeBuilder from "@axe-core/playwright";
 import type {} from "../../apps/playground/builder";
 
+async function save(page: Page) {
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Save", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+}
+const mode = (page: Page, name: string) =>
+  page.getByRole("tab", { name, exact: true }).click();
+
 test("mouse drag builds four levels in declared slots with zero container-specific builder code", async ({
   page,
 }) => {
@@ -55,6 +65,7 @@ test("mouse drag builds four levels in declared slots with zero container-specif
       `#canvas .of-builder-drop[data-drop-parent="${parent}"][data-drop-slot="${slot}"][data-drop-index="0"]`,
     );
     await mouseDrag(page, source, target);
+    await save(page);
     await expect
       .poll(() =>
         page.evaluate(() => {
@@ -95,6 +106,7 @@ test("mouse drag builds four levels in declared slots with zero container-specif
     definition.components[0]?.components?.[0]?.components?.[0]?.columns?.[0]
       ?.components?.[0]?.type,
   ).toBe("text");
+  await mode(page, "Preview");
   await page
     .locator("#preview")
     .getByRole("textbox", { name: "Text", exact: true })
@@ -145,28 +157,39 @@ test("keyboard alone adds, configures, cuts into a slot, reparents, deletes and 
     const add = page.getByRole("button", { name: `Add ${title}`, exact: true });
     await tabTo(add, title !== "Tabs");
     await page.keyboard.press("Enter");
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await page.keyboard.press("ControlOrMeta+Enter");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
   }
   const field = page.getByRole("treeitem", { name: "Text", exact: true });
   await tabTo(field);
   await page.keyboard.press("Enter");
   await expect(
-    page.locator('#builder-properties [data-property="label"]'),
+    page.getByRole("dialog").getByLabel("Label", { exact: true }),
   ).toBeFocused();
   await page.keyboard.press("ControlOrMeta+A");
   await page.keyboard.type("Keyboard answer");
-  await page.keyboard.press("Tab");
+  await page.keyboard.press("ControlOrMeta+Enter");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   const renamed = page.getByRole("treeitem", {
     name: "Keyboard answer",
     exact: true,
   });
   await tabTo(renamed);
   await page.keyboard.press("ControlOrMeta+x");
-  await tabTo(
-    page.getByRole("button", {
-      name: "Insert in Tabs / Second tab at position 1",
-      exact: true,
-    }),
-  );
+  const second = page.getByRole("treeitem", {
+    name: "Second tab",
+    exact: true,
+  });
+  // Arrow navigation reaches virtual slots, including the inactive tab's slot.
+  for (
+    let step = 0;
+    step < 30 &&
+    !(await second.evaluate((el) => el === el.ownerDocument.activeElement));
+    step++
+  )
+    await page.keyboard.press("ArrowDown");
+  await expect(second).toBeFocused();
   await page.keyboard.press("Enter");
   await page.keyboard.press("ControlOrMeta+v");
   await expect
@@ -221,6 +244,7 @@ test("illegal generic slot drops are visible and atomic; theme preserves authori
   await page.setViewportSize({ width: 1600, height: 1200 });
   await page.goto("/builder.html?empty&demos");
   await page.getByRole("button", { name: "Add SDK card", exact: true }).click();
+  await save(page);
   const state = () =>
     page.evaluate(() =>
       JSON.stringify(window.nestedBuilder.builder.getState()),
@@ -244,14 +268,21 @@ test("illegal generic slot drops are visible and atomic; theme preserves authori
   expect(await state()).toBe(before);
   await page.getByRole("searchbox").fill("");
   await slot.click();
+  await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Add Text", exact: true }).click();
+  await save(page);
   await page.getByRole("button", { name: "Add Text", exact: true }).click();
+  await save(page);
   const full = await state();
   await page.getByRole("button", { name: "Add Text", exact: true }).click();
   await expect(page.locator("#diagnostics")).toContainText("slot-capacity");
   expect(await state()).toBe(full);
   const handle = page.locator(`#canvas .of-builder-handle[data-id="${id}"]`);
+  await page
+    .locator(`[role="treeitem"][data-drag-id="${id}"] > .of-builder-tree-name`)
+    .click();
   await handle.focus();
+  await expect(handle).toBeFocused();
   const original = await handle.elementHandle();
   await page.evaluate(() => window.nestedBuilder.setTheme("bootstrap5"));
   await expect(handle).toBeFocused();
@@ -262,6 +293,7 @@ test("JSON import and generated expression rows commit replayable changes; inval
   page,
 }) => {
   await page.goto("/builder.html?fixture");
+  await mode(page, "JSON");
   const json = page.locator("#builder-json");
   const before = await page.evaluate(() =>
     JSON.stringify(window.nestedBuilder.builder.getState()),
@@ -276,7 +308,15 @@ test("JSON import and generated expression rows commit replayable changes; inval
       JSON.stringify(window.nestedBuilder.builder.getState()),
     ),
   ).toBe(before);
+  await mode(page, "Build");
   await page.getByRole("treeitem", { name: "Full name", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Edit settings", exact: true })
+    .click();
+  await page
+    .getByRole("dialog")
+    .getByRole("tab", { name: "Conditional", exact: true })
+    .click();
   const expr = page.locator('[data-expression="visibleWhen"]');
   await expr.locator("summary").click();
   await expr
@@ -289,6 +329,7 @@ test("JSON import and generated expression rows commit replayable changes; inval
   await expr
     .getByRole("button", { name: "Apply conditions", exact: true })
     .click();
+  await save(page);
   await expect
     .poll(() =>
       page.evaluate(() =>
@@ -304,9 +345,18 @@ test("JSON import and generated expression rows commit replayable changes; inval
   const changed = await page.evaluate(() =>
     JSON.stringify(window.nestedBuilder.builder.getState().definition),
   );
+  await page
+    .getByRole("button", { name: "Edit settings", exact: true })
+    .click();
+  await page
+    .getByRole("dialog")
+    .getByRole("tab", { name: "Conditional", exact: true })
+    .click();
   await page.locator('[data-property="visibleWhen"]').fill('["unknown",1]');
   await page.locator('[data-property="visibleWhen"]').dispatchEvent("change");
-  await expect(page.locator("#diagnostics")).not.toBeEmpty();
+  await expect(
+    page.getByRole("dialog").locator(".ofb-editor-error"),
+  ).not.toBeEmpty();
   expect(
     await page.evaluate(() =>
       JSON.stringify(window.nestedBuilder.builder.getState().definition),
@@ -324,7 +374,7 @@ test("cut/paste refuses descendant cycles and root-only nesting with visible rea
   ).toHaveAttribute("aria-expanded", "false");
   await expect(
     page.getByRole("treeitem", { name: "Full name", exact: true }),
-  ).toHaveCount(0);
+  ).toBeHidden();
   await page.locator('[data-tree-toggle="tabs"]').click();
   await expect(
     page.getByRole("treeitem", { name: "Full name", exact: true }),
@@ -335,17 +385,15 @@ test("cut/paste refuses descendant cycles and root-only nesting with visible rea
   });
   await tabsItem.locator(":scope > .of-builder-tree-name").click();
   await expect(tabsItem).toHaveAttribute("aria-selected", "true");
-  await page.getByRole("button", { name: "Cut", exact: true }).click();
+  await page.keyboard.press("ControlOrMeta+x");
   await page
-    .getByRole("button", {
-      name: "Insert in Name and rating / Column 1 at position 2",
-      exact: true,
-    })
+    .getByRole("treeitem", { name: "Column 1", exact: true })
+    .locator(":scope > .of-builder-tree-name")
     .click();
   const before = await page.evaluate(() =>
     JSON.stringify(window.nestedBuilder.builder.getState()),
   );
-  await page.getByRole("button", { name: "Paste", exact: true }).click();
+  await page.keyboard.press("ControlOrMeta+v");
   await expect(page.locator("#diagnostics")).toContainText(
     "cannot be dropped into itself or a descendant",
   );
@@ -383,10 +431,12 @@ test("column keyboard paste uses the selected collection, replays changes and re
 }) => {
   await page.goto("/builder.html?empty");
   await page.getByRole("button", { name: "Add Columns", exact: true }).click();
+  await save(page);
   const grid = await page.evaluate(
     () => window.nestedBuilder.builder.getState().selection!,
   );
   await page.getByRole("button", { name: "Add Text", exact: true }).click();
+  await save(page);
   const id = await page.evaluate(
     () => window.nestedBuilder.builder.getState().selection!,
   );
@@ -442,7 +492,7 @@ test("column keyboard paste uses the selected collection, replays changes and re
   await expect(page.locator("#builder-patch")).toContainText('"columns"');
 });
 
-test("default harness palette hides demos and opt-in restores their engine checks", async ({
+test("default workbench palette hides demos and opt-in restores their engine checks", async ({
   page,
 }) => {
   await page.goto("/builder.html?empty");

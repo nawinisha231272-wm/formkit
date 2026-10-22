@@ -13,14 +13,15 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --sourcemap",
+    "build": "tsup src/index.ts --format esm --dts --clean --sourcemap --minify",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ourform/schema": "workspace:*",
-    "@ourform/core": "workspace:*",
-    "@ourform/sdk": "workspace:*",
     "@ourform/builder-core": "workspace:*",
-    "@ourform/renderer-dom": "workspace:*"
+    "@ourform/core": "workspace:*",
+    "@ourform/renderer-dom": "workspace:*",
+    "@ourform/schema": "workspace:*",
+    "@ourform/sdk": "workspace:*",
+    "lucide": "1.61.0"
   }
 }

@@ -1,14 +1,25 @@
 import type { FormField } from "@ourform/schema";
 import type { ComponentModel, PropertyDefinition } from "@ourform/core";
 export { createBuilder } from "./builder";
-export type { Builder, BuilderOptions, PaletteGroup } from "./builder";
-export { AddComponent, RemoveComponent, UpdateProperty } from "./commands";
+export type {
+  Builder,
+  BuilderOptions,
+  PaletteGroup,
+  DispatchOptions,
+} from "./builder";
+export {
+  AddComponent,
+  RemoveComponent,
+  UpdateProperty,
+  UpdateComponent,
+} from "./commands";
 export type {
   BuilderState,
   BuilderContext,
   Command,
   CommandResult,
   JsonPatchOp,
+  AddOptions,
 } from "./commands";
 export type { PanelProperty, PropertyPanelModel } from "./property-panel";
 export interface EditorProperty {
@@ -70,6 +81,7 @@ export function applyEditorProperty(
 export {
   MoveComponent,
   DuplicateComponent,
+  PasteComponent,
   ChangeKey,
   WrapInLayout,
   Unwrap,
@@ -77,3 +89,5 @@ export {
 } from "./structural-commands";
 export { checkDrop } from "./structure";
 export type { DropTarget } from "./structure";
+export type { MoveOptions } from "./structural-commands";
+export type { LockLevel, ComponentLocks, LockOptions } from "./locks";

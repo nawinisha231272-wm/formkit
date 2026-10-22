@@ -1,31 +1,48 @@
-:root {
-  font-family: system-ui, sans-serif;
-  color: #17232b;
-  background: #eef2f6;
-}
+/* The demo host supplies geometry and self-hosted fonts; the SDK owns chrome tokens. */
 body {
   margin: 0;
 }
 main {
-  max-width: 1600px;
-  margin: auto;
-  padding: 20px;
+  min-height: 100vh;
 }
-header {
-  margin-block-end: 20px;
+/* Full-screen demo shell: the host owns the viewport; SDK panels scroll internally. */
+#builder > .of-builder {
+  block-size: 100dvh;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
-header h1 {
-  font-size: 28px;
-  margin: 10px 0;
+#builder .ofb-header {
+  flex-shrink: 0;
 }
-header p {
-  max-width: 75ch;
+#builder .ofb-workspace,
+#builder .ofb-mode-content {
+  flex: 1;
+  min-block-size: 0;
+  block-size: 100%;
 }
-a {
-  color: #174fbc;
+#builder .of-builder-grid {
+  block-size: 100%;
+  min-block-size: 0;
+  overflow: hidden;
 }
-@media (max-width: 640px) {
-  main {
-    padding: 10px;
-  }
+#builder [data-builder-part="canvas-panel"],
+#builder [data-builder-part="inspector"],
+#builder [data-builder-part="library"] {
+  max-block-size: 100%;
+  overflow: auto;
+}
+#builder [data-builder-part="library"] {
+  display: flex;
+  flex-direction: column;
+}
+#builder .of-builder-palette {
+  min-block-size: 0;
+  max-block-size: none;
+}
+#builder .of-builder-bottom {
+  block-size: 100%;
+  min-block-size: 0;
+  overflow: auto;
 }

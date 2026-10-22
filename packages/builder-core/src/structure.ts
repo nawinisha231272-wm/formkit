@@ -92,6 +92,7 @@ export function uniqueKey(
   stem: string,
   scope: string,
   excluding: ReadonlySet<string> = new Set(),
+  separator = "_",
 ): string {
   const keys = new Set(
     entries(definition, engine)
@@ -99,7 +100,8 @@ export function uniqueKey(
       .map((entry) => entry.node.key),
   );
   let key = stem;
-  for (let suffix = 2; keys.has(key); suffix++) key = `${stem}_${suffix}`;
+  for (let suffix = 2; keys.has(key); suffix++)
+    key = `${stem}${separator}${suffix}`;
   return key;
 }
 export function destinationScope(
@@ -121,6 +123,7 @@ export function createNode(
   engine: Engine,
   type: string,
   parentId?: string,
+  naming?: "camel",
 ): ComponentNode {
   const model = engine.getField(type)!;
   const title = model.builder?.title ?? model.title;
@@ -137,24 +140,50 @@ export function createNode(
         }
       : {}),
   };
+  if (naming === "camel") {
+    const labels = new Set(
+      entries(definition, engine).map((entry) => entry.node.label),
+    );
+    for (let suffix = 2; labels.has(node.label); suffix++)
+      node.label = `${title} ${suffix}`;
+  }
   if (
     model.value ||
     model.dataScope === "object" ||
     model.dataScope === "array"
   ) {
-    const slug = title
-      .replace(/[^A-Za-z0-9_]+/g, "_")
-      .replace(/^_+|_+$/g, "")
-      .replace(/^[^A-Za-z_]/, "_$&")
-      .toLowerCase();
+    const slug =
+      naming === "camel"
+        ? keyFromLabel(node.label ?? title)
+        : title
+            .replace(/[^A-Za-z0-9_]+/g, "_")
+            .replace(/^_+|_+$/g, "")
+            .replace(/^[^A-Za-z_]/, "_$&")
+            .toLowerCase();
     node.key = uniqueKey(
       definition,
       engine,
       isSafeKey(slug) ? slug : "field",
       destinationScope(definition, engine, parentId),
+      new Set(),
+      naming === "camel" ? "" : "_",
     );
   }
   return node;
+}
+export function keyFromLabel(label: string): string {
+  const words = label
+    .trim()
+    .split(/[^A-Za-z0-9_]+/)
+    .filter(Boolean);
+  const key = words
+    .map((word, index) =>
+      index
+        ? word[0]!.toUpperCase() + word.slice(1)
+        : word[0]!.toLowerCase() + word.slice(1),
+    )
+    .join("");
+  return /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) && isSafeKey(key) ? key : "field";
 }
 export function destination(
   definition: FormDefinition,

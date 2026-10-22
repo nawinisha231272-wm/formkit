@@ -85,7 +85,7 @@ for (const host of ["dom", "react", "angular"]) {
       page.locator('[data-field-id="email"] .of-errors'),
     ).toContainText("already in use");
   });
-  test(`${host}: read-only controls retain data and all four themes retain identity/focus/caret`, async ({
+  test(`${host}: read-only controls retain data and all five themes retain identity/focus/caret`, async ({
     page,
   }) => {
     await page.goto(`/tier1.html?host=${host}&readonly`);

@@ -51,7 +51,7 @@ without nvm/Corepack/global installs. Commit the generated pnpm-lock.yaml; subse
 `ofrun pnpm install --frozen-lockfile`. The integration suite also proves a frozen/offline reinstall.
 
 `create-theme` and `create-plugin` take the same arguments. A theme includes a preview field; a plugin
-packages its field. The generator refuses an existing target. The local kit provides all twelve
+packages its field. The generator refuses an existing target. The local kit provides all thirteen
 unpublished public dependencies. After matching SDK packages are published, install
 `@ourform/cli@0.0.1` and omit --local-packages. The kit and generated file overrides must remain at
 their chosen paths during development; regenerate a project when relocating its kit.
@@ -264,13 +264,13 @@ or key through the generated editor must change the preview; browser helpers bel
 
 The scaffold includes index.html, preview.ts, a separate Vitest include pattern, Playwright config
 (Chromium/Firefox/WebKit), axe and browser/component.spec.ts. `ofrun pnpm dev` shows the live control,
-required/disabled/read-only toggles, all four themes, Submit/Reset and the mini builder. `pnpm verify`
+required/disabled/read-only toggles, all five themes, Submit/Reset and the mini builder. `pnpm verify`
 runs build, strict typecheck, Node tests and this browser suite.
 
 After authoring a different control, update its value/interaction samples and metadata-editor cases
 in the generated tests. Keep the assertions for validation, state, identity, keyboard, cleanup and
 accessibility. The starter browser case always checks names/descriptions, required errors, values,
-reset, protected writes, API writes and zero serious/critical axe violations in all four themes.
+reset, protected writes, API writes and zero serious/critical axe violations in all five themes.
 
 New projects have no approved image baseline. The sample captures explicitly UNAPPROVED screenshots
 and logs `visual baseline missing: evidence captured, comparison pending explicit record/review`.
@@ -278,7 +278,7 @@ Functional/a11y assertions still run. Record a fresh platform folder with `ofrun
 inspect the images, and commit the reviewed baselines. That command records and then compares; it
 refuses to overwrite an existing platform folder. Later verify runs compare existing images at the
 same 0.02 maximum pixel ratio. A passing first verify with unapproved images is not visual approval.
-Before shipping a new component, review comparisons in base, Bootstrap 4, Bootstrap 5 and Tailwind.
+Before shipping a new component, review comparisons in base, Bootstrap 4, Bootstrap 5, Tailwind and Material.
 
 ## 6. Use the correct fixture shape
 

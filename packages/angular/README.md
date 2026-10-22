@@ -68,3 +68,7 @@ Native controls use the existing Angular bridge and owner DI. Provider-configure
 preview; response edits never emit schemaChange. Stable engine/fields reuse the controller; external
 schema loads atomically, equal echoes are no-ops, theme/mode retains identity. Destroy releases native
 component refs, listeners and controller. Angular22 and21 are tested via each example's `/builder.html`.
+
+M09b adds a `chrome` input to `OurFormBuilderComponent`. Changes restyle the current builder in place
+with `setChrome`; the native component bridge retains the owner's Angular injector. Other builder
+options are available through the imperative controller/factory documented in @ourform/builder.

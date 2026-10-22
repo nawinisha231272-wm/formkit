@@ -4,6 +4,7 @@ import type { CompiledNode, FieldState } from "@ourform/core";
 
 export interface LayoutInteraction {
   mode?: "edit" | "design";
+  designTabs?: "active" | "all";
   activeSlot?: string;
   selectSlot?: (slot: string, focus: boolean) => void;
 }
@@ -24,7 +25,9 @@ export function layoutVNode(
       ? slot.label
       : translated;
   };
-  const tabs = !!layout.tabs && interaction.mode !== "design";
+  const design = interaction.mode === "design";
+  const activeDesign = design && interaction.designTabs === "active";
+  const tabs = !!layout.tabs && (!design || activeDesign);
   const active = slots.some((slot) => slot.name === interaction.activeSlot)
     ? interaction.activeSlot
     : slots[0]?.name;
@@ -83,7 +86,7 @@ export function layoutVNode(
                 "aria-selected": String(active === slot.name),
                 "aria-controls": panelId(slot.name),
                 tabindex: active === slot.name ? 0 : -1,
-                disabled: state.disabled,
+                disabled: !design && state.disabled,
                 onclick: () => interaction.selectSlot?.(slot.name, false),
                 onkeydown: (event: Event) => {
                   const key = (event as KeyboardEvent).key;
@@ -132,12 +135,12 @@ export function layoutVNode(
                   }
                 : {
                     role: "group",
-                    ...(entry.node.columns && interaction.mode !== "design"
+                    ...(entry.node.columns && (!design || activeDesign)
                       ? { "aria-label": caption(slot) }
                       : { "aria-labelledby": `${id}_slot_${slot.name}` }),
                   }),
             },
-            tabs || (entry.node.columns && interaction.mode !== "design")
+            tabs || (entry.node.columns && (!design || activeDesign))
               ? null
               : h(
                   "h4",

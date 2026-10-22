@@ -40,6 +40,7 @@ export default defineConfig({
         "tier1.html",
         "onboarding.html",
         "builder.html",
+        "builder-themes.html",
         "sdk-probe.html",
         "theme-probe.html",
         "sdk-extensions.html",

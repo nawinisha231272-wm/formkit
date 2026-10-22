@@ -1,0 +1,120 @@
+{
+  "$formVersion": "1.0",
+  "id": "new-form",
+  "display": "form",
+  "components": [
+    {
+      "id": "cmp_26nu3ui2",
+      "type": "tabs",
+      "label": "Customer onboarding",
+      "components": [
+        {
+          "id": "cmp_7nps2w3d",
+          "type": "panel",
+          "label": "Contact",
+          "components": [
+            {
+              "id": "cmp_joduzcks",
+              "type": "columns",
+              "label": "Contact details",
+              "columns": [
+                {
+                  "width": 6,
+                  "components": [
+                    {
+                      "id": "cmp_3xx91322",
+                      "type": "text",
+                      "label": "Full name",
+                      "key": "fullName"
+                    },
+                    {
+                      "id": "cmp_w3zix5cn",
+                      "type": "email",
+                      "label": "Email",
+                      "key": "email"
+                    },
+                    {
+                      "id": "cmp_ogre69q8",
+                      "type": "text",
+                      "label": "Phone",
+                      "key": "phone"
+                    },
+                    {
+                      "id": "cmp_yehnsc9r",
+                      "type": "text",
+                      "label": "Customer type",
+                      "key": "customerType"
+                    },
+                    {
+                      "id": "cmp_fw6r27fi",
+                      "type": "text",
+                      "label": "Company name",
+                      "key": "companyName",
+                      "visibleWhen": [
+                        "eq",
+                        {
+                          "ref": "cmp_yehnsc9r"
+                        },
+                        "business"
+                      ]
+                    },
+                    {
+                      "id": "cmp_8547mz53",
+                      "type": "text",
+                      "label": "Tax ID",
+                      "key": "taxID"
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "components": [
+                    {
+                      "id": "cmp_fstozhhy",
+                      "type": "acme.customer-reference",
+                      "label": "Customer reference",
+                      "key": "customerReference",
+                      "properties": {
+                        "hint": "Keyboard ACME hint"
+                      }
+                    },
+                    {
+                      "id": "cmp_1xs8ymq9",
+                      "type": "rating",
+                      "label": "Experience",
+                      "key": "experience"
+                    },
+                    {
+                      "id": "cmp_5bom62a3",
+                      "type": "select",
+                      "label": "Industry",
+                      "key": "industry"
+                    },
+                    {
+                      "id": "cmp_vlqq1buj",
+                      "type": "checkbox",
+                      "label": "Terms",
+                      "key": "terms"
+                    },
+                    {
+                      "id": "cmp_l5sil6h2",
+                      "type": "text",
+                      "label": "Order reference",
+                      "key": "orderReference"
+                    },
+                    {
+                      "id": "cmp_h7mncuov",
+                      "type": "textarea",
+                      "label": "Notes",
+                      "key": "notes"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

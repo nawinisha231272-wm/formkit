@@ -258,6 +258,7 @@ test("palette and property groups discover arbitrary native metadata, options an
     "Data",
     "Validation",
     "Conditional",
+    "Logic",
     "Layout",
     "Accessibility",
     "Employee",

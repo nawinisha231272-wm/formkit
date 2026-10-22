@@ -32,6 +32,12 @@ importers:
       '@eslint/js':
         specifier: 9.28.0
         version: 9.28.0
+      '@fontsource/inter':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/roboto':
+        specifier: 5.3.0
+        version: 5.3.0
       '@ourform/angular':
         specifier: workspace:*
         version: link:packages/angular
@@ -74,6 +80,9 @@ importers:
       '@ourform/theme-bootstrap5':
         specifier: workspace:*
         version: link:packages/theme-bootstrap5
+      '@ourform/theme-material':
+        specifier: workspace:*
+        version: link:packages/theme-material
       '@ourform/theme-tailwind':
         specifier: workspace:*
         version: link:packages/theme-tailwind
@@ -279,6 +288,9 @@ importers:
       '@ourform/theme-bootstrap5':
         specifier: workspace:*
         version: link:../../packages/theme-bootstrap5
+      '@ourform/theme-material':
+        specifier: workspace:*
+        version: link:../../packages/theme-material
       '@ourform/theme-tailwind':
         specifier: workspace:*
         version: link:../../packages/theme-tailwind
@@ -401,6 +413,9 @@ importers:
       '@ourform/sdk':
         specifier: workspace:*
         version: link:../sdk
+      lucide:
+        specifier: 1.61.0
+        version: 1.61.0
 
   packages/builder-core:
     dependencies:
@@ -504,6 +519,9 @@ importers:
       '@ourform/theme-bootstrap5':
         specifier: workspace:*
         version: link:../theme-bootstrap5
+      '@ourform/theme-material':
+        specifier: workspace:*
+        version: link:../theme-material
       '@ourform/theme-tailwind':
         specifier: workspace:*
         version: link:../theme-tailwind
@@ -551,6 +569,9 @@ importers:
       '@ourform/theme-bootstrap5':
         specifier: workspace:*
         version: link:../theme-bootstrap5
+      '@ourform/theme-material':
+        specifier: workspace:*
+        version: link:../theme-material
       '@ourform/theme-tailwind':
         specifier: workspace:*
         version: link:../theme-tailwind
@@ -574,6 +595,12 @@ importers:
         version: link:../sdk
 
   packages/theme-bootstrap5:
+    dependencies:
+      '@ourform/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+
+  packages/theme-material:
     dependencies:
       '@ourform/sdk':
         specifier: workspace:*
@@ -1197,6 +1224,12 @@ packages:
   '@eslint/plugin-kit@0.3.5':
     resolution: {integrity: sha512-Z5kJ+wU3oA7MMIqVR9tyZRtjYPr4OC004Q4Rw7pgOKUOKkJfZ3O24nz3WYfGRpMDNmcOi3TwQOmgm7B7Tpii0w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@fontsource/inter@5.3.0':
+    resolution: {integrity: sha512-RofMylZmjlJEfELXeNHFWBRcSs75rGU/6bV2S2jfnvv/3rPXPGe0LgUJTklcHZ9lM4OZmAVFhcJPnACfb91A3g==}
+
+  '@fontsource/roboto@5.3.0':
+    resolution: {integrity: sha512-BapRJOWYP+LZ21zp+wBQjfpPYKRoxc4LspJ/RLuI+HSMBD5u/X4O+ESDrSvEqDSy0rAl7GwBJ+09mdc16cVQ1Q==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -2504,6 +2537,9 @@ packages:
 
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
+
+  lucide@1.61.0:
+    resolution: {integrity: sha512-RPNMBgej6WjPKuCNEODg83CF8lnraCeDOsZ3HZ7KvUYf0O5hdJBzer/Ax/meBHl3xvrp5NmKX0IDA5myyzlvGw==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -3973,6 +4009,10 @@ snapshots:
       '@eslint/core': 0.15.2
       levn: 0.4.1
 
+  '@fontsource/inter@5.3.0': {}
+
+  '@fontsource/roboto@5.3.0': {}
+
   '@humanfs/core@0.19.2':
     dependencies:
       '@humanfs/types': 0.15.0
@@ -5162,6 +5202,8 @@ snapshots:
   loupe@3.2.1: {}
 
   lru-cache@10.4.3: {}
+
+  lucide@1.61.0: {}
 
   magic-string@0.30.21:
     dependencies:

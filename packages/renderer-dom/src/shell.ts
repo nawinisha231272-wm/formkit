@@ -73,7 +73,7 @@ export function shellVNode(
     "data-field-id": entry.node.id,
     "data-of-shell": variant,
     "data-of-pending": String(state.pending),
-    "data-of-readonly": String(state.readOnly || design),
+    "data-of-readonly": String(state.readOnly),
     "data-of-disabled": String(state.disabled),
     ...(design ? { "data-of-design-node": entry.node.id } : {}),
     hidden: !state.visible && !design,
@@ -136,7 +136,7 @@ export function shellVNode(
       : { placeholder: entry.node.placeholder }),
     state: {
       disabled: state.disabled,
-      readOnly: state.readOnly || design,
+      readOnly: state.readOnly,
       invalid: !!errors.length,
       pending: state.pending,
       required: state.required,
@@ -157,7 +157,11 @@ export function shellVNode(
       "div",
       rootProps,
       design
-        ? h("div", { inert: true, "aria-hidden": "true" }, control)
+        ? h(
+            control.tag,
+            { ...control.props, inert: true, "aria-hidden": "true" },
+            ...control.children,
+          )
         : control,
     );
   const labelNode = h(

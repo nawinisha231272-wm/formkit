@@ -1,0 +1,16 @@
+{
+  "fullName": "Ana Martinez",
+  "phone": "+1 555 0100",
+  "email": "ana@example.com",
+  "customerType": "business",
+  "companyName": "Acme Ltd",
+  "taxId": "ACME-2026",
+  "customerReference": "CRM-1042",
+  "satisfaction": 4,
+  "company": {
+    "industry": "software",
+    "terms": true
+  },
+  "orderReference": "ORDER-1042",
+  "notes": ""
+}

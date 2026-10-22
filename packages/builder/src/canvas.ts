@@ -2,23 +2,47 @@ import { componentChildren, childSlot } from "@ourform/schema";
 import {
   AddComponent,
   MoveComponent,
-  RemoveComponent,
+  PasteComponent,
 } from "@ourform/builder-core";
 import type { DropTarget } from "@ourform/builder-core";
-import type { ComponentNode, Diagnostic } from "@ourform/schema";
+import type {
+  ComponentNode,
+  Diagnostic,
+  FormDefinition,
+} from "@ourform/schema";
 import { resolveSlots } from "@ourform/sdk";
 import { button, element } from "./types";
 import type { UI } from "./types";
+import { PointerDrag } from "./pointer";
+import { ComponentActions } from "./component-actions";
+import { icon, isIconName } from "./icons";
+import { paletteGroups } from "./palette";
+import { describeExpression, controlledFields } from "./signals";
+import { chip, labelledInput } from "./primitives";
 type Entry = { node: ComponentNode; parent?: ComponentNode };
-type Drag = { type: string; id?: string };
+const attribute = (element: HTMLElement, name: string, value: string) => {
+  if (element.getAttribute(name) !== value) element.setAttribute(name, value);
+};
 export class Canvas {
   target: DropTarget = {};
   cutId: string | undefined;
-  #drag: Drag | undefined;
+  clipboard: ComponentNode | undefined;
+  readonly actions: ComponentActions;
+  #toolbars = new Map<string, HTMLElement>();
+  #mini: HTMLElement | undefined;
+  #uses = new Map<string, number>();
+  #unsubscribe: () => void;
+  readonly pointer: PointerDrag;
   #targets = new Map<HTMLElement, DropTarget>();
   #items = new Map<string, HTMLElement>();
+  #slotItems = new Map<string, HTMLElement>();
+  #slotSelection: string | undefined;
+  #outlineDefinition: FormDefinition | undefined;
+  #outlineExpansion = "";
   #handles = new Map<string, HTMLElement>();
+  #roots = new Map<string, HTMLElement>();
   #collapsed = new Set<string>();
+  #collapsedSlots = new Set<string>();
   #visible: Entry[] = [];
   #selectedLocation = "";
   #choices: DropTarget[] = [];
@@ -35,41 +59,225 @@ export class Canvas {
   ) {
     root.addEventListener("click", this.click);
     root.addEventListener("keydown", this.keydown);
-    root.addEventListener("dragstart", this.dragstart);
-    root.addEventListener("dragover", this.dragover);
-    root.addEventListener("drop", this.drop);
-    root.addEventListener("dragend", this.dragend);
     picker.addEventListener("change", this.pick);
-    for (const group of ui.builder.palette()) {
-      palette.append(element(ui.document, "h3", group.name));
+    for (const group of paletteGroups(ui)) {
+      palette.append(element(ui.document, "h3", group.label));
       for (const item of group.components) {
         const add = button(ui, ui.t(item.title), () => {});
         add.dataset.type = item.type;
         add.dataset.componentType = item.type;
-        add.draggable = true;
         add.setAttribute(
           "aria-label",
           ui.t("of.builder.addType", { title: ui.t(item.title) }),
         );
         // Preserve the familiar visible palette names while making purpose explicit to AT.
         add.textContent = ui.t(item.title);
-        this.dragSurface(add);
+        const iconName = item.icon ?? item.type;
+        add.prepend(
+          icon(
+            ui.document,
+            isIconName(iconName)
+              ? iconName
+              : ui.engine.getField(item.type)?.kind === "layout"
+                ? "panel"
+                : "text",
+            ui.icons,
+          ),
+        );
         palette.append(add);
       }
     }
-  }
-  // Firefox in the pinned Playwright release only starts button drags from inner content.
-  // Cover the hit area without replacing its semantic button or its in-flow caption.
-  dragSurface(button: HTMLElement): void {
-    if (button.querySelector(".of-builder-drag-surface")) return;
-    const surface = element(
-      this.ui.document,
-      "span",
-      "",
-      "of-builder-drag-surface",
+    this.#unsubscribe = ui.builder.subscribe((state, patch) => {
+      const last = state.history.past.at(-1);
+      if (patch.length && last instanceof AddComponent)
+        this.#uses.set(
+          last.componentType,
+          (this.#uses.get(last.componentType) ?? 0) + 1,
+        );
+    });
+    root.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (this.#mini && !this.#mini.contains(event.target as Node))
+          this.closeMini();
+      },
+      { signal: ui.signal },
     );
-    surface.setAttribute("aria-hidden", "true");
-    button.append(surface);
+    this.host.setAttribute("role", "application");
+    this.host.setAttribute("aria-label", ui.t("ofb.canvas"));
+    this.pointer = new PointerDrag({
+      root,
+      host,
+      palette,
+      outline,
+      scroll: host.parentElement!,
+      ui,
+      entries: () => this.entries(),
+      slots: (node) => this.slots(node),
+      caption: (slot) => this.caption(slot),
+      children: (parent, slot) => this.children(parent, slot),
+      location: (id) => this.location(id),
+      expand: (id) => {
+        this.#collapsed.delete(id);
+        this.refresh(true);
+      },
+      commit: (source, target, label) => {
+        const before = ui.builder.getState().definition;
+        const result = source.id
+          ? ui.dispatch(
+              new MoveComponent(source.id, {
+                ...target,
+                renameConflicts: true,
+              }),
+            )
+          : this.add(source.type, target);
+        if (
+          !result.some((d) => d.severity === "error") &&
+          before !== ui.builder.getState().definition
+        )
+          ui.announce(
+            ui.t(source.id ? "ofb.moved" : "ofb.added", {
+              label: source.label,
+              target: label,
+              index: (target.index ?? 0) + 1,
+              count: 1,
+            }),
+          );
+      },
+    });
+    this.actions = new ComponentActions({
+      root,
+      ui,
+      ...(ui.icons ? { icons: ui.icons } : {}),
+      copy: (id) => this.copy(id),
+      cut: (id) => this.cut(id),
+      paste: () => this.paste(),
+      move: (node) =>
+        this.pointer.start(
+          { id: node.id, type: node.type, label: node.label ?? node.type },
+          true,
+        ),
+      collapse: (id) => {
+        if (!this.#collapsed.delete(id)) this.#collapsed.add(id);
+        this.decorate(true);
+        this.drawOutline();
+        this.updateTargets();
+      },
+    });
+    root.addEventListener(
+      "contextmenu",
+      (event) => {
+        const target = event.target as Element;
+        const slotRow = target.closest<HTMLElement>(
+          '[role="treeitem"][data-builder-slot]',
+        );
+        if (slotRow && this.outline.contains(slotRow)) {
+          event.preventDefault();
+          this.selectTreeRow(slotRow);
+          return;
+        }
+        const id =
+          target.closest<HTMLElement>("[data-field-id],[data-drag-id]")?.dataset
+            .fieldId ??
+          target.closest<HTMLElement>("[data-drag-id]")?.dataset.dragId;
+        const node = this.entries().find((e) => e.node.id === id)?.node;
+        if (!node || target.closest("dialog,.ofb-settings")) return;
+        event.preventDefault();
+        this.actions.openMenu(
+          node,
+          target.closest<HTMLElement>("[data-field-id],[data-drag-id]") ??
+            undefined,
+        );
+      },
+      { signal: ui.signal },
+    );
+  }
+  closeMini() {
+    this.#mini?.remove();
+    this.#mini = undefined;
+  }
+  openMini(origin: HTMLElement, target: DropTarget) {
+    this.closeMini();
+    const { ui } = this;
+    const popup = element(ui.document, "section", "", "ofb-mini-palette");
+    popup.setAttribute("role", "dialog");
+    popup.setAttribute("aria-label", ui.t("ofb.add"));
+    const context = { document: ui.document, signal: ui.signal };
+    const search = labelledInput(context, ui.t("ofb.search"), "search");
+    const input = search.input as HTMLInputElement;
+    const items = element(ui.document, "div");
+    const source = paletteGroups(ui)
+      .flatMap((group) => group.components)
+      .sort(
+        (a, b) => (this.#uses.get(b.type) ?? 0) - (this.#uses.get(a.type) ?? 0),
+      );
+    const draw = () => {
+      items.replaceChildren();
+      const query = input.value.trim().toLowerCase();
+      const results = query
+        ? source.filter((item) =>
+            `${ui.t(item.title)} ${item.type}`.toLowerCase().includes(query),
+          )
+        : source.slice(0, 6);
+      for (const item of results) {
+        const add = button(
+          ui,
+          ui.t("ofb.addType", { title: ui.t(item.title) }),
+          () => {
+            this.closeMini();
+            if (this.ui.add) this.ui.add(item.type, target, origin);
+            else this.add(item.type, target);
+          },
+        );
+        items.append(add);
+      }
+      if (!results.length)
+        items.append(element(ui.document, "p", ui.t("ofb.noMatches")));
+    };
+    input.addEventListener("input", draw, { signal: ui.signal });
+    popup.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          event.stopPropagation();
+          this.closeMini();
+          origin.focus();
+        }
+      },
+      { signal: ui.signal },
+    );
+    popup.append(search.wrapper, items);
+    const rect = origin.getBoundingClientRect(),
+      root = this.root.getBoundingClientRect();
+    popup.style.insetInlineStart = `${Math.max(0, Math.min(rect.left - root.left, root.width - 300))}px`;
+    popup.style.insetBlockStart = `${rect.bottom - root.top + this.root.scrollTop}px`;
+    this.root.append(popup);
+    this.#mini = popup;
+    draw();
+    input.focus();
+  }
+  children(parent: ComponentNode | undefined, slot?: string): ComponentNode[] {
+    const first = parent ? this.slots(parent)[0]?.name : "children";
+    return (
+      parent
+        ? componentChildren(parent)
+        : this.ui.builder.getState().definition.components
+    ).filter(
+      (node) =>
+        ((parent ? childSlot(parent, node) : node.slot) ?? first) ===
+        (slot ?? first),
+    );
+  }
+  add(type: string, target: DropTarget): Diagnostic[] {
+    if (this.ui.add) return this.ui.add(type, target, this.pointer.origin);
+    const diagnostics = this.ui.dispatch(
+      new AddComponent(type, { ...target, naming: "camel" }),
+    );
+    const id = this.ui.builder.getState().selection;
+    if (id && !diagnostics.some((d) => d.severity === "error"))
+      this.ui.added?.(id);
+    return diagnostics;
   }
   entries(): Entry[] {
     const result: Entry[] = [];
@@ -147,6 +355,10 @@ export class Canvas {
       return diagnostics;
     }
     this.target = { ...target, ...(parent && name ? { slot: name } : {}) };
+    this.#slotSelection =
+      parent && name
+        ? JSON.stringify({ parentId: parent.id, slot: name })
+        : undefined;
     this.updateTargets();
     this.drawPicker();
     this.ui.announce(
@@ -168,6 +380,7 @@ export class Canvas {
     );
     if (signature !== this.#selectedLocation) {
       this.#selectedLocation = signature;
+      this.#slotSelection = undefined;
       if (!location) this.target = {};
       if (location) {
         const own = this.slots(location.node);
@@ -215,8 +428,14 @@ export class Canvas {
           ]),
         )
       : new Map<string, HTMLElement>();
+    const savedToolbars = reuse
+      ? new Map(this.#toolbars)
+      : new Map<string, HTMLElement>();
+    this.#toolbars.clear();
     this.host
-      .querySelectorAll(".of-builder-handle,.of-builder-drop")
+      .querySelectorAll(
+        ".of-builder-handle,.of-builder-drop,.ofb-component-toolbar,.ofb-canvas-lock,.ofb-signal-row",
+      )
       .forEach((el) => el.remove());
     this.#handles.clear();
     this.#targets.clear();
@@ -224,6 +443,7 @@ export class Canvas {
     this.host
       .querySelectorAll<HTMLElement>("[data-field-id]")
       .forEach((root) => roots.set(root.dataset.fieldId!, root));
+    this.#roots = roots;
     const wire = this.entries();
     for (const { node } of wire) {
       const root = roots.get(node.id);
@@ -237,13 +457,57 @@ export class Canvas {
           }),
           () => {},
         );
+      handle.textContent = node.key
+        ? `${node.label ?? node.type} · ${node.key}`
+        : (node.label ?? node.type);
       handle.className = "of-builder-handle";
       handle.dataset.dragId = node.id;
       handle.dataset.id = node.id;
-      handle.draggable = true;
-      this.dragSurface(handle);
+      handle.classList.add("ofb-selection-label");
       root.prepend(handle);
+      const toolbar = savedToolbars.get(node.id) ?? this.actions.toolbar(node);
+      root.prepend(toolbar);
+      this.#toolbars.set(node.id, toolbar);
+      root.dataset.ofbLocked = this.ui.builder.lockLevel(node.id) ?? "";
+      if (root.dataset.ofbLocked) {
+        const lock = element(this.ui.document, "span", "", "ofb-canvas-lock");
+        lock.setAttribute("role", "img");
+        lock.setAttribute("aria-label", this.ui.t("ofb.lock"));
+        lock.title = this.ui.t("ofb.lock");
+        lock.append(icon(this.ui.document, "lock", this.ui.icons));
+        root.append(lock);
+      }
       this.#handles.set(node.id, handle);
+      const form = this.ui.form?.();
+      if (form) {
+        const row = element(this.ui.document, "div", "", "ofb-signal-row");
+        const context = { document: this.ui.document, signal: this.ui.signal };
+        const count = form.byId[node.id]?.model.value
+          ? controlledFields(form, node.id)
+          : 0;
+        if (count)
+          row.append(
+            chip(context, this.ui.t("ofb.controls", { count }), "logic"),
+          );
+        if (node.visibleWhen !== undefined && node.visibleWhen !== true)
+          row.append(
+            chip(
+              context,
+              this.ui.t("ofb.shownWhen", {
+                condition: describeExpression(
+                  node.visibleWhen,
+                  form,
+                  this.ui.t,
+                ),
+              }),
+              "info",
+            ),
+          );
+        if (row.childNodes.length) root.append(row);
+      }
+      root.dataset.dragId = node.id;
+      root.dataset.ofCollapsed = String(this.#collapsed.has(node.id));
+      root.tabIndex = this.ui.builder.getState().selection === node.id ? 0 : -1;
     }
     const indicators = (
       parent: ComponentNode | undefined,
@@ -275,6 +539,10 @@ export class Canvas {
             () => {},
           );
         marker.className = "of-builder-drop";
+        if (!children.length || (!parent && index === children.length)) {
+          marker.classList.add("ofb-empty-slot");
+          marker.textContent = this.ui.t("ofb.emptySlot");
+        }
         marker.dataset.dropParent = parent?.id ?? "";
         marker.dataset.dropSlot = slot ?? "";
         marker.dataset.dropIndex = String(index);
@@ -315,15 +583,51 @@ export class Canvas {
       ? this.ui.document.activeElement?.closest<HTMLElement>("[data-drag-id]")
           ?.dataset.dragId
       : undefined;
+    const selected = this.ui.builder.getState().selection;
+    let location = selected ? this.location(selected) : undefined;
+    while (location?.parent) {
+      const parent = location.parent;
+      this.#collapsed.delete(parent.id);
+      this.#collapsedSlots.delete(
+        JSON.stringify({
+          parentId: parent.id,
+          slot: location.slot ?? this.slots(parent)[0]?.name,
+        }),
+      );
+      location = this.location(parent.id);
+    }
+    const definition = this.ui.builder.getState().definition;
+    const expansion = JSON.stringify([
+      [...this.#collapsed].sort(),
+      [...this.#collapsedSlots].sort(),
+    ]);
+    if (
+      this.#outlineDefinition === definition &&
+      this.#outlineExpansion === expansion
+    ) {
+      for (const [id, item] of this.#items) {
+        const value = String(id === selected && !this.#slotSelection);
+        if (item.getAttribute("aria-selected") !== value)
+          item.setAttribute("aria-selected", value);
+        attribute(
+          item,
+          "tabindex",
+          String(
+            id === selected || (!selected && id === this.#visible[0]?.node.id)
+              ? 0
+              : -1,
+          ),
+        );
+        attribute(item, "data-cut", String(id === this.cutId));
+      }
+      return;
+    }
+    this.#outlineDefinition = definition;
+    this.#outlineExpansion = expansion;
     this.#items.clear();
+    this.#slotItems.clear();
     this.#visible = [];
     this.outline.replaceChildren();
-    const selected = this.ui.builder.getState().selection;
-    let parent = selected ? this.location(selected)?.parent : undefined;
-    while (parent) {
-      this.#collapsed.delete(parent.id);
-      parent = this.location(parent.id)?.parent;
-    }
     const walk = (
       nodes: ComponentNode[],
       depth: number,
@@ -340,14 +644,16 @@ export class Canvas {
         li.setAttribute("aria-level", String(depth));
         li.setAttribute("aria-posinset", String(index + 1));
         li.setAttribute("aria-setsize", String(nodes.length));
-        li.setAttribute("aria-selected", String(selected === node.id));
+        li.setAttribute(
+          "aria-selected",
+          String(selected === node.id && !this.#slotSelection),
+        );
         li.setAttribute("aria-label", node.label ?? node.type);
         li.tabIndex =
           selected === node.id || (!selected && depth === 1 && index === 0)
             ? 0
             : -1;
         li.dataset.dragId = node.id;
-        li.draggable = true;
         li.dataset.cut = String(this.cutId === node.id);
         const text = element(
           this.ui.document,
@@ -355,11 +661,14 @@ export class Canvas {
           "",
           "of-builder-tree-name",
         );
-        if (componentChildren(node).length) {
-          const caret = element(
-            this.ui.document,
-            "span",
-            this.#collapsed.has(node.id) ? "▸ " : "▾ ",
+        if (componentChildren(node).length || this.slots(node).length > 1) {
+          const caret = element(this.ui.document, "span", "", "ofb-tree-caret");
+          caret.append(
+            icon(
+              this.ui.document,
+              this.#collapsed.has(node.id) ? "collapse" : "expand",
+              this.ui.icons,
+            ),
           );
           caret.setAttribute("aria-hidden", "true");
           caret.dataset.treeToggle = node.id;
@@ -370,11 +679,77 @@ export class Canvas {
           );
         }
         text.append(node.label ?? node.type);
+        if (this.ui.builder.lockLevel(node.id)) {
+          const lock = icon(this.ui.document, "lock", this.ui.icons);
+          lock.setAttribute("role", "img");
+          lock.setAttribute("aria-label", this.ui.t("ofb.lock"));
+          text.append(lock);
+        }
         li.append(text);
         this.#items.set(node.id, li);
         if (visible)
           this.#visible.push({ node, ...(parent ? { parent } : {}) });
-        if (componentChildren(node).length) {
+        const slots = this.slots(node);
+        if (slots.length > 1) {
+          const slotList = element(this.ui.document, "ul");
+          slotList.setAttribute("role", "group");
+          slotList.hidden = this.#collapsed.has(node.id);
+          for (const [slotIndex, slot] of slots.entries()) {
+            const row = element(this.ui.document, "li");
+            const key = JSON.stringify({ parentId: node.id, slot: slot.name });
+            row.dataset.builderSlot = key;
+            row.setAttribute("role", "treeitem");
+            row.setAttribute("aria-label", this.caption(slot));
+            row.setAttribute("aria-level", String(depth + 1));
+            row.setAttribute("aria-posinset", String(slotIndex + 1));
+            row.setAttribute("aria-setsize", String(slots.length));
+            row.setAttribute(
+              "aria-selected",
+              String(this.#slotSelection === key),
+            );
+            row.tabIndex = this.#slotSelection === key ? 0 : -1;
+            const name = element(
+              this.ui.document,
+              "span",
+              "",
+              "of-builder-tree-name ofb-slot-name",
+            );
+            const children = this.children(node, slot.name);
+            if (children.length) {
+              const closed = this.#collapsedSlots.has(key);
+              row.setAttribute("aria-expanded", String(!closed));
+              const caret = element(
+                this.ui.document,
+                "span",
+                "",
+                "ofb-tree-caret",
+              );
+              caret.append(
+                icon(
+                  this.ui.document,
+                  closed ? "collapse" : "expand",
+                  this.ui.icons,
+                ),
+              );
+              caret.dataset.slotToggle = key;
+              caret.setAttribute("aria-hidden", "true");
+              name.append(caret);
+              const nested = walk(
+                children,
+                depth + 2,
+                node,
+                visible && !this.#collapsed.has(node.id) && !closed,
+              );
+              nested.hidden = closed;
+              row.append(nested);
+            }
+            name.append(this.caption(slot));
+            row.prepend(name);
+            this.#slotItems.set(key, row);
+            slotList.append(row);
+          }
+          li.append(slotList);
+        } else if (componentChildren(node).length) {
           const nested = walk(
             componentChildren(node),
             depth + 1,
@@ -426,7 +801,8 @@ export class Canvas {
   }
   updateTargets(): void {
     for (const [button, target] of this.#targets)
-      button.setAttribute(
+      attribute(
+        button,
         "aria-pressed",
         String(
           target.parentId === this.target.parentId &&
@@ -435,11 +811,35 @@ export class Canvas {
         ),
       );
     const selected = this.ui.builder.getState().selection;
+    for (const [key, row] of this.#slotItems) {
+      attribute(row, "aria-selected", String(key === this.#slotSelection));
+      attribute(row, "tabindex", String(key === this.#slotSelection ? 0 : -1));
+    }
+    for (const [id, row] of this.#items) {
+      attribute(
+        row,
+        "aria-selected",
+        String(id === selected && !this.#slotSelection),
+      );
+      attribute(
+        row,
+        "tabindex",
+        String(
+          !this.#slotSelection &&
+            (id === selected || (!selected && id === this.#visible[0]?.node.id))
+            ? 0
+            : -1,
+        ),
+      );
+    }
     for (const [id, handle] of this.#handles) {
-      handle.setAttribute("aria-pressed", String(id === selected));
-      const root = handle.closest<HTMLElement>("[data-field-id]")!;
-      root.dataset.ofSelected = String(id === selected);
-      root.classList.toggle("of-builder-cut", id === this.cutId);
+      attribute(handle, "aria-pressed", String(id === selected));
+      const root = this.#roots.get(id)!;
+      attribute(root, "data-of-selected", String(id === selected));
+      attribute(root, "tabindex", String(id === selected ? 0 : -1));
+      const cut = id === this.cutId;
+      if (root.classList.contains("of-builder-cut") !== cut)
+        root.classList.toggle("of-builder-cut", cut);
     }
   }
   focusSelected(outline = false): void {
@@ -448,21 +848,50 @@ export class Canvas {
       id = this.#visible[0].node.id;
       this.ui.builder.select(id);
     }
-    if (id) (outline ? this.#items : this.#handles).get(id)?.focus();
-    else this.#targets.keys().next().value?.focus();
+    if (id) {
+      this.ui.reveal?.(id);
+      if (outline)
+        (this.#slotSelection
+          ? this.#slotItems.get(this.#slotSelection)
+          : this.#items.get(id)
+        )?.focus();
+      else
+        this.#handles.get(id)?.closest<HTMLElement>("[data-field-id]")?.focus();
+    } else this.#targets.keys().next().value?.focus();
   }
 
-  cut(): void {
-    this.cutId = this.ui.builder.getState().selection ?? undefined;
+  copy(id = this.ui.builder.getState().selection ?? undefined): void {
+    const node = this.entries().find((e) => e.node.id === id)?.node;
+    this.clipboard = node
+      ? (JSON.parse(JSON.stringify(node)) as ComponentNode)
+      : undefined;
+    this.cutId = undefined;
+    this.onLocalChange();
+    this.ui.announce(
+      this.ui.t(node ? "ofb.copied" : "ofb.selectFirst", {
+        label: node?.label ?? node?.type,
+      }),
+    );
+  }
+  cut(id = this.ui.builder.getState().selection ?? undefined): void {
+    this.cutId = id;
     this.refresh(false);
     this.ui.announce(
       this.ui.t(this.cutId ? "of.builder.cutReady" : "of.builder.selectFirst"),
     );
   }
   paste(): void {
-    if (!this.cutId) return;
+    if (!this.cutId && !this.clipboard) {
+      this.ui.announce(this.ui.t("ofb.nothingToPaste"));
+      return;
+    }
     const result = this.ui.dispatch(
-      new MoveComponent(this.cutId, this.moveTarget(this.cutId, this.target)),
+      this.cutId
+        ? new MoveComponent(this.cutId, {
+            ...this.moveTarget(this.cutId, this.target),
+            renameConflicts: true,
+          })
+        : new PasteComponent(this.clipboard!, this.target),
     );
     if (!result.some((d) => d.severity === "error")) {
       this.cutId = undefined;
@@ -488,21 +917,69 @@ export class Canvas {
     const target = this.#choices[Number(this.picker.value)];
     if (target) this.choose(target);
   };
+  selectTreeRow(row: HTMLElement): void {
+    if (row.dataset.builderSlot) {
+      const target = JSON.parse(row.dataset.builderSlot) as DropTarget;
+      if (
+        target.parentId &&
+        this.ui.builder.lockLevel(target.parentId) === "all"
+      ) {
+        this.ui.announce(this.ui.t("ofb.lock.edit"));
+        return;
+      }
+      this.ui.builder.select(target.parentId ?? null);
+      this.choose(target);
+      this.#slotItems.get(row.dataset.builderSlot)?.focus();
+    } else if (row.dataset.dragId) {
+      if (this.ui.builder.lockLevel(row.dataset.dragId) === "all") {
+        row.focus();
+        this.ui.announce(this.ui.t("ofb.lock.edit"));
+        return;
+      }
+      this.#slotSelection = undefined;
+      this.ui.builder.select(row.dataset.dragId);
+      this.ui.reveal?.(row.dataset.dragId);
+      this.#items.get(row.dataset.dragId)?.focus();
+    }
+  }
   click = (event: MouseEvent) => {
     const target = event.target as Element;
+    if (
+      target.closest(
+        "[data-ofb-action],dialog,.ofb-settings,[role=menu],.ofb-mini-palette,[data-of-tab]",
+      )
+    )
+      return;
+    const slotToggle = target.closest<HTMLElement>("[data-slot-toggle]");
+    if (slotToggle && this.outline.contains(slotToggle)) {
+      const key = slotToggle.dataset.slotToggle!;
+      this.selectTreeRow(slotToggle.closest<HTMLElement>('[role="treeitem"]')!);
+      if (!this.#collapsedSlots.delete(key)) this.#collapsedSlots.add(key);
+      this.drawOutline();
+      this.#slotItems.get(key)?.focus();
+      return;
+    }
+    const tree = target.closest<HTMLElement>('[role="treeitem"]');
+    if (tree?.dataset.builderSlot && this.outline.contains(tree)) {
+      this.selectTreeRow(tree);
+      return;
+    }
     const marker = target.closest<HTMLElement>(".of-builder-drop");
     if (marker && this.#targets.has(marker)) {
       this.choose(this.#targets.get(marker)!);
+      if (marker.classList.contains("ofb-empty-slot"))
+        this.openMini(marker, this.#targets.get(marker)!);
       return;
     }
     const add = target.closest<HTMLElement>("[data-type]");
     if (add && this.palette.contains(add)) {
-      this.ui.dispatch(new AddComponent(add.dataset.type!, this.target));
+      this.add(add.dataset.type!, this.target);
       return;
     }
     const toggle = target.closest<HTMLElement>("[data-tree-toggle]");
     if (toggle && this.outline.contains(toggle)) {
       const id = toggle.dataset.treeToggle!;
+      this.#slotSelection = undefined;
       if (!this.#collapsed.delete(id)) this.#collapsed.add(id);
       this.ui.builder.select(id);
       this.focusSelected(true);
@@ -513,12 +990,24 @@ export class Canvas {
       handle &&
       (this.host.contains(handle) || this.outline.contains(handle))
     ) {
+      if (this.ui.builder.lockLevel(handle.dataset.dragId!) === "all") {
+        this.ui.announce(this.ui.t("ofb.lock.edit"));
+        return;
+      }
+      this.#slotSelection = undefined;
       this.ui.builder.select(handle.dataset.dragId!);
+      if (this.outline.contains(handle))
+        this.ui.reveal?.(handle.dataset.dragId!);
       return;
     }
     let field = target.closest<HTMLElement>("[data-field-id]");
     while (field && this.host.contains(field)) {
       if (this.entries().some((e) => e.node.id === field!.dataset.fieldId)) {
+        if (this.ui.builder.lockLevel(field.dataset.fieldId!) === "all") {
+          this.ui.announce(this.ui.t("ofb.lock.edit"));
+          return;
+        }
+        this.#slotSelection = undefined;
         this.ui.builder.select(field.dataset.fieldId!);
         break;
       }
@@ -527,13 +1016,134 @@ export class Canvas {
     }
   };
   keydown = (event: KeyboardEvent) => {
+    if (this.pointer.active) return;
     const target = event.target as HTMLElement;
     if (
-      target.closest('[data-builder-part="preview"]') ||
+      target.closest(
+        '[data-builder-part="preview"],dialog,.ofb-settings,[role="menu"]',
+      ) ||
       target.matches("input,textarea,[contenteditable=true]")
     )
       return;
+    // Let native buttons activate their own action; Enter must not bubble into Edit.
+    if (
+      target.closest("[data-ofb-action]") &&
+      ["Enter", " "].includes(event.key)
+    )
+      return;
+    const marker = target.closest<HTMLElement>(".of-builder-drop");
+    if (
+      marker &&
+      this.#targets.has(marker) &&
+      ["Enter", " "].includes(event.key)
+    ) {
+      event.preventDefault();
+      this.choose(this.#targets.get(marker)!);
+      return;
+    }
     const command = event.ctrlKey || event.metaKey;
+    const tree = target.closest<HTMLElement>('[role="treeitem"]');
+    if (tree && this.outline.contains(tree) && !event.altKey) {
+      if (tree.dataset.builderSlot && ["Enter", " "].includes(event.key)) {
+        event.preventDefault();
+        this.selectTreeRow(tree);
+        return;
+      }
+      if (
+        !command &&
+        [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "Home",
+          "End",
+        ].includes(event.key)
+      ) {
+        event.preventDefault();
+        // Collapse the focused row, even if focus entered it from a selected descendant.
+        if (["ArrowLeft", "ArrowRight"].includes(event.key))
+          this.selectTreeRow(tree);
+        const rows = [
+          ...this.outline.querySelectorAll<HTMLElement>('[role="treeitem"]'),
+        ].filter((row) => !row.closest("[hidden]"));
+        const index = rows.indexOf(tree);
+        let next: HTMLElement | undefined;
+        if (event.key === "ArrowUp") next = rows[index - 1];
+        else if (event.key === "ArrowDown") next = rows[index + 1];
+        else if (event.key === "Home") next = rows[0];
+        else if (event.key === "End") next = rows.at(-1);
+        else if (event.key === "ArrowRight") {
+          if (
+            tree.dataset.builderSlot &&
+            this.#collapsedSlots.delete(tree.dataset.builderSlot)
+          ) {
+            this.drawOutline();
+            next = this.#slotItems.get(tree.dataset.builderSlot);
+          } else if (
+            tree.dataset.dragId &&
+            this.#collapsed.delete(tree.dataset.dragId)
+          ) {
+            this.drawOutline();
+            next = this.#items.get(tree.dataset.dragId);
+          } else
+            next =
+              tree.querySelector<HTMLElement>(
+                ':scope>[role="group"]>[role="treeitem"]',
+              ) ?? undefined;
+        } else if (event.key === "ArrowLeft") {
+          if (
+            tree.dataset.builderSlot &&
+            tree.getAttribute("aria-expanded") === "true"
+          ) {
+            this.#collapsedSlots.add(tree.dataset.builderSlot);
+            this.drawOutline();
+            next = this.#slotItems.get(tree.dataset.builderSlot);
+          } else if (
+            tree.dataset.dragId &&
+            tree.getAttribute("aria-expanded") === "true"
+          ) {
+            this.#collapsed.add(tree.dataset.dragId);
+            this.drawOutline();
+            next = this.#items.get(tree.dataset.dragId);
+          } else
+            next =
+              tree.parentElement?.closest<HTMLElement>('[role="treeitem"]') ??
+              undefined;
+        }
+        if (next) this.selectTreeRow(next);
+        return;
+      }
+      if (
+        tree.dataset.builderSlot &&
+        (event.key === "Delete" ||
+          event.key === "Backspace" ||
+          (command && ["x", "c", "d"].includes(event.key.toLowerCase())))
+      ) {
+        event.preventDefault();
+        this.ui.announce(this.ui.t("ofb.slotActions"));
+        return;
+      }
+    }
+    const selected = this.ui.builder.getState().selection;
+    const node = this.entries().find((e) => e.node.id === selected)?.node;
+    if (node) {
+      const action =
+        command && event.shiftKey && event.key.toLowerCase() === "j"
+          ? "json"
+          : command && event.key.toLowerCase() === "d"
+            ? "duplicate"
+            : command && event.key.toLowerCase() === "c"
+              ? "copy"
+              : event.shiftKey && event.key === "F10"
+                ? "more"
+                : undefined;
+      if (action) {
+        event.preventDefault();
+        this.actions.execute(action, node, target);
+        return;
+      }
+    }
     if (command && event.key.toLowerCase() === "x") {
       event.preventDefault();
       this.cut();
@@ -563,7 +1173,7 @@ export class Canvas {
     const inOutline = this.outline.contains(target);
     if (event.key === "Delete" || event.key === "Backspace") {
       event.preventDefault();
-      this.ui.dispatch(new RemoveComponent(id));
+      this.actions.execute("delete", location.node);
       this.focusSelected(inOutline);
       return;
     }
@@ -605,6 +1215,10 @@ export class Canvas {
     }
     if (event.key === "Enter" || event.key === "F2") {
       event.preventDefault();
+      if (this.ui.edit) {
+        this.ui.edit(id);
+        return;
+      }
       this.root
         .querySelector<HTMLElement>(
           '[data-builder-part="properties"] input,[data-builder-part="properties"] textarea,[data-builder-part="properties"] select',
@@ -648,104 +1262,13 @@ export class Canvas {
       this.focusSelected(inOutline);
     }
   };
-  dragstart = (event: DragEvent) => {
-    const el = (event.target as Element).closest<HTMLElement>(
-      "[data-drag-id],[data-type]",
-    );
-    if (!el || !event.dataTransfer) return;
-    const id = el.dataset.dragId,
-      type = id ? this.location(id)?.node.type : el.dataset.type;
-    if (!type) return;
-    this.#drag = { type, ...(id ? { id } : {}) };
-    event.dataTransfer.setData(
-      "application/x-ourform",
-      JSON.stringify(this.#drag),
-    );
-    event.dataTransfer.effectAllowed = "copyMove";
-  };
-  payload(event: DragEvent): Drag | undefined {
-    if (this.#drag) return this.#drag;
-    try {
-      const value: unknown = JSON.parse(
-        event.dataTransfer?.getData("application/x-ourform") ?? "",
-      );
-      if (
-        value &&
-        typeof value === "object" &&
-        "type" in value &&
-        typeof value.type === "string" &&
-        (!("id" in value) || typeof value.id === "string")
-      )
-        return value as Drag;
-    } catch {
-      /* Unsupported external drag data is refused below. */
-    }
-    return undefined;
-  }
-  dragover = (event: DragEvent) => {
-    const marker = (event.target as Element).closest<HTMLElement>(
-      ".of-builder-drop",
-    );
-    const target = marker && this.#targets.get(marker);
-    if (!marker || !target) return;
-    event.preventDefault();
-    event.stopPropagation();
-    this.clearHighlight();
-    marker.dataset.dropActive = "true";
-    const payload = this.payload(event);
-    if (!payload) return;
-    const errors = this.ui.builder.canDrop(
-      payload.type,
-      payload.id ? this.moveTarget(payload.id, target) : target,
-      payload.id,
-    );
-    marker.dataset.dropRefused = String(!!errors.length);
-    if (errors.length)
-      this.ui.announce(errors.map((d) => d.message).join(" · "));
-    if (event.dataTransfer)
-      event.dataTransfer.dropEffect = errors.length
-        ? "none"
-        : payload.id
-          ? "move"
-          : "copy";
-  };
-  drop = (event: DragEvent) => {
-    const marker = (event.target as Element).closest<HTMLElement>(
-      ".of-builder-drop",
-    );
-    const target = marker && this.#targets.get(marker);
-    if (!target) return;
-    event.preventDefault();
-    event.stopPropagation();
-    const payload = this.payload(event);
-    this.dragend();
-    if (!payload) {
-      this.ui.announce(this.ui.t("of.builder.unsupportedDrag"));
-      return;
-    }
-    this.ui.dispatch(
-      payload.id
-        ? new MoveComponent(payload.id, this.moveTarget(payload.id, target))
-        : new AddComponent(payload.type, target),
-    );
-  };
-  clearHighlight() {
-    for (const marker of this.#targets.keys()) {
-      delete marker.dataset.dropActive;
-      delete marker.dataset.dropRefused;
-    }
-  }
-  dragend = () => {
-    this.#drag = undefined;
-    this.clearHighlight();
-  };
   destroy(): void {
+    this.#unsubscribe();
+    this.closeMini();
+    this.actions.closeMenu();
+    this.pointer.destroy();
     this.root.removeEventListener("click", this.click);
     this.root.removeEventListener("keydown", this.keydown);
-    this.root.removeEventListener("dragstart", this.dragstart);
-    this.root.removeEventListener("dragover", this.dragover);
-    this.root.removeEventListener("drop", this.drop);
-    this.root.removeEventListener("dragend", this.dragend);
     this.picker.removeEventListener("change", this.pick);
     this.#targets.clear();
     this.#handles.clear();

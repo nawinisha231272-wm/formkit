@@ -5,6 +5,7 @@ export { resolveView } from "./native";
 export type { NativeHost, NativeUnit } from "./native";
 import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
 import { tailwindTheme } from "@ourform/theme-tailwind";
+import { materialTheme } from "@ourform/theme-material";
 import type { Engine, FormSession, CompiledNode } from "@ourform/core";
 import {
   defaultMessage,
@@ -29,9 +30,12 @@ export type AppearanceTheme =
   | "bootstrap"
   | "bootstrap4"
   | "bootstrap5"
-  | "tailwind";
+  | "tailwind"
+  | "material";
 export interface RenderOptions extends ThemeOptions {
   mode?: "edit" | "design";
+  /** Design canvases may show one interactive tab; default preserves all-slot authoring. */
+  designTabs?: "active" | "all";
   views: Views;
   adapter?: string;
   nativeHost?: NativeHost;
@@ -220,6 +224,7 @@ function mountForm(
   };
   const interaction = (entry: CompiledNode): LayoutInteraction => ({
     ...(options.mode ? { mode: options.mode } : {}),
+    ...(options.designTabs ? { designTabs: options.designTabs } : {}),
     ...(activeTabs.has(entry.node.id)
       ? { activeSlot: activeTabs.get(entry.node.id)! }
       : {}),
@@ -464,7 +469,7 @@ export function renderForm(
   return mountForm(root, session, {
     views,
     theme,
-    themes: [bootstrap4Theme, bootstrap5Theme, tailwindTheme],
+    themes: [bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
     idPrefix: "",
   });
 }

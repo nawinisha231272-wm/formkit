@@ -11,7 +11,8 @@ const operators = ["eq", "neq", "gt", "gte", "lt", "lte", "empty"] as const;
 type Row = { field: string; op: (typeof operators)[number]; value: string };
 function rows(value: unknown): Row[] {
   if (!Array.isArray(value)) return [];
-  if (value[0] === "and") return value.slice(1).flatMap(rows);
+  if (value[0] === "and" || value[0] === "or")
+    return value.slice(1).flatMap(rows);
   if (
     !operators.includes(value[0]) ||
     !value[1] ||
@@ -43,6 +44,54 @@ function expression(
   );
   const list = element(ui.document, "div");
   const data = rows(property.value);
+  const joinLabel = element(ui.document, "label", ui.t("of.builder.join"));
+  const join = element(ui.document, "select");
+  for (const value of ["and", "or"]) {
+    const option = element(
+      ui.document,
+      "option",
+      ui.t(value === "and" ? "of.builder.all" : "of.builder.any"),
+    );
+    option.value = value;
+    join.append(option);
+  }
+  join.value =
+    Array.isArray(property.value) && property.value[0] === "or" ? "or" : "and";
+  joinLabel.append(join);
+  const publish = () => {
+    const clauses: Expr[] = data.map((row) => {
+      let value: Expr;
+      try {
+        value = JSON.parse(row.value) as Expr;
+      } catch {
+        value = row.value;
+      }
+      return row.op === "empty"
+        ? ["empty", { ref: row.field }]
+        : [row.op, { ref: row.field }, value];
+    });
+    ui.dispatch(
+      new UpdateProperty(
+        componentId,
+        property.key,
+        clauses.length > 1
+          ? [join.value as "and" | "or", ...clauses]
+          : clauses[0],
+      ),
+    );
+    const raw = host.parentElement?.querySelector<HTMLTextAreaElement>(
+      `[data-property="${property.key}"]`,
+    );
+    if (raw)
+      raw.value = clauses.length
+        ? JSON.stringify(
+            clauses.length > 1 ? [join.value, ...clauses] : clauses[0],
+          )
+        : "";
+  };
+  join.onchange = () => {
+    if (ui.liveProperties) publish();
+  };
   const fields = all(ui.builder.getState().definition.components).filter(
     (node) => ui.engine.getField(node.type)?.value,
   );
@@ -75,6 +124,7 @@ function expression(
       field.value = row.field;
       field.onchange = () => {
         row.field = field.value;
+        if (ui.liveProperties) publish();
       };
       fieldLabel.append(field);
       const opLabel = element(
@@ -95,6 +145,7 @@ function expression(
       op.value = row.op;
       op.onchange = () => {
         row.op = op.value as Row["op"];
+        if (ui.liveProperties) publish();
       };
       opLabel.append(op);
       const valueLabel = element(
@@ -107,6 +158,7 @@ function expression(
       value.value = row.value;
       value.oninput = () => {
         row.value = value.value;
+        if (ui.liveProperties) publish();
       };
       valueLabel.append(value);
       const remove = button(
@@ -115,6 +167,7 @@ function expression(
         () => {
           data.splice(index, 1);
           draw();
+          if (ui.liveProperties) publish();
         },
       );
       fieldset.append(fieldLabel, opLabel, valueLabel, remove);
@@ -125,31 +178,13 @@ function expression(
     if (fields[0]) {
       data.push({ field: fields[0].id, op: "eq", value: "" });
       draw();
+      if (ui.liveProperties) publish();
     }
   });
   add.disabled = !fields.length;
-  const apply = button(ui, ui.t("of.builder.applyConditions"), () => {
-    const clauses: Expr[] = data.map((row) => {
-      let value: Expr;
-      try {
-        value = JSON.parse(row.value) as Expr;
-      } catch {
-        value = row.value;
-      }
-      return row.op === "empty"
-        ? ["empty", { ref: row.field }]
-        : [row.op, { ref: row.field }, value];
-    });
-    ui.dispatch(
-      new UpdateProperty(
-        componentId,
-        property.key,
-        clauses.length > 1 ? ["and", ...clauses] : clauses[0],
-      ),
-    );
-  });
+  const apply = button(ui, ui.t("of.builder.applyConditions"), publish);
   draw();
-  host.append(list, add, apply);
+  host.append(joinLabel, list, add, apply);
   return host;
 }
 export function renderProperties(host: HTMLElement, ui: UI): void {
@@ -158,6 +193,7 @@ export function renderProperties(host: HTMLElement, ui: UI): void {
   if (!selected) return;
   for (const group of ui.builder.propertyPanel(selected).groups) {
     const fieldset = element(ui.document, "fieldset");
+    fieldset.dataset.propertyGroup = group.name;
     const groupKey = `of.builder.group.${group.name}`;
     const translated = ui.t(groupKey);
     fieldset.append(
@@ -168,13 +204,13 @@ export function renderProperties(host: HTMLElement, ui: UI): void {
       ),
     );
     for (const property of group.properties) {
-      if (!property.visible) continue;
       const label = element(
         ui.document,
         "label",
         ui.t(property.label),
         "of-builder-property",
       );
+      label.hidden = !property.visible;
       const complex = ["expr", "json", "options"].includes(property.kind);
       const input =
         property.kind === "select"
@@ -207,10 +243,22 @@ export function renderProperties(host: HTMLElement, ui: UI): void {
             ? JSON.stringify(property.value)
             : String(property.value);
       input.dataset.property = property.key;
+      input.dataset.ofbPrimitive =
+        property.kind === "select"
+          ? "Select"
+          : property.kind === "boolean"
+            ? "Checkbox"
+            : "Input";
+      input.classList.add("ofb-primitive");
+      if (ui.liveProperties && property.kind === "boolean") {
+        input.dataset.ofbPrimitive = "Switch";
+        input.setAttribute("role", "switch");
+      }
       if (property.editor) input.dataset.editor = property.editor;
       input.addEventListener(
-        "change",
+        ui.liveProperties ? "input" : "change",
         () => {
+          ui.propertyIssue?.(property.key, undefined);
           try {
             const value: unknown =
               input instanceof HTMLInputElement && input.type === "checkbox"
@@ -228,6 +276,10 @@ export function renderProperties(host: HTMLElement, ui: UI): void {
                 : new UpdateProperty(selected, property.key, value),
             );
           } catch (cause) {
+            ui.propertyIssue?.(
+              property.key,
+              cause instanceof Error ? cause.message : String(cause),
+            );
             ui.announce(
               ui.t("of.builder.invalidProperty", {
                 message: cause instanceof Error ? cause.message : "",
@@ -239,8 +291,11 @@ export function renderProperties(host: HTMLElement, ui: UI): void {
       );
       label.append(input);
       fieldset.append(label);
-      if (property.kind === "expr")
-        fieldset.append(expression(ui, property, selected));
+      if (property.kind === "expr") {
+        const editor = expression(ui, property, selected);
+        editor.hidden = !property.visible;
+        fieldset.append(editor);
+      }
     }
     host.append(fieldset);
   }

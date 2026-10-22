@@ -145,3 +145,13 @@ positional column_0/column_1 slots and no redundant child.slot. Legacy flat Colu
 migrate without mutation; multi-row spans retain order through nested transparent rows. Ordinary layout
 components/slot semantics and submission scopes remain. Builder palette eligibility requires an explicit
 nonblank builder title. The current UI is a harness; spec 10/M09b replaces its interactions.
+
+## Builder appearance descriptors (M09b, additive 0.x API)
+
+`defineBuilderTheme({name,extends?,tokens,modes?,recipes?})` snapshots and freezes a builder appearance.
+`BuilderTokens` use `--ofb-*`; `BuilderTheme` supports dark overrides and per-`BuilderPrimitive` recipes.
+Recipes override tokens on that primitive, e.g. `recipes: {Button: {"--ofb-radius": "20px"}}`.
+Inheritance is resolved per builder instance. Invalid names, token escapes, URLs and unknown primitive
+names are programmer errors. Descriptors never contain selectors, executable code, form data or DOM.
+Theme packages export typed descriptors without importing the helper at runtime. Neutral is supplied
+by theme-base; form and builder themes are independent. See spec 10 and ADR-0016.

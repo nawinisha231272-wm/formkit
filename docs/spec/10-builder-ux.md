@@ -14,7 +14,7 @@ Modal (default) or right-side drawer (editor.mode: 'drawer').
 - Conditional and Logic tabs: rule builder rows "field · operator · value", joined by All/Any, producing the compact expression format (spec 03); a raw expression view is available.
 - Right pane: live preview rendered by the real renderer in the form's theme, updating as you type.
 - Footer: Delete (danger, left) · hint "Esc cancels · Ctrl+Enter saves" · Cancel · Save (primary).
-- Modal: changes preview instantly, commit on Save as one undo step; Cancel/Esc discards. A tab with a validation problem shows a red dot; Save is disabled until fixed.
+- Modal: changes preview instantly, commit on Save as one undo step; Cancel/Esc discards. When adding, the component stays in a private draft: Save commits the component and settings together as one step labelled “Add Email” (using its builder title); Cancel, Escape and Close discard it, publish no schema change, create no history, and restore the selection and focus from before the drop. Drawer mode commits the addition on drop as one step; later live edits are separate steps and closing never discards. `openOnAdd: false` commits defaults immediately without opening an editor. Paste, Duplicate and Wrap in layout each create one step and never open the editor. A tab with a validation problem shows a red dot; Save is disabled until fixed.
 - Drawer: changes apply live; undo steps are debounced (one per field edit session, 500 ms).
 - Focus: trapped in modal; returns to the component on close.
 
@@ -37,7 +37,7 @@ Modal (default) or right-side drawer (editor.mode: 'drawer').
 - Switching theme restyles chrome and canvas in place: no rebuild, selection, open dialog, focus, undo history and drag state are preserved.
 - Builder-specific signal colours keep their meaning in every theme: selection/drop = accent, refusal/delete = danger, logic badges = logic colour (orange family), conditional visibility = info.
 - Contrast is checked per theme in CI: text ≥ 4.5:1, UI boundaries and focus ring ≥ 3:1, in light and dark.
-  The canvas always renders the form's theme. With match-form, the chrome uses the same theme's builder tokens, so a Material form is edited in a Material-styled builder.
+  The canvas always renders the form's theme. Design controls are inert with non-mutating callbacks; their disabled/read-only appearance reflects the schema, rather than marking every design control read-only. With match-form, the chrome uses the same theme's builder tokens, so a Material form is edited in a Material-styled builder.
   Material is a new theme package (@ourform/theme-material) delivered in M09b: portable CSS (outlined fields with floating labels, underline tabs, pill buttons, elevated cards), light and dark, passing the theme conformance suite like the other themes. It is an appearance theme, not a dependency on any Material component library; React MUI / Angular Material renderer packs stay after 1.0.
   Header: brand, breadcrumb (Forms / form name), save status chip, mode switch Build · Logic · Data · Preview · JSON, theme switcher, undo/redo, issues count, Preview, Save. Build is specified here; Logic in spec 11 (M09c); Data shows the submission JSON Schema and sample data; Preview runs the form; JSON is the validated definition editor. Palette groups: Basic, Layout (Panel, Columns, Tabs, Fieldset, Table, Wizard), Data (Data grid, Edit grid, Repeater, Container), Advanced, then plugin groups. On the canvas, a field that drives rules shows a logic badge ("Controls 3 fields"); a component with a visibility condition shows an info chip ("Shown when Customer type is Business"); containers can collapse.
 
@@ -71,11 +71,32 @@ createBuilder(el, definition, {
     tabs: { hide: ["logic"] },
     properties: { text: { hide: ["tooltip"] } },
   },
-  readOnlyKeys: ["submit"],
+  locked: { submit: "structure", customerId: "all", legacyRef: "key" },
+  readOnlyKeys: ["submit"], // compatible shorthand for structure locks
   icons: customIconSet,
-  messages: { "ofb.toolbar.edit": "Configure" },
+  messages: { "ofb.edit": "Configure" },
 });
 ```
+
+## Host component locks (owner clarification, 2026-10-21)
+
+`locked` maps a component's stable id or data key to `key`, `structure` or `all`.
+A listed selector defaults to `structure`; `readOnlyKeys: ["submit"]` remains shorthand for
+`locked: {submit: "structure"}`. Locks belong to the host, never the wire definition.
+
+- `key`: the data key cannot change; other edits are allowed.
+- `structure`: the component cannot be deleted, change key/type, or move to a different data scope
+  (into/out of a Container or grid). Moves within its scope and display/validation/logic/layout edits
+  remain allowed.
+- `all`: nothing can change. Editing selection, movement and deletion are blocked; Edit JSON may
+  inspect the component read-only.
+
+Canvas and outline show a lock icon. Blocked toolbar actions are disabled with an explanatory tooltip
+(e.g. "Locked by your app: can't delete"). Settings grey out protected properties. Builder-core commands
+must return `locked-component` for a forbidden Remove, ChangeKey, type change, cross-scope Move or JSON
+apply, including an equivalent change through an ancestor edit/import; UI checks alone are insufficient.
+Tests cover each level. Lock configuration is not a security boundary against an application replacing
+its own builder instance/options.
 
 Events: of-select, of-schema-change ({ definition, patch }), of-before-delete (cancellable), of-editor-open. All chrome strings are message keys.
 

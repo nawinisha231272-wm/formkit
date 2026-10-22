@@ -53,3 +53,9 @@ export { defineComposite } from "./define-composite";
 export { definePlugin } from "./define-plugin";
 export type { Plugin } from "./define-plugin";
 export { resolveSlots } from "@ourform/core";
+export { defineBuilderTheme } from "./builder-theme";
+export type {
+  BuilderTheme,
+  BuilderTokens,
+  BuilderPrimitive,
+} from "./builder-theme";

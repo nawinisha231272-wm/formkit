@@ -106,13 +106,13 @@ Generated editors include expression rows plus raw JSON. Editable definition JSO
 commit, with errors retaining the current draft/history. Live preview and diagnostics remain usable.
 The reusable @ourform/builder UI and custom-element/React/Angular wrappers publish of-schema-change
 with `{definition,patch}`; selection-only changes emit no schema patch. Chrome is independent of
-Base/Bootstrap 4/Bootstrap 5/Tailwind form appearance. Wrappers dispose listeners/controllers/native
+Base/Bootstrap 4/Bootstrap 5/Tailwind/Material form appearance. Wrappers dispose listeners/controllers/native
 bridges when removed.
 
 Acceptance includes mouse and keyboard builds of Tabs > Panel > Columns > field, visible refusal of
 illegal drops, a third-party declared slot with zero builder code, scope/path conflict tests, and
 independent patch replay plus byte-identical undo/redo over 50 random nested command sequences.
-Tabs conformance/visuals cover all four themes and supported hosts; axe has no serious/critical issues.
+Tabs conformance/visuals cover all five themes (including Material from M09b) and supported hosts; axe has no serious/critical issues.
 M10a structures extend the same slot contract without special builder integration.
 
 ## M05 implemented boundary (ADR-0007)
@@ -166,3 +166,27 @@ The current UI is a **harness**, not the final builder interaction design. Spec 
 with Pointer Events dragging, drop indicators only while dragging, selection by click, only the active
 tab shown on the canvas, and a tabbed edit dialog. M09a only adapts existing harness routing to column
 storage and hides demo palette registrations by default. It includes no UI polish or M09b behavior.
+
+## M09b host locks (owner decision, 2026-10-21)
+
+Headless builder options include locked (id/key-to-key/structure/all map, or a selector list) and
+readOnlyKeys (structure shorthand). The strongest matching restriction wins. Configuration is
+snapshotted per instance, never stored in the definition. lockLevel(id) informs presentation.
+Key locks protect surviving keys; structure also protects deletion/type/data-scope identity; all
+protects the whole subtree and placement. Compare before/after centrally so equivalent JSON imports,
+ancestor removals and scope-changing moves cannot bypass a lock. Return locked-component and retain
+state/history on refusal. canDrop includes lock diagnostics. Same-scope structure moves remain valid.
+The builder UI follows spec 10; lock checks in the UI do not replace command enforcement.
+
+M09b dialog drafts use UpdateComponent to commit one id-preserving component replacement. Explicit
+historyGroup property/component edits coalesce within 500 ms while publishing every patch; unrelated
+commands, selection changes, undo/redo and inactivity end an edit session. Undo/redo return diagnostics
+and enforce host locks. The approved UI opts into camel-case naming and MoveOptions.renameConflicts;
+legacy command defaults remain compatible. suggestKey computes scoped uniqueness in builder-core.
+
+M09b editor history: prepared `AddComponent(type, {node, ...target})` snapshots and validates a private
+modal draft, committing settings and addition together. `PasteComponent(node, target)` snapshots copied
+subtrees independently of the original; ids/internal references are remapped and destination keys
+rechecked, using the same implementation as Duplicate. Generated Logic properties edit existing
+`calculate.expr` and `calculate.allowOverride`; clearing the expression removes the calculation atomically.
+There is no new root logic-rule format in M09b.
