@@ -218,6 +218,106 @@ closure: the trial, any resulting fixes, first-attempt current-head PR CI/merge 
 review remain outstanding. The verbatim trial report is excluded from automatic formatting only to
 honour the owner's preservation requirement. M09c has not started.
 
+### Pushed checkpoint and native Linux CI
+
+The complete verified tree is pushed as **90f99dd64aa58fd2b6df83d371ce2d90148ead64**. Native Linux
+[Verify 39714060389](https://github.com/nawinisha231272-wm/formkit/actions/runs/39714060389) passes on
+**attempt 1**: 298 unit, 1,017 browser, 17 size and five deterministic count checks. Log retained at
+`/tmp/m09b-linux-ci-39714060389.log`. Existing Linux screenshots compare successfully; no baseline or
+correctness threshold changed.
+
+Retained packaging failure: the first implementation push `89fc1c7` accidentally omitted three fixture
+files that were present during local verify. Post-push git-status auditing caught this before the trial.
+Commit `90f99dd` adds those exact verified fixtures. The incomplete push's
+[run 39714029970](https://github.com/nawinisha231272-wm/formkit/actions/runs/39714029970) failed attempt 1
+on the missing customer-onboarding JSON import; it was not re-run. Failure log:
+`/tmp/m09b-incomplete-push-ci-39714029970.log`. This was a staging error, not a relaxed check or a flake.
+
+The first isolated author-agent invocation ended at the account usage limit before producing a trial
+report. It supplies **no acceptance evidence**. Following the owner's continuation request, a new
+no-context sub-agent starts the same exact prompt and clean GitHub SHA protocol; the saved prompt is
+`docs/rehearsals/m09b-builder/prompt.txt`. Provenance for the active trial:
+**isolated sub-agent, no conversation context, clean clone at 90f99dd64aa58fd2b6df83d371ce2d90148ead64**.
+The report and findings/fixes are pending. M09b remains open; M09c is untouched.
+
+### Final Material coverage review (verification pending)
+
+A final implementation review found legacy four-theme lists in the shared Tier 1 conformance helper,
+Tabs/SDK-native matrices, six-host preview visuals and three playground selectors, despite the test
+kit already exporting five theme names. Material now joins those lists; current author guides and
+support specifications say five themes consistently. This is required M09b theme coverage, not M09c.
+The earlier green 90f99dd checkpoint and its evidence remain; an expanded full verification is now
+required before merge. New Material-only screenshots will be recorded separately on macOS and inside
+the pinned Linux image. Original baseline files and every threshold remain unchanged.
+
+The author trial continues on its original immutable SHA, independently of these local changes.
+
+### Independent author trial and responses — 2026-10-22
+
+**PASS, with disclosed limitations — isolated sub-agent, no conversation context, clean clone at
+90f99dd64aa58fd2b6df83d371ce2d90148ead64**. Author `/root/m09b_author_trial_retry` used only the
+builder docs, executable help and running builder. Trial ran 11:22:56–12:14:03 UTC (51m 7s), first
+visible render at 11:24:19 UTC. Both mouse-only and keyboard-only routes exported the exact 12-field
+Tabs > Panel > Columns form, six fields per column, one custom component and stable-id conditional.
+The verbatim report, exact prompt, original exports, screenshots and logs are in
+`docs/rehearsals/m09b-builder/`; report SHA-256
+`ff3238c58bba1c4f0b78a4d53c9258ef79b1bba3bc8d127493e3d46d1426923d`.
+
+`fixes.md` separately answers every finding. Guide fixes cover the actual CLI executable, evidence
+outside the checkout, native select typeahead, selection/action targets, Copy/Paste/history, Preview
+readiness, Select options, pane screenshots and dev-server reload, and fetching origin/main after a
+single-branch clone. A new regression checks End/Up selection before Copy/Duplicate in all browsers;
+a second checks the documented Select options editor and live/saved Material preview. No product
+focus failure was reproduced. The browser visibility detour was a tooling limitation.
+
+The author preserved two local setup failures: untracked export formatting, then missing origin/main
+from an added single-branch flag. At the same SHA, after moving exports and fetching main, full verify
+passed (298 unit / 1,017 browser / 17 size / five count checks). These are not CI re-runs. The report
+discloses an accidental BODY observation containing inline CSS (unused; no forbidden repository file
+opened), partial supplementary screenshots and four dragged additions followed by palette clicks.
+No hidden implementation assistance was supplied. Human SDK and builder guide usability remain M11
+requirements. The trial does not approve implementation images; owner screenshot sign-off is pending.
+Expanded final verification and current-head first-attempt PR CI/merge remain required below.
+
+### Expanded focused checks and retained wrapper failure
+
+The two trial-follow-up regressions pass all three engines: End/Up selection before Copy/Duplicate
+(`/tmp/m09b-material-additions-mac-record.log`) and generated Select options/live Material preview,
+saved selection and exact undo (`/tmp/m09b-select-options-browser.log`). macOS Material-only generation
+passes 30 selected checks. Linux new-only generation and immediate comparison pass all 15 selected
+cases each, adding 18 images per platform without modifying the 314 baselines on main.
+The overwrite guard refuses a second record before invoking Docker (exit 2).
+
+Retained orchestration failure: `/tmp/m09b-linux-material-additions.log` ends with shell exit 127 after
+all container checks and image copying succeeded. The implementation agent edited the running wrapper
+on disk, shifting its shell read position; the stable file passes `sh -n`. A fresh comparison-only run
+of the unchanged script is required before claiming the complete command passes. No image is regenerated
+and no assertion or deadline changes. Raw passed image logs are archived in
+`visual-results/m09b-material-generation-passed/`. Final full pinned verify remains required.
+
+Stable-script confirmation: `sh scripts/linux-visuals.sh check material-additions` now **PASS, exit 0**
+(`/tmp/m09b-linux-material-check.log`): three Tabs, three SDK composite/native and six host cases.
+The baseline inventory adds 37 PNGs per platform (Material and workbench combined). All 314 existing
+main baseline files, including directory keep files, remain byte-identical. This does not grant owner
+implementation-image approval. The full expanded local verification follows.
+
+### Final expanded pinned verification — PASS
+
+`CI=true npx --offline --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify` exits **0**.
+Log `/tmp/m09b-expanded-full-verify.log`: lint/format, all builds/types, **298 unit tests in 42 files**,
+**1,050 browser cases**, **17 size budgets**, **five deterministic count checks** pass. Core 91.04%
+and validation 99.25% line coverage; builder 27.83 kB/30 kB and Material 1.20 kB/10 kB. The expanded
+Material matrix and both trial regression cases pass in all three browsers. All original baseline
+files and thresholds remain unchanged. The immutable report/artifact hashes match provenance.json.
+
+Independent author criterion: PASS with the original report's disclosed limits. Findings fixed or
+clarified with evidence in `docs/rehearsals/m09b-builder/fixes.md`. Human guide usability stays M11.
+The M09b implementation PR will carry these fixes and this record, with current-head first-attempt
+check URLs recorded in its description and merge report. Merge only on
+green first-attempt CI. No failed workflow is re-run to obtain green. Owner implementation-image
+approval remains pending, so the combined visual acceptance checkbox is intentionally open.
+Stop for owner review after merge. M09c is not started.
+
 ### Foundation checks (work continues)
 
 Safe descriptor/Neutral checks passed initially (7 tests); expanded command/theme/lock/edit-session

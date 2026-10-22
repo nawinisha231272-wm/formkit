@@ -8,7 +8,7 @@ Status: normative. Source: "OurForm Build Specification" doc + Plan v3.
 - No service operated by us is required to render, validate, build or license forms.
 - Not in scope before 1.0: hosted storage, submission database, users/roles, workflow, PDF, email,
   analytics, collaborative builder, marketplace, schema-supplied JavaScript, full Form.io compatibility,
-  Vue adapter, Material-style renderer packs, Form.io importer.
+  Vue adapter, framework-specific renderer packs, Form.io importer.
 
 ## Layers (dependencies point down)
 
@@ -18,7 +18,7 @@ apps (playground, examples, docs, benchmarks)
 adapters      @ourform/element   @ourform/react   @ourform/angular   (@ourform/vue later)
   │
 renderer      @ourform/renderer-dom  (portable renderer, FieldShell, theme runtime)
-  │           @ourform/theme-base | theme-bootstrap5 | theme-tailwind
+  │           @ourform/theme-base | theme-bootstrap4 | theme-bootstrap5 | theme-tailwind | theme-material
   │           @ourform/builder (UI)  ──uses──▶ @ourform/builder-core (headless)
 sdk           @ourform/sdk  (define* APIs, property helpers, contracts, test kit)
   │           @ourform/components (built-ins, written on the public SDK)
@@ -86,3 +86,6 @@ M05 (ADR-0007) extends the renderer preset dependency exception to theme-bootstr
 M09 (ADR-0014) adds optional declarative slot metadata in the headless model and a reusable builder UI.
 Element/React/Angular wrappers may depend on builder; builder depends only on builder-core,
 renderer-dom, sdk, core and schema. Runtime renderer/core packages never import builder.
+
+M09b (ADR-0016 and spec 10) adds a portable Material form theme and five builder chrome themes.
+Material uses the same SDK-only theme contract; it does not introduce a framework renderer pack.

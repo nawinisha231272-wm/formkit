@@ -86,3 +86,11 @@ milestone gates; this report does not substitute for either or for owner screens
 - [x] Check typography, rhythm, tokens, vectors and supported copy/content.
 - [x] Inspect running gallery bounds and console errors.
 - [ ] Record owner approval of implementation screenshots after review.
+
+## Material coverage follow-up
+
+Additional Material-only baseline captures cover both Tabs panels, SDK composite/native controls
+and preview output in all six hosts on macOS and Linux. Inspected the Linux composite error state
+and React preview capture: floating labels remain readable, errors stay linked beside controls,
+tabs expose the active underline, and the Fieldset retains its rounded raised boundary. Existing
+main baseline files remain byte-identical. These checks add coverage and are not owner approval.

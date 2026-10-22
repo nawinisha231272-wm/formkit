@@ -72,7 +72,7 @@ Verification: `tests/e2e/nested-builder.spec.ts`, `builder-hosts.spec.ts`, and h
 Linux visuals: `sh scripts/linux-visuals.sh record m09` only when the selected suites have no Linux
 PNGs; `sh scripts/linux-visuals.sh check m09` thereafter. Both use the digest-pinned official Playwright
 image in scripts/playwright-container.json. Runtime Tabs captures both panels in three browsers and
-four themes; builder preview images cover all six hosts and four themes in Chromium. Functional and
+five themes; builder preview images cover all six hosts and five themes in Chromium. Functional and
 axe host conformance runs in all three browsers. Mac/Linux baselines are always separate.
 
 ## Browser factory

@@ -31,7 +31,7 @@ M05 adds bootstrap4 to themeNames and the conformance factory alongside bootstra
 M06 exports createConformanceEngine(options?) for Node/browser fixture checks (all built-ins plus the
 existing headless object/transparent test scopes). The Playwright entry exports checkComponentConformance
 (page, {root?, result?, themeSelect?}), covering Tier 1 values, errors/ARIA, hidden data, submission and axe.
-With themeSelect it runs axe for base/Bootstrap 4/Bootstrap 5/Tailwind. Real DOM/React/Angular wrappers use
+With themeSelect it runs axe for base/Bootstrap 4/Bootstrap 5/Tailwind/Material; the selector must expose all five shipped themes. Real DOM/React/Angular wrappers use
 the same suite; host-specific async/readonly/disabled/lifecycle tests complement it. The shared flow
 asserts that email validation is no longer busy and is valid before continuing, so an async error
 disappearing cannot move later pointer targets during their activation.

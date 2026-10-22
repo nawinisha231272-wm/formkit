@@ -1,0 +1,553 @@
+
+> ourform@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2
+> TURBO_TELEMETRY_DISABLED=1 turbo run build
+
+turbo 2.5.3
+
+• Packages in scope: @ourform/angular, @ourform/angular-example, @ourform/angular21-example, @ourform/benchmarks, @ourform/builder, @ourform/builder-core, @ourform/cli, @ourform/components, @ourform/core, @ourform/element, @ourform/playground, @ourform/react, @ourform/react-example, @ourform/renderer-dom, @ourform/schema, @ourform/sdk, @ourform/testing, @ourform/theme-base, @ourform/theme-bootstrap4, @ourform/theme-bootstrap5, @ourform/theme-material, @ourform/theme-tailwind, @ourform/validation, @ourform/vanilla-example
+• Running build in 24 packages
+• Remote caching disabled
+@ourform/schema:build: cache miss, executing ef86c396b130fbce
+@ourform/cli:build: cache miss, executing 52690cc752fd0fab
+@ourform/schema:build: 
+@ourform/schema:build: > @ourform/schema@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/schema
+@ourform/schema:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/schema:build: 
+@ourform/cli:build: 
+@ourform/cli:build: > @ourform/cli@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/cli
+@ourform/cli:build: > tsup src/index.ts src/cli.ts --format esm --dts --clean --sourcemap
+@ourform/cli:build: 
+@ourform/schema:build: CLI Building entry: src/index.ts
+@ourform/cli:build: CLI Building entry: src/cli.ts, src/index.ts
+@ourform/schema:build: CLI Using tsconfig: tsconfig.json
+@ourform/schema:build: CLI tsup v8.5.0
+@ourform/cli:build: CLI Using tsconfig: tsconfig.json
+@ourform/cli:build: CLI tsup v8.5.0
+@ourform/schema:build: CLI Target: es2022
+@ourform/cli:build: CLI Target: es2022
+@ourform/cli:build: CLI Cleaning output folder
+@ourform/schema:build: CLI Cleaning output folder
+@ourform/cli:build: ESM Build start
+@ourform/schema:build: ESM Build start
+@ourform/cli:build: DTS Build start
+@ourform/schema:build: DTS Build start
+@ourform/cli:build: ESM dist/cli.js                313.00 B
+@ourform/cli:build: ESM dist/chunk-ZVOEPRU5.js     20.32 KB
+@ourform/cli:build: ESM dist/index.js              138.00 B
+@ourform/cli:build: ESM dist/cli.js.map            517.00 B
+@ourform/cli:build: ESM dist/chunk-ZVOEPRU5.js.map 27.48 KB
+@ourform/cli:build: ESM dist/index.js.map          71.00 B
+@ourform/cli:build: ESM ⚡️ Build success in 481ms
+@ourform/schema:build: ESM dist/index.js     25.71 KB
+@ourform/schema:build: ESM dist/index.js.map 50.52 KB
+@ourform/schema:build: ESM ⚡️ Build success in 488ms
+@ourform/schema:build: DTS ⚡️ Build success in 519ms
+@ourform/schema:build: DTS dist/index.d.ts 13.35 KB
+@ourform/core:build: cache miss, executing f25cb0783aee22d3
+@ourform/core:build: 
+@ourform/core:build: > @ourform/core@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/core
+@ourform/core:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/core:build: 
+@ourform/cli:build: DTS ⚡️ Build success in 897ms
+@ourform/cli:build: DTS dist/cli.d.ts   20.00 B
+@ourform/cli:build: DTS dist/index.d.ts 490.00 B
+@ourform/core:build: CLI Building entry: src/index.ts
+@ourform/core:build: CLI Using tsconfig: tsconfig.json
+@ourform/core:build: CLI tsup v8.5.0
+@ourform/core:build: CLI Target: es2022
+@ourform/core:build: CLI Cleaning output folder
+@ourform/core:build: ESM Build start
+@ourform/core:build: ESM dist/index.js     52.35 KB
+@ourform/core:build: ESM dist/index.js.map 105.62 KB
+@ourform/core:build: ESM ⚡️ Build success in 26ms
+@ourform/core:build: DTS Build start
+@ourform/core:build: DTS ⚡️ Build success in 942ms
+@ourform/core:build: DTS dist/index.d.ts 9.51 KB
+@ourform/builder-core:build: cache miss, executing dd05c0fbd6d0be43
+@ourform/validation:build: cache miss, executing b99a14cd923a8b3c
+@ourform/sdk:build: cache miss, executing 359463eaaf6110b5
+@ourform/builder-core:build: 
+@ourform/builder-core:build: > @ourform/builder-core@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/builder-core
+@ourform/builder-core:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/builder-core:build: 
+@ourform/validation:build: 
+@ourform/validation:build: > @ourform/validation@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/validation
+@ourform/validation:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/validation:build: 
+@ourform/sdk:build: 
+@ourform/sdk:build: > @ourform/sdk@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/sdk
+@ourform/sdk:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/sdk:build: 
+@ourform/validation:build: CLI Building entry: src/index.ts
+@ourform/sdk:build: CLI Building entry: src/index.ts
+@ourform/validation:build: CLI Using tsconfig: tsconfig.json
+@ourform/validation:build: CLI tsup v8.5.0
+@ourform/sdk:build: CLI Using tsconfig: tsconfig.json
+@ourform/sdk:build: CLI tsup v8.5.0
+@ourform/validation:build: CLI Target: es2022
+@ourform/sdk:build: CLI Target: es2022
+@ourform/builder-core:build: CLI Building entry: src/index.ts
+@ourform/builder-core:build: CLI Using tsconfig: tsconfig.json
+@ourform/builder-core:build: CLI tsup v8.5.0
+@ourform/validation:build: CLI Cleaning output folder
+@ourform/sdk:build: CLI Cleaning output folder
+@ourform/validation:build: ESM Build start
+@ourform/sdk:build: ESM Build start
+@ourform/builder-core:build: CLI Target: es2022
+@ourform/builder-core:build: CLI Cleaning output folder
+@ourform/builder-core:build: ESM Build start
+@ourform/validation:build: ESM dist/index.js     3.89 KB
+@ourform/validation:build: ESM dist/index.js.map 8.18 KB
+@ourform/validation:build: ESM ⚡️ Build success in 37ms
+@ourform/sdk:build: ESM dist/index.js     19.73 KB
+@ourform/sdk:build: ESM dist/index.js.map 48.74 KB
+@ourform/sdk:build: ESM ⚡️ Build success in 46ms
+@ourform/builder-core:build: ESM dist/index.js     43.14 KB
+@ourform/builder-core:build: ESM dist/index.js.map 90.66 KB
+@ourform/builder-core:build: ESM ⚡️ Build success in 44ms
+@ourform/sdk:build: DTS Build start
+@ourform/validation:build: DTS Build start
+@ourform/builder-core:build: DTS Build start
+@ourform/validation:build: DTS ⚡️ Build success in 764ms
+@ourform/validation:build: DTS dist/index.d.ts 759.00 B
+@ourform/builder-core:build: DTS ⚡️ Build success in 777ms
+@ourform/builder-core:build: DTS dist/index.d.ts 7.78 KB
+@ourform/sdk:build: DTS ⚡️ Build success in 955ms
+@ourform/sdk:build: DTS dist/index.d.ts 10.92 KB
+@ourform/theme-base:build: cache miss, executing 9a0b52f5e800695a
+@ourform/theme-bootstrap5:build: cache miss, executing 4b06bb430029c6e2
+@ourform/components:build: cache miss, executing d8fd255dbfefd545
+@ourform/theme-bootstrap4:build: cache miss, executing 6179089abba60b09
+@ourform/theme-material:build: cache miss, executing 277380eeea6f5938
+@ourform/theme-tailwind:build: cache miss, executing b5165262acde18a7
+@ourform/theme-base:build: 
+@ourform/components:build: 
+@ourform/theme-base:build: > @ourform/theme-base@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/theme-base
+@ourform/theme-base:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/theme-base:build: 
+@ourform/components:build: > @ourform/components@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/components
+@ourform/components:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/components:build: 
+@ourform/theme-tailwind:build: 
+@ourform/theme-tailwind:build: > @ourform/theme-tailwind@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/theme-tailwind
+@ourform/theme-tailwind:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/theme-tailwind:build: 
+@ourform/theme-bootstrap4:build: 
+@ourform/theme-bootstrap4:build: > @ourform/theme-bootstrap4@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/theme-bootstrap4
+@ourform/theme-bootstrap4:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/theme-bootstrap4:build: 
+@ourform/theme-material:build: 
+@ourform/theme-material:build: > @ourform/theme-material@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/theme-material
+@ourform/theme-material:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/theme-material:build: 
+@ourform/theme-bootstrap5:build: 
+@ourform/theme-bootstrap5:build: > @ourform/theme-bootstrap5@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/theme-bootstrap5
+@ourform/theme-bootstrap5:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/theme-bootstrap5:build: 
+@ourform/components:build: CLI Building entry: src/index.ts
+@ourform/theme-base:build: CLI Building entry: src/index.ts
+@ourform/components:build: CLI Using tsconfig: tsconfig.json
+@ourform/components:build: CLI tsup v8.5.0
+@ourform/theme-base:build: CLI Using tsconfig: tsconfig.json
+@ourform/theme-base:build: CLI tsup v8.5.0
+@ourform/theme-tailwind:build: CLI Building entry: src/index.ts
+@ourform/theme-bootstrap5:build: CLI Building entry: src/index.ts
+@ourform/theme-material:build: CLI Building entry: src/index.ts
+@ourform/theme-bootstrap5:build: CLI Using tsconfig: tsconfig.json
+@ourform/theme-bootstrap5:build: CLI tsup v8.5.0
+@ourform/theme-tailwind:build: CLI Using tsconfig: tsconfig.json
+@ourform/theme-tailwind:build: CLI tsup v8.5.0
+@ourform/theme-material:build: CLI Using tsconfig: tsconfig.json
+@ourform/theme-material:build: CLI tsup v8.5.0
+@ourform/components:build: CLI Target: es2022
+@ourform/theme-base:build: CLI Target: es2022
+@ourform/components:build: CLI Cleaning output folder
+@ourform/components:build: ESM Build start
+@ourform/theme-base:build: CLI Cleaning output folder
+@ourform/theme-base:build: ESM Build start
+@ourform/theme-bootstrap5:build: CLI Target: es2022
+@ourform/theme-bootstrap5:build: CLI Cleaning output folder
+@ourform/theme-bootstrap5:build: ESM Build start
+@ourform/theme-material:build: CLI Target: es2022
+@ourform/theme-tailwind:build: CLI Target: es2022
+@ourform/theme-material:build: CLI Cleaning output folder
+@ourform/theme-material:build: ESM Build start
+@ourform/theme-tailwind:build: CLI Cleaning output folder
+@ourform/theme-tailwind:build: ESM Build start
+@ourform/theme-bootstrap4:build: CLI Building entry: src/index.ts
+@ourform/theme-bootstrap4:build: CLI Using tsconfig: tsconfig.json
+@ourform/theme-bootstrap4:build: CLI tsup v8.5.0
+@ourform/theme-bootstrap5:build: ESM dist/index.js     5.36 KB
+@ourform/theme-bootstrap5:build: ESM dist/index.js.map 7.11 KB
+@ourform/theme-bootstrap5:build: ESM ⚡️ Build success in 59ms
+@ourform/theme-bootstrap4:build: CLI Target: es2022
+@ourform/theme-base:build: ESM dist/index.js     8.23 KB
+@ourform/theme-base:build: ESM dist/index.js.map 10.85 KB
+@ourform/theme-base:build: ESM ⚡️ Build success in 65ms
+@ourform/theme-bootstrap4:build: CLI Cleaning output folder
+@ourform/theme-bootstrap4:build: ESM Build start
+@ourform/theme-material:build: ESM dist/index.js     4.97 KB
+@ourform/theme-material:build: ESM dist/index.js.map 6.96 KB
+@ourform/theme-material:build: ESM ⚡️ Build success in 62ms
+@ourform/theme-tailwind:build: ESM dist/index.js     4.84 KB
+@ourform/theme-tailwind:build: ESM dist/index.js.map 6.41 KB
+@ourform/theme-tailwind:build: ESM ⚡️ Build success in 64ms
+@ourform/components:build: ESM dist/index.js     12.46 KB
+@ourform/components:build: ESM dist/index.js.map 25.29 KB
+@ourform/components:build: ESM ⚡️ Build success in 84ms
+@ourform/theme-bootstrap4:build: ESM dist/index.js     5.45 KB
+@ourform/theme-bootstrap4:build: ESM dist/index.js.map 7.21 KB
+@ourform/theme-bootstrap4:build: ESM ⚡️ Build success in 51ms
+@ourform/components:build: DTS Build start
+@ourform/theme-tailwind:build: DTS Build start
+@ourform/theme-bootstrap5:build: DTS Build start
+@ourform/theme-base:build: DTS Build start
+@ourform/theme-bootstrap4:build: DTS Build start
+@ourform/theme-material:build: DTS Build start
+@ourform/theme-tailwind:build: DTS ⚡️ Build success in 654ms
+@ourform/theme-tailwind:build: DTS dist/index.d.ts 173.00 B
+@ourform/theme-base:build: DTS ⚡️ Build success in 670ms
+@ourform/theme-base:build: DTS dist/index.d.ts 255.00 B
+@ourform/theme-bootstrap5:build: DTS ⚡️ Build success in 685ms
+@ourform/theme-bootstrap5:build: DTS dist/index.d.ts 177.00 B
+@ourform/theme-bootstrap4:build: DTS ⚡️ Build success in 671ms
+@ourform/theme-bootstrap4:build: DTS dist/index.d.ts 177.00 B
+@ourform/theme-material:build: DTS ⚡️ Build success in 481ms
+@ourform/theme-material:build: DTS dist/index.d.ts 271.00 B
+@ourform/renderer-dom:build: cache miss, executing 3e85396bf6b58fef
+@ourform/components:build: DTS ⚡️ Build success in 1066ms
+@ourform/components:build: DTS dist/index.d.ts 3.05 KB
+@ourform/renderer-dom:build: 
+@ourform/renderer-dom:build: > @ourform/renderer-dom@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/renderer-dom
+@ourform/renderer-dom:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/renderer-dom:build: 
+@ourform/renderer-dom:build: CLI Building entry: src/index.ts
+@ourform/renderer-dom:build: CLI Using tsconfig: tsconfig.json
+@ourform/renderer-dom:build: CLI tsup v8.5.0
+@ourform/renderer-dom:build: CLI Target: es2022
+@ourform/renderer-dom:build: CLI Cleaning output folder
+@ourform/renderer-dom:build: ESM Build start
+@ourform/renderer-dom:build: ESM dist/index.js     38.51 KB
+@ourform/renderer-dom:build: ESM dist/index.js.map 79.27 KB
+@ourform/renderer-dom:build: ESM ⚡️ Build success in 23ms
+@ourform/renderer-dom:build: DTS Build start
+@ourform/renderer-dom:build: DTS ⚡️ Build success in 902ms
+@ourform/renderer-dom:build: DTS dist/index.d.ts 4.47 KB
+@ourform/benchmarks:build: cache miss, executing 6cc1453b91d08b71
+@ourform/testing:build: cache miss, executing 36c2cb407e079183
+@ourform/builder:build: cache miss, executing c1491a594cfdc729
+@ourform/benchmarks:build: 
+@ourform/benchmarks:build: > @ourform/benchmarks@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/apps/benchmarks
+@ourform/benchmarks:build: > vite build
+@ourform/benchmarks:build: 
+@ourform/testing:build: 
+@ourform/testing:build: > @ourform/testing@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/testing
+@ourform/testing:build: > tsup src/index.ts src/playwright.ts --format esm --dts --clean --sourcemap
+@ourform/testing:build: 
+@ourform/builder:build: 
+@ourform/builder:build: > @ourform/builder@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/builder
+@ourform/builder:build: > tsup src/index.ts --format esm --dts --clean --sourcemap --minify
+@ourform/builder:build: 
+@ourform/testing:build: CLI Building entry: src/index.ts, src/playwright.ts
+@ourform/builder:build: CLI Building entry: src/index.ts
+@ourform/testing:build: CLI Using tsconfig: tsconfig.json
+@ourform/builder:build: CLI Using tsconfig: tsconfig.json
+@ourform/builder:build: CLI tsup v8.5.0
+@ourform/testing:build: CLI tsup v8.5.0
+@ourform/testing:build: CLI Target: es2022
+@ourform/testing:build: CLI Cleaning output folder
+@ourform/builder:build: CLI Target: es2022
+@ourform/testing:build: ESM Build start
+@ourform/builder:build: CLI Cleaning output folder
+@ourform/builder:build: ESM Build start
+@ourform/testing:build: ESM dist/index.js          13.23 KB
+@ourform/testing:build: ESM dist/playwright.js     7.12 KB
+@ourform/testing:build: ESM dist/index.js.map      25.77 KB
+@ourform/testing:build: ESM dist/playwright.js.map 14.31 KB
+@ourform/testing:build: ESM ⚡️ Build success in 100ms
+@ourform/builder:build: ESM dist/index.js     109.04 KB
+@ourform/builder:build: ESM dist/index.js.map 313.16 KB
+@ourform/builder:build: ESM ⚡️ Build success in 124ms
+@ourform/testing:build: DTS Build start
+@ourform/builder:build: DTS Build start
+@ourform/benchmarks:build: vite v6.3.5 building for production...
+@ourform/benchmarks:build: transforming...
+@ourform/benchmarks:build: ✓ 40 modules transformed.
+@ourform/benchmarks:build: rendering chunks...
+@ourform/benchmarks:build: computing gzip size...
+@ourform/benchmarks:build: dist/index.html                 1.06 kB │ gzip:  0.55 kB
+@ourform/benchmarks:build: dist/assets/index-iwYEViL7.js  98.00 kB │ gzip: 32.00 kB
+@ourform/benchmarks:build: ✓ built in 1.47s
+@ourform/testing:build: DTS ⚡️ Build success in 4185ms
+@ourform/testing:build: DTS dist/index.d.ts      3.24 KB
+@ourform/testing:build: DTS dist/playwright.d.ts 1.65 KB
+@ourform/builder:build: DTS ⚡️ Build success in 4698ms
+@ourform/builder:build: DTS dist/index.d.ts 4.16 KB
+@ourform/element:build: cache miss, executing b175872741377df2
+@ourform/angular:build: cache miss, executing a591eb5d55cbc0f9
+@ourform/react:build: cache miss, executing bc1e1466a352da3f
+@ourform/angular:build: 
+@ourform/angular:build: > @ourform/angular@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/angular
+@ourform/angular:build: > ng-packagr -p ng-package.json -c tsconfig.json
+@ourform/angular:build: 
+@ourform/element:build: 
+@ourform/element:build: > @ourform/element@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/element
+@ourform/element:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/element:build: 
+@ourform/react:build: 
+@ourform/react:build: > @ourform/react@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/packages/react
+@ourform/react:build: > tsup src/index.ts --format esm --dts --clean --sourcemap
+@ourform/react:build: 
+@ourform/element:build: CLI Building entry: src/index.ts
+@ourform/element:build: CLI Using tsconfig: tsconfig.json
+@ourform/element:build: CLI tsup v8.5.0
+@ourform/element:build: CLI Target: es2022
+@ourform/element:build: CLI Cleaning output folder
+@ourform/element:build: ESM Build start
+@ourform/react:build: CLI Building entry: src/index.ts
+@ourform/react:build: CLI Using tsconfig: tsconfig.json
+@ourform/react:build: CLI tsup v8.5.0
+@ourform/react:build: CLI Target: es2022
+@ourform/react:build: CLI Cleaning output folder
+@ourform/react:build: ESM Build start
+@ourform/element:build: ESM dist/index.js     12.13 KB
+@ourform/element:build: ESM dist/index.js.map 23.96 KB
+@ourform/element:build: ESM ⚡️ Build success in 51ms
+@ourform/react:build: ESM dist/index.js     8.83 KB
+@ourform/react:build: ESM dist/index.js.map 17.33 KB
+@ourform/react:build: ESM ⚡️ Build success in 54ms
+@ourform/element:build: DTS Build start
+@ourform/react:build: DTS Build start
+@ourform/angular:build: Building Angular Package
+@ourform/angular:build: - Compiling with Angular sources in partial compilation mode.
+@ourform/angular:build: 
+@ourform/angular:build: ------------------------------------------------------------------------------
+@ourform/angular:build: Building entry point '@ourform/angular'
+@ourform/angular:build: ------------------------------------------------------------------------------
+@ourform/element:build: DTS ⚡️ Build success in 2300ms
+@ourform/element:build: DTS dist/index.d.ts 1.79 KB
+@ourform/vanilla-example:build: cache miss, executing 10749d259d336b70
+@ourform/react:build: DTS ⚡️ Build success in 2333ms
+@ourform/react:build: DTS dist/index.d.ts 1.76 KB
+@ourform/react-example:build: cache miss, executing f6d87de8b2915a43
+@ourform/vanilla-example:build: 
+@ourform/vanilla-example:build: > @ourform/vanilla-example@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/apps/vanilla-example
+@ourform/vanilla-example:build: > vite build
+@ourform/vanilla-example:build: 
+@ourform/react-example:build: 
+@ourform/react-example:build: > @ourform/react-example@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/apps/react-example
+@ourform/react-example:build: > vite build
+@ourform/react-example:build: 
+@ourform/vanilla-example:build: vite v6.3.5 building for production...
+@ourform/react-example:build: vite v6.3.5 building for production...
+@ourform/vanilla-example:build: transforming...
+@ourform/react-example:build: transforming...
+@ourform/angular:build: ✔ Compiling with Angular sources in partial compilation mode.
+@ourform/angular:build: ✔ Generating FESM and DTS bundles
+@ourform/angular:build: - Copying assets
+@ourform/angular:build: ✔ Copying assets
+@ourform/angular:build: - Writing package manifest
+@ourform/angular:build: ℹ Removing scripts section in package.json as it's considered a potential security vulnerability.
+@ourform/angular:build: ℹ Removing devDependencies section in package.json.
+@ourform/angular:build: ✔ Writing package manifest
+@ourform/angular:build: ✔ Built @ourform/angular
+@ourform/angular:build: 
+@ourform/angular:build: ------------------------------------------------------------------------------
+@ourform/angular:build: Built Angular Package
+@ourform/angular:build: - from: /private/tmp/ourform-m09b-author-c56Jk2/packages/angular
+@ourform/angular:build: - to:   /private/tmp/ourform-m09b-author-c56Jk2/packages/angular/dist
+@ourform/angular:build: ------------------------------------------------------------------------------
+@ourform/angular:build: 
+@ourform/angular:build: Build at: 2026-10-22T11:23:54.004Z - Time: 3105ms
+@ourform/angular:build: 
+@ourform/playground:build: cache miss, executing 8994c87d454b3871
+@ourform/angular21-example:build: cache miss, executing 73c4d3c27b19072d
+@ourform/angular-example:build: cache miss, executing dd477e7ceadd2475
+@ourform/vanilla-example:build: ✓ 1967 modules transformed.
+@ourform/vanilla-example:build: rendering chunks...
+@ourform/vanilla-example:build: computing gzip size...
+@ourform/vanilla-example:build: dist/builder.html                  0.70 kB │ gzip:  0.40 kB
+@ourform/vanilla-example:build: dist/index.html                    1.31 kB │ gzip:  0.62 kB
+@ourform/vanilla-example:build: dist/assets/builder-BrOC5VCI.js    3.81 kB │ gzip:  1.54 kB
+@ourform/vanilla-example:build: dist/assets/index-a_aMZGma.js     11.34 kB │ gzip:  3.24 kB
+@ourform/vanilla-example:build: dist/assets/index-C7DDbnoF.js    272.33 kB │ gzip: 78.39 kB
+@ourform/vanilla-example:build: ✓ built in 2.51s
+@ourform/playground:build: 
+@ourform/playground:build: > @ourform/playground@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/apps/playground
+@ourform/playground:build: > vite build
+@ourform/playground:build: 
+@ourform/angular-example:build: 
+@ourform/angular-example:build: > @ourform/angular-example@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/apps/angular-example
+@ourform/angular-example:build: > vite build
+@ourform/angular-example:build: 
+@ourform/angular21-example:build: 
+@ourform/angular21-example:build: > @ourform/angular21-example@0.0.1 build /private/tmp/ourform-m09b-author-c56Jk2/apps/angular21-example
+@ourform/angular21-example:build: > vite build
+@ourform/angular21-example:build: 
+@ourform/angular21-example:build: vite v6.3.5 building for production...
+@ourform/angular-example:build: vite v6.3.5 building for production...
+@ourform/playground:build: vite v6.3.5 building for production...
+@ourform/angular21-example:build: transforming...
+@ourform/react-example:build: ✓ 1985 modules transformed.
+@ourform/angular-example:build: transforming...
+@ourform/playground:build: transforming...
+@ourform/react-example:build: rendering chunks...
+@ourform/react-example:build: computing gzip size...
+@ourform/react-example:build: dist/builder.html                  0.63 kB │ gzip:   0.37 kB
+@ourform/react-example:build: dist/index.html                    1.31 kB │ gzip:   0.62 kB
+@ourform/react-example:build: dist/assets/builder-tuOm0ozn.js    3.00 kB │ gzip:   1.32 kB
+@ourform/react-example:build: dist/assets/index-DrUZHBv9.js     10.72 kB │ gzip:   3.07 kB
+@ourform/react-example:build: dist/assets/index-DTJoShlz.js    464.03 kB │ gzip: 137.30 kB
+@ourform/react-example:build: ✓ built in 3.71s
+@ourform/angular21-example:build: ✓ 2219 modules transformed.
+@ourform/angular-example:build: ✓ 2217 modules transformed.
+@ourform/angular21-example:build: rendering chunks...
+@ourform/angular-example:build: rendering chunks...
+@ourform/angular21-example:build: computing gzip size...
+@ourform/angular-example:build: computing gzip size...
+@ourform/angular21-example:build: dist/builder.html                            0.64 kB │ gzip:   0.38 kB
+@ourform/angular21-example:build: dist/index.html                              1.33 kB │ gzip:   0.63 kB
+@ourform/angular21-example:build: dist/assets/builder-DHRkeJNF.js              3.21 kB │ gzip:   1.40 kB
+@ourform/angular21-example:build: dist/assets/index-BL5W2ueM.js               11.63 kB │ gzip:   3.36 kB
+@ourform/angular21-example:build: dist/assets/ourform-angular-DfhwLXsC.js  1,277.10 kB │ gzip: 378.80 kB
+@ourform/angular21-example:build: 
+@ourform/angular21-example:build: (!) Some chunks are larger than 500 kB after minification. Consider:
+@ourform/angular21-example:build: - Using dynamic import() to code-split the application
+@ourform/angular21-example:build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+@ourform/angular21-example:build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+@ourform/angular21-example:build: ✓ built in 7.20s
+@ourform/playground:build: ✓ 2275 modules transformed.
+@ourform/angular-example:build: dist/builder.html                            0.64 kB │ gzip:   0.37 kB
+@ourform/angular-example:build: dist/index.html                              1.32 kB │ gzip:   0.63 kB
+@ourform/angular-example:build: dist/assets/builder-aHpzhblh.js              3.21 kB │ gzip:   1.40 kB
+@ourform/angular-example:build: dist/assets/index-AQb7tXey.js               11.63 kB │ gzip:   3.36 kB
+@ourform/angular-example:build: dist/assets/ourform-angular-DRiZ9ard.js  1,348.82 kB │ gzip: 397.83 kB
+@ourform/angular-example:build: 
+@ourform/angular-example:build: (!) Some chunks are larger than 500 kB after minification. Consider:
+@ourform/angular-example:build: - Using dynamic import() to code-split the application
+@ourform/angular-example:build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+@ourform/angular-example:build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+@ourform/angular-example:build: ✓ built in 7.24s
+@ourform/playground:build: rendering chunks...
+@ourform/playground:build: computing gzip size...
+@ourform/playground:build: dist/sdk-probe.html                                            0.61 kB │ gzip:   0.31 kB
+@ourform/playground:build: dist/theme-probe.html                                          0.73 kB │ gzip:   0.36 kB
+@ourform/playground:build: dist/builder.html                                              1.01 kB │ gzip:   0.40 kB
+@ourform/playground:build: dist/authoring.html                                            1.19 kB │ gzip:   0.48 kB
+@ourform/playground:build: dist/boolean-authoring.html                                    1.45 kB │ gzip:   0.58 kB
+@ourform/playground:build: dist/tabs.html                                                 1.55 kB │ gzip:   0.63 kB
+@ourform/playground:build: dist/builder-themes.html                                       2.04 kB │ gzip:   0.75 kB
+@ourform/playground:build: dist/sdk-extensions.html                                       2.29 kB │ gzip:   0.89 kB
+@ourform/playground:build: dist/index.html                                                3.09 kB │ gzip:   1.05 kB
+@ourform/playground:build: dist/tier1.html                                                3.85 kB │ gzip:   1.26 kB
+@ourform/playground:build: dist/assets/inter-vietnamese-400-normal-DMkecbls.woff2         4.97 kB
+@ourform/playground:build: dist/assets/inter-vietnamese-600-normal-Cc8MFFhd.woff2         5.10 kB
+@ourform/playground:build: dist/assets/inter-vietnamese-500-normal-DOriooB6.woff2         5.11 kB
+@ourform/playground:build: dist/assets/inter-greek-ext-400-normal-DGGRlc-M.woff2          5.26 kB
+@ourform/playground:build: dist/assets/inter-greek-ext-500-normal-C4iEst2y.woff2          5.43 kB
+@ourform/playground:build: dist/assets/inter-greek-ext-600-normal-DRtmH8MT.woff2          5.43 kB
+@ourform/playground:build: dist/assets/roboto-vietnamese-400-normal-Bf76hAzZ.woff         6.08 kB
+@ourform/playground:build: dist/assets/roboto-vietnamese-500-normal-BgoYVz-9.woff         6.14 kB
+@ourform/playground:build: dist/assets/inter-vietnamese-400-normal-Bbgyi5SW.woff          6.50 kB
+@ourform/playground:build: dist/assets/inter-vietnamese-500-normal-mJboJaSs.woff          6.60 kB
+@ourform/playground:build: dist/assets/inter-vietnamese-600-normal-BuLX-rYi.woff          6.64 kB
+@ourform/playground:build: dist/assets/inter-greek-ext-400-normal-KugGGMne.woff           7.06 kB
+@ourform/playground:build: dist/assets/inter-greek-ext-500-normal-2j5mBUwD.woff           7.19 kB
+@ourform/playground:build: dist/assets/inter-greek-ext-600-normal-B8X0CLgF.woff           7.21 kB
+@ourform/playground:build: dist/assets/roboto-greek-400-normal-D904r64h.woff              7.42 kB
+@ourform/playground:build: dist/assets/roboto-greek-500-normal-XBIQOowA.woff              7.48 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-400-normal-obahsSVq.woff2           7.71 kB
+@ourform/playground:build: dist/assets/inter-greek-400-normal-B4URO6DV.woff2              7.78 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-500-normal-BasfLYem.woff2           7.90 kB
+@ourform/playground:build: dist/assets/inter-greek-500-normal-BIZE56-Y.woff2              7.92 kB
+@ourform/playground:build: dist/assets/inter-greek-600-normal-plRanbMR.woff2              7.94 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-600-normal-CWCymEST.woff2           7.97 kB
+@ourform/playground:build: dist/assets/roboto-vietnamese-400-normal-D2PTxGxD.woff2        8.37 kB
+@ourform/playground:build: dist/assets/roboto-vietnamese-500-normal-B3ncpOoB.woff2        8.54 kB
+@ourform/playground:build: dist/assets/roboto-symbols-500-normal-DFnofPUt.woff            8.73 kB
+@ourform/playground:build: dist/assets/roboto-symbols-400-normal-C7tGlxgb.woff            8.75 kB
+@ourform/playground:build: dist/assets/roboto-greek-400-normal-ai2Z1K3C.woff2             9.56 kB
+@ourform/playground:build: dist/assets/roboto-greek-500-normal-C9AnhcmC.woff2             9.62 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-400-normal-HOLc17fK.woff            9.78 kB
+@ourform/playground:build: dist/assets/inter-greek-400-normal-q2sYcFCs.woff               9.92 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-600-normal-4D_pXhcN.woff            9.94 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-500-normal-CxZf_p3X.woff            9.94 kB
+@ourform/playground:build: dist/assets/inter-greek-500-normal-Xzm54t5V.woff               9.98 kB
+@ourform/playground:build: dist/assets/inter-greek-600-normal-BZpKdvQh.woff              10.03 kB
+@ourform/playground:build: dist/assets/roboto-cyrillic-400-normal-BepgbcUK.woff          10.21 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-ext-400-normal-BQZuk6qB.woff2      10.23 kB
+@ourform/playground:build: dist/assets/roboto-cyrillic-500-normal-C8ZOEKN4.woff          10.40 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-ext-500-normal-B0yAr1jD.woff2      10.43 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-ext-600-normal-Dfes3d0z.woff2      10.48 kB
+@ourform/playground:build: dist/assets/roboto-symbols-400-normal-CB1Ce4Gk.woff2          10.74 kB
+@ourform/playground:build: dist/assets/roboto-symbols-500-normal-B_CZKVJS.woff2          10.84 kB
+@ourform/playground:build: dist/assets/roboto-cyrillic-400-normal-CBPI_iaY.woff2         12.11 kB
+@ourform/playground:build: dist/assets/roboto-cyrillic-500-normal-CLao9AfR.woff2         12.35 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-ext-400-normal-DQukG94-.woff       13.34 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-ext-500-normal-BmqWE9Dz.woff       13.45 kB
+@ourform/playground:build: dist/assets/inter-cyrillic-ext-600-normal-Bcila6Z-.woff       13.46 kB
+@ourform/playground:build: dist/assets/roboto-latin-ext-400-normal-CIveymTr.woff         13.84 kB
+@ourform/playground:build: dist/assets/roboto-latin-ext-500-normal-C1cK9xmS.woff         13.91 kB
+@ourform/playground:build: dist/assets/roboto-latin-ext-400-normal-C3tdtHj3.woff2        15.04 kB
+@ourform/playground:build: dist/assets/roboto-latin-ext-500-normal-pMCM9Ixg.woff2        15.16 kB
+@ourform/playground:build: dist/assets/roboto-cyrillic-ext-400-normal-DhDk0Xwi.woff      15.96 kB
+@ourform/playground:build: dist/assets/roboto-cyrillic-ext-500-normal-SCgicl0l.woff      16.10 kB
+@ourform/playground:build: dist/assets/roboto-cyrillic-ext-400-normal-qHufge6k.woff2     17.37 kB
+@ourform/playground:build: dist/assets/roboto-cyrillic-ext-500-normal-BWC_xYeb.woff2     17.60 kB
+@ourform/playground:build: dist/assets/roboto-math-400-normal-D6sS4O5l.woff              18.76 kB
+@ourform/playground:build: dist/assets/roboto-math-500-normal-BNGXE_xU.woff              18.85 kB
+@ourform/playground:build: dist/assets/roboto-math-400-normal-BEFej5gc.woff2             20.09 kB
+@ourform/playground:build: dist/assets/roboto-math-500-normal-C4NU9gLX.woff2             20.30 kB
+@ourform/playground:build: dist/assets/roboto-latin-400-normal-D27F5sTu.woff             21.06 kB
+@ourform/playground:build: dist/assets/roboto-latin-500-normal-fsTFPL3E.woff             21.17 kB
+@ourform/playground:build: dist/assets/roboto-latin-400-normal-BqEyEoaF.woff2            21.88 kB
+@ourform/playground:build: dist/assets/roboto-latin-500-normal-7RbcRiD8.woff2            22.20 kB
+@ourform/playground:build: dist/assets/inter-latin-400-normal-C38fXH4l.woff2             23.66 kB
+@ourform/playground:build: dist/assets/inter-latin-500-normal-Cerq10X2.woff2             24.27 kB
+@ourform/playground:build: dist/assets/inter-latin-600-normal-LgqL8muc.woff2             24.45 kB
+@ourform/playground:build: dist/assets/inter-latin-400-normal-CyCys3Eg.woff              30.70 kB
+@ourform/playground:build: dist/assets/inter-latin-600-normal-CiBQ2DWP.woff              31.26 kB
+@ourform/playground:build: dist/assets/inter-latin-500-normal-BL9OpVg8.woff              31.28 kB
+@ourform/playground:build: dist/assets/inter-latin-ext-400-normal-C1nco2VV.woff2         35.00 kB
+@ourform/playground:build: dist/assets/inter-latin-ext-500-normal-CV4jyFjo.woff2         36.02 kB
+@ourform/playground:build: dist/assets/inter-latin-ext-600-normal-D2bJ5OIk.woff2         36.26 kB
+@ourform/playground:build: dist/assets/inter-latin-ext-400-normal-77YHD8bZ.woff          47.56 kB
+@ourform/playground:build: dist/assets/inter-latin-ext-500-normal-BxGbmqWO.woff          48.49 kB
+@ourform/playground:build: dist/assets/inter-latin-ext-600-normal-CIVaiw4L.woff          48.67 kB
+@ourform/playground:build: dist/onboarding.html                                         101.84 kB │ gzip:   6.93 kB
+@ourform/playground:build: dist/assets/builder-themes-SFyAsgze.css                        0.78 kB │ gzip:   0.40 kB
+@ourform/playground:build: dist/assets/style-UQ1qH_KW.css                                 0.87 kB │ gzip:   0.46 kB
+@ourform/playground:build: dist/assets/600-DQdrxjX2.css                                   7.71 kB │ gzip:   1.30 kB
+@ourform/playground:build: dist/assets/500-BzcsUHAV.css                                  23.64 kB │ gzip:  11.85 kB
+@ourform/playground:build: dist/assets/feedback-CGgwat_O.js                               0.26 kB │ gzip:   0.20 kB
+@ourform/playground:build: dist/assets/customer-B9zZ3A_d.js                               0.85 kB │ gzip:   0.39 kB
+@ourform/playground:build: dist/assets/tabs-mnNEPedI.js                                   0.89 kB │ gzip:   0.51 kB
+@ourform/playground:build: dist/assets/builder-themes-B7qlBQRH.js                         1.24 kB │ gzip:   0.66 kB
+@ourform/playground:build: dist/assets/index-BkZnrn3I.js                                  1.34 kB │ gzip:   0.66 kB
+@ourform/playground:build: dist/assets/boolean-authoring-DtuOFpSz.js                      1.91 kB │ gzip:   0.93 kB
+@ourform/playground:build: dist/assets/authoring-CwJnkNIP.js                              2.21 kB │ gzip:   0.90 kB
+@ourform/playground:build: dist/assets/index-Cpj_Ao29.js                                  2.98 kB │ gzip:   1.17 kB
+@ourform/playground:build: dist/assets/index-CDPCOoui.js                                  3.30 kB │ gzip:   1.23 kB
+@ourform/playground:build: dist/assets/sdk-extensions-gAOq2T36.js                         3.93 kB │ gzip:   1.55 kB
+@ourform/playground:build: dist/assets/sdk-probe-sgc24tHp.js                              4.10 kB │ gzip:   1.79 kB
+@ourform/playground:build: dist/assets/index-GARXZm4V.js                                  5.72 kB │ gzip:   2.28 kB
+@ourform/playground:build: dist/assets/onboarding-C_mTJ7J3.js                             7.20 kB │ gzip:   1.68 kB
+@ourform/playground:build: dist/assets/builder-DrlgFci9.js                                7.43 kB │ gzip:   2.95 kB
+@ourform/playground:build: dist/assets/tier1-C96xoG-O.js                                 14.86 kB │ gzip:   5.26 kB
+@ourform/playground:build: dist/assets/index-Cysp3CHc.js                                 23.81 kB │ gzip:   7.97 kB
+@ourform/playground:build: dist/assets/index-DrNvOucd.js                                120.39 kB │ gzip:  33.37 kB
+@ourform/playground:build: dist/assets/index-BakVc3He.js                                125.89 kB │ gzip:  37.72 kB
+@ourform/playground:build: dist/assets/index-CSL-zSCU.js                                192.94 kB │ gzip:  60.30 kB
+@ourform/playground:build: dist/assets/theme-probe-CD9frQ7-.js                          395.45 kB │ gzip:  55.52 kB
+@ourform/playground:build: dist/assets/_browser-chunk-BekYUtBM.js                     1,073.62 kB │ gzip: 319.12 kB
+@ourform/playground:build: 
+@ourform/playground:build: (!) Some chunks are larger than 500 kB after minification. Consider:
+@ourform/playground:build: - Using dynamic import() to code-split the application
+@ourform/playground:build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+@ourform/playground:build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+@ourform/playground:build: ✓ built in 7.89s
+
+ Tasks:    24 successful, 24 total
+Cached:    0 cached, 24 total
+  Time:    32.75s 
+

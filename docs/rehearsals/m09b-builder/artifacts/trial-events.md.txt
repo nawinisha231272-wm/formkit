@@ -1,0 +1,30 @@
+# Independent trial event notes
+
+- 2026-10-22 11:22:56 UTC: Trial start. Created `/tmp/ourform-m09b-author-c56Jk2` before reading project files.
+- Direct GitHub clone: branch `m09b-builder-ux`, checkout `90f99dd64aa58fd2b6df83d371ce2d90148ead64`, initial `git status --porcelain` empty.
+- Read only `apps/docs/builder-author-guide.md` and linked `packages/builder/README.md`.
+- Pinned install passed; pnpm warned ignored `@parcel/watcher` build scripts.
+- Pinned build passed: 24/24 tasks. Vite chunk-size warnings only.
+- CLI `node packages/cli/dist/index.js --help`: exit 0, empty output. Pinned Node retry also exit 0, empty output.
+- Fresh-clone Vite server ready on 4173. First visible builder render recorded 2026-10-22 11:24:19 UTC.
+- Mouse route: actual drag for Tabs, Panel, Columns and Full name; later additions used mouse palette activation after selecting the destination. Dialog text entered through UI input APIs; no navigation shortcuts. Six fields in each column, one rule, custom hint live preview and Cancel/Save checked. Preview company visibility and custom input checked. UI JSON exported. Copy/Paste, Duplicate, Wrap and one-step Undo checked; Cancel and Close checked.
+- Mouse route completed by 11:28:05 UTC.
+- Keyboard route: fresh empty tab on same fresh-clone server. No pointer actions. Native Tab/Shift+Tab, arrows, Enter, Cmd+A, typed characters, Cmd+Enter used. Outline slots selected by Enter. Ordinary Tab worked on this browser, so Option+Tab setting path was not needed.
+- Native select detour: Home/Down/Tab initially chose Phone; opened native menu with Space, used c and Return to choose Customer type, checked displayed selection before saving.
+- Focus helper detour: rapid focus polling failed to find Preview inputs; AX observations plus explicit Tab steps reached them. One broad activeElement textContent read while BODY was focused returned embedded inline CSS; no application JS/source files were read or used. Helper was narrowed to attributes/labels.
+- Keyboard custom hint changed live, Escape discarded it, reopening showed original, Save applied it. Preview company hidden then visible for business; custom input accepted KEY-456.
+- Keyboard JSON copied with Cmd+A/Cmd+C from visible JSON editor to browser clipboard and persisted as keyboard-export.json.
+- Keyboard action detour: outline arrow focus did not automatically update selection. Cmd+C outside the JSON editor was an undocumented shortcut trial; it did not create the expected copy. An extra Undo removed the saved hint. Toolbar Copy/Paste duplicated the selected custom component; two successive Paste additions each reversed with one Undo. Duplicate Notes and Wrap Notes used reachable toolbar/context-menu actions and opened no settings. All structural trial mutations were undone. Hint was reapplied through generated Reference editor. Final JSON exactly matched earlier keyboard export.
+- Keyboard Escape/Close discard checked; add plus initial label demonstrated as one Undo step with Notes removal/redo.
+- Keyboard header Save activated; host event not instrumented, no disk persistence claimed.
+- 11:34:28 UTC: UI exercise complete, dev server stopped using Ctrl+C; lsof found no listener on 4173.
+- First verify failed because trial export JSON files in repository root lacked final newline and were included by Prettier. Moved all trial artifacts out to `/tmp/ourform-m09b-evidence-c56Jk2` without altering export content, reran verify.
+- Export structural check (own output files only) passed for mouse-export.json, keyboard-export.json, keyboard-export-final.json.
+
+No ten-minute interval without progress occurred during the UI exercise. No implementation fixes, commits, pushes, PRs, or requests for implementation help.
+
+- Supplementary evidence: keyboard header Save announced Form ready to save. Additional keyboard-condition-visible/hidden screenshots show the lower conditional row. An initial fullPage screenshot remained viewport-limited. The verification server restart reloaded the mouse tab before an additional lower-page capture, so no JSON import was used to reconstruct it; both trial tabs were closed. Browser tool visibility was unsupported for a sub-agent, so background tabs were used.
+
+- 11:50:44 UTC: Verification had passed lint/build/typecheck, 298 unit tests, all 1017 e2e tests (12.4m), and size. Count benchmark failed because my extra --single-branch clone flag omitted origin/main. Corrected this author deviation using git fetch origin main:refs/remotes/origin/main from GitHub (exit 0), without viewing history or source; started full verify rerun. Exact checked-out SHA unchanged.
+
+- 2026-10-22 12:14:03 UTC: Final full verification exited 0: 298 unit tests, 1017 browser tests (20.5m), all size budgets, 5 count tests (9.2s), lint/build/typecheck passed. Exact HEAD still required SHA, status empty before creating report, port 4173 had no listener. Final authored report written in clone. Total duration 51m07s.

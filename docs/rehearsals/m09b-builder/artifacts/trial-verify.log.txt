@@ -1,0 +1,15 @@
+
+> ourform@0.0.1 verify /private/tmp/ourform-m09b-author-c56Jk2
+> pnpm lint && pnpm build && pnpm typecheck && pnpm test && pnpm test:e2e && pnpm size && pnpm benchmark:counts
+
+
+> ourform@0.0.1 lint /private/tmp/ourform-m09b-author-c56Jk2
+> eslint . && prettier --check .
+
+Checking formatting...
+[warn] keyboard-export-final.json
+[warn] keyboard-export.json
+[warn] mouse-export.json
+[warn] Code style issues found in 3 files. Run Prettier with --write to fix.
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.

@@ -275,7 +275,13 @@ for (const [host, url] of hosts)
   }
 
 for (const [host, url] of hosts)
-  for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+  for (const theme of [
+    "base",
+    "bootstrap4",
+    "bootstrap5",
+    "tailwind",
+    "material",
+  ]) {
     test(`${host} builder ${theme}: visual conformance`, async ({
       page,
     }, testInfo) => {

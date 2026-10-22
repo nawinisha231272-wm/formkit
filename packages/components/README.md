@@ -59,7 +59,7 @@ Panel/Fieldset/Columns are data-transparent; Container nests values under its ke
 }
 ```
 
-Run `pnpm dev` and open `/onboarding.html` for the 40-field fixture. All four themes share responsive
+Run `pnpm dev` and open `/onboarding.html` for the 40-field fixture. All five themes share responsive
 12-column sizing (width 1–12, default 12), stacking at viewport widths up to 640px.
 
 M09 adds `tabsLayout` (type `tabs`) to builtinLayouts/builtinComponents. Its `tabs` options property

@@ -1,0 +1,12 @@
+{
+  "timestamp_utc": "2026-10-22 12:14:03 UTC",
+  "head": "90f99dd64aa58fd2b6df83d371ce2d90148ead64",
+  "git_status_before_report": "",
+  "verify_exit_code": 0,
+  "unit_test_files": 42,
+  "unit_tests": 298,
+  "browser_tests": 1017,
+  "count_tests": 5,
+  "port_4173_listener": false,
+  "duration_seconds": 3067
+}

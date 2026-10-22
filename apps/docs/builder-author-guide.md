@@ -14,9 +14,22 @@ npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm build
 npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm --filter @ourform/playground dev
 ```
 
+Use the clone command as shown, without `--single-branch`: the deterministic count gate needs
+`origin/main` as its comparison reference. If an existing clone lacks it, fetch the reference before
+verification (this does not change your checked-out branch):
+
+```sh
+git fetch origin main:refs/remotes/origin/main
+```
+
 The root `.nvmrc` pins Node 22.22.3 and `packageManager` pins pnpm 10.10.0. The commands above provision
 both explicitly; if you use nvm, `nvm install && nvm use` is equivalent for Node. Keep the pinned pnpm.
-After building, the CLI help is available with `node packages/cli/dist/index.js --help` (it exits 0).
+After building, this prints CLI usage and exits 0 with the pinned Node version:
+
+```sh
+npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 node packages/cli/dist/cli.js --help
+```
+
 Open `http://127.0.0.1:4173/builder.html?empty`. The ready-made example is `?approved`; the screen-5
 theme comparison is `/builder-themes.html`. The task below starts empty. Ports in use must be freed
 or the app's Vite configuration adjusted consistently.
@@ -59,12 +72,26 @@ or the app's Vite configuration adjusted consistently.
 8. Switch to **Preview**. Company name is absent until Customer type is `business`, then appears.
    Customer reference is a working text control. Switch to **JSON** to copy your form definition.
    There should be 12 value fields nested under Tabs › Panel › Columns, with six in each column.
+   Save trial exports and screenshots outside the checkout (for example, a sibling evidence folder).
+   Untracked JSON in the checkout is included in formatting checks. Capture evidence before stopping
+   the dev server: restarting Vite can reload the page and clear this unsaved in-memory form.
 9. Try Undo/Redo. Adding a component with its initial settings is one step. Copy/Paste, Duplicate
    and Wrap each commit once and never open settings. Cancel/Escape/Close discard a pending modal
    addition. Header Save emits `of-save`; saving the definition to disk/database belongs to the host.
 
 Phone is intentionally a plain Text field here; the advanced Phone component belongs to M10b.
-Select starts with registered defaults; this task does not require future async providers.
+Industry's Select starts with an empty options list, so Preview initially shows only **Choose an option**.
+That is expected for this task. For usable static choices, open Industry's **Display** tab and fill the
+generated **Options** editor with the following JSON, then Save:
+
+```json
+[
+  { "value": "software", "label": "Software" },
+  { "value": "services", "label": "Services" }
+]
+```
+
+Preview can then select either choice. Async providers belong to M10b and are not needed here.
 
 ### Mouse route
 
@@ -88,6 +115,18 @@ Column 2, Shift+Tab back to the palette to add there. A newly selected value fie
 siblings immediately after it. Ctrl/Cmd+X then Ctrl/Cmd+V moves into the chosen slot; Alt+arrows
 reorders/reparents. Space picks up, arrows move between destinations, Space drops, Escape cancels.
 Shift+F10 opens the component menu. Live announcements describe pickup, destination and refusal.
+
+Component shortcuts act on the selected component; check the outline highlight and selected-component
+heading before using them. Enter on the intended outline row, then Escape from settings, is an explicit
+way to select it without changing the form. Ctrl/Cmd+C copies, Ctrl/Cmd+V pastes, Ctrl/Cmd+D duplicates,
+and Ctrl/Cmd+Shift+J opens component JSON. Inside the JSON editor or a text input, normal text clipboard
+behavior applies. Copy itself creates no undo step; a subsequent Paste creates one.
+
+For a native condition-field select, Space opens its menu; type the field label and confirm with Enter.
+Check the displayed selection before saving; native menu arrow-key behavior differs between browsers.
+After switching to Preview, wait for its panel to appear before continuing Tab traversal. The workbench
+scrolls within its panes: Tab to a lower field to bring it into view. A full-page screenshot may still
+capture only the outer viewport; capture the relevant scrolled states separately.
 
 ## Register your own field in an application
 
@@ -154,10 +193,22 @@ for authoring. Bootstrap 4 remains fully supported for 1.0.
 
 ## Verify and report the author exercise
 
-Stop the dev server, then use the same pinned wrapper with `pnpm verify` (replace the final command
-in the provisioning invocation with `pnpm verify`). Linux screenshots use the official image
+Stop the dev server, provision the matching browsers once, then run the full pinned verification:
+
+```sh
+npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright install chromium firefox webkit
+npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify
+```
+
+Linux screenshots use the official image
 `mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a`;
 existing approved baselines are compared, never overwritten to make a run pass.
+
+To compare the workbench screenshots inside that pinned image, run this from the checkout root:
+
+```sh
+sh scripts/linux-visuals.sh check workbench
+```
 
 For an independent guide trial, record the author/session provenance, branch/commit, start/first-render/
 finish timestamps, commands/results, mouse and keyboard outcomes, exported definition and screenshots.

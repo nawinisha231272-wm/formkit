@@ -31,7 +31,7 @@ network requests to load fonts/frameworks. Customers may supply framework CSS th
 
 Use createThemeConformance plus the @ourform/testing/playwright checkThemeConformance and
 checkReadOnlyTheme helpers, then actual customer components and layouts. axe must report no serious
-or critical issues. Inspect focus visibility, labels/error descriptions, mobile overflow and all four
+or critical issues. Inspect focus visibility, labels/error descriptions, mobile overflow and all five
 supported themes. Existing theme switches must preserve the input instance, focus, caret and data.
 Store browser/platform-specific visual baselines; Linux generation uses scripts/playwright-container.json.
 Never loosen pixel thresholds. Compare once against reviewed images and keep original baselines.

@@ -106,13 +106,13 @@ Generated editors include expression rows plus raw JSON. Editable definition JSO
 commit, with errors retaining the current draft/history. Live preview and diagnostics remain usable.
 The reusable @ourform/builder UI and custom-element/React/Angular wrappers publish of-schema-change
 with `{definition,patch}`; selection-only changes emit no schema patch. Chrome is independent of
-Base/Bootstrap 4/Bootstrap 5/Tailwind form appearance. Wrappers dispose listeners/controllers/native
+Base/Bootstrap 4/Bootstrap 5/Tailwind/Material form appearance. Wrappers dispose listeners/controllers/native
 bridges when removed.
 
 Acceptance includes mouse and keyboard builds of Tabs > Panel > Columns > field, visible refusal of
 illegal drops, a third-party declared slot with zero builder code, scope/path conflict tests, and
 independent patch replay plus byte-identical undo/redo over 50 random nested command sequences.
-Tabs conformance/visuals cover all four themes and supported hosts; axe has no serious/critical issues.
+Tabs conformance/visuals cover all five themes (including Material from M09b) and supported hosts; axe has no serious/critical issues.
 M10a structures extend the same slot contract without special builder integration.
 
 ## M05 implemented boundary (ADR-0007)

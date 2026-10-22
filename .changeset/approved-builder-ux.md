@@ -26,3 +26,6 @@ Bind native React preview hooks to their own draft controller while preserving a
 Expose the public createBuilder mount convenience, keyboard-addressable tab/column slots and selected
 component sidebar. Preserve schema state and theme structure for inert design controls. Add the
 12-field author guide, matching-theme gallery, all-host/theme/gesture checks and isolated drag trace.
+
+Include Material in the shared Tier 1 conformance helper, Tabs and SDK/native component matrices,
+and every host's builder preview visuals. Existing themes keep their original baselines and thresholds.

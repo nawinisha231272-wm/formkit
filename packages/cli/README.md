@@ -24,11 +24,11 @@ The root scaffold integration test executes the built CLI for all three kinds, i
 public packages with a fresh metadata cache, then removes node_modules and proves a frozen/offline
 reinstall before running each unedited project's verification. The initial dependency resolution
 uses the registry, like the documented pnpm install; no pre-existing metadata cache is assumed. Browser conformance and visual
-checks in all four themes remain required before a customer component ships. See the author guides
+checks in all five themes remain required before a customer component ships. See the author guides
 in apps/docs and ADR-0003.
 
 Scaffolds also include .nvmrc, exact Node/pnpm engines with engine-strict, a Vite preview,
-Playwright/axe in all four themes/three browsers, and `pnpm builder` to open the registered mini builder.
+Playwright/axe in all five themes/three browsers, and `pnpm builder` to open the registered mini builder.
 `pnpm verify` includes browser tests. The sample asserts every custom property editor's observable
 preview effect. Missing visual baselines are captured as explicitly unapproved evidence; explicit
 `pnpm visual:record` / `pnpm visual:linux:record` record only fresh platform folders and then compare.

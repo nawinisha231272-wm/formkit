@@ -194,3 +194,50 @@ test("virtual outline slots collapse and expand by keyboard without editing thei
     ),
   ).toBe(0);
 });
+
+test("outline End and Up select the action target before keyboard Copy or Duplicate", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?approved");
+  const before = await page.evaluate(() =>
+    JSON.stringify(window.miniBuilder.builder.getState().definition),
+  );
+  for (const action of ["copy-paste", "duplicate"]) {
+    await page
+      .locator(
+        '[role="treeitem"][data-drag-id="email"] > .of-builder-tree-name',
+      )
+      .click();
+    await page.keyboard.press("End");
+    await page.keyboard.press("ArrowUp");
+    await expect(
+      page.locator('[role="treeitem"][data-drag-id="notes"]'),
+    ).toBeFocused();
+    expect(
+      await page.evaluate(
+        () => window.miniBuilder.builder.getState().selection,
+      ),
+    ).toBe("notes");
+    if (action === "copy-paste") {
+      await page.keyboard.press("ControlOrMeta+c");
+      await page.keyboard.press("ControlOrMeta+v");
+    } else await page.keyboard.press("ControlOrMeta+d");
+    const changed = await page.evaluate(() => ({
+      definition: JSON.stringify(
+        window.miniBuilder.builder.getState().definition,
+      ),
+      steps: window.miniBuilder.builder.getState().history.past.length,
+    }));
+    expect(changed.steps).toBe(1);
+    expect(changed.definition.match(/"label":"Notes"/g)).toHaveLength(2);
+    expect(
+      changed.definition.match(/"type":"acme.customer-reference"/g),
+    ).toHaveLength(1);
+    await page.getByRole("button", { name: "Undo", exact: true }).click();
+    expect(
+      await page.evaluate(() =>
+        JSON.stringify(window.miniBuilder.builder.getState().definition),
+      ),
+    ).toBe(before);
+  }
+});

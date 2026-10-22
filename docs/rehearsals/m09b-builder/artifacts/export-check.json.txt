@@ -1,0 +1,101 @@
+{
+  "mouse-export.json": {
+    "nesting": [
+      "tabs",
+      "panel",
+      "columns"
+    ],
+    "value_fields": 12,
+    "per_column": [
+      6,
+      6
+    ],
+    "custom_count": 1,
+    "conditional_count": 1,
+    "condition_uses_customer_type_id": true,
+    "labels": [
+      [
+        "Full name",
+        "Email",
+        "Phone",
+        "Customer type",
+        "Company name",
+        "Tax ID"
+      ],
+      [
+        "Customer reference",
+        "Experience",
+        "Industry",
+        "Terms",
+        "Order reference",
+        "Notes"
+      ]
+    ]
+  },
+  "keyboard-export.json": {
+    "nesting": [
+      "tabs",
+      "panel",
+      "columns"
+    ],
+    "value_fields": 12,
+    "per_column": [
+      6,
+      6
+    ],
+    "custom_count": 1,
+    "conditional_count": 1,
+    "condition_uses_customer_type_id": true,
+    "labels": [
+      [
+        "Full name",
+        "Email",
+        "Phone",
+        "Customer type",
+        "Company name",
+        "Tax ID"
+      ],
+      [
+        "Customer reference",
+        "Experience",
+        "Industry",
+        "Terms",
+        "Order reference",
+        "Notes"
+      ]
+    ]
+  },
+  "keyboard-export-final.json": {
+    "nesting": [
+      "tabs",
+      "panel",
+      "columns"
+    ],
+    "value_fields": 12,
+    "per_column": [
+      6,
+      6
+    ],
+    "custom_count": 1,
+    "conditional_count": 1,
+    "condition_uses_customer_type_id": true,
+    "labels": [
+      [
+        "Full name",
+        "Email",
+        "Phone",
+        "Customer type",
+        "Company name",
+        "Tax ID"
+      ],
+      [
+        "Customer reference",
+        "Experience",
+        "Industry",
+        "Terms",
+        "Order reference",
+        "Notes"
+      ]
+    ]
+  }
+}

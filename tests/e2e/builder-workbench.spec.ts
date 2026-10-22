@@ -361,3 +361,49 @@ test("Material uses elevated rounded cards and a larger outer Tabs title", async
     page.locator('#canvas [data-field-id="customerTabs"] > .of-layout-title'),
   ).toHaveCSS("font-size", "26px");
 });
+
+test("generated Select options populate the live Material preview and saved form", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?empty&theme=material");
+  await page.getByRole("button", { name: "Add Select", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("Label", { exact: true }).fill("Industry");
+  await expect(dialog.getByLabel("Options", { exact: true })).toHaveValue("[]");
+  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  const before = await page.evaluate(() =>
+    JSON.stringify(window.miniBuilder.builder.getState().definition),
+  );
+  await page
+    .getByRole("button", { name: "Edit settings", exact: true })
+    .click();
+  await dialog.getByLabel("Options", { exact: true }).fill(
+    JSON.stringify([
+      { value: "software", label: "Software" },
+      { value: "services", label: "Services" },
+    ]),
+  );
+  const live = dialog.locator('[data-builder-part="editor-preview"]');
+  await expect(
+    live.getByRole("option", { name: "Software", exact: true }),
+  ).toHaveCount(1);
+  await expect(
+    live.getByRole("option", { name: "Services", exact: true }),
+  ).toHaveCount(1);
+  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  expect(
+    await page.evaluate(
+      () => window.miniBuilder.builder.getState().history.past.length,
+    ),
+  ).toBe(2);
+  await page.getByRole("tab", { name: "Preview", exact: true }).click();
+  const choice = page.getByRole("combobox", { name: "Industry", exact: true });
+  await choice.selectOption("software");
+  await expect(choice).toHaveValue("software");
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  expect(
+    await page.evaluate(() =>
+      JSON.stringify(window.miniBuilder.builder.getState().definition),
+    ),
+  ).toBe(before);
+});

@@ -76,3 +76,8 @@ and no pixel threshold changes. The new workbench screenshots are separate appro
 The 500-field Chromium trace is collected by `pnpm benchmark:builder`, isolated from `pnpm verify`;
 wall-clock results remain advisory in CI under the owner's performance-gate redesign. The milestone's
 50ms requirement still needs actual trace evidence and cannot be passed with an empty trace.
+
+Material also joins the test kit's default theme-selection conformance loop, Tabs and SDK composite/
+native checks, and all six hosts' preview images. Demo selectors and author guides expose all five
+shipped themes consistently. New Material-only image recording is guarded independently of existing
+baseline suites; existing images and comparison tolerances remain unchanged.

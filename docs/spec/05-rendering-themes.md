@@ -184,7 +184,7 @@ FormView.reset(data?) clears submitted/summary state and pending blur touches be
 ## 1.0 support decision (ADR-0011)
 
 Bootstrap 4 remains fully supported for 1.0. Every new component must pass conformance and visual checks
-in all four shipped themes: base, Bootstrap 4, Bootstrap 5 and Tailwind. Existing contrast/pixel thresholds
+in all five shipped themes: base, Bootstrap 4, Bootstrap 5, Tailwind and Material (added in M09b). Existing contrast/pixel thresholds
 and pinned framework stylesheet versions remain unchanged.
 
 ## M09 authoring and Tabs

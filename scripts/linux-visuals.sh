@@ -11,6 +11,7 @@ visual_suite=${2:-themes}
 case "$visual_mode" in record|check) ;; *) echo "Usage: sh scripts/linux-visuals.sh [record|check]" >&2; exit 2;; esac
 visual_snapshot_pattern="*.png"
 case "$visual_suite" in
+  material-additions) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
   workbench) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts ;;
   material) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/themes.spec.ts ; visual_snapshot_pattern="material-*.png" ;;
   themes) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
@@ -20,10 +21,18 @@ case "$visual_suite" in
   builder) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts ;;
   tabs) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/tabs.spec.ts ;;
   sdk) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts ;;
-  *) echo "Usage: sh scripts/linux-visuals.sh [record|check] [themes|material|workbench|sdk|author|boolean|tabs|builder|m09]" >&2; exit 2;;
+  *) echo "Usage: sh scripts/linux-visuals.sh [record|check] [themes|material|material-additions|workbench|sdk|author|boolean|tabs|builder|m09]" >&2; exit 2;;
 esac
 mkdir -p "$visual_snapshot_dir"
-if [ "$visual_mode" = record ] && [ -n "$(find "$visual_snapshot_dir" -name "$visual_snapshot_pattern" -print -quit)" ]; then
+if [ "$visual_mode" = record ] && [ "$visual_suite" = material-additions ]; then
+  for material_suite in tabs.spec.ts sdk-extensions.spec.ts builder-hosts.spec.ts; do
+    material_dir="tests/e2e/__screenshots__/linux-x64/$material_suite"
+    if [ -d "$material_dir" ] && [ -n "$(find "$material_dir" -name '*material*.png' -print -quit)" ]; then
+      echo "Refusing to overwrite existing Material additions. Use check; baseline replacement requires review." >&2
+      exit 2
+    fi
+  done
+elif [ "$visual_mode" = record ] && [ -n "$(find "$visual_snapshot_dir" -name "$visual_snapshot_pattern" -print -quit)" ]; then
   echo "Refusing to overwrite existing Linux PNGs. Use check; baseline replacement requires review." >&2
   exit 2
 fi
@@ -63,6 +72,10 @@ run_visual() {
   if [ "$OURFORM_VISUAL_SUITE" = m09 ]; then
     npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/tabs.spec.ts --workers=1 --max-failures=1 --grep "visual conformance" "${snapshot_args[@]}" || return $?
     npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-hosts.spec.ts --project=chromium --workers=1 --max-failures=1 --grep "visual conformance" "${snapshot_args[@]}"
+  elif [ "$OURFORM_VISUAL_SUITE" = material-additions ]; then
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/tabs.spec.ts --workers=1 --max-failures=1 --grep "Tabs material: visual conformance" "${snapshot_args[@]}" || return $?
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/sdk-extensions.spec.ts --workers=1 --max-failures=1 --grep "SDK composites/presets: material conformance" "${snapshot_args[@]}" || return $?
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-hosts.spec.ts --project=chromium --workers=1 --max-failures=1 --grep "builder material: visual conformance" "${snapshot_args[@]}"
   else
     local project_args=()
     if [ "$OURFORM_VISUAL_SUITE" = builder ] || [ "$OURFORM_VISUAL_SUITE" = workbench ]; then project_args=(--project=chromium); fi

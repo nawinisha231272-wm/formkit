@@ -1,7 +1,13 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import type {} from "../../apps/playground/tabs";
-for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+for (const theme of [
+  "base",
+  "bootstrap4",
+  "bootstrap5",
+  "tailwind",
+  "material",
+]) {
   test(`Tabs ${theme}: keyboard, retained state, error reveal, reset and accessibility`, async ({
     page,
   }) => {
@@ -86,7 +92,13 @@ for (const state of ["readonly", "disabled"])
     await expect(name).toHaveValue("API answer");
   });
 
-for (const theme of ["base", "bootstrap4", "bootstrap5", "tailwind"]) {
+for (const theme of [
+  "base",
+  "bootstrap4",
+  "bootstrap5",
+  "tailwind",
+  "material",
+]) {
   test(`Tabs ${theme}: visual conformance`, async ({ page }) => {
     await page.goto("/tabs.html");
     await page.locator("#theme").selectOption(theme);
