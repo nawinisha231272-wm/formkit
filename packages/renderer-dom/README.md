@@ -109,3 +109,7 @@ The controller's view is ready after mounting; native components render within t
 
 Design controls are inert and their setValue/onBlur callbacks cannot mutate the session. They retain
 the actual schema read-only/disabled appearance; design mode does not fake a read-only field state.
+
+Schema prefix/suffix feed the existing FieldPresentation adornments (explicit host presentation wins).
+Tooltip is a native hover title; Description remains the visible explanatory alternative. Static
+readOnly/disabled are rendered from core FieldState and retain the same protected-write semantics.

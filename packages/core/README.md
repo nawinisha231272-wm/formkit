@@ -128,3 +128,7 @@ nonblank builder title. The current UI is a harness; spec 10/M09b replaces its i
 `CompiledNode.parentSlot` stores effective column membership separately from the source child.
 `resolveSlots` derives positional slots for layout nodes with column collections; explicit slot
 metadata must match those collections in order and count. Columns on non-layout models are rejected.
+
+Static `ComponentNode.disabled` and `readOnly` flags inherit through layouts. Disabled also combines
+with disabledWhen; host read-only remains stronger. They use the same protected-user-write refresh
+contract as host mode and dynamic disabled state; API writes continue to work (ADR-0017).

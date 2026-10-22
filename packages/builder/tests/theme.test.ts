@@ -1,4 +1,5 @@
 import { test, expect } from "vitest";
+import { materialTheme } from "@ourform/theme-material";
 import { defineBuilderTheme } from "@ourform/sdk";
 import { resolveChrome, chromeStyle } from "../src/theme";
 import { primitiveStyle } from "../src/primitive-style";
@@ -106,3 +107,18 @@ test("primitive chrome CSS never hard-codes colors, radii or fonts and cannot re
   expect(primitiveStyle).not.toContain(".of-builder button:");
   expect(primitiveStyle).not.toContain(".of-builder :focus-visible");
 });
+
+test.each(["light", "dark", "high-contrast"] as const)(
+  "Material %s read-only fill is distinct and readable",
+  (mode) => {
+    const tokens = {
+      ...materialTheme.tokens,
+      ...(mode === "light" ? {} : materialTheme.modes?.[mode]),
+    };
+    const background = tokens["--of-material-readonly-bg"]!;
+    expect(background).not.toBe(tokens["--of-material-panel-bg"]);
+    expect(
+      contrast(tokens["--of-color-text"]!, background),
+    ).toBeGreaterThanOrEqual(4.5);
+  },
+);

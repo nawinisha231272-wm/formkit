@@ -57,7 +57,7 @@ test("design canvas shows only the active tab and preserves tab DOM/selection on
   await expect(canvas.locator('[data-field-id="name"]')).toBeHidden();
   await email.click();
   await page
-    .getByRole("combobox", { name: "Preview theme", exact: true })
+    .getByRole("combobox", { name: "Theme", exact: true })
     .selectOption("material");
   await expect(
     canvas.getByRole("tab", { name: "Contact", exact: true }),
@@ -369,7 +369,12 @@ test("generated Select options populate the live Material preview and saved form
   await page.getByRole("button", { name: "Add Select", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await dialog.getByLabel("Label", { exact: true }).fill("Industry");
-  await expect(dialog.getByLabel("Options", { exact: true })).toHaveValue("[]");
+  await expect(dialog.getByLabel("Options", { exact: true })).toHaveValue(
+    JSON.stringify([
+      { value: "option1", label: "Option 1" },
+      { value: "option2", label: "Option 2" },
+    ]),
+  );
   await dialog.getByRole("button", { name: "Save", exact: true }).click();
   const before = await page.evaluate(() =>
     JSON.stringify(window.miniBuilder.builder.getState().definition),

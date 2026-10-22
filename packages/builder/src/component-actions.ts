@@ -7,7 +7,7 @@ import {
 import type { ComponentNode } from "@ourform/schema";
 import type { ToolbarAction, UI } from "./types";
 import { actionButton, disableAction, menu } from "./primitives";
-import { element } from "./types";
+import { element, componentTitle } from "./types";
 import { icon } from "./icons";
 import type { BuilderIcons } from "./icons";
 
@@ -105,7 +105,7 @@ export class ComponentActions {
       case "delete": {
         const result = ui.dispatch(new RemoveComponent(node.id));
         if (!result.some((d) => d.severity === "error"))
-          ui.announce(ui.t("ofb.deleted", { label: node.label ?? node.type }));
+          ui.announce(ui.t("ofb.deleted", { label: componentTitle(ui, node) }));
         break;
       }
       case "wrap":

@@ -12,7 +12,7 @@ deviations from spec, open questions.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
 - **M03–M08 complete** — local and Linux evidence is recorded below. **M08 accepted by the owner under the amended author criterion** — SDK 0.x freeze accepted; closure PR #6 merged on first-run green CI. Human guide usability is required in M11; the owner approved the 24 new Yes/No screenshots. M09 is authorized after the separate plan-amendment PR.
-- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11); M09b implementation is in progress after plan PR #12. M09c and M10a/M10b are not started.
+- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11); M09b implementation PR #13 merged on first-attempt green [Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39785290329); owner review fixes and screenshot approval remain open. M09c and M10a/M10b are not started.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
@@ -21,6 +21,22 @@ deviations from spec, open questions.
 ## Open questions
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
+
+## M09b owner review fixes — 2026-10-22
+
+Branch `m09b-owner-review`, from merged PR #13 (`f1b9ac7`). M09b stays open for screenshot approval.
+Owner review replaces the initial UI contracts where stated: sentence-first synchronized expression
+editing, searchable keyboard pickers, one-row desktop header, persisted Builder look, palette icons/order,
+layout titles, quieter summary, supported Display metadata/header path, destinations in More, filled
+Material read-only fields, focus-following selection and host-confirmed saving. Select additions receive
+two editable options; Issues flags empty Select/Radio options. Preserve the trial report verbatim and
+record product changes separately in fixes.md. Update only affected platform screenshots, run full pinned
+verify, and send images for approval. Propose M09b+ in spec 10; do not implement it or start M09c.
+
+Order: shared picker/expression editor → save/focus/options contracts → header/palette/dialog/styles →
+regressions and scoped visual generation → full pinned verify and owner review. Risks: preserving
+arbitrary expressions without lossy row conversion, atomic draft history, stale save acknowledgements,
+focus on rerender and the unchanged 30 kB builder budget.
 
 ## M09b — implementation in progress
 
@@ -1916,3 +1932,32 @@ The completed initial local matrix was 350 PASS / 7 FAIL, all existing browser d
 tailwind-dark; Firefox builder native themes, Angular 21 read-only, vanilla onboarding Bootstrap 5
 read-only, Bootstrap 4 default/real CSS, and DOM Tier 1 conformance). Original images and assertions are
 retained. Final isolated verification uses the committed worker policy, without concurrent M08 checks.
+
+### Proposed M09c loading split — owner direction, 2026-10-22
+
+ADR-0018 proposes retaining the 30 kB core builder ceiling and independently budgeting lazy Logic
+(10 kB), JSON editor (8 kB) and dependency map (10 kB), with a 28 kB aggregate deferred ceiling and
+explicit shared-chunk accounting. Record initial and first-open network/byte closures in M09c.
+Implement at the start of M09c; no split is implemented in this M09b review. Final sentence-control
+regression and full pinned verify must run after the last locator correction, followed by first-attempt
+current-head PR CI. Owner screenshot approval remains outstanding.
+
+ADR-0018 accepted with owner amendments (2026-10-22): M09c starts with the lazy split after M09b
+approval; target core ≤26 kB. Deferred views include Logic, JSON, dependency map, History/diff and
+the command bar when added by M09b+. Measure consumer production outputs with shared chunks counted
+once, across Vite/React, Angular CLI, vanilla and script-tag/assetBase; test offline strict CSP.
+Add preload none/idle (default none); only idle prefetches Logic/JSON, with explicit no-request tests
+for none. Command bar and History numeric chunk budgets need a proposal before those features ship.
+No loading implementation or current M09b budget change is included in this documentation decision.
+
+### Final M09b review verification — PASS
+
+Pinned Node 22.22.3 / pnpm 10.10.0, final corrected sentence-control path: all 18 cases pass in
+Chromium, Firefox and WebKit. Full `CI=true pnpm verify` exits 0: lint/build/typecheck, 306 unit
+checks (43 files), 1,122 browser checks, 17 size budgets and five deterministic count checks.
+Logs are archived under docs/reviews/m09b-owner-review-evidence, including the original failures.
+Builder passes the unchanged 30 kB ceiling (current size-limit display rounds to 30 kB); 29.92 kB
+was an earlier focused measurement, not the final measurement. No budget was raised.
+Scoped pinned-image Linux generation/comparison passes. The manifest records 20 changed baseline
+files, six new images and 368 unchanged files. All 32 original trial artifacts remain unchanged.
+Current-head remote first-attempt CI, PR merge and owner image approval remain pending.

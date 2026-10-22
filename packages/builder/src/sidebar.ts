@@ -1,16 +1,16 @@
 import type { UI } from "./types";
-import { element } from "./types";
+import { builderIssues } from "./issues";
+import { element, componentTitle } from "./types";
 import { actionButton, tabs } from "./primitives";
 import { describeExpression, controlledFields } from "./signals";
 
 interface Context {
   host: HTMLElement;
   outline: HTMLElement;
-  legacy: HTMLElement;
   ui: UI;
 }
 /** Outline, diagnostics and history are views of the same headless builder state. */
-export function sidebar({ host, outline, legacy, ui }: Context) {
+export function sidebar({ host, outline, ui }: Context) {
   const context = {
     document: ui.document,
     signal: ui.signal,
@@ -45,11 +45,6 @@ export function sidebar({ host, outline, legacy, ui }: Context) {
   controls.append(edit, json);
   const hint = element(ui.document, "small", ui.t("ofb.selectedHelp"));
   info.append(title, caption, summary, controls, hint);
-  const advanced = element(ui.document, "details", "", "ofb-advanced-actions");
-  advanced.append(
-    element(ui.document, "summary", ui.t("ofb.moreActions")),
-    legacy,
-  );
   const id = `ofb-sidebar-${globalThis.crypto.randomUUID()}`;
   const bar = tabs(
     context,
@@ -69,7 +64,7 @@ export function sidebar({ host, outline, legacy, ui }: Context) {
   panel.id = id;
   panel.setAttribute("role", "tabpanel");
   panel.append(outline, issues, history);
-  host.replaceChildren(bar.element, panel, info, advanced);
+  host.replaceChildren(bar.element, panel, info);
   function show(value: string) {
     bar.set(value);
     outline.hidden = value !== "outline";
@@ -85,7 +80,7 @@ export function sidebar({ host, outline, legacy, ui }: Context) {
     const state = ui.builder.getState();
     if (definition !== state.definition) {
       definition = state.definition;
-      diagnostics = ui.engine.compile(definition).diagnostics;
+      diagnostics = builderIssues(ui, definition);
       issues.replaceChildren();
       for (const diagnostic of diagnostics) {
         const button = actionButton(context, diagnostic.message, () => {
@@ -116,7 +111,7 @@ export function sidebar({ host, outline, legacy, ui }: Context) {
       entry = state.selection ? form?.byId[state.selection] : undefined;
     info.hidden = !entry;
     if (!entry) return;
-    title.textContent = entry.node.label ?? entry.model.title;
+    title.textContent = componentTitle(ui, entry.node);
     caption.textContent = ui.t("ofb.componentCaption", {
       type: ui.t(entry.model.builder?.title ?? entry.model.title),
       key: entry.node.key ?? "—",
@@ -137,12 +132,11 @@ export function sidebar({ host, outline, legacy, ui }: Context) {
         ? ui.t("ofb.always")
         : describeExpression(entry.node.visibleWhen, form!, ui.t),
     );
-    line(
-      "ofb.logic",
-      ui.t("ofb.controls", {
-        count: entry.model.value ? controlledFields(form!, entry.node.id) : 0,
-      }),
-    );
+    const controlled = entry.model.value
+      ? controlledFields(form!, entry.node.id)
+      : 0;
+    if (controlled)
+      line("ofb.logic", ui.t("ofb.controls", { count: controlled }));
     line(
       "ofb.path",
       entry.path.map((p) => (typeof p === "string" ? p : p.row)).join("."),

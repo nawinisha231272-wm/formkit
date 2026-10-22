@@ -190,3 +190,7 @@ subtrees independently of the original; ids/internal references are remapped and
 rechecked, using the same implementation as Duplicate. Generated Logic properties edit existing
 `calculate.expr` and `calculate.allowOverride`; clearing the expression removes the calculation atomically.
 There is no new root logic-rule format in M09b.
+
+The 2026-10-22 owner review in spec 10 supersedes the initial expression-editor harness: synchronized
+sentence-first rows, searchable pickers, focus-following selection, static Display metadata, default
+Select choices/empty-choice warnings and host-confirmed save status. See ADR-0017.

@@ -80,12 +80,6 @@ for (const input of ["mouse", "keyboard"] as const)
           ).toBeFocused();
           for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
         }
-        const summary = expression.locator("summary");
-        if (input === "mouse") await summary.click();
-        else {
-          await tabTo(summary);
-          await page.keyboard.press("Enter");
-        }
         const addCondition = expression.getByRole("button", {
           name: "Add condition",
           exact: true,
@@ -103,19 +97,16 @@ for (const input of ["mouse", "keyboard"] as const)
           exact: true,
         });
         if (input === "mouse") {
-          await field.selectOption({ label: "Customer type" });
+          await field.fill("Customer type");
+          await field.press("Enter");
           await value.fill("business");
         } else {
           await tabTo(field, true);
-          // Native selects consume the opening arrow differently across macOS engines.
-          // Typeahead chooses the visible label without relying on popup arrow offsets.
-          await page.keyboard.type("customer");
+          await page.keyboard.press("ControlOrMeta+A");
+          await page.keyboard.type("Customer type");
+          await page.keyboard.press("Enter");
+          await expect(field).toHaveValue("Customer type");
           await tabTo(value);
-          const customerId = await field
-            .locator("option")
-            .filter({ hasText: /^Customer type$/ })
-            .getAttribute("value");
-          await expect(field).toHaveValue(customerId!);
           await page.keyboard.type("business");
         }
       }

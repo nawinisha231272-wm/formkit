@@ -25,6 +25,11 @@ export interface ComponentNode {
   label?: string;
   description?: string;
   placeholder?: string;
+  tooltip?: string; // native hover title; description is visible help
+  prefix?: string; // visible value-shell adornment
+  suffix?: string;
+  disabled?: boolean; // static flag; inherited and ORed with disabledWhen
+  readOnly?: boolean; // static flag; inherited; host read-only remains stronger
   ariaLabel?: string; // accessible name override; visible label remains unchanged (M05)
   defaultValue?: unknown;
   validation?: ValidationRules;
@@ -159,3 +164,8 @@ widths and unknown legacy slots are rejected. See ADR-0015 and migration tests f
 Schema exports ComponentColumn/ColumnWidth and childCollections/componentChildren/childSlot. These
 headless helpers expose real collection paths and effective placement; returned child arrays refer to
 the source, so only builder commands mutate draft copies. No migration writes to caller-owned JSON.
+
+M09b owner review (ADR-0017) adds optional presentation/static-protection fields without changing
+existing definitions. Prefix/suffix are literal text, never HTML. Tooltip is a native title. User writes
+to protected fields restore stored values; API writes remain permitted. These fields are typed by the
+definition meta-schema, and static flags inherit through layouts.

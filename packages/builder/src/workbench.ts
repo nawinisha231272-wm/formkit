@@ -1,4 +1,6 @@
 import { toSubmissionSchema } from "@ourform/schema";
+import { builderIssues } from "./issues";
+import { icon } from "./icons";
 import { actionButton, chip, tabs } from "./primitives";
 import { element } from "./types";
 import type { UI } from "./types";
@@ -15,6 +17,10 @@ interface WorkbenchContext {
   jsonPanel: HTMLElement;
   appearance: HTMLElement;
   modes: HTMLElement;
+  legacy: HTMLElement;
+  look(): string;
+  setLook(value: string): void;
+  showIssues(): void;
   undo: HTMLButtonElement;
   redo: HTMLButtonElement;
   preview(): FormController | undefined;
@@ -46,11 +52,12 @@ export function workbench(context: WorkbenchContext) {
     primitiveContext,
     ui.t("ofb.noIssues"),
     () => {
-      const compiled = ui.engine.compile(ui.builder.getState().definition);
+      context.showIssues();
+      const diagnostics = builderIssues(ui, ui.builder.getState().definition);
       ui.announce(
-        compiled.ok
+        !diagnostics.length
           ? ui.t("ofb.noIssues")
-          : compiled.diagnostics.map((d) => d.message).join(" · "),
+          : diagnostics.map((d) => d.message).join(" · "),
       );
     },
     { icon: "issues" },
@@ -59,17 +66,78 @@ export function workbench(context: WorkbenchContext) {
     primitiveContext,
     ui.t("ofb.save"),
     () => {
+      saving = ui.builder.getState().definition;
+      save.disabled = true;
+      status.textContent = ui.t("ofb.saving");
+      ui.announce(ui.t("ofb.saving"));
       context.root.dispatchEvent(
         new CustomEvent("of-save", {
-          detail: { definition: ui.builder.getState().definition },
+          detail: { definition: saving },
           bubbles: true,
           composed: true,
         }),
       );
-      // Persistence belongs to the host. Never claim a network/storage operation happened.
-      ui.announce(ui.t("ofb.saveReady"));
     },
     { variant: "primary", icon: "save" },
+  );
+  let saving: ReturnType<UI["builder"]["getState"]>["definition"] | undefined;
+  const markSaved = () => {
+    if (!saving) return;
+    const current =
+      JSON.stringify(saving) ===
+      JSON.stringify(ui.builder.getState().definition);
+    saving = undefined;
+    save.disabled = false;
+    status.textContent = current
+      ? ui.t("ofb.savedTime", { time: new Date().toLocaleTimeString() })
+      : ui.t("ofb.unsaved");
+    ui.announce(current ? status.textContent : ui.t("ofb.savedEarlier"));
+  };
+  const markSaveFailed = (message: string) => {
+    if (!saving) return;
+    saving = undefined;
+    save.disabled = false;
+    status.textContent = ui.t("ofb.saveFailed", { message });
+    ui.announce(status.textContent);
+  };
+  const more = element(ui.document, "details", "", "ofb-header-menu");
+  const menuToggle = element(ui.document, "summary");
+  menuToggle.setAttribute("aria-label", ui.t("ofb.more"));
+  menuToggle.title = ui.t("ofb.settingsMenu");
+  menuToggle.append(icon(ui.document, "more", ui.icons));
+  const preferences = element(ui.document, "div", "", "ofb-header-preferences");
+  const lookLabel = element(ui.document, "label", ui.t("ofb.builderLook"));
+  const look = element(ui.document, "select");
+  for (const value of ["match-form", "neutral"]) {
+    const option = element(
+      ui.document,
+      "option",
+      ui.t(value === "match-form" ? "ofb.matchForm" : `ofb.theme.${value}`),
+    );
+    option.value = value;
+    look.append(option);
+  }
+  look.onchange = () => context.setLook(look.value);
+  lookLabel.append(look);
+  preferences.append(lookLabel, context.modes, context.legacy);
+  more.append(menuToggle, preferences);
+  more.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        more.open = false;
+        menuToggle.focus();
+      }
+    },
+    { signal: ui.signal },
+  );
+  context.root.addEventListener(
+    "pointerdown",
+    (event) => {
+      if (!more.contains(event.target as Node)) more.open = false;
+    },
+    { signal: ui.signal },
   );
   let active: Mode = "build";
   const dataPanel = element(
@@ -135,7 +203,7 @@ export function workbench(context: WorkbenchContext) {
     status,
     modeTabs.element,
     context.appearance,
-    context.modes,
+    more,
     actions,
   );
   const pane = element(ui.document, "div", "", "ofb-mode-content");
@@ -157,14 +225,24 @@ export function workbench(context: WorkbenchContext) {
     | ReturnType<UI["builder"]["getState"]>["definition"]
     | undefined;
   let issueCount = 0;
+  function syncLook() {
+    const value = context.look();
+    if (![...look.options].some((option) => option.value === value)) {
+      const option = element(ui.document, "option", value);
+      option.value = value;
+      look.append(option);
+    }
+    look.value = value;
+  }
   function update(changed = false) {
+    syncLook();
     const definition = ui.builder.getState().definition;
     title.textContent =
       definition.title ?? definition.id ?? ui.t("ofb.untitled");
     if (changed) status.textContent = ui.t("ofb.unsaved");
     if (checkedDefinition !== definition) {
       checkedDefinition = definition;
-      issueCount = ui.engine.compile(definition).diagnostics.length;
+      issueCount = builderIssues(ui, definition).length;
     }
     const count = issueCount;
     issues.setAttribute("aria-label", ui.t("ofb.issues", { count }));
@@ -183,8 +261,10 @@ export function workbench(context: WorkbenchContext) {
         b.dataset.tab === "logic" ||
         (media.matches && b.dataset.tab !== "preview");
     actions.hidden = media.matches;
+    context.legacy.hidden = media.matches;
+    shell.toggleAttribute("data-ofb-readonly", media.matches);
   };
   media.addEventListener("change", mobile, { signal: ui.signal });
   mobile();
-  return { update, switchMode };
+  return { update, switchMode, markSaved, markSaveFailed, syncLook };
 }

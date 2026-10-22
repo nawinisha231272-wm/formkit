@@ -18,11 +18,21 @@ import {
   LockKeyhole,
   Braces,
   Type,
+  TextCursorInput,
+  AlignLeft,
+  MousePointer2,
+  FileText,
+  ContactRound,
+  CircleDot,
+  ListFilter,
+  RectangleEllipsis,
+  EyeOff,
+  CalendarDays,
+  PanelsTopLeft,
   Mail,
   Hash,
   Star,
   SquareCheck,
-  List,
   PanelTop,
   Columns3,
   Folder,
@@ -55,12 +65,23 @@ const icons = {
   collapse: ChevronRight,
   lock: LockKeyhole,
   data: Braces,
-  text: Type,
+  text: TextCursorInput,
+  textarea: AlignLeft,
+  button: MousePointer2,
+  content: FileText,
+  employee: ContactRound,
+  radio: CircleDot,
+  password: RectangleEllipsis,
+  hidden: EyeOff,
+  date: CalendarDays,
+  tabs: PanelsTopLeft,
+  fieldset: Braces,
+  custom: Type,
   email: Mail,
   number: Hash,
   rating: Star,
   checkbox: SquareCheck,
-  select: List,
+  select: ListFilter,
   panel: PanelTop,
   columns: Columns3,
   container: Folder,
@@ -128,4 +149,17 @@ export function icon(
     svg.append(child);
   }
   return svg;
+}
+
+export function componentIcon(
+  type: string,
+  declared?: string,
+): BuilderIconName {
+  return declared && isIconName(declared)
+    ? declared
+    : isIconName(type)
+      ? type
+      : /employee/i.test(type)
+        ? "employee"
+        : "custom";
 }

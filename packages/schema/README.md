@@ -72,3 +72,7 @@ returns real relative collection paths and effective column slot names; `compone
 flattens immediate children in reading order; `childSlot(parent, child)` resolves placement without
 writing wire metadata. Returned collection arrays refer to the source. Treat compiled definitions as
 immutable and mutate only command-owned draft copies.
+
+Optional ComponentNode presentation fields `tooltip`, `prefix`, `suffix` are strings; `disabled` and
+`readOnly` are static boolean flags. Flags inherit through containers; disabled combines with
+disabledWhen, and host read-only cannot be weakened by a node. See spec 01 and ADR-0017.

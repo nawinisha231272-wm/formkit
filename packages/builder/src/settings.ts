@@ -22,7 +22,8 @@ import {
   labelledInput,
 } from "./primitives";
 import { renderProperties } from "./editors";
-import { element } from "./types";
+import { icon, componentIcon } from "./icons";
+import { element, componentTitle, componentLocation } from "./types";
 import type { BuilderOptions, UI } from "./types";
 
 function find(nodes: ComponentNode[], id: string): ComponentNode | undefined {
@@ -156,7 +157,7 @@ export class Settings {
       "h2",
       ui.t("ofb.editorTitle", {
         type: ui.t(ui.engine.getField(original.type)!.title),
-        label: original.label ?? original.type,
+        label: componentTitle(ui, original),
       }),
     );
     title.id = `ofb-settings-${session}`;
@@ -166,7 +167,22 @@ export class Settings {
       "small",
       `${ui.t("ofb.key")} ${original.key ?? "—"}`,
     );
-    titleBlock.append(title, key);
+    const location = element(ui.document, "small", "", "ofb-settings-location");
+    const compiled = ui.engine.compile(definition);
+    location.textContent = compiled.ok
+      ? componentLocation(ui, compiled.form, id)
+      : componentTitle(ui, original);
+    title.prepend(
+      icon(
+        ui.document,
+        componentIcon(
+          original.type,
+          ui.engine.getField(original.type)?.builder?.icon,
+        ),
+        ui.icons,
+      ),
+    );
+    titleBlock.append(title, key, location);
     header.append(
       titleBlock,
       actionButton(context, ui.t("ofb.close"), close, {

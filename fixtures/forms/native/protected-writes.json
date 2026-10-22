@@ -9,13 +9,35 @@
       "key": "name",
       "label": "Name",
       "defaultValue": "stored",
-      "disabledWhen": ["eq", { "ref": "locked" }, true]
+      "disabledWhen": [
+        "eq",
+        {
+          "ref": "locked"
+        },
+        true
+      ]
     },
     {
       "id": "locked",
       "type": "checkbox",
       "key": "locked",
       "label": "Lock field"
+    },
+    {
+      "id": "staticReadOnly",
+      "type": "text",
+      "key": "staticReadOnly",
+      "label": "Read-only account",
+      "defaultValue": "stored",
+      "readOnly": true
+    },
+    {
+      "id": "staticDisabled",
+      "type": "text",
+      "key": "staticDisabled",
+      "label": "Disabled account",
+      "defaultValue": "stored",
+      "disabled": true
     }
   ]
 }

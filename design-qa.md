@@ -94,3 +94,27 @@ and preview output in all six hosts on macOS and Linux. Inspected the Linux comp
 and React preview capture: floating labels remain readable, errors stay linked beside controls,
 tabs expose the active underline, and the Fieldset retains its rounded raised boundary. Existing
 main baseline files remain byte-identical. These checks add coverage and are not owner approval.
+
+## Owner review fixes — 2026-10-22
+
+Final result: passed (implementation QA); owner approval remains pending.
+
+Compared the updated screen 1/2/5 captures beside the approved reference at the same normalized
+viewports, including readable crops in `visual-results/m09b-owner-review-qa/`. The owner's newer
+one-row header and Display requirements supersede the corresponding drawing details. Inspected
+sentence rules, the header More menu and the phone preview separately. The header retains its right
+aligned actions; palette icons/order, registered layout titles and generated Display controls are
+visible. Dialog location includes the tab and column. Conditional rows precede the expression view.
+
+QA caught an initially indistinct read-only fill (equal to the card surface). Material now has a
+separate neutral filled token in light/dark/high-contrast modes, with solid boundaries. Token contrast
+tests pass in all three modes. The final phone capture shows a visibly distinct fill. Native Pointer
+Events were exercised by dragging Email into Column 2, saving and undoing the addition; automated
+500-field traces retain the original 50ms ceiling. No actionable P0/P1/P2 remains in this review scope.
+
+Linux captures were generated and compared in the official digest-pinned Playwright 1.56.1 image.
+Only seven existing workbench captures and three Material read-only captures per platform changed;
+three new review captures per platform supplement them. The hash manifest is
+`docs/reviews/m09b-owner-review-baselines.json`. No pixel threshold or size/performance limit changed.
+The linked image index is `docs/reviews/m09b-owner-review-2026-10-22.md`. This QA does not mark those
+implementation images approved by the owner and does not close M09b.

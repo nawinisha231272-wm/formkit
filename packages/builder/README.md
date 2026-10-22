@@ -36,7 +36,8 @@ The mount must be empty and caller-owned. The lower-level function requires fiel
 customer headless registrations/providers. `renderBuilder` from `@ourform/element` registers built-ins
 for convenience. HostOptions
 carry customer providers, native bridges, data, translation and themes. `BuilderController` exposes
-engine, immutable headless builder, current preview, load/selectSlot/setTheme/setMode/destroy.
+engine, immutable headless builder, current preview, load/selectSlot/setTheme/setMode/setChrome,
+markSaved/markSaveFailed and destroy.
 `onPreviewReady` receives each replacement preview and undefined during cleanup. Repeated destroy
 is safe; later mutations throw. Detached UI buttons/listeners cannot edit the draft.
 
@@ -133,3 +134,47 @@ resizing retains schema/history and answers. The schema remains editable through
 
 The complete mouse/keyboard twelve-field exercise and clean-checkout provisioning are in
 [the builder author guide](../../apps/docs/builder-author-guide.md).
+
+## Save acknowledgement and review behavior
+
+Header Save emits `of-save` with `{definition}` and displays **Saving…**. The host persists that
+snapshot and acknowledges it on the UI controller (not the headless `controller.builder`):
+
+```ts
+import type { FormDefinition } from "@ourform/schema";
+
+// mount is the createBuilder host element; controller is its returned UI controller.
+mount.addEventListener("of-save", async (event) => {
+  const { definition } = (event as CustomEvent<{ definition: FormDefinition }>)
+    .detail;
+  try {
+    await persistDefinition(definition); // customer-owned storage
+    controller.markSaved(); // Saved <local time>
+  } catch (error) {
+    controller.markSaveFailed(
+      error instanceof Error ? error.message : "Save failed",
+    );
+  }
+});
+```
+
+Only one save is outstanding. New edits during saving remain unsaved after acknowledgement of the
+older snapshot. Idle acknowledgements are ignored; calls after destroy throw like other mutations.
+The demo simulates confirmation; the SDK itself makes no network call or storage write for form data.
+
+Header **Theme** selects the form theme. **More → Builder look** chooses Match form / Neutral and
+persists it in browser-profile storage. `preferenceKey` (default `ourform.builder.look`) lets hosts
+namespace the preference per authenticated user. An explicit `chrome.theme` takes precedence at
+creation, including pinned/custom themes. Storage denial leaves the active instance usable. The
+More menu also contains Appearance, Insert into and Layout to wrap in for keyboard workflows.
+
+Selection follows focused outline/canvas components, including End/Up then Duplicate or Wrap.
+Conditional/Disabled when and Calculated value use searchable sentence rows and a synchronized
+secondary **Write as expression** view; there is no Apply step. Advanced expressions stay intact.
+Display metadata adds Tooltip, Prefix/Suffix for value shells, Disabled and Read-only; locks remain
+enforced. The header shows the type icon and location. Empty labels use registered type titles.
+
+New Select additions have editable Option 1/Option 2; existing runtime defaults remain empty. Issues
+flags empty Select/Radio options without rejecting a deliberate wire definition. Palette order favors
+common fields, and no unregistered future component is shown. M09b+ is a proposal in spec 10, not
+implemented functionality.

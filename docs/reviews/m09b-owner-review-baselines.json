@@ -1,0 +1,132 @@
+{
+  "base": "f1b9ac7e173875ee46d6686b3c44f9d123de63bf",
+  "unchangedExistingFiles": 368,
+  "changed": [
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-1-neutral-material-drag.png",
+      "before": "5b2b56a075cb88a6123d574383ee4ce3a2cb31527ebe3fb6b4a1106b31a8a670",
+      "after": "f6b795eaafc020b5fea2bfbea22304b8bc30b1c86ac8f2a0298ba6617f67b541"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-2-neutral-edit-dialog.png",
+      "before": "afa52ede02e19ebf34d07c49aa86a2ca4c91fe495de2778976db230c407621b2",
+      "after": "c402e6b1aa6e4cf1e4a4288bacdab545f0079a6025c5a1127d9b4b43dd7f30df"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-bootstrap4.png",
+      "before": "8998bbcd90933992446e73817d347677bf73386936c8cce12ffdc8f9f42c8492",
+      "after": "bdeb61c595b2bd587fbb621ef87d0dcd895d3f4e165a15439c59e62bf2c98e8d"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-bootstrap5.png",
+      "before": "2451314641a2ea0c28eef2a0c184befedb3f271dd089d7fee50ae86f3bab16c4",
+      "after": "e110f56a02e9c9150652665fee548ad9ac425b3c29e88a8f820a99cfe95ae6df"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-dark-compact.png",
+      "before": "ccbbf6fca292f4598a267cc9e79ad39deefbaefde802baff4f37f1be1414bff3",
+      "after": "3281c4a70974a5fce3ec4b6e22e3e4adc4d087b58452b338c1d6ec5e6dd42c88"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-material.png",
+      "before": "50e9908fbc69d5d4c433fe7453482710616581af200e5216662ff9b3b0f0a94f",
+      "after": "c553b83e3a5c508e62108ef09a5afc0016be158feb4b5dc9becb02be7f37fd1f"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-theme-comparison.png",
+      "before": "70e556825a59ee00ae721784c4d9375463121d6928dc572400e01b04f8b06acc",
+      "after": "dc95dd4344127c4b617b03b3742f80e399bdf85fb07ee2764fbdac95fcbb1ab0"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/material-readonly.png",
+      "before": "dbc641bc4253d762ec3ecab0656961a6eaf43377e34d7ca96e80fc687dd519d0",
+      "after": "edd9ee103fc7460fce2c45943246be5cc628918e252c1bd0e57ede10d9f28365"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/material-readonly.png",
+      "before": "8388f408003d44765ead5876c3f12e35e11ac579897b201fbb39d24d7ad5bb5a",
+      "after": "27b7bb06bc9bbd5efde419101763956195ad6608f64a27295dbabefcc95e094e"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/material-readonly.png",
+      "before": "59a843702e8ee336cf776d43870206829313c80e84bde60696cba3b45cc9d5df",
+      "after": "1aa94abf5f780d93f9282ca45a45bd9035e94c136b2228da39852464e84efecd"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-1-neutral-material-drag.png",
+      "before": "be30255cabec0ca8d57e2c2f80fb8ea3d93325df062ff7194a4bc8c15d663fc5",
+      "after": "b8d28d73533d65621c03abe9fc2e4e08a6db32c29d94a8b3ff37dfe9a97be14c"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-2-neutral-edit-dialog.png",
+      "before": "6d29878e1503f82863f021710c047017e0021bd7a4c80fc8e6ddb13e30ca30f0",
+      "after": "6652a396861a5933ededd31052ebd178510159038bd104097b82ef5fd35de723"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-bootstrap4.png",
+      "before": "34fc181527f4a9ce885b36184e649e71699d18001f5d004c30a22086ec0c379e",
+      "after": "1a8a0ee5ccc9c4fb00c730db96ec71f739851b1538fe004a3546b16770a65319"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-bootstrap5.png",
+      "before": "e0c9ae0f966e360c8ec7d215c55764516651577fe18023fb3eb899958c7c6d1a",
+      "after": "9378d0e38d161af5dc9f72f917184d6fe67e53a70f8490a20c7f07368ea9da6b"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-dark-compact.png",
+      "before": "ecc6549cb34e082cb2fb66159e6abd3478b081b4af191fee9d1f2d47971b7898",
+      "after": "aa63902f3857de874c139995d150eb77fac4780b4451bcb716e4976da5a05a56"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-material.png",
+      "before": "a6e7e5a6295403b5e9343429f32f6e736fb0b33c657470bb9db9e8cab68a97c7",
+      "after": "c1e5b0ee706efc7a47129e152111e1b6d7f711518b1e5ade09edf79506a880ae"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-theme-comparison.png",
+      "before": "051878946e06edc3ccbd2a8f097621b9918384b43ca209677a467f7f456a8153",
+      "after": "f19a602976eb12abe6ba8d497678def2e1eeebf2c5b08d4b69038825e8d0eacf"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/material-readonly.png",
+      "before": "a20947b1f644c46d84dd0c050f1fe4c256e0a28667a3112cea2c0dc6c8a8216f",
+      "after": "836510333ab868f69e3b48d52e6b632ff7cda8ea181f8a5626b4832d9958969f"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/material-readonly.png",
+      "before": "106ab654749cc68cfc30e66d81b962718871e0097c7bae7fd4e11f2698a2714c",
+      "after": "2b56ea775fec12a267fa171ae28f15a60ab6808761f3438025a15f9f7f9890b8"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/material-readonly.png",
+      "before": "ef2b69dae76a83988b8e87ba2af5f3827aa52ae83cd6335fcff2b9fbaa552378",
+      "after": "3a6466d4c89f2736f97995c13fd23d15861c7291877e91c5cb10fd824b1b884e"
+    }
+  ],
+  "added": [
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-review-visual.spec.ts/chromium/review-builder-look-menu.png",
+      "sha256": "cad9bc628c517d4ceef9de66259bdc0274eb176da15ecb3fd91454a87dfe8075"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-review-visual.spec.ts/chromium/review-conditional-sentence.png",
+      "sha256": "d4925e746a316bdf2d096cdbef783d97abc341c80962699dd093d83706877a7f"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-review-visual.spec.ts/chromium/review-material-phone-readonly.png",
+      "sha256": "8acac408705802ebc76f8e170e81c01cf6f870c398cd49efc88399afe1e499ab"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-review-visual.spec.ts/chromium/review-builder-look-menu.png",
+      "sha256": "ceae3fb16c0fd8610164b66debb733b49f7fbb2995159c474cf7b8fcc2a9ac83"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-review-visual.spec.ts/chromium/review-conditional-sentence.png",
+      "sha256": "29c00e42f5b649cc8ae87543d70a2226a0cbce689a8eb7606a2c2bf34b86268e"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-review-visual.spec.ts/chromium/review-material-phone-readonly.png",
+      "sha256": "41b733ed9c1263b1247345cc763aac7711ace149dbd09f0673ae7a157a65be1e"
+    }
+  ]
+}

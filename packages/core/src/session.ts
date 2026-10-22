@@ -91,7 +91,7 @@ export class FormSession {
           value: readPath(this.#data, entry.path),
           visible: true,
           disabled: false,
-          readOnly: this.mode === "readOnly",
+          readOnly: this.mode === "readOnly" || entry.node.readOnly === true,
           required: entry.node.validation?.required ?? false,
           dirty: false,
           touched: false,
@@ -140,6 +140,7 @@ export class FormSession {
         : true);
     const disabled =
       (parent?.disabled ?? false) ||
+      entry.node.disabled === true ||
       (entry.expressions.disabledWhen
         ? Boolean(entry.expressions.disabledWhen.evaluate(this.context()))
         : false);
@@ -175,6 +176,10 @@ export class FormSession {
         value,
         visible,
         disabled,
+        readOnly:
+          this.mode === "readOnly" ||
+          entry.node.readOnly === true ||
+          parent?.readOnly === true,
         dirty: initial ? false : old.dirty,
         errors: validation.errors,
         pending: validation.pending,

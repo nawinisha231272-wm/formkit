@@ -47,3 +47,14 @@ Trace SHA-256 digests:
 Final observed verdict: **PASS on this machine**, both sources below 50ms. This is not a guarantee
 against unrelated OS/browser scheduling noise on another machine. No existing baseline or runner
 calibration changed, and the trace command does not turn advisory timing into a PR correctness gate.
+
+## Owner-review follow-up — 2026-10-22
+
+After the owner-review product changes, the same isolated pinned `CI=true pnpm benchmark:builder`
+passes both sources (`/tmp/m09b-review-drag-benchmark.log`). For 500 fields and 80 actual pointer moves,
+including pickup, palette maximum task is **49.275ms** (pickup interval 84.688ms, active 1486.528ms,
+4,768 tasks); existing-field maximum is **17.362ms** (pickup interval 31.064ms, active 1402.022ms,
+4,651 tasks). Neither contains a task over 50ms. Pickup intervals include multiple tasks and are not
+reported as single-task duration. Earlier measurements/failures above are retained. No threshold or
+runner baseline changed. Subsequent distinct read-only fill tokens affect only read-only previews,
+not this editable drag fixture.

@@ -11,11 +11,11 @@ import type {
   FormDefinition,
 } from "@ourform/schema";
 import { resolveSlots } from "@ourform/sdk";
-import { button, element } from "./types";
+import { button, element, componentTitle } from "./types";
 import type { UI } from "./types";
 import { PointerDrag } from "./pointer";
 import { ComponentActions } from "./component-actions";
-import { icon, isIconName } from "./icons";
+import { icon, componentIcon } from "./icons";
 import { paletteGroups } from "./palette";
 import { describeExpression, controlledFields } from "./signals";
 import { chip, labelledInput } from "./primitives";
@@ -59,6 +59,7 @@ export class Canvas {
   ) {
     root.addEventListener("click", this.click);
     root.addEventListener("keydown", this.keydown);
+    root.addEventListener("focusin", this.followFocus);
     picker.addEventListener("change", this.pick);
     for (const group of paletteGroups(ui)) {
       palette.append(element(ui.document, "h3", group.label));
@@ -72,17 +73,8 @@ export class Canvas {
         );
         // Preserve the familiar visible palette names while making purpose explicit to AT.
         add.textContent = ui.t(item.title);
-        const iconName = item.icon ?? item.type;
         add.prepend(
-          icon(
-            ui.document,
-            isIconName(iconName)
-              ? iconName
-              : ui.engine.getField(item.type)?.kind === "layout"
-                ? "panel"
-                : "text",
-            ui.icons,
-          ),
+          icon(ui.document, componentIcon(item.type, item.icon), ui.icons),
         );
         palette.append(add);
       }
@@ -154,7 +146,11 @@ export class Canvas {
       paste: () => this.paste(),
       move: (node) =>
         this.pointer.start(
-          { id: node.id, type: node.type, label: node.label ?? node.type },
+          {
+            id: node.id,
+            type: node.type,
+            label: componentTitle(this.ui, node),
+          },
           true,
         ),
       collapse: (id) => {
@@ -364,7 +360,7 @@ export class Canvas {
     this.ui.announce(
       this.ui.t("of.builder.targetSelected", {
         label: parent
-          ? `${parent.label ?? parent.type} / ${this.caption(slots.find((s) => s.name === name)!)}`
+          ? `${componentTitle(this.ui, parent)} / ${this.caption(slots.find((s) => s.name === name)!)}`
           : this.ui.t("of.builder.formRoot"),
       }),
     );
@@ -453,13 +449,13 @@ export class Canvas {
         button(
           this.ui,
           this.ui.t("of.builder.selectType", {
-            label: node.label ?? node.type,
+            label: componentTitle(this.ui, node),
           }),
           () => {},
         );
       handle.textContent = node.key
-        ? `${node.label ?? node.type} · ${node.key}`
-        : (node.label ?? node.type);
+        ? `${componentTitle(this.ui, node)} · ${node.key}`
+        : componentTitle(this.ui, node);
       handle.className = "of-builder-handle";
       handle.dataset.dragId = node.id;
       handle.dataset.id = node.id;
@@ -550,7 +546,7 @@ export class Canvas {
           "aria-label",
           this.ui.t("of.builder.dropLocation", {
             label: parent
-              ? `${parent.label ?? parent.type} / ${this.caption(this.slots(parent).find((s) => s.name === slot)!)}`
+              ? `${componentTitle(this.ui, parent)} / ${this.caption(this.slots(parent).find((s) => s.name === slot)!)}`
               : this.ui.t("of.builder.formRoot"),
             index: index + 1,
           }),
@@ -579,11 +575,12 @@ export class Canvas {
     }
   }
   drawOutline(): void {
-    const focused = this.outline.contains(this.ui.document.activeElement)
-      ? this.ui.document.activeElement?.closest<HTMLElement>("[data-drag-id]")
-          ?.dataset.dragId
-      : undefined;
     const selected = this.ui.builder.getState().selection;
+    // A command may select a new/moved component while the old slot still owns focus.
+    // Restore the current selection, never an ancestor inferred from the detached slot.
+    const focused = this.outline.contains(this.ui.document.activeElement)
+      ? selected
+      : undefined;
     let location = selected ? this.location(selected) : undefined;
     while (location?.parent) {
       const parent = location.parent;
@@ -648,7 +645,7 @@ export class Canvas {
           "aria-selected",
           String(selected === node.id && !this.#slotSelection),
         );
-        li.setAttribute("aria-label", node.label ?? node.type);
+        li.setAttribute("aria-label", componentTitle(this.ui, node));
         li.tabIndex =
           selected === node.id || (!selected && depth === 1 && index === 0)
             ? 0
@@ -678,7 +675,7 @@ export class Canvas {
             String(!this.#collapsed.has(node.id)),
           );
         }
-        text.append(node.label ?? node.type);
+        text.append(componentTitle(this.ui, node));
         if (this.ui.builder.lockLevel(node.id)) {
           const lock = icon(this.ui.document, "lock", this.ui.icons);
           lock.setAttribute("role", "img");
@@ -775,7 +772,7 @@ export class Canvas {
     for (const { node } of this.entries())
       for (const slot of this.slots(node)) {
         this.#choices.push({ parentId: node.id, slot: slot.name });
-        labels.push(`${node.label ?? node.type} / ${this.caption(slot)}`);
+        labels.push(`${componentTitle(this.ui, node)} / ${this.caption(slot)}`);
       }
     labels.forEach((label, index) => {
       const option = element(this.ui.document, "option", label);
@@ -869,7 +866,7 @@ export class Canvas {
     this.onLocalChange();
     this.ui.announce(
       this.ui.t(node ? "ofb.copied" : "ofb.selectFirst", {
-        label: node?.label ?? node?.type,
+        label: node ? componentTitle(this.ui, node) : "",
       }),
     );
   }
@@ -942,6 +939,18 @@ export class Canvas {
       this.#items.get(row.dataset.dragId)?.focus();
     }
   }
+  followFocus = (event: FocusEvent) => {
+    const target = event.target as HTMLElement;
+    const row = target.closest<HTMLElement>('[role="treeitem"]');
+    if (row && this.outline.contains(row)) this.selectTreeRow(row);
+    else if (
+      target.matches("[data-field-id][tabindex]") &&
+      this.host.contains(target)
+    ) {
+      const id = target.dataset.fieldId!;
+      if (this.ui.builder.lockLevel(id) !== "all") this.ui.builder.select(id);
+    }
+  };
   click = (event: MouseEvent) => {
     const target = event.target as Element;
     if (
@@ -1016,7 +1025,8 @@ export class Canvas {
     }
   };
   keydown = (event: KeyboardEvent) => {
-    if (this.pointer.active) return;
+    if (this.pointer.active || this.root.hasAttribute("data-ofb-readonly"))
+      return;
     const target = event.target as HTMLElement;
     if (
       target.closest(
@@ -1125,7 +1135,10 @@ export class Canvas {
         return;
       }
     }
-    const selected = this.ui.builder.getState().selection;
+    const selected =
+      tree?.dataset.dragId ??
+      target.closest<HTMLElement>("[data-field-id]")?.dataset.fieldId ??
+      this.ui.builder.getState().selection;
     const node = this.entries().find((e) => e.node.id === selected)?.node;
     if (node) {
       const action =
@@ -1253,7 +1266,9 @@ export class Canvas {
         ...this.#visible.slice(0, position + 1),
       ];
       next = ordered.find((e) =>
-        (e.node.label ?? e.node.type).toLowerCase().startsWith(this.#typeAhead),
+        componentTitle(this.ui, e.node)
+          .toLowerCase()
+          .startsWith(this.#typeAhead),
       )?.node.id;
     } else return;
     event.preventDefault();
@@ -1269,6 +1284,7 @@ export class Canvas {
     this.pointer.destroy();
     this.root.removeEventListener("click", this.click);
     this.root.removeEventListener("keydown", this.keydown);
+    this.root.removeEventListener("focusin", this.followFocus);
     this.picker.removeEventListener("change", this.pick);
     this.#targets.clear();
     this.#handles.clear();

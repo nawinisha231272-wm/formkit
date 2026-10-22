@@ -1,3 +1,4 @@
+import { componentTitle } from "./types";
 import type { DropTarget } from "@ourform/builder-core";
 import type { ComponentNode } from "@ourform/schema";
 import type { ComponentSlot } from "@ourform/sdk";
@@ -147,7 +148,11 @@ export class PointerDrag {
       .entries()
       .find((entry) => entry.node.id === id)?.node;
     return node
-      ? { id: node.id, type: node.type, label: node.label ?? node.type }
+      ? {
+          id: node.id,
+          type: node.type,
+          label: componentTitle(this.context.ui, node),
+        }
       : undefined;
   }
   down = (event: PointerEvent) => {
@@ -276,7 +281,10 @@ export class PointerDrag {
       .entries()
       .find((entry) => entry.node.id === id)?.node;
     if (node)
-      this.start({ type: node.type, id, label: node.label ?? node.type }, true);
+      this.start(
+        { type: node.type, id, label: componentTitle(this.context.ui, node) },
+        true,
+      );
   }
   #cache() {
     if (!this.#active) return;
@@ -357,7 +365,7 @@ export class PointerDrag {
         const target = make(
           node,
           slot.name,
-          `${node.label ?? node.type} / ${this.context.caption(slot)}`,
+          `${componentTitle(this.context.ui, node)} / ${this.context.caption(slot)}`,
           owner,
           depth,
         );

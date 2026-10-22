@@ -38,9 +38,40 @@ for (const [host, port] of [
       await expect(input).toHaveAttribute("data-identity", "kept");
     });
   }
+  test(`${host}: schema Read-only and Disabled flags protect fields and keep API writes available`, async ({
+    page,
+  }) => {
+    await page.goto(`http://127.0.0.1:${port}/?protected`);
+    await page.waitForFunction(() => !!window.hostDemo);
+    for (const [key, label] of [
+      ["staticReadOnly", "Read-only account"],
+      ["staticDisabled", "Disabled account"],
+    ]) {
+      const input = page.getByLabel(label!, { exact: true });
+      if (key === "staticReadOnly")
+        await expect(input).toHaveAttribute("readonly", "");
+      else await expect(input).toBeDisabled();
+      await input.evaluate((el) => {
+        const input = el as HTMLInputElement;
+        input.value = "blocked";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      await expect(input).toHaveValue("stored");
+      await page.evaluate(
+        (key) => window.hostDemo.form.session.setValue(key!, "API"),
+        key,
+      );
+      await expect(input).toHaveValue("API");
+    }
+  });
 }
 for (const shadow of [false, true])
-  for (const protection of ["disabled", "readOnly"] as const) {
+  for (const protection of [
+    "disabled",
+    "readOnly",
+    "schemaDisabled",
+    "schemaReadOnly",
+  ] as const) {
     test(`Web Component ${shadow ? "shadow" : "light"}: ${protection} user write restores control and API writes work`, async ({
       page,
     }) => {
@@ -66,6 +97,8 @@ for (const shadow of [false, true])
                 type: "text",
                 label: "Name",
                 defaultValue: "stored",
+                ...(protection === "schemaReadOnly" ? { readOnly: true } : {}),
+                ...(protection === "schemaDisabled" ? { disabled: true } : {}),
                 ...(protection === "disabled"
                   ? { disabledWhen: ["eq", 1, 1] }
                   : {}),

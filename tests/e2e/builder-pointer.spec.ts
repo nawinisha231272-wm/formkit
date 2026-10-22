@@ -195,14 +195,14 @@ test("virtual outline slots collapse and expand by keyboard without editing thei
   ).toBe(0);
 });
 
-test("outline End and Up select the action target before keyboard Copy or Duplicate", async ({
+test("outline End and Up select the action target before keyboard Copy, Duplicate and Wrap", async ({
   page,
 }) => {
   await page.goto("/builder.html?approved");
   const before = await page.evaluate(() =>
     JSON.stringify(window.miniBuilder.builder.getState().definition),
   );
-  for (const action of ["copy-paste", "duplicate"]) {
+  for (const action of ["copy-paste", "duplicate", "wrap"]) {
     await page
       .locator(
         '[role="treeitem"][data-drag-id="email"] > .of-builder-tree-name',
@@ -221,7 +221,14 @@ test("outline End and Up select the action target before keyboard Copy or Duplic
     if (action === "copy-paste") {
       await page.keyboard.press("ControlOrMeta+c");
       await page.keyboard.press("ControlOrMeta+v");
-    } else await page.keyboard.press("ControlOrMeta+d");
+    } else if (action === "duplicate")
+      await page.keyboard.press("ControlOrMeta+d");
+    else {
+      await page.keyboard.press("Shift+F10");
+      await page
+        .getByRole("menuitem", { name: "Wrap in layout", exact: true })
+        .click();
+    }
     const changed = await page.evaluate(() => ({
       definition: JSON.stringify(
         window.miniBuilder.builder.getState().definition,
@@ -229,7 +236,15 @@ test("outline End and Up select the action target before keyboard Copy or Duplic
       steps: window.miniBuilder.builder.getState().history.past.length,
     }));
     expect(changed.steps).toBe(1);
-    expect(changed.definition.match(/"label":"Notes"/g)).toHaveLength(2);
+    expect(changed.definition.match(/"label":"Notes"/g)).toHaveLength(
+      action === "wrap" ? 1 : 2,
+    );
+    if (action === "wrap") {
+      const wrapped = JSON.parse(changed.definition) as {
+        components: unknown[];
+      };
+      expect(JSON.stringify(wrapped)).toContain('"components":[{"id":"notes"');
+    }
     expect(
       changed.definition.match(/"type":"acme.customer-reference"/g),
     ).toHaveLength(1);
