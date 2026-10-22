@@ -22,6 +22,11 @@ const base: [string, PropertyDefinition["kind"], string][] = [
   ["label", "string", "Display"],
   ["description", "string", "Display"],
   ["placeholder", "string", "Display"],
+  ["tooltip", "string", "Display"],
+  ["prefix", "string", "Display"],
+  ["suffix", "string", "Display"],
+  ["disabled", "boolean", "Display"],
+  ["readOnly", "boolean", "Display"],
   ["hidden", "boolean", "Display"],
   ["key", "string", "Data"],
   ["defaultValue", "json", "Data"],
@@ -84,6 +89,8 @@ export function createPropertyPanel(
     if (
       (!model.value &&
         [
+          "prefix",
+          "suffix",
           "defaultValue",
           "validation.required",
           "calculate.expr",

@@ -9,6 +9,7 @@ import type {
 import type { Engine, CompiledForm } from "@ourform/core";
 import type { Diagnostic, FormDefinition } from "@ourform/schema";
 import type { FormController, HostOptions } from "@ourform/renderer-dom";
+import { resolveSlots } from "@ourform/sdk";
 import type { Theme, ThemeMode, BuilderTheme } from "@ourform/sdk";
 import type { ChromeOptions } from "./theme";
 import type { BuilderIcons } from "./icons";
@@ -41,6 +42,8 @@ export interface BuilderOptions
   extends Omit<HostOptions, "onChange" | "readOnly" | "mode">,
     LockOptions {
   chrome?: ChromeOptions;
+  /** Browser-profile preference namespace; hosts may supply an authenticated user-specific key. */
+  preferenceKey?: string;
   builderThemes?: readonly BuilderTheme[];
   palette?: PaletteOptions;
   toolbar?: { actions?: readonly ToolbarAction[] };
@@ -60,6 +63,8 @@ export interface BuilderController {
   setTheme(theme: Theme | string): void;
   setMode(mode: ThemeMode): void;
   setChrome(options: ChromeOptions): void;
+  markSaved(): void;
+  markSaveFailed(message: string): void;
   destroy(): void;
 }
 export interface UI {
@@ -102,4 +107,43 @@ export function button(
   action: () => void,
 ): HTMLButtonElement {
   return actionButton(ui, text, action);
+}
+
+export function componentTitle(
+  ui: Pick<UI, "engine" | "t">,
+  node: import("@ourform/schema").ComponentNode,
+): string {
+  const model = ui.engine.getField(node.type);
+  return (
+    node.label?.trim() ||
+    ui.t(model?.builder?.title ?? model?.title ?? node.type)
+  );
+}
+
+export function componentLocation(
+  ui: Pick<UI, "engine" | "t">,
+  form: CompiledForm,
+  id: string,
+): string {
+  const labels: string[] = [];
+  let entry = form.byId[id];
+  while (entry) {
+    labels.unshift(componentTitle(ui, entry.node));
+    const parent: CompiledForm["byId"][string] | undefined = entry.parentId
+      ? form.byId[entry.parentId]
+      : undefined;
+    if (parent) {
+      const slots = resolveSlots(parent.model, parent.node);
+      const slot =
+        slots.length > 1
+          ? slots.find((s) => s.name === entry!.parentSlot)
+          : undefined;
+      if (slot) {
+        const translated = slot.labelKey ? ui.t(slot.labelKey) : slot.label;
+        labels.unshift(translated === slot.labelKey ? slot.label : translated);
+      }
+    }
+    entry = parent;
+  }
+  return [ui.t("ofb.formRoot"), ...labels].join(" › ");
 }

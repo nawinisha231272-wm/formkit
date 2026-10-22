@@ -255,6 +255,21 @@
             "$ref": "#/$defs/column"
           },
           "x-ourform-width-sum": 12
+        },
+        "tooltip": {
+          "type": "string"
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "suffix": {
+          "type": "string"
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "readOnly": {
+          "type": "boolean"
         }
       },
       "required": ["id", "type"],

@@ -16,3 +16,6 @@ baselines are platform-separated. Builder appearance is documented in spec 10 an
 this theme's accent, typography and primitive recipes. It is separate from the form descriptor.
 Use `chrome.theme: "match-form"` or pin it by name; density is applied by the builder runtime.
 No global CSS, DOM side effects or runtime SDK import is introduced.
+
+Read-only controls use a distinct filled neutral surface (`--of-material-readonly-bg`) and solid borders, including phone preview, rather
+than dashed placeholders. Theme tokens preserve readable contrast in light/dark/high-contrast modes.

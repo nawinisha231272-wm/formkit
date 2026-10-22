@@ -47,6 +47,15 @@ export function shellVNode(
   onBlur?: () => void,
   layoutInteraction: LayoutInteraction = {},
 ): VNode {
+  presentation = {
+    ...presentation,
+    ...(presentation.prefix === undefined && entry.node.prefix
+      ? { prefix: entry.node.prefix }
+      : {}),
+    ...(presentation.suffix === undefined && entry.node.suffix
+      ? { suffix: entry.node.suffix }
+      : {}),
+  };
   const design = layoutInteraction.mode === "design";
   const state = session.getFieldState(entry.node.id);
   const view = views.get(entry.node.type);
@@ -70,6 +79,7 @@ export function shellVNode(
       : undefined;
   const rootProps = {
     key: entry.node.id,
+    ...(entry.node.tooltip ? { title: entry.node.tooltip } : {}),
     "data-field-id": entry.node.id,
     "data-of-shell": variant,
     "data-of-pending": String(state.pending),

@@ -116,3 +116,70 @@ Approved mockups (2026-10-21): (1) builder with nested form, drag in progress, h
 - No long task over 50 ms while dragging in a 500-field form (Chromium trace).
 - Host options covered by tests and documented in the builder README.
 - Fresh Codex session (M08 trial rules) builds the task-script form from builder docs alone; findings fixed. Human usability pass remains in M11.
+
+## Owner review corrections — 2026-10-22 (normative M09b)
+
+- At widths ≥1280px the header is one row; Undo, Redo, Issues, Preview and Save are aligned right.
+  The form selector is labelled **Theme**. Header **More** exposes **Builder look: Match form / Neutral**,
+  Appearance and keyboard destination/wrap controls. Builder look persists in browser-profile storage
+  (no network); hosts may namespace it with `preferenceKey` for an authenticated user. An explicit
+  host `chrome.theme` takes precedence on creation. Storage denial falls back to the active instance.
+- Conditional opens with sentence rows (field · operator · value) and All/Any; Disabled when uses the
+  same editor. Logic > Calculated value uses field · arithmetic/concatenation operator · value.
+  Editing any row updates the same private draft immediately; there is no separate Apply step.
+  **Write as expression** is secondary and synchronizes both ways. Arbitrary supported expressions
+  that have no equivalent simple rows remain intact and open the expression view, without flattening
+  or silently rewriting nested logic. Invalid raw input blocks Save and leaves the valid draft intact.
+  This remains spec-03 compact expressions; spec-11 rule actions and Logic mode stay M09c.
+- Field/operator/join pickers are searchable comboboxes: type to filter, arrows to navigate, Enter to
+  commit, Escape to restore the current selection, Tab to continue. Typing an uncommitted filter does
+  not change the definition. Controls expose listbox/option/active-descendant semantics.
+- In the single-select outline and canvas, selection follows component focus. End/Up then Duplicate
+  or Wrap targets that component. Virtual slots choose their actual destination; host locks still apply.
+- Palette types have distinct library icons (plugins may declare their icon). Basic order is Text,
+  Email, Number, Select, Checkbox, Radio, Date, Textarea, then remaining registered types. Absent types
+  are not fabricated. Unlabelled/blank layouts use their registered type title everywhere. Hide a
+  zero-count Controls summary rather than displaying “Controls 0 fields”.
+- Generated Display editors include Tooltip, Prefix, Suffix, Disabled and Read-only. Prefix/suffix
+  apply to value-field shells, not non-value layouts/content/buttons. Tooltip is a native hover title;
+  Description remains the durable explanatory text. Disabled and Read-only are static schema flags,
+  inherited by descendants; disabled also combines with disabledWhen. Host read-only overrides remain
+  stronger. User writes are ignored and controls restored; API writes remain possible. The dialog
+  header shows the type icon and full component location as well as the quiet key.
+- New Select additions start with editable Option 1/Option 2. This is builder Add behavior; existing
+  schemas, renderer model defaults and deliberately empty choices are preserved. Issues flags Select
+  or Radio with no options, with a link selecting that component. Radio has no fabricated defaults.
+- Material read-only controls use a filled surface and solid border, including phone preview; other
+  themes keep their existing appearance.
+
+### Host-confirmed save status
+
+Header Save emits `of-save` with `{definition}` and changes the chip/live announcement to **Saving…**.
+The host persists that exact definition, then calls `BuilderController.markSaved()` (chip **Saved
+<local time>**) or `markSaveFailed(message)` (visible/announced failure). The builder does not perform
+storage/network persistence. Save is disabled during an outstanding request. If schema edits happen
+before acknowledgement, those edits stay unsaved; `markSaved()` cannot label a newer definition saved.
+Calling either acknowledgement without an outstanding request has no effect. The demo simulates
+successful host acknowledgement. Remove the contradictory “Form ready to save” announcement.
+
+## Proposed M09b+ — authoring shortcuts (owner review required)
+
+**Proposal only; not approved for implementation.** Deliver after M09b screenshot approval and before
+M09c. See `docs/milestones/M09b-plus.md`. Keep changes small and use the existing command/lock/slot contracts:
+
+1. Inline label editing: double-click or a keyboard action edits the canvas label; Enter commits one
+   label command, Escape cancels. Existing data keys never change silently. Respect `all` locks.
+2. Hover/focus “+” between siblings opens the searchable mini palette at that precise slot/index.
+   Add and initial modal settings retain M09b's atomic Save/Cancel behavior and keyboard alternative.
+3. Ctrl/Cmd+K command bar searches three explicit groups: Add component, Jump to component, Actions.
+   Reuse registered palette/action metadata; report disabled actions and preserve focus on Escape.
+4. Multi-select with Shift/Cmd/Ctrl click and keyboard range/toggle alternatives. Move, Delete, Wrap
+   and Required apply as atomic bounded-history commands. Nested selections normalize to highest
+   selected ancestors; mixed-scope/conflicting/locked operations refuse atomically with a reason.
+
+Acceptance proposal: all four flows work by mouse and keyboard, with axe in every builder theme;
+no focus/state loss on theme changes; atomic exact undo/redo, including randomized selection/move
+sequences; no duplicate descendant operations; locked/illegal targets refused with no partial mutation.
+Update only changed visual states, retain count/size budgets, run full pinned verify. Owner reviews this
+plan before building it. Reusable sections/templates, tablet width tooling, preview test data, guided
+pre-save fixes and persistent version history/diff/restore remain backlog after M10a, not this proposal.

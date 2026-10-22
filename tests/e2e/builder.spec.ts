@@ -53,6 +53,10 @@ test("registry palette and generated Rating/native editors drive JSON, preview, 
   await expect(
     page.locator("#preview").getByRole("button", { name: "7 of 7 stars" }),
   ).toBeVisible();
+  await page
+    .locator("#preview")
+    .getByRole("button", { name: "7 of 7 stars", exact: true })
+    .click();
   await mode(page, "Build");
   await page.locator('#palette [data-type="employee"]').click();
   dialog = page.getByRole("dialog");
@@ -76,7 +80,28 @@ test("registry palette and generated Rating/native editors drive JSON, preview, 
   expect(nativeState.value).toBe("e1");
   expect(nativeState.touched).toBe(true);
   dialog = await edit(page, "Conditional");
-  await dialog.getByLabel("Disabled when", { exact: true }).fill("true");
+  const disabledRule = dialog.getByRole("region", {
+    name: "Disabled when",
+    exact: true,
+  });
+  await disabledRule
+    .getByRole("button", { name: "Add condition", exact: true })
+    .click();
+  const conditionField = disabledRule.getByRole("combobox", {
+    name: "Condition field",
+    exact: true,
+  });
+  await conditionField.fill("Rating");
+  await conditionField.press("Enter");
+  const operator = disabledRule.getByRole("combobox", {
+    name: "Operator",
+    exact: true,
+  });
+  await operator.fill("equals");
+  await operator.press("Enter");
+  await disabledRule
+    .getByRole("textbox", { name: "Comparison value", exact: true })
+    .fill("7");
   await save(page);
   await mode(page, "Preview");
   await expect(page.locator('#preview input[type="search"]')).toBeDisabled();

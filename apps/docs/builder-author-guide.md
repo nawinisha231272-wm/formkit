@@ -50,7 +50,7 @@ or the app's Vite configuration adjusted consistently.
    | Text         | Company name  |
    | Text         | Tax ID        |
 
-5. For **Company name**, open its **Conditional** tab. Expand **Conditions for Visible when**,
+5. For **Company name**, open its **Conditional** tab. Under **Visible when**,
    choose **Add condition**, field **Customer type**, operator **equals**, value `business`. Save.
    A literal comparison string needs no JSON quotes. The generated expression references the other
    field's stable id; the display label/data key is not its expression id. The canvas shows hidden
@@ -77,12 +77,12 @@ or the app's Vite configuration adjusted consistently.
    the dev server: restarting Vite can reload the page and clear this unsaved in-memory form.
 9. Try Undo/Redo. Adding a component with its initial settings is one step. Copy/Paste, Duplicate
    and Wrap each commit once and never open settings. Cancel/Escape/Close discard a pending modal
-   addition. Header Save emits `of-save`; saving the definition to disk/database belongs to the host.
+   addition. Header Save emits `of-save` and shows Saving…; the host calls `markSaved()` or `markSaveFailed(message)`
+   after storage completes. The demo simulates acknowledgement.
 
 Phone is intentionally a plain Text field here; the advanced Phone component belongs to M10b.
-Industry's Select starts with an empty options list, so Preview initially shows only **Choose an option**.
-That is expected for this task. For usable static choices, open Industry's **Display** tab and fill the
-generated **Options** editor with the following JSON, then Save:
+A newly added Industry Select starts with editable **Option 1** and **Option 2**. Replace these
+placeholders in Industry's **Display → Options** editor, for example with this JSON, then Save:
 
 ```json
 [
@@ -122,8 +122,9 @@ way to select it without changing the form. Ctrl/Cmd+C copies, Ctrl/Cmd+V pastes
 and Ctrl/Cmd+Shift+J opens component JSON. Inside the JSON editor or a text input, normal text clipboard
 behavior applies. Copy itself creates no undo step; a subsequent Paste creates one.
 
-For a native condition-field select, Space opens its menu; type the field label and confirm with Enter.
-Check the displayed selection before saving; native menu arrow-key behavior differs between browsers.
+Condition fields/operators use searchable pickers: type a label to filter, use arrows to navigate,
+and Enter to select. Escape restores the current selection; Tab continues. Rows update the private
+draft immediately. **Write as expression** is an optional synchronized view, with no separate Apply.
 After switching to Preview, wait for its panel to appear before continuing Tab traversal. The workbench
 scrolls within its panes: Tab to a lower field to bring it into view. A full-page screenshot may still
 capture only the outer viewport; capture the relevant scrolled states separately.
@@ -216,3 +217,8 @@ Use only this guide, the linked public builder README and the CLI's own help; do
 source or request implementation assistance. Record blockers/gaps when they occur. Timebox to 90 minutes;
 stop and report a blocker after ten minutes without progress. AI evidence is not a human usability pass;
 the latter remains required in M11. A trial does not approve implementation screenshots for the owner.
+
+**More → Builder look** chooses Match form or Neutral and remembers the browser-user preference.
+The form selector is **Theme**. Keyboard destination and wrap controls are inside More, not the main
+inspector. Static Read-only/Disabled and Tooltip/Prefix/Suffix are generated Display properties;
+Description is visible help, while Tooltip is a hover title.

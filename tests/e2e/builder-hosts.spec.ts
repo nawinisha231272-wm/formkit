@@ -166,6 +166,10 @@ for (const [host, url] of hosts)
         .click();
       await page
         .getByRole("dialog")
+        .locator('[data-expression="disabledWhen"] summary')
+        .click();
+      await page
+        .getByRole("dialog")
         .locator('[data-property="disabledWhen"]')
         .fill("true");
       await save(page);

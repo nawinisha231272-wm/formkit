@@ -54,3 +54,119 @@ per-action/per-theme/screenshot coverage; those automated acceptance checks are 
 The independent author criterion has evidence, with qualified findings answered here. M09b remains
 open until first-attempt current-head PR CI and merge complete. Expanded local verification passes. Owner approval
 of implementation screenshots is still pending; this report does not substitute for it.
+
+## Owner-directed product fixes — 2026-10-22
+
+The owner requested product fixes beyond the earlier guide clarifications. The original report and
+all raw artifacts remain unchanged; its hash is still the value above.
+
+- Sentence-first visible/disabled/calculated expressions now edit the same draft as the secondary
+  expression view, with no Apply step. Searchable accessible comboboxes support filter/arrows/Enter.
+  Unsupported simple-row shapes remain intact in the raw editor; invalid text cannot corrupt the draft.
+- Selection follows outline/canvas focus. End/Up followed by Duplicate **and Wrap** targets Notes in
+  the trial path. A regression also caught focus restoration after Paste selecting a stale slot's
+  ancestor; restoration now follows the command's new selection.
+- New Select additions have two editable choices. Issues flags empty Select/Radio options rather
+  than relying on guide advice about empty defaults. Existing runtime model defaults are preserved.
+- Save emits of-save, displays Saving…, and waits for markSaved()/markSaveFailed(message). Newer edits
+  cannot be cleared by an older snapshot acknowledgement. The demo simulates host confirmation.
+- Header is one row at ≥1280px; Theme replaces Preview theme. More exposes locally persisted Builder
+  look and keyboard destination/wrap controls. Duplicate harness action buttons are removed in favor
+  of the shared toolbar/context/shortcut paths, reducing both clutter and bundle duplication.
+- Palette order/icons, registered fallback titles, zero-count summary, generated Display presentation/
+  protection fields, dialog icon/location and filled Material read-only surfaces address all remaining
+  owner review items. Static protection inherits and preserves API writes.
+
+Evidence in progress.md is updated as checks finish. Current focused results: 108 unit checks pass;
+Chromium's 28 focused browser checks pass after fixing CSS specificity and stale focus restoration.
+The first browser run's three Display failures were an overbroad test locator matching multiple shell
+prefix spans; scoping to the selected field retained the assertions. The second run's two failures
+caught the actual Material/focus bugs above. Logs `/tmp/m09b-review-focused-browser{,-2}.log` remain.
+Cross-browser, scoped images and full pinned verify are required before claiming these fixes complete.
+M09b screenshot approval stays pending. M09b+ is proposed only; M09c is not implemented.
+
+Follow-up evidence: the normal picker/task suite passes all 45 cases across Chromium, Firefox and
+WebKit (`/tmp/m09b-review-pickers-final.log`). Firefox's native Tab traversal needed the picker to
+close and clear aria-activedescendant on keydown before the browser computes its next target; this
+is a product fix. The trace before the fix is `/tmp/m09b-review-firefox-focus-diagnostic.log`, and
+the fixed keyboard-only task is `/tmp/m09b-review-firefox-focus-fixed.log`. Temporary tracing and
+extra focus waits are removed from the final test. Static flags pass across hosts after the React
+controlled sample supplies both new fields in its initial data; the prior missing controlled values
+were a sample setup error, not a protection failure.
+
+Scoped macOS image generation passes ten workbench/review states and three Material read-only states.
+Only seven workbench images and the three Material read-only images changed; the three new review
+captures are additional evidence. Every other existing baseline is byte-identical. Pending: final
+comparison after dead-CSS cleanup, pinned Linux generation, full verification and owner approval.
+Size checks initially caught 30.05 kB and 30.02 kB against the unchanged 30 kB budget. Removing dead
+harness selectors, duplicate harness actions and redundant icon data brings builder to 29.92 kB.
+No behavior, assertion, pixel threshold or budget was relaxed.
+
+### Expression locator correction requested by owner
+
+The original assertions are unchanged, including the stored `e1` value, touched state, and
+`await expect(page.locator('#preview input[type="search"]')).toBeDisabled()` after Save.
+The first locator correction opened the raw expression view; that was incorrect for this regression.
+It has been replaced with visible sentence controls, setting “Rating equals 7” (the Rating value
+already established by the same test). No expression disclosure is opened and no textarea is filled.
+
+Original failing line:
+
+```ts
+await dialog.getByLabel("Disabled when", { exact: true }).fill("true");
+```
+
+Superseded correction (not the final test):
+
+```ts
+await dialog.locator('[data-expression="disabledWhen"] summary').click();
+await dialog.locator('textarea[data-property="disabledWhen"]').fill("true");
+```
+
+Final visible-control locators:
+
+```ts
+const disabledRule = dialog.getByRole("region", {
+  name: "Disabled when",
+  exact: true,
+});
+await disabledRule
+  .getByRole("button", { name: "Add condition", exact: true })
+  .click();
+const conditionField = disabledRule.getByRole("combobox", {
+  name: "Condition field",
+  exact: true,
+});
+await conditionField.fill("Rating");
+await conditionField.press("Enter");
+const operator = disabledRule.getByRole("combobox", {
+  name: "Operator",
+  exact: true,
+});
+await operator.fill("equals");
+await operator.press("Enter");
+await disabledRule
+  .getByRole("textbox", { name: "Comparison value", exact: true })
+  .fill("7");
+```
+
+The current full run began before this final correction; it cannot establish verification of this
+new test path. The sentence-control regression must pass in all three browsers before completion.
+
+The first sentence-control run failed in all three engines because changing Rating's maximum to 7
+did not select a rating. The test now clicks the visible “7 of 7 stars” preview button before adding
+the Employee lookup. “Rating equals 7” then evaluates against actual user input. Every original
+assertion remains unchanged; the correction adds fixture interaction, not an API write or raw expression.
+Retained failure: `/tmp/m09b-sentence-final-three-browser.log` (15 passed, 3 failed).
+
+During the fixture correction, a broad text replacement also inserted the Rating click into two
+unrelated tests. That caused their navigation to wait for a nonexistent seven-star control. Removed
+both accidental insertions; the click now occurs only in the sentence-rule regression. The original
+assertions remain intact. Retain `/tmp/m09b-sentence-final-three-browser-2.log` as the development
+failure record; verification must use the corrected file.
+
+Final corrected regression: PASS, all 18 checks across Chromium/Firefox/WebKit
+(`/tmp/m09b-sentence-final-three-browser-3.log`). Full pinned final verify: PASS, exit 0,
+306 unit / 1,122 browser / 17 size / five count checks. Archived logs are in
+`docs/reviews/m09b-owner-review-evidence/`. Earlier pending verification statements above are
+historical checkpoints; owner screenshot approval and remote CI remain pending.

@@ -1,11 +1,9 @@
 import {
   createBuilder,
   AddComponent,
-  DuplicateComponent,
   RemoveComponent,
   ReplaceDefinition,
   WrapInLayout,
-  Unwrap,
 } from "@ourform/builder-core";
 import type { JsonPatchOp } from "@ourform/builder-core";
 import {
@@ -30,7 +28,7 @@ import { builderStyle } from "./style";
 import { primitiveStyle } from "./primitive-style";
 import { resolveChrome, chromeStyle } from "./theme";
 import type { ChromeOptions } from "./theme";
-import { element, button } from "./types";
+import { element, button, componentLocation } from "./types";
 import type {
   BuilderOptions,
   BuilderController,
@@ -76,6 +74,15 @@ export function createBuilderController(
   let theme: Theme | string = options.theme ?? "base",
     mode: ThemeMode = options.themeMode ?? "light";
   let chrome = { ...options.chrome };
+  const preferenceKey = options.preferenceKey ?? "ourform.builder.look";
+  if (!chrome.theme) {
+    try {
+      const saved = document.defaultView?.localStorage.getItem(preferenceKey);
+      if (saved === "match-form" || saved === "neutral") chrome.theme = saved;
+    } catch {
+      /* Storage may be unavailable in embedded/private browsing. */
+    }
+  }
   const applyChrome = () => {
     const resolved = resolveChrome(
       chrome,
@@ -176,22 +183,9 @@ export function createBuilderController(
     button.replaceChildren(icon(document, name, options.icons));
     button.dataset.ofbPrimitive = "IconButton";
   }
-  const remove = button(ui, t("of.builder.removeSelected"), () => {
-    const id = core.getState().selection;
-    if (id) dispatch(new RemoveComponent(id));
-  });
-  remove.id = `${prefix}remove`;
-  const duplicate = button(ui, t("of.builder.duplicate"), () => {
-    const id = core.getState().selection;
-    if (id) dispatch(new DuplicateComponent(id));
-  });
-  const cut = button(ui, t("of.builder.cut"), () => canvas.cut());
-  const paste = button(ui, t("of.builder.paste"), () => canvas.paste());
-  const unwrap = button(ui, t("of.builder.unwrap"), () => {
-    const id = core.getState().selection;
-    if (id) dispatch(new Unwrap(id));
-  });
+  const wrapperLabel = element(document, "label", t("of.builder.wrapType"));
   const wrapper = element(document, "select");
+  wrapperLabel.append(wrapper);
   wrapper.setAttribute("aria-label", t("of.builder.wrapType"));
   for (const model of host.engine
     .listFields()
@@ -256,13 +250,8 @@ export function createBuilderController(
   toolbar.append(
     undo,
     redo,
-    cut,
-    paste,
-    duplicate,
-    remove,
-    wrapper,
+    wrapperLabel,
     wrap,
-    unwrap,
     destinationLabel,
     appearanceLabel,
     modeLabel,
@@ -359,27 +348,9 @@ export function createBuilderController(
           })
         : t("ofb.undo");
     redo.disabled = !state.history.future.length;
-    remove.disabled =
-      duplicate.disabled =
-      cut.disabled =
-      wrap.disabled =
-        !state.selection;
-    paste.disabled = !canvas.cutId && !canvas.clipboard;
-    const selected = canvas
-      .entries()
-      .find((e) => e.node.id === state.selection)?.node;
-    unwrap.disabled =
-      !selected || host.engine.getField(selected.type)?.kind !== "layout";
     const lock = state.selection ? core.lockLevel(state.selection) : undefined;
-    if (lock === "all" || lock === "structure") {
-      remove.disabled = cut.disabled = unwrap.disabled = true;
-      remove.title = cut.title = unwrap.title = t("ofb.lock.delete");
-    } else {
-      remove.title = cut.title = unwrap.title = "";
-    }
-    if (lock === "all") {
-      duplicate.disabled = wrap.disabled = true;
-    }
+    wrap.disabled = !state.selection || lock === "all";
+    wrap.title = lock === "all" ? t("ofb.lock.edit") : "";
   };
   const canvas = new Canvas(
     shell,
@@ -430,12 +401,7 @@ export function createBuilderController(
       settings.open(id);
     return diagnostics;
   };
-  const edit = button(ui, t("ofb.edit"), () => {
-    const id = core.getState().selection;
-    if (id) settings.open(id);
-  });
-  toolbar.prepend(edit);
-  const side = sidebar({ host: inspector, outline, legacy: toolbar, ui });
+  const side = sidebar({ host: inspector, outline, ui });
   const bench = workbench({
     root,
     shell,
@@ -446,6 +412,18 @@ export function createBuilderController(
     jsonPanel,
     appearance: appearanceLabel,
     modes: modeLabel,
+    legacy: toolbar,
+    showIssues: () => side.show("issues"),
+    look: () => chrome.theme ?? "match-form",
+    setLook: (value) => {
+      chrome = { ...chrome, theme: value };
+      applyChrome();
+      try {
+        document.defaultView?.localStorage.setItem(preferenceKey, value);
+      } catch {
+        /* Keep the active preference for this instance. */
+      }
+    },
     undo,
     redo,
     preview: () => preview,
@@ -544,18 +522,11 @@ export function createBuilderController(
     side.update();
     const selected = core.getState().selection;
     if (selected && preview) {
-      const crumbs: string[] = [];
-      let entry = preview.session.form.byId[selected];
-      while (entry) {
-        crumbs.unshift(entry.node.label ?? t(entry.model.title));
-        entry = entry.parentId
-          ? preview.session.form.byId[entry.parentId]
-          : undefined;
-      }
-      canvasPanel.querySelector("h2")!.textContent = [
-        t("ofb.formRoot"),
-        ...crumbs,
-      ].join(" › ");
+      canvasPanel.querySelector("h2")!.textContent = componentLocation(
+        ui,
+        preview.session.form,
+        selected,
+      );
     } else
       canvasPanel.querySelector("h2")!.textContent = t("of.builder.canvas");
     updateButtons();
@@ -702,6 +673,14 @@ export function createBuilderController(
     },
     setTheme,
     setMode,
+    markSaved() {
+      assertAlive();
+      bench.markSaved();
+    },
+    markSaveFailed(message: string) {
+      assertAlive();
+      bench.markSaveFailed(message);
+    },
     setChrome(next: ChromeOptions) {
       assertAlive();
       resolveChrome(
@@ -712,6 +691,7 @@ export function createBuilderController(
       );
       chrome = { ...next };
       applyChrome();
+      bench.syncLook();
     },
     destroy() {
       if (destroyed) return;

@@ -53,6 +53,11 @@ export interface ComponentNode {
   label?: string;
   description?: string;
   placeholder?: string;
+  tooltip?: string;
+  prefix?: string;
+  suffix?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
   ariaLabel?: string;
   defaultValue?: unknown;
   validation?: ValidationRules;

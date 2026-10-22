@@ -133,3 +133,7 @@ references and checks keys in the destination data scope. Copy itself does not e
 commits once and remains usable after the source is edited or removed. Invalid drops publish nothing.
 Generated Logic metadata exposes `calculate.expr` and `calculate.allowOverride`; clearing the expression
 removes the whole calculation (including its override), with one reversible patch.
+
+Display metadata includes schema Tooltip, Prefix/Suffix on value fields, Disabled and Read-only.
+Add Select prepares editable Option 1/Option 2 without changing runtime model defaults or existing
+schemas. UI-only empty-option warnings live in builder; all mutations still use core commands.

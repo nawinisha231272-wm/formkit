@@ -6,7 +6,7 @@ export const workbenchStyle = `
 .of-builder .ofb-brand-mark{display:grid;place-items:center;inline-size:30px;block-size:30px;background:var(--ofb-accent);color:var(--ofb-accent-contrast);border-radius:var(--ofb-radius);font-weight:var(--ofb-font-weight-bold)}
 .of-builder .ofb-breadcrumb{display:flex;align-items:center;gap:12px;color:var(--ofb-text-muted)}
 .of-builder .ofb-breadcrumb strong{color:var(--ofb-text)}
-.of-builder .ofb-header-actions{display:flex;align-items:center;gap:6px;flex-basis:100%}
+.of-builder .ofb-header-actions{display:flex;align-items:center;gap:6px;flex-basis:auto;margin-inline-start:auto}
 .of-builder .ofb-header>label{display:flex;align-items:center;gap:8px;font-size:var(--ofb-font-size-small);color:var(--ofb-text-muted)}
 .of-builder .ofb-header select{font:inherit;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius);padding:6px;color:var(--ofb-text);background:var(--ofb-surface)}
 .of-builder .ofb-mode-tabs{background:var(--ofb-surface-raised);border:0;border-radius:var(--ofb-radius);padding:3px;gap:0;margin-inline-start:auto}
@@ -60,6 +60,23 @@ export const workbenchStyle = `
 .of-builder .ofb-component-info dd{margin:0;overflow-wrap:anywhere}
 .of-builder .ofb-info-actions{display:flex;gap:6px;flex-wrap:wrap;margin-block-end:12px}
 .of-builder .ofb-info-actions button{font-size:var(--ofb-font-size-small)}
-.of-builder .ofb-advanced-actions{margin-block-start:20px;font-size:var(--ofb-font-size-small);color:var(--ofb-text-muted)}
-.of-builder .ofb-advanced-actions>summary{cursor:pointer}
+
+.of-builder .ofb-header-menu{position:relative;flex-shrink:0}
+.of-builder .ofb-header-menu>summary{display:flex;align-items:center;justify-content:center;list-style:none;cursor:pointer;min-block-size:var(--ofb-control-height);inline-size:var(--ofb-control-height);border:1px solid var(--ofb-border);border-radius:var(--ofb-radius)}
+.of-builder .ofb-header-preferences{position:absolute;inset-block-start:100%;inset-inline-end:0;z-index:50;inline-size:300px;padding:16px;display:grid;gap:12px;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-panel);background:var(--ofb-surface);box-shadow:var(--ofb-shadow-2)}
+.of-builder .ofb-header-preferences label{display:grid;gap:4px}
+.of-builder .ofb-header-preferences .of-builder-toolbar{margin:0}
+@media(min-width:1280px){
+.of-builder .ofb-header{flex-wrap:nowrap;gap:8px;padding:12px}
+.of-builder .ofb-breadcrumb{min-inline-size:0;gap:6px;flex:1}
+.of-builder .ofb-breadcrumb strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-inline-size:130px}
+.of-builder .ofb-mode-tabs{margin-inline-start:0;flex-shrink:0}
+.of-builder .ofb-mode-tabs>button{padding-inline:8px}
+.of-builder .ofb-header>label{flex-shrink:0;gap:4px}
+.of-builder .ofb-header>label select{max-inline-size:116px}
+.of-builder .ofb-header-actions{flex-shrink:0;margin-inline-start:auto;gap:4px}
+.of-builder .ofb-header-actions button{padding-inline:8px;font-size:var(--ofb-font-size-small)}
+}
 `;
+
+// Owner review: keep desktop actions on the right; preferences/destinations live in More.

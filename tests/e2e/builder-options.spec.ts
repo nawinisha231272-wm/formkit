@@ -90,6 +90,20 @@ test("structure, key and all locks show reasons and protect generated editors an
   await expect(
     menu.getByRole("menuitem", { name: "Edit", exact: true }),
   ).toHaveAttribute("aria-disabled", "true");
+  await menu.press("Escape");
+  const beforeLockedShortcut = await page.evaluate(() =>
+    JSON.stringify(window.miniBuilder.builder.getState().definition),
+  );
+  await locked.press("ControlOrMeta+d");
+  expect(
+    await page.evaluate(() =>
+      JSON.stringify(window.miniBuilder.builder.getState().definition),
+    ),
+  ).toBe(beforeLockedShortcut);
+  await expect(page.locator("#diagnostics")).toContainText(
+    "Locked by your app",
+  );
+  await locked.click({ button: "right" });
   await menu.getByRole("menuitem", { name: "Edit JSON", exact: true }).click();
   dialog = page.getByRole("dialog");
   await expect(

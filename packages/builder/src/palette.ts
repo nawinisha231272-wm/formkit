@@ -41,6 +41,27 @@ export function paletteGroups(ui: UI) {
       }
       group.components.push(component);
     }
+  const frequency = [
+    "text",
+    "email",
+    "number",
+    "select",
+    "checkbox",
+    "radio",
+    "date",
+    "textarea",
+  ];
+  for (const group of groups.values())
+    if (group.name === "basic")
+      group.components.sort(
+        (a, b) =>
+          (frequency.includes(a.type)
+            ? frequency.indexOf(a.type)
+            : frequency.length) -
+          (frequency.includes(b.type)
+            ? frequency.indexOf(b.type)
+            : frequency.length),
+      );
   const defaults: Record<string, number> = {
     basic: 0,
     layout: 1,

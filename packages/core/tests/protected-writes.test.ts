@@ -56,3 +56,48 @@ test.each(["readOnly", "disabled", "hidden"] as const)(
     session.dispose();
   },
 );
+
+test.each(["readOnly", "disabled"] as const)(
+  "schema %s inherits into descendants and protects user writes only",
+  (protection) => {
+    const engine = createEngine()
+      .register({ type: "panel", title: "Panel", kind: "layout" })
+      .register({
+        type: "text",
+        title: "Text",
+        value: {
+          empty: () => "",
+          normalize: (v) => String(v),
+          isEmpty: (v) => v === "",
+        },
+      });
+    for (const inherited of [false, true]) {
+      const protectedNode = field("protected", {
+        defaultValue: "stored",
+        ...(!inherited ? { [protection]: true } : {}),
+      });
+      const definition = form(
+        inherited
+          ? [
+              {
+                id: "panel",
+                type: "panel",
+                [protection]: true,
+                components: [protectedNode],
+              },
+            ]
+          : [protectedNode],
+      );
+      const compiled = engine.compile(definition);
+      expect(compiled.ok).toBe(true);
+      if (!compiled.ok) return;
+      const session = engine.createSession(compiled.form);
+      expect(session.getFieldState("protected")[protection]).toBe(true);
+      session.setValue("protected", "user", { source: "user" });
+      expect(session.getValue("protected")).toBe("stored");
+      session.setValue("protected", "api");
+      expect(session.getValue("protected")).toBe("api");
+      session.dispose();
+    }
+  },
+);

@@ -10,7 +10,12 @@ const schema = query.has("protected")
     ? onboardingSchema
     : nativeSchema;
 const initialData = query.has("protected")
-  ? { name: "stored", locked: false }
+  ? {
+      name: "stored",
+      locked: false,
+      staticReadOnly: "stored",
+      staticDisabled: "stored",
+    }
   : query.has("readonly") && query.has("onboarding")
     ? onboardingData
     : query.has("onboarding")

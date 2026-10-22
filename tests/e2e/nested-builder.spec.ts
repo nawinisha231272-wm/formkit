@@ -318,17 +318,16 @@ test("JSON import and generated expression rows commit replayable changes; inval
     .getByRole("tab", { name: "Conditional", exact: true })
     .click();
   const expr = page.locator('[data-expression="visibleWhen"]');
-  await expr.locator("summary").click();
   await expr
     .getByRole("button", { name: "Add condition", exact: true })
     .click();
   await expr
     .getByRole("combobox", { name: "Condition field", exact: true })
-    .selectOption("email");
-  await expr.getByLabel("Comparison value", { exact: true }).fill('"show"');
+    .fill("Email");
   await expr
-    .getByRole("button", { name: "Apply conditions", exact: true })
-    .click();
+    .getByRole("combobox", { name: "Condition field", exact: true })
+    .press("Enter");
+  await expr.getByLabel("Comparison value", { exact: true }).fill('"show"');
   await save(page);
   await expect
     .poll(() =>
@@ -352,6 +351,7 @@ test("JSON import and generated expression rows commit replayable changes; inval
     .getByRole("dialog")
     .getByRole("tab", { name: "Conditional", exact: true })
     .click();
+  await page.locator('[data-expression="visibleWhen"] summary').click();
   await page.locator('[data-property="visibleWhen"]').fill('["unknown",1]');
   await page.locator('[data-property="visibleWhen"]').dispatchEvent("change");
   await expect(

@@ -219,3 +219,8 @@ M09b design canvases opt into `designTabs: 'active'` to display only the active 
 portable controls, real theme rendering, and native design placeholders. The default remains all-slot
 for existing render integrations. Native hosts may bind framework context per form instance through
 `forController(controller)`, so a settings preview's hooks use its isolated controller and session.
+
+M09b owner review: schema prefix/suffix populate existing FieldPresentation adornments unless the
+host supplies explicit presentation overrides. tooltip is a native title; description remains visible
+help. Material read-only controls use a filled surface and solid borders. Other theme rules and
+existing shell/label/error/control identity are unchanged (ADR-0017).

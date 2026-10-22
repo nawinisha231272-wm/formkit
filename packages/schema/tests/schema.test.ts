@@ -199,3 +199,35 @@ test("standalone validation and migration defer unknown nested scopes until regi
   expect(Object.isFrozen(formDefinitionSchema)).toBe(true);
   expect(Object.isFrozen(formDefinitionSchema.$defs.component)).toBe(true);
 });
+
+test("Display presentation and static protection flags are typed in the definition meta-schema", () => {
+  const validate = new Ajv2020({ strict: false }).compile(formDefinitionSchema);
+  const definition = {
+    ...form,
+    components: [
+      {
+        ...field,
+        tooltip: "Account identifier",
+        prefix: "ID",
+        suffix: "verified",
+        disabled: false,
+        readOnly: true,
+      },
+    ],
+  };
+  expect(validate(definition)).toBe(true);
+  for (const [key, invalid] of [
+    ["tooltip", true],
+    ["prefix", []],
+    ["suffix", 1],
+    ["disabled", "yes"],
+    ["readOnly", 1],
+  ]) {
+    expect(
+      validate({
+        ...form,
+        components: [{ ...field, [key as string]: invalid }],
+      }),
+    ).toBe(false);
+  }
+});

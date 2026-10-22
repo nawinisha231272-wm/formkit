@@ -14,6 +14,7 @@ export const materialTheme: Theme = {
     "--of-color-error": "#b3261e",
     "--of-color-bg": "#fffbfe",
     "--of-material-panel-bg": "#f7f2fa",
+    "--of-material-readonly-bg": "#efedf0",
     "--of-material-label-bg": "var(--of-color-bg)",
     "--of-material-elevation": "0 1px 3px rgb(29 27 32 / 22%)",
     "--of-radius": "4px",
@@ -37,6 +38,7 @@ export const materialTheme: Theme = {
       "--of-color-error": "#f2b8b5",
       "--of-color-bg": "#1c1b1f",
       "--of-material-panel-bg": "#25222c",
+      "--of-material-readonly-bg": "#302f33",
       "--of-material-elevation": "0 1px 3px rgb(0 0 0 / 45%)",
       "--of-focus-ring": "3px solid #d0bcff",
     },
@@ -49,6 +51,7 @@ export const materialTheme: Theme = {
       "--of-color-error": "#ffbaba",
       "--of-color-bg": "#000000",
       "--of-material-panel-bg": "#000000",
+      "--of-material-readonly-bg": "#1a1a1a",
       "--of-material-elevation": "none",
       "--of-focus-ring": "3px solid #ffff00",
     },
@@ -77,6 +80,8 @@ export const materialTheme: Theme = {
 .of-root .of-none>button.of-control{align-self:flex-start;background:var(--of-color-primary);color:var(--of-color-on-primary);border-color:var(--of-color-primary)}
 .of-root [role="group"]>label{min-block-size:32px}
 .of-root input[type="checkbox"],.of-root input[type="radio"]{accent-color:var(--of-color-primary)}
+.of-root [data-of-readonly="true"] .of-control{border-style:solid}
+.of-root [data-of-readonly="true"]>.of-control-wrapper>.of-control{background:var(--of-material-readonly-bg)}
 @media(forced-colors:active){.of-root .of-control{border:1px solid ButtonText}.of-root :focus-visible{outline:3px solid Highlight}.of-root .of-panel{box-shadow:none}}
 `,
 };

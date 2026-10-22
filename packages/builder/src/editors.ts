@@ -1,190 +1,255 @@
 import { componentChildren } from "@ourform/schema";
 import { UpdateProperty, ChangeKey } from "@ourform/builder-core";
 import type { PanelProperty } from "@ourform/builder-core";
-import type { Expr, ComponentNode } from "@ourform/schema";
+import { actionButton } from "./primitives";
+import { picker } from "./picker";
+import type { Expr, ExprOp, ComponentNode } from "@ourform/schema";
 import { element, button } from "./types";
 import type { UI } from "./types";
 function all(nodes: ComponentNode[]): ComponentNode[] {
   return nodes.flatMap((node) => [node, ...all(componentChildren(node))]);
 }
-const operators = ["eq", "neq", "gt", "gte", "lt", "lte", "empty"] as const;
-type Row = { field: string; op: (typeof operators)[number]; value: string };
-function rows(value: unknown): Row[] {
-  if (!Array.isArray(value)) return [];
-  if (value[0] === "and" || value[0] === "or")
-    return value.slice(1).flatMap(rows);
-  if (
-    !operators.includes(value[0]) ||
-    !value[1] ||
-    typeof value[1] !== "object" ||
-    typeof value[1].ref !== "string"
-  )
-    return [];
-  return [
-    {
-      field: value[1].ref,
-      op: value[0],
-      value: value[2] === undefined ? "" : JSON.stringify(value[2]),
-    },
-  ];
-}
+const comparisons = ["eq", "neq", "gt", "gte", "lt", "lte", "empty"] as const;
+const calculations = ["add", "sub", "mul", "div", "concat"] as const;
+type Row = {
+  field: string;
+  op: string;
+  value: string;
+  literal: Expr | undefined;
+};
 function expression(
   ui: UI,
   property: PanelProperty,
   componentId: string,
 ): HTMLElement {
-  const host = element(ui.document, "details", "", "of-builder-expression");
+  const host = element(ui.document, "section", "", "of-builder-expression");
   host.dataset.expression = property.key;
-  host.append(
-    element(
-      ui.document,
-      "summary",
-      ui.t("of.builder.conditions", { label: ui.t(property.label) }),
-    ),
-  );
+  host.setAttribute("aria-label", ui.t(property.label));
+  const heading = element(ui.document, "h3", ui.t(property.label));
   const list = element(ui.document, "div");
-  const data = rows(property.value);
-  const joinLabel = element(ui.document, "label", ui.t("of.builder.join"));
-  const join = element(ui.document, "select");
-  for (const value of ["and", "or"]) {
-    const option = element(
-      ui.document,
-      "option",
-      ui.t(value === "and" ? "of.builder.all" : "of.builder.any"),
-    );
-    option.value = value;
-    join.append(option);
-  }
-  join.value =
-    Array.isArray(property.value) && property.value[0] === "or" ? "or" : "and";
-  joinLabel.append(join);
-  const publish = () => {
-    const clauses: Expr[] = data.map((row) => {
-      let value: Expr;
-      try {
-        value = JSON.parse(row.value) as Expr;
-      } catch {
-        value = row.value;
-      }
-      return row.op === "empty"
-        ? ["empty", { ref: row.field }]
-        : [row.op, { ref: row.field }, value];
-    });
-    ui.dispatch(
-      new UpdateProperty(
-        componentId,
-        property.key,
-        clauses.length > 1
-          ? [join.value as "and" | "or", ...clauses]
-          : clauses[0],
-      ),
-    );
-    const raw = host.parentElement?.querySelector<HTMLTextAreaElement>(
-      `[data-property="${property.key}"]`,
-    );
-    if (raw)
-      raw.value = clauses.length
-        ? JSON.stringify(
-            clauses.length > 1 ? [join.value, ...clauses] : clauses[0],
-          )
-        : "";
-  };
-  join.onchange = () => {
-    if (ui.liveProperties) publish();
+  const rawView = element(ui.document, "details");
+  rawView.append(element(ui.document, "summary", ui.t("ofb.writeExpression")));
+  const label = element(
+    ui.document,
+    "label",
+    ui.t(property.label),
+    "of-builder-property",
+  );
+  const raw = element(ui.document, "textarea");
+  raw.className = "ofb-primitive";
+  raw.dataset.ofbPrimitive = "Input";
+  raw.dataset.property = property.key;
+  raw.value =
+    property.value === undefined ? "" : JSON.stringify(property.value);
+  label.append(raw);
+  rawView.append(label);
+  const calculate = property.key === "calculate.expr";
+  const operators: readonly string[] = calculate
+    ? [...calculations, ...comparisons]
+    : comparisons;
+  let data: Row[] = [],
+    join = "and",
+    representable = true;
+  const parse = (value: unknown): Row[] | undefined => {
+    if (value === undefined) return [];
+    if (!Array.isArray(value)) return;
+    if (!calculate && ["and", "or"].includes(value[0]) && value.length > 1) {
+      const children = value.slice(1).map(parse);
+      if (children.every((r) => r?.length === 1))
+        return children.flatMap((r) => r!);
+      return;
+    }
+    if (
+      !operators.includes(value[0]) ||
+      !value[1] ||
+      typeof value[1] !== "object" ||
+      typeof value[1].ref !== "string" ||
+      value.length !== (value[0] === "empty" ? 2 : 3)
+    )
+      return;
+    return [
+      {
+        literal: value[2] as Expr | undefined,
+        field: value[1].ref,
+        op: value[0],
+        value:
+          value[2] === undefined
+            ? ""
+            : typeof value[2] === "string"
+              ? value[2]
+              : JSON.stringify(value[2]),
+      },
+    ];
   };
   const fields = all(ui.builder.getState().definition.components).filter(
-    (node) => ui.engine.getField(node.type)?.value,
+    (node) => node.id !== componentId && ui.engine.getField(node.type)?.value,
   );
+  const publish = (value: unknown) => {
+    ui.propertyIssue?.(property.key, undefined);
+    return ui.dispatch(new UpdateProperty(componentId, property.key, value));
+  };
+  const publishRows = () => {
+    const clauses = data.map((row): Expr => {
+      const value = row.literal === undefined ? "" : row.literal;
+      return row.op === "empty"
+        ? ["empty", { ref: row.field }]
+        : ([row.op as ExprOp, { ref: row.field }, value] as Expr);
+    });
+    const value =
+      clauses.length > 1 || (join === "or" && clauses.length === 1)
+        ? [join, ...clauses]
+        : clauses[0];
+    raw.value = value === undefined ? "" : JSON.stringify(value);
+    publish(value);
+  };
   const draw = () => {
     list.replaceChildren();
+    add.hidden = !representable;
+    add.disabled = !fields.length || (calculate && data.length > 0);
+    if (!representable) {
+      list.append(element(ui.document, "p", ui.t("ofb.complexExpression")));
+      return;
+    }
+    if (!calculate)
+      list.append(
+        picker(
+          ui,
+          ui.t("of.builder.join"),
+          [
+            { value: "and", label: ui.t("of.builder.all") },
+            { value: "or", label: ui.t("of.builder.any") },
+          ],
+          join,
+          (value) => {
+            join = value;
+            publishRows();
+          },
+        ).element,
+      );
     data.forEach((row, index) => {
-      const fieldset = element(ui.document, "fieldset");
-      fieldset.append(
+      const sentence = element(ui.document, "fieldset", "", "ofb-rule-row");
+      sentence.append(
         element(
           ui.document,
           "legend",
           ui.t("of.builder.condition", { index: index + 1 }),
         ),
       );
-      const fieldLabel = element(
-        ui.document,
-        "label",
+      const field = picker(
+        ui,
         ui.t("of.builder.conditionField"),
+        fields.map((node) => ({
+          value: node.id,
+          label: node.label || ui.engine.getField(node.type)!.title,
+        })),
+        row.field,
+        (value) => {
+          row.field = value;
+          publishRows();
+        },
       );
-      const field = element(ui.document, "select");
-      for (const node of fields) {
-        const option = element(
-          ui.document,
-          "option",
-          node.label ?? node.key ?? node.id,
-        );
-        option.value = node.id;
-        field.append(option);
-      }
-      field.value = row.field;
-      field.onchange = () => {
-        row.field = field.value;
-        if (ui.liveProperties) publish();
-      };
-      fieldLabel.append(field);
-      const opLabel = element(
-        ui.document,
-        "label",
+      const op = picker(
+        ui,
         ui.t("of.builder.operator"),
+        operators.map((value) => ({
+          value,
+          label: ui.t(`of.builder.op.${value}`),
+        })),
+        row.op,
+        (value) => {
+          row.op = value;
+          comparison.disabled = value === "empty";
+          publishRows();
+        },
       );
-      const op = element(ui.document, "select");
-      for (const kind of operators) {
-        const option = element(
-          ui.document,
-          "option",
-          ui.t(`of.builder.op.${kind}`),
-        );
-        option.value = kind;
-        op.append(option);
-      }
-      op.value = row.op;
-      op.onchange = () => {
-        row.op = op.value as Row["op"];
-        if (ui.liveProperties) publish();
-      };
-      opLabel.append(op);
       const valueLabel = element(
         ui.document,
         "label",
         ui.t("of.builder.comparisonValue"),
       );
-      const value = element(ui.document, "input");
-      value.type = "text";
-      value.value = row.value;
-      value.oninput = () => {
-        row.value = value.value;
-        if (ui.liveProperties) publish();
+      const comparison = element(ui.document, "input");
+      comparison.className = "ofb-primitive";
+      comparison.dataset.ofbPrimitive = "Input";
+      comparison.value = row.value;
+      comparison.disabled = row.op === "empty";
+      comparison.oninput = () => {
+        row.value = comparison.value;
+        const source = fields.find((node) => node.id === row.field);
+        const text =
+          !calculate &&
+          typeof ui.engine.getField(source?.type ?? "")?.value?.empty() ===
+            "string";
+        try {
+          row.literal =
+            text && !row.value.startsWith('"')
+              ? row.value
+              : (JSON.parse(row.value) as Expr);
+        } catch {
+          row.literal = row.value;
+        }
+        publishRows();
       };
-      valueLabel.append(value);
-      const remove = button(
-        ui,
-        ui.t("of.builder.removeCondition", { index: index + 1 }),
-        () => {
-          data.splice(index, 1);
-          draw();
-          if (ui.liveProperties) publish();
-        },
+      valueLabel.append(comparison);
+      sentence.append(
+        field.element,
+        op.element,
+        valueLabel,
+        actionButton(
+          ui,
+          ui.t("of.builder.removeCondition", { index: index + 1 }),
+          () => {
+            data.splice(index, 1);
+            draw();
+            publishRows();
+            (
+              list.querySelector<HTMLInputElement>('[role="combobox"]') ?? add
+            ).focus();
+          },
+          { icon: "close", iconOnly: true },
+        ),
       );
-      fieldset.append(fieldLabel, opLabel, valueLabel, remove);
-      list.append(fieldset);
+      list.append(sentence);
     });
   };
   const add = button(ui, ui.t("of.builder.addCondition"), () => {
     if (fields[0]) {
-      data.push({ field: fields[0].id, op: "eq", value: "" });
+      data.push({
+        field: fields[0].id,
+        op: calculate ? "add" : "eq",
+        value: calculate ? "0" : "",
+        literal: calculate ? 0 : "",
+      });
       draw();
-      if (ui.liveProperties) publish();
+      publishRows();
     }
   });
-  add.disabled = !fields.length;
-  const apply = button(ui, ui.t("of.builder.applyConditions"), publish);
-  draw();
-  host.append(joinLabel, list, add, apply);
+  const sync = (value: unknown) => {
+    const parsed = parse(value);
+    representable = parsed !== undefined;
+    data = parsed ?? [];
+    join = Array.isArray(value) && value[0] === "or" ? "or" : "and";
+    if (!representable) rawView.open = true;
+    draw();
+  };
+  raw.addEventListener(
+    "input",
+    () => {
+      try {
+        const value: unknown =
+          raw.value === "" ? undefined : JSON.parse(raw.value);
+        const diagnostics = publish(value);
+        if (!diagnostics.some((d) => d.severity === "error")) sync(value);
+      } catch (cause) {
+        ui.propertyIssue?.(
+          property.key,
+          cause instanceof Error ? cause.message : String(cause),
+        );
+      }
+    },
+    { signal: ui.signal },
+  );
+  host.append(heading, list, add, rawView);
+  sync(property.value);
   return host;
 }
 export function renderProperties(host: HTMLElement, ui: UI): void {
@@ -204,6 +269,12 @@ export function renderProperties(host: HTMLElement, ui: UI): void {
       ),
     );
     for (const property of group.properties) {
+      if (property.kind === "expr") {
+        const editor = expression(ui, property, selected);
+        editor.hidden = !property.visible;
+        fieldset.append(editor);
+        continue;
+      }
       const label = element(
         ui.document,
         "label",
@@ -291,11 +362,6 @@ export function renderProperties(host: HTMLElement, ui: UI): void {
       );
       label.append(input);
       fieldset.append(label);
-      if (property.kind === "expr") {
-        const editor = expression(ui, property, selected);
-        editor.hidden = !property.visible;
-        fieldset.append(editor);
-      }
     }
     host.append(fieldset);
   }

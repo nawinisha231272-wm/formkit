@@ -183,3 +183,10 @@ Required validation calls ValueAdapter.isEmpty on canonical values. With nullabl
 ordinary answers accept false as nonempty; consent explicitly opts into requiredTrue:true, where
 false/null fail required but are never rewritten to true or dropped. Optional false remains valid.
 Generated boolean/null submission schemas mirror all empty states (ADR-0013).
+
+## Static protection (M09b owner review, ADR-0017)
+
+ComponentNode.disabled combines with disabledWhen and ancestor disabled state. ComponentNode.readOnly
+combines with ancestor read-only state and the host's read-only mode. A child cannot clear inherited
+protection. Protected user writes emit a refresh for the stored value without normalization, processors
+or dirty state changes; API writes continue to propagate normally. No DOM dependency enters core.

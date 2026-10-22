@@ -77,7 +77,7 @@ const options = {
   theme: query.get("theme") ?? "base",
   themeMode: query.get("mode") === "dark" ? "dark" : "light",
   chrome: {
-    theme: query.get("chrome") ?? "match-form",
+    ...(query.has("chrome") ? { theme: query.get("chrome")! } : {}),
     density: query.has("compact") ? "compact" : "comfortable",
   },
   ...(query.has("locks")
@@ -121,6 +121,10 @@ const controller = query.has("factory")
       fields: [...builtinComponents, customerReference],
     })
   : renderBuilder(document.getElementById("builder")!, options);
+document.getElementById("builder")!.addEventListener("of-save", () => {
+  if (!query.has("manual-save"))
+    window.setTimeout(() => controller.markSaved(), 500);
+});
 if (query.has("approved")) controller.builder.select("email");
 else if (!query.has("empty") && !query.has("fixture") && !query.has("large"))
   controller.builder.select(query.has("locks") ? "cmp_name" : "cmp_rating");
