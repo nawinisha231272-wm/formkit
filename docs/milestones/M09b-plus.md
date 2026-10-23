@@ -1,7 +1,8 @@
 # M09b+ — Authoring shortcuts
 
 Status: **approved with owner amendments; starts after M09b approval**. Depends on M09b screenshot approval.
-Order: M09b → M09b+ → M09c. No M09c root logic is included.
+Order: M09b → M09b+ → M09c → M09d → M10a → M10b. M09d is an accepted plan (ADR-0019),
+with implementation starting only after M09c. No M09c root logic is included here.
 
 Scope and acceptance are the “M09b+” section of spec 10: inline label editing, hover/focus
 quick-add between siblings, Ctrl/Cmd+K command bar, and atomic multi-selection operations. All mutations

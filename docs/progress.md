@@ -12,7 +12,9 @@ deviations from spec, open questions.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
 - **M03–M08 complete** — local and Linux evidence is recorded below. **M08 accepted by the owner under the amended author criterion** — SDK 0.x freeze accepted; closure PR #6 merged on first-run green CI. Human guide usability is required in M11; the owner approved the 24 new Yes/No screenshots. M09 is authorized after the separate plan-amendment PR.
-- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11); M09b implementation PR #13 merged on first-attempt green [Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39785290329); owner review fixes and screenshot approval remain open. M09c and M10a/M10b are not started.
+- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11). **M09b approved and merged**: the owner approved PR #15 screenshots at `79e69f688b1779696449465fbe34869460018cd0`; merge `0b3b452c46096e852248ca11872f9697888c621e` on 2026-10-23. M09c, M09d and M10a/M10b are not started.
+- Planned order: **M09b+ → M09c → M09d → M10a → M10b → M11 → M12**. The owner approved M09d's
+  plan with six amendments (ADR-0019 accepted). M09b+ is authorized next; stop at its owner gate.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
@@ -21,6 +23,102 @@ deviations from spec, open questions.
 ## Open questions
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
+
+M09d's plan/ADR-0019 is accepted with the owner amendments below. The separate optional kit-entry
+budget needs a measured numeric ceiling and owner approval before M09d ships, following ADR-0018's
+consumer-build accounting. No automatic budget increase or unbounded kit allowance is authorized.
+
+## Owner decisions — M09b closure and M09b+ start — 2026-10-23
+
+Owner explicitly approved all M09b PR #15 screenshots at full head
+`79e69f688b1779696449465fbe34869460018cd0`. Immediately before merging, GitHub still reported that
+head, mergeable/clean, and both correctness runs completed successfully with **run_attempt 1**:
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39952512034) and
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39952507392).
+Every current-head check was green; advisory timings remained separate from correctness.
+Merged [PR #15](https://github.com/nawinisha231272-wm/formkit/pull/15) without rerunning CI,
+guarding the merge request with the exact approved SHA. Confirmed merge commit
+`0b3b452c46096e852248ca11872f9697888c621e`, timestamp `2026-10-23T20:25:30Z`.
+Full native verification and the baseline manifest remain in the round-5 evidence below.
+
+Next branch/PR: `m09b-plus-authoring`, one PR for this milestone. First audit the carried-over
+round-5 tag/announcement/Build/heading-visible screenshot checks, adding Unwrap coverage if needed;
+then implement ADR-0018 loading split with consumer-build accounting → record selection/command
+contracts ADR and replay/keyboard tests → inline labels → exact slot quick-add → shared command bar
+→ atomic multi-select/bulk actions → owner polish, targeted baselines and full pinned verification.
+Open the milestone PR with the plan/ADR before implementation; do not merge before exact-head
+first-attempt green CI and explicit owner approval. Command-bar/History numeric budgets require a
+measured proposal before shipping. Risks: asynchronous focus/lifecycle preservation, shared-chunk
+accounting, consumer/CSP/offline loaders, bulk lock/scope atomicity and unchanged correctness gates.
+Future M09c/M09d instructions are a roadmap, not permission to skip the intervening owner gates.
+
+The supplied owner-decisions attachment ends mid-sentence in M09d's kit author guide item. The
+complete M09b+ instructions are actionable; the missing ending was requested without blocking them.
+
+## M09d — Owner plan amendments — 2026-10-23
+
+Docs-only scope on `m09d-extension-plan`: update milestone/specs/ADR, check cross-document consistency,
+then report this amendment diff for sign-off. No source, export, package, schema artifact or baseline
+changes; M09d starts only after M09c and PR #15 approval is separate.
+
+ADR-0019 is **accepted with owner amendments**, retaining the eight-edge bound and JSON hard limits:
+
+1. Standard trusted `ourform.builtins`, stable id and version matching core, supplies all shipped
+   built-in fields/layouts explicitly. The acceptance kit no longer needs an app-written wrapper.
+2. Kits may declare complete string/number/boolean/select/options/json property metadata. The
+   acceptance US-phone preset adds `properties.reportColumn`, a data-only string with generated
+   editing and expression/host access, without implicit control/validation behavior.
+3. Locks still accumulate without unlock. Hides are presentation: explicit host rules can reveal
+   inherited/kit hides; kit-to-kit reveals require a dependency. Spec 07 defines false-valued hide
+   maps alongside compatible hide-only arrays and the planned reveal/lock regression matrix.
+4. Builder save emits caret kit requirements (`1.0.0` → `^1.0.0`). Kit author documentation must
+   require a major bump for canonical-value, validation or composite-structure changes. Compatible
+   patch/minor upgrades and incompatible majors get explicit future acceptance checks.
+5. Loader/meta-schema validation moves to an opt-in `@ourform/core/kits` entry, with no kit code or
+   schema cost in no-kit apps. Add a separate measured/approved size budget; preserve the ≤26 kB
+   core builder, existing route/aggregate ceilings and shared-chunk accounting.
+6. Plan `ourform create-kit`, `ourform kit validate <file>` with engine-identical diagnostics/JSON
+   Pointers, and published schema autocomplete. Future Save as reusable component writes this preset
+   format; its UI/gallery/storage remain deferred after M10a.
+
+Amendment validation: **PASS** — pinned Node 22.22.3/pnpm 10.10.0 Prettier check of all 11 Markdown
+files, all 12 relative links/anchors, parsed JSON fixture with `ourform.builtins`/`reportColumn`,
+accepted ADR status, six-amendment consistency, unchecked future acceptance, milestone order/dependencies
+and `git diff --check`. Pre-M09d spec sections and the 19-line Currency sketch remain unchanged.
+No runtime verification or M09d implementation acceptance is claimed by this planning edit.
+
+## M09d — Extension and configuration plan — 2026-10-23
+
+Docs-only planning branch `m09d-extension-plan`, based on the verified M09b review head `79e69f6`.
+Keep PR #15 and its reviewed code unchanged. No implementation, API export, package dependency,
+meta-schema artifact or baseline changed in that initial draft; ADR-0019 was **proposed** at that
+point. The owner-amendment entry above supersedes its status, hide precedence and saved-version rule.
+
+Planned delivery: immutable `extendField`/`extendLayout` and typed value-replacement guard → explicit
+per-host `overrideView` → bounded/versioned JSON kit schema and shared headless lowering → form kit
+requirements and diagnostics → generated inherited editors and centrally enforced policies → docs,
+five-theme/Node-browser/conformance/axe verification → fresh guide-only Codex author evidence.
+M10a/M10b now depend on M09d; M10b additionally retains M10a. M09c explicitly follows M09b+.
+
+The plan defines property/validator/default/view merges, maximum ancestry, plugin/version compatibility,
+runtime versus authoring defaults, host-lock precedence, unknown/conflicting/cyclic inputs and
+transactional failures. It includes a JSON-only US-phone/Address example using trusted named
+registrations, palette hides and a locked property. No executable JSON or implicit fetching is allowed.
+Core cannot import SDK; shared headless lowering and explicit host view assembly preserve the layers.
+
+Risks for owner review: limits must reject hostile storage without partial installation; field and
+layout reuse must retain canonical adapter/slot semantics; editor policy cannot bypass host locks;
+versioned kit provenance must remain reproducible in Node/browser without breaking plugin-only forms;
+additional builder metadata must stay within ADR-0018's consumer-build budgets. Currency <25 lines,
+JSON kit parity, React Select without JSON edits and the fresh author exercise are **future acceptance
+checks**, not completed work. M11's separate human usability pass remains required.
+
+Planning validation: **PASS** — pinned Node 22.22.3/pnpm 10.10.0 `pnpm exec prettier --check`
+on all 11 changed Markdown files; `git diff --check`; local Python checks for all 12 relative
+links/anchors, parseable kit JSON/required fixture features, proposed ADR status, unchecked acceptance
+and milestone order/dependencies. The illustrative Currency sketch is 19 meaningful lines including
+imports, not an implemented or conformance-tested field. Changes are confined to docs. Runtime
+`pnpm verify` was not run for this documentation-only task; no M09d implementation or gate has run.
 
 ## M09b owner review fixes — 2026-10-22
 

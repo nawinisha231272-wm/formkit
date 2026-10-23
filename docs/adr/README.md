@@ -21,3 +21,6 @@ Milestone: MNN
 ```
 
 Planned: 0001 monorepo tooling (M0), 0002 portable control representation (M2), 0003 SDK 0.x freeze (M8).
+
+Accepted with owner amendments (plan only): [ADR-0019 — Extension and configuration without executable JSON](0019-extension-and-configuration.md)
+(M09d; starts only after M09c; no implementation in this change).
