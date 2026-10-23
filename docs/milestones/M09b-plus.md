@@ -1,7 +1,11 @@
 # M09b+ — Authoring shortcuts
 
 Status: **approved with owner amendments; starts after M09b approval**. Depends on M09b screenshot approval.
-Order: M09b → M09b+ → M09c. No M09c root logic is included.
+Prerequisite satisfied: PR #15 approved at `79e69f6`, merged as `0b3b452` on 2026-10-23 after
+first-attempt green PR/push Verify. Work is on `m09b-plus-authoring`; stop for review of the split
+plan in proposed ADR-0020 before implementation. ADR-0018's existing ceilings remain unchanged.
+Order: M09b → M09b+ → M09c → M09d → M10a → M10b. M09d is an accepted plan (ADR-0019),
+with implementation starting only after M09c. No M09c root logic is included here.
 
 Scope and acceptance are the “M09b+” section of spec 10: inline label editing, hover/focus
 quick-add between siblings, Ctrl/Cmd+K command bar, and atomic multi-selection operations. All mutations
@@ -28,3 +32,12 @@ component menu. Bootstrap 4/5 help belongs below inputs. Conditional components 
 a bracketed-box icon. Translation-key label editing, slot-filtered quick-add, Shift+arrows selection,
 shared-property bulk edit and atomic cross-scope refusal follow ADR-0018. Deferred features remain
 after M10a. Re-take changed screenshots and request owner approval.
+
+## Step 0 — carried-over round-5 review, owner instruction 2026-10-23
+
+Recheck the existing five-theme readable half-column labels (≤16 characters), compact toolbar and
+shared hover/selection placement; fresh per-command announcements; default desktop Build mode;
+and the heading-visible first-panel flip. Preserve all approved assertions and platform baselines.
+Add the explicitly requested Unwrap announcement/exact-history regression alongside the existing
+Add/Duplicate/Delete/Paste/Wrap/settings checks. Record commands/results and the unchanged baseline
+manifest before splitting code; no screenshot approval is inferred for future M09b+ changes.

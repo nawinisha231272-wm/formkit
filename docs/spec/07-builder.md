@@ -204,3 +204,130 @@ Successful no-op commands also capture `commandLabel` subject metadata, without 
 or adding history. Whole-definition commands fall back to the original form title. Browser hosts use
 this metadata for completion feedback as well as undo/redo, so unchanged settings Save replaces stale
 live text. Failed commands do not acquire a successful captured subject.
+
+## M09d — Extension and kit configuration (accepted plan; ADR-0019)
+
+**Plan accepted with owner amendments on 2026-10-23; not current builder behavior.**
+Implement only after M09c; M10a/M10b consume it. PR #15 approval remains separate.
+SDK definitions, JSON format, limits and engine/view ownership are planned in spec 04.
+
+### One generated property dialog
+
+Resolve inherited metadata root to leaf before building the panel. Keep the existing standard groups
+and base node properties; merge overridden metadata at its original property position, then append
+new properties into their declared groups in declaration order. Each property path gets one editor.
+Render the same result in modal, drawer, bulk editing and the CLI mini builder; no Currency/Phone or
+kit-specific edit forms. Base descriptors remain unchanged across builders and engine instances.
+This includes kit-declared data-only string/number/boolean/select/options/json properties such as
+US phone's `properties.reportColumn`. The host and expressions can read their resolved values;
+the generic editor does not add control rendering or submission-validation behavior.
+
+Apply `hideProperties` and effective kit/host rules to that metadata. `hide` removes an editor only;
+it does not erase the value, omit it from export or skip runtime validation. `lock` leaves an editor
+visible but read-only with an accessible reason. `relabel` changes only its caption. Literal captions
+remain literal; an explicit `{label, labelKey}` caption may opt into translation with the literal
+English fallback. Type/adapter/slot/storage contracts cannot be rewritten by editor configuration.
+
+### JSON editor-policy shape
+
+`editDialog` maps `"*"` and exact registered types to `{hide?, lock?, default?, relabel?}`.
+`hide` accepts a canonical property-path-to-boolean map (`true` hides, explicit `false` reveals),
+or an array of paths as the compatible hide-only shorthand. Omitted entries express no opinion.
+`lock` remains a hide-independent array of protected paths, with no false/unlock form.
+`default` and `relabel` are maps keyed by those paths.
+Paths name standard editable node properties (`label`, `validation.required`, etc.) or declared
+`properties.<name>` entries. Resolve through the generated property model, not a generic object
+setter. Never permit identity/type/child-storage/prototype writes; keys retain the normal unique-key
+workflow rather than a shared literal default. Unsupported exact-type paths are errors. Wildcard
+paths must be supported by at least one installed type and apply only to types supporting that path.
+
+Host `editor.rules` uses the same wildcard/type rule shape. Existing
+`editor.properties[type].hide` remains a compatible exact-type hide shorthand. Plugin defaults,
+captions and groups start in their registered descriptor metadata; there is no implicit global
+plugin policy registry. Exact-type kit/host rules match only that registered type, not all descendants;
+inherited descriptor metadata and `hideProperties` still propagate through extension composition.
+
+Palette configuration supplies groups/order plus per-type group/order/hide/rename (spec 04's JSON
+example). Rename is a palette/search caption, not a new type, a data-key rename or a rewrite of
+existing instance labels. The registration still needs a nonblank builder title. Slot acceptance,
+root-only constraints, locks and quick-add eligibility remain authoritative; effectively hidden items
+cannot reappear through the command bar/quick-add. An explicit valid reveal updates all those palette
+surfaces consistently. Valid imported existing types can still render.
+Additive host `palette.types` can supply the per-type presentation map; existing `palette.hidden`
+remains a hide shorthand and `palette.order` remains group order, not component order.
+
+### Precedence and restrictive policies
+
+Use this order; never treat the order of `plugins`/`kits` input arrays as precedence:
+
+| Configuration                         | Resolution                                                                                                                                                                                                                                                                                     |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Registration identity/model           | Unique trusted plugin registrations, then distinct kit-derived types. A kit cannot replace an existing type; duplicates fail.                                                                                                                                                                  |
+| Metadata and runtime config defaults  | Base → extension/preset ancestry → derived `defaults` → explicit instance `properties`. Resolve and validate once in the shared compiler, including Node.                                                                                                                                      |
+| Builder defaults/relabels/group/order | Inherited descriptor metadata → dependency kits → dependent kits → explicit host options. Within each layer, `*` precedes exact type. Explicit valid instance values win over defaults.                                                                                                        |
+| Same-level kit writes                 | Disjoint cells merge; identical values coalesce; different writes by unrelated kits fail `kit-conflict`. A dependency declaration is required for an intentional override.                                                                                                                     |
+| Hidden palette/editors                | Inherited presentation → dependency kits → dependent kits → explicit host `editor.rules` / `palette.types`. Explicit host false may reveal kit/inherited hides; kits may reveal another kit's hide only through a declared dependency. Host allowlists and structural eligibility still apply. |
+| Property locks                        | Union of inherited/kit/host property locks; no `false`/unlock escape. Component `locked` levels and `readOnlyKeys` apply in addition, with the strongest restriction winning.                                                                                                                  |
+| Views                                 | Exact host `overrideView` descriptor → native → renderer pack → portable, independently of palette/editor rules. No kit can supply a view implementation.                                                                                                                                      |
+
+Dependency layers precede selector specificity: a dependent kit's wildcard can override a dependency's
+presentation/default/hide, but never its lock. Inherited `hideProperties` is a presentation default,
+not an irreversible restriction. A kit may reveal another kit's hide only if that kit is in its
+declared dependency closure; opposite hide writes by unrelated kits fail `kit-conflict`, independently
+of input order. Resolve kit conflicts before host rules; a host reveal cannot mask an invalid kit graph.
+
+For example, host `editor.rules["acme.usPhone"].hide = {"properties.reportColumn": false}`
+reveals that editor even if metadata/a kit hid it; host `palette.types.password.hide = false`
+reveals the hidden palette item. Existing host hide-only shorthands remain compatible and contribute
+to the host presentation layer; an explicit matching `editor.rules` / `palette.types` entry wins
+over its shorthand. A reveal changes presentation only: a revealed locked editor remains read-only,
+and host component locks, allowlists and slot eligibility cannot be bypassed.
+
+Test inherited-hide → host reveal, kit-hide → host reveal, dependency-qualified kit reveal,
+unrelated-kit conflict and wildcard/exact specificity. For each reveal, assert that property locks
+still block generated editors, Edit JSON, bulk commands and history routes.
+Display provenance in the property model (base/plugin/kit id and version, wildcard/exact,
+host override), and explain refusals with localized text such as “Locked by your app” or “Locked by
+kit acme.contacts”. Host component locks cannot be loosened by any plugin, kit, node or view override.
+Policy configuration is supplied by the host/active kits, never accepted from form `meta` as a way
+to unlock a field.
+
+Builder `default` writes initial schema settings into a **new Add draft**, then normal validation
+runs before locks are anchored. It never rewrites existing components, submissions, history or
+response values. Modal Save still commits Add/settings once; Cancel discards both. Drawer additions
+use the existing live-edit rules. Runtime omission uses model/preset defaults, not editor defaults.
+This distinction is identical in Node and browser: builder-only policies do not alter validation.
+If a policy configures response `defaultValue`, it must be a valid safe JSON value under that model.
+
+### Commands, import and ownership
+
+Enforce property locks centrally in builder-core against before/after definitions. Cover generated
+editors, Edit JSON/ReplaceDefinition, updates, change-type workflows, paste/duplicate, bulk changes,
+undo/redo and M09c rules that author a protected schema-property write. Refuse atomically with
+`locked-property` (component-level refusals retain `locked-component`); keep selection/history/redo
+and show the reason. Hidden-but-unlocked properties remain editable through valid JSON/API commands.
+These are authoring constraints, not runtime data permissions; runtime rule state still follows M09c.
+
+Initial imports must pass schema/model/default checks, then anchor the applicable property locks to
+their valid stored values. A locked property need not equal a kit's editor default on an existing
+form. Paste/duplicate preserve valid copied settings, recheck destination policy, ids and keys, and
+never silently reset copied settings to defaults. App-controlled engine/kit replacement creates a
+new builder with an explicit compatibility check; it cannot rewrite a live instance/history silently.
+An invalid replacement kit leaves the existing engine/builder untouched; the host handles unsaved
+edits before mounting a separately validated replacement.
+
+The builder uses its engine's installed kit manifest and compile diagnostics. Save records caret kit
+requirements derived from installed versions plus dependency closure (spec 04), preserving plugin
+requirements: installed `1.0.0` produces `^1.0.0`. Compatible patch/minor 1.x kit upgrades keep forms
+valid; canonical-value/validation/composite-structure changes require a major kit release. Missing or incompatible
+kits block authoring/preview with `missing-kit`; no network fallback. Native preview resolves the
+same host view overrides as runtime, so React Select replacement requires no schema edits. All paths
+retain the existing patch/history/focus/save-acknowledgement contracts, all five themes and axe checks.
+
+Kit JSON loading/validation is opt-in through the separate entry in spec 04, outside the core builder
+payload. No-kit builders include/request none of it; kit-aware builders consume the resolved manifest
+or explicitly opt into the loader. Preserve ADR-0018's ≤26 kB core ceiling and account for the kit
+entry under its own owner-approved consumer-build budget, with shared chunks counted once.
+
+The future **Save as reusable component** action writes kit presets using this published format.
+It is not an M09d UI task and remains deferred with reusable sections/templates until after M10a.

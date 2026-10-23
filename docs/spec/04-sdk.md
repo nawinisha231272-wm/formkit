@@ -393,3 +393,334 @@ The helper freezes snapshots and rejects unsafe names/JSON, CSS escapes/network 
 primitive names. It resolves no DOM or registry. Renderer preset descriptors and the builder runtime
 apply appearance per owner instance, independently from form definition JSON. Material joins the
 four existing form themes for new-component conformance. No M09c rule engine is introduced here.
+
+## M09d — Extension and configuration (accepted plan; ADR-0019)
+
+**Plan accepted with owner amendments on 2026-10-23; not an implemented API.**
+This documentation-only change does not start M09d or approve PR #15. Implement only after M09c.
+Delivery order: M09b+ → M09c → M09d → M10a → M10b. See [M09d](../milestones/M09d.md).
+
+### Descriptor extension
+
+`extendField(base, overrides)` and `extendLayout(base, overrides)` compose a new frozen registration
+from an SDK descriptor. They do not subclass controls, mutate the base or replace an existing type.
+`overrides.type` is required, nonempty and distinct; title/builder presentation may change. Defaults:
+
+| Member           | Planned merge/override rule                                                                                                                                                                                                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Value adapter    | Inherit the complete adapter, including empty/required/serialization/JSON Schema behavior. No partial adapter merge. Replacement requires `value: {replace: true, adapter}` and explicit typed view compatibility plus adapter/validation/view conformance.                                                             |
+| Validators       | Retain base validators in order; append `extraValidators` (registered names), de-duplicating identical names. Ordinary overrides cannot remove inherited validation.                                                                                                                                                    |
+| Shell and views  | Inherit the shell and every portable/native/pack/layout view. Explicit compatible shell/view overrides affect the derived type only and require conformance.                                                                                                                                                            |
+| Properties       | Merge by property name. Existing entries retain their position and inherit omitted metadata; new entries append in declaration order and require complete metadata/helper definitions. Existing kind/value types must remain compatible.                                                                                |
+| Defaults         | `defaults` overrides declared config-property defaults after metadata merging; reject unknown names, invalid values or incompatible metadata. It is distinct from response `defaultValue`.                                                                                                                              |
+| Hidden editors   | `hideProperties` names declared config properties; retain metadata, defaults, serialization and validation. Inherited hides are presentation defaults; explicit host rules may reveal them (spec 07). They are not authorization or removal of a property.                                                              |
+| Portable wrapper | `wrapControl(baseControl, props)` receives the base portable control and the derived typed props; it returns the composed VNode. Forward state/ARIA/refs and call the base control without taking ownership of its session or shell.                                                                                    |
+| Layout structure | Preserve kind, dataScope, child storage, slot declarations/resolver, expansion and root-only constraints. Existing instance configuration may still select valid dynamic slots through that resolver. Layout presentation may change through a compatible layout view; renderer-owned children/outlets retain identity. |
+
+Merge a property definition shallowly by metadata member; arrays/objects such as options, default
+and visibleWhen replace atomically, not by implicit concatenation or recursive merge. New defaults
+are bounded safe JSON. Merge views by adapter key, replacing a supplied adapter view as a whole and
+retaining unspecified views. `wrapControl` and a direct `views.portable` replacement are mutually
+exclusive; the wrapper receives the immediate resolved base portable control, not itself.
+
+The original descriptor's type/identity is immutable. `kind`, `dataScope`, structural slot/storage contracts
+and composite expansion cannot change through these helpers. A different structural contract needs
+`defineField`/`defineLayout` and a new model. `extendLayout` has no value adapter to replace.
+Layout view composition must preserve the existing mounting/slot protocol; it does not introduce a
+second child renderer. `wrapControl` applies only to the portable control: native-only bases have
+no portable control to wrap, and adapter-specific changes use explicit views/`overrideView`.
+
+Resolve and flatten ancestry once, retaining headless base/type/version provenance. Permit at most
+**8 derivation edges** (root depth 0); count presets and extensions together, including kit presets.
+Reject cycles, repeated derived type identities and depth 9. Property/default/validator/shell/view
+merges are evaluated root to leaf, never by registration-array order. Direct helper misuse throws
+a programmer error with its stable diagnostic code; imported kit mistakes return diagnostics.
+
+The base must resolve in the installed registration graph. Cross-plugin derivation declares the
+base-owning plugin in `requires` with an npm-semver range; every plugin/kit engine range must match
+the installed core, and every base dependency range must match its installed owner. Derived types
+do not weaken ancestor compatibility requirements. Changing a published derived type's canonical
+value/serialization/structure is a breaking change for its owning package and requires a new
+compatible version/migration decision; kit format version, kit release version and engine range
+are separate. ADR-0003 allows additive exports; implementation must update the API inventory,
+package READMEs and changesets without changing existing definers' defaults.
+
+Illustrative planned author surface (not runnable until M09d):
+
+```ts
+import { extendField, stringProperty, h } from "@ourform/sdk";
+import { numberField } from "@ourform/components";
+
+export const currency = extendField(numberField, {
+  type: "acme.currency",
+  title: "Currency",
+  properties: {
+    currency: stringProperty({ label: "Currency", default: "USD" }),
+  },
+  wrapControl: (baseControl, p) => {
+    const id = `${p.a11y.id}-currency`;
+    const describedBy = [p.a11y.describedBy, id].filter(Boolean).join(" ");
+    return h(
+      "div",
+      {},
+      h("span", { id }, p.config.currency),
+      baseControl({ ...p, a11y: { ...p.a11y, describedBy } }),
+    );
+  },
+});
+```
+
+This demonstrates reuse/adornment with the inherited number/null adapter. It does not settle M10b
+locale parsing, decimal precision or rounding. It retains the existing description and adds the
+currency code to it; the author guide must verify all-host/theme conformance within the milestone's
+line-count rule. Native views that bypass the portable wrapper need their own compatible
+binding when the added property affects rendering; inheritance is not evidence that they conform.
+
+### Explicit view replacement
+
+`overrideView(type, adapter, view)` is a pure public SDK helper returning a frozen override descriptor;
+it does not mutate a registry. Pass descriptors through host `viewOverrides` options on the renderer,
+Element, React or Angular host/builder instance. Adapter keys are `react`, `angular`, `element`, with
+typed bridge helpers in their own packages; SDK/core never import those frameworks. Node receives
+only the headless models. A view cannot replace the value adapter, validators, shell ownership or
+form definition.
+
+Resolution for an exact type/adapter becomes: **explicit host override → existing native view →
+renderer pack → portable view → no-view**. Resolve before mounting; changing overrides requires an
+explicit host remount, not global mutation. Repeated descriptors for the same type/adapter fail with
+`view-override-conflict`; unknown targets/invalid bridges fail explicitly. Targeting a base does not
+silently retarget separately registered derived types. Unmatched adapters and other instances keep
+their existing views. Ordinary `engine.register`/plugin duplicate-type registration keeps throwing.
+
+Acceptance includes replacing React Select while leaving the form JSON byte-identical, preserving
+its state, ARIA, validation and lifecycle, and leaving Angular/Element unaffected.
+
+### Versioned JSON component kits
+
+A kit is data with `$kitVersion: "1.0"`, a unique `id`, release `version`, `engine` semver range,
+optional dependencies, `presets`, `composites`, `palette` and `editDialog`. Publish Draft 2020-12
+`componentKitSchema` and an offline JSON export `@ourform/schema/component-kit.schema.json`, with
+schema identifier `urn:ourform:component-kit:1.0`. Unknown members are errors. No URL is fetched to
+load a kit or resolve its schema/dependencies. Publish the same schema for editor autocomplete:
+scaffolds include a `$schema` association to that identifier, resolvable to the locally installed
+schema file; `$schema` is an allowed association member, never a runtime fetch instruction.
+
+Ship a standard trusted plugin with stable id **`ourform.builtins`**, exported by
+`@ourform/components`. Its release version matches `@ourform/core`; its engine compatibility is
+checked with the normal plugin rules. It wraps every built-in field/layout shipped in that release,
+without test/demo registrations. Hosts install it explicitly; core never imports components/SDK
+or auto-installs it. Node uses its headless model manifest, while browser hosts receive the matching
+views separately. No application-written built-ins wrapper is needed for a JSON-only kit dependency.
+
+### Optional kit entry and bundle budget
+
+Ship loader and meta-schema validation through the separate **`@ourform/core/kits`** entry. Its
+kit-enabled `createEngine({plugins, kits})` facade delegates ordinary engine construction to the root
+core entry, then performs transactional kit resolution. This preserves the accepted call shape while
+making kit integration an explicit import; the root entry must not import/re-export the loader,
+validator or bundled meta-schema. Core still never imports SDK/components. SDK shared descriptor
+lowering must not accidentally pull in kit JSON parsing/meta-schema validation.
+
+Builder hosts opt into the kit entry only when configuring kits; the ordinary builder entry uses
+the already resolved engine manifest without statically importing kit tooling. An already loaded
+engine's policies do not require revalidating kit files in the builder. No-kit apps pay **zero kit
+loader/meta-schema bytes or requests**, including no default prefetch of the optional entry.
+
+Add an independent enforced kit-entry size budget to the M09d delivery checks. Its numeric ceiling
+must be proposed with consumer-build measurements and accepted before shipping, as with ADR-0018's
+additional feature entries; it is not an unbounded allowance. Measure the actual kit-enabled
+consumer closure, including parsing/validation code and required schema assets, with shared chunks
+counted once and the incremental cost over the equivalent no-kit build reported. Cover Vite/React,
+Angular CLI, vanilla and script-tag consumers, offline and strict CSP. ADR-0018's **≤26 kB core
+builder** and every existing entry/aggregate ceiling remain unchanged; no automatic budget increases.
+
+### Kit loading and data-only properties
+
+`createEngine({plugins, kits})` accepts kit JSON documents, text or UTF-8 bytes after host-owned storage loading.
+Supply all trusted base models and named validators/functions through plugins at creation; core does
+not auto-import built-ins. Browser hosts supply the matching view bindings explicitly, as today.
+The builder consumes the same engine's resolved kit manifest; a convenience `kits` option when it
+creates its own engine goes through the same loader. An existing engine and conflicting kit inputs
+are rejected rather than installed twice. Do not mutate kits/plugins in a live engine; create a new
+engine/builder with explicit host lifecycle handling.
+
+Headless kit lowering lives in core/schema and is shared with SDK `definePreset`/`defineComposite`
+semantics. Core must never import SDK. Resolve the complete dependency/base/template graph before
+publishing registrations; shared lowering preserves config defaults, named validators, composite
+id/ref rebasing, data scopes and submission JSON Schema. SDK/renderer-owned view assembly inherits
+the matching base views or standard composite layout; core neither stores nor executes views.
+Add `extraValidators` and data-only `properties` to `definePreset` additively so code and JSON presets
+lower identically; omitting them preserves the existing API's semantics.
+
+Kit presets may declare **new config properties** with kinds **string, number, boolean, select,
+options or json**. Require complete metadata for each property: supported kind, nonempty literal
+English label (optional explicit translation key), group, safe default, and kind-specific constraints
+and select choices where applicable. Validate defaults and all configured values against that
+metadata with the same `invalid-property` diagnostics in Node and browser. Use bounded safe JSON;
+reject prototype names, unknown metadata, `expr` kind and executable/custom-editor definitions.
+New names cannot collide with inherited properties or structural/identity members; inherited-property
+metadata overrides remain the trusted extension contract above.
+
+Values are stored/exported at `properties.<name>` and resolved with ordinary config defaults.
+Generate editors from this metadata; hosts and expression evaluation can read the resolved values
+without writing through arbitrary paths. During implementation, update spec 03's typed configuration
+reference contract for stable component ids plus declared property names, with safe resolution and
+dependency tracking shared by Node/browser. These references are distinct from submitted-data paths.
+Data-only declarations attach no rendering, submission-value validation, normalization or side
+effects. Metadata validation checks config shape only. A separately registered trusted extension or
+an explicitly authored expression/host consumer may use the value; the kit cannot manufacture such
+behavior or mark a property logic-settable on its own.
+
+Imported-kit failures return immutable `engine.getKitDiagnostics()` diagnostics; the engine retains
+trusted registrations but publishes **none** of the requested kits on any kit error. Compile fails
+closed with those errors, including for forms that would otherwise use only trusted types; the
+builder shows blocking diagnostics. Trusted plugin/programmer errors still throw. No partially
+usable kit installation or silent fallback is allowed.
+
+Planned JSON-only acceptance fixture:
+
+```json
+{
+  "$kitVersion": "1.0",
+  "id": "acme.contacts",
+  "version": "1.0.0",
+  "engine": "^0.0.1",
+  "requires": {
+    "plugins": [
+      { "plugin": "ourform.builtins", "version": "^0.0.1" },
+      { "plugin": "acme.contact-rules", "version": "^1.0.0" }
+    ],
+    "validators": ["acme.usPhone"]
+  },
+  "presets": [
+    {
+      "type": "acme.usPhone",
+      "base": "text",
+      "title": "US phone",
+      "properties": {
+        "reportColumn": {
+          "kind": "string",
+          "label": "Report column",
+          "group": "Data",
+          "default": "phone"
+        }
+      },
+      "defaults": {},
+      "extraValidators": ["acme.usPhone"]
+    }
+  ],
+  "composites": [
+    {
+      "type": "acme.address",
+      "title": "Address",
+      "dataScope": "object",
+      "components": [
+        { "id": "street", "type": "text", "key": "street", "label": "Street" },
+        {
+          "id": "postal",
+          "type": "text",
+          "key": "postal",
+          "label": "Postal code"
+        },
+        {
+          "id": "phone",
+          "type": "acme.usPhone",
+          "key": "phone",
+          "label": "Phone"
+        }
+      ]
+    }
+  ],
+  "palette": {
+    "groups": [{ "id": "contacts", "title": "Contacts", "order": 4 }],
+    "types": {
+      "acme.usPhone": { "group": "contacts", "order": 0 },
+      "acme.address": { "group": "contacts", "order": 1 },
+      "password": { "hide": true },
+      "hidden": { "hide": true },
+      "text": { "rename": "Text field" }
+    }
+  },
+  "editDialog": {
+    "*": { "hide": ["tooltip"] },
+    "acme.usPhone": {
+      "default": { "validation.required": true },
+      "lock": ["validation.required"],
+      "relabel": { "label": "Question" }
+    }
+  }
+}
+```
+
+`ourform.builtins` is the standard trusted plugin above; the example needs no app-written wrapper.
+`acme.contact-rules` supplies an independently registered
+validator; its implementation is **not** in the kit. Fixtures pin actual engine/plugin versions
+when M09d ships. Dependencies may additionally declare `kits: [{kit,version}]` and `functions: [name]`.
+`reportColumn` is declared data-only metadata: the generated dialog edits it, expressions/hosts can
+read it, and changing it alone leaves Text's control and submission validation unchanged. Presets
+cannot add control code or use undeclared config properties; use a trusted extension for new behavior.
+Kits cannot request adapter replacement, wrappers or executable view overrides;
+they may reference a separately registered trusted extended type. Composite children follow the existing fixed-template contract, including
+columns, namespaced stable ids and bounded expansion. This kit cannot depend on M10b's future Phone.
+
+Extend the form `requires` list with mutually exclusive entries `{kit: id, version: semverRange}`
+alongside existing `{plugin,version}` entries. Missing, incompatible or absent required provenance
+returns `missing-kit`, naming the kit/type/range; plugin-only forms remain compatible. Builder save
+records **caret ranges from installed versions** of active kits (and their dependency closure),
+including authoring policies: installed `1.0.0` saves `^1.0.0`, rather than an exact pin. Programmatic
+forms declare the kits owning referenced types/templates. Loading a requirement never downloads it;
+the host explicitly supplies installed kit versions. Compatible patch/minor 1.x upgrades keep forms
+valid without rewriting their JSON/history. Use npm-semver caret rules, including narrower 0.x ranges.
+Diagnostics/provenance still record the exact installed version used for a particular load.
+
+The kit author guide must require a **major kit release for any change to canonical values,
+validation or composite structure**, even if described as a fix. Patch/minor releases may make
+compatible presentation/configuration additions only. Start kit releases at **1.0.0**; npm 0.x
+caret ranges do not allow the same minor-upgrade compatibility as 1.x. Kit format version and engine/plugin ranges
+remain separate. Test unchanged forms against compatible patch/minor releases, reject an incompatible
+major with `missing-kit`, and do not silently migrate saved definitions/history.
+
+### Kit authoring tools
+
+Add **`ourform create-kit`** for a versioned JSON kit scaffold, schema association and guide commands,
+and **`ourform kit validate <file>`** for offline validation against the same schema and headless
+loader as the engine. Resolve trusted registrations through an explicitly host-selected local plugin
+bootstrap; never import code named by the kit. The CLI and engine report identical diagnostic codes,
+dependency context and JSON Pointers; valid input exits 0, invalid input nonzero and `--help` exits 0.
+Guide examples cover built-ins registration, data-only properties, versioning, safe storage, policy
+precedence and matching browser/Node validation. The fresh author trial uses these tools/docs.
+
+The future **Save as reusable component** builder action writes kit presets in this same published
+format. Only its format compatibility is recorded here; the action, gallery and storage stay deferred
+until after M10a.
+
+### Limits, conflict handling and trust boundary
+
+Accepted initial hard limits: **32 kits**, **1 MiB UTF-8 per kit / 4 MiB total**, JSON depth **64**
+(root 0), **20,000 visited JSON values per kit / 50,000 total**, and **256 derived registrations per
+kit / 1,024 total**. These sit alongside the 8-edge derivation limit and existing composite
+expansion limit of 64 levels/10,000 nodes. Hosts may tighten limits; kits cannot raise them.
+Measure text size before parse and traversal/expansion before allocation growth; fail atomically.
+
+Untrusted storage enters as bounded JSON text/bytes. Reject unsafe prototype keys at every depth,
+unsafe path segments, functions, accessors/non-plain programmatic objects, cycles and non-finite
+numbers. Treat arbitrary live JS/proxy objects as trusted-host misuse, not as a safe storage format.
+References are local ids or installed names: no remote `$ref`, module URL, function body, JavaScript
+expression, dynamic import, event handler or unsanitized HTML execution. Expressions use spec 03's
+data AST and named host-registered functions; validators/editors/providers/icons are installed
+capabilities referenced by name, never loaded by a kit. Existing Content sanitization still applies.
+
+Unrelated kits assigning different values to the same policy/default cell conflict, rather than
+using array-order last-wins. A dependent kit may override a declared dependency's presentation or
+defaults, including an explicit reveal of a dependency's hide. Locks always accumulate without
+an unlock path. Host presentation rules may reveal kit/inherited hides (spec 07). Duplicate kit ids or component types always
+conflict. Canonical dependency/type ordering makes reversed input arrays equivalent. See spec 07
+for wildcard/exact/host precedence and authoring-only versus runtime defaults.
+
+Diagnostics include `unknown-base`, `extension-cycle`, `extension-depth`, `incompatible-extension`,
+`value-replacement-required`, `invalid-kit`, `kit-limit`, `unsafe-key`, `kit-conflict`, `kit-cycle`,
+`missing-kit` and `view-override-conflict`, plus existing validator/function/property diagnostics.
+Include originating kit/plugin, type/base, dependency chain and JSON Pointer location where
+applicable; do not render raw executable/HTML fragments in messages. Errors are localized with
+English defaults. Node/browser parity covers canonical values, ordered errors and submission schema;
+builder-only palette/editor policies do not alter validation or serialization.
