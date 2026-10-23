@@ -16,7 +16,7 @@ for (const theme of [
     const field = page.locator('#canvas [data-field-id="email"]');
     await field.focus();
     const toolbar = field.locator(":scope > .ofb-component-toolbar");
-    for (const action of ["Edit", "Move", "Duplicate", "Copy"]) {
+    for (const action of ["Edit", "Move", "Duplicate", "Delete", "More"]) {
       const button = toolbar.getByRole("button", { name: action, exact: true });
       await button.hover();
       const tooltip = button.getByRole("tooltip");

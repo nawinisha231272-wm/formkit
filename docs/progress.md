@@ -2069,3 +2069,64 @@ All 32 original trial artifacts still match their provenance hashes.
 The playground dev server is restarted at `http://127.0.0.1:4173/builder.html?approved` and left running.
 M09b remains open: owner approval of these images and first-attempt current-head PR CI are required
 before merge. No owner approval is inferred from automated geometry or visual comparisons.
+
+## M09b live review round 5 — plan
+
+Keep the verified round-4 focus, overlap, shortcut and 30 kB contracts. First reserve the full name
+in half-width columns and collapse secondary toolbar actions into More, using the same placement
+function for selection and hover. Then announce every successful command centrally, preserving
+delete Undo timing and detailed move counts. Assert initial desktop Build without mode persistence;
+recapture the first-panel flip with its heading visible. Add all-theme geometry and per-command
+browser regressions, update only affected platform baselines, run full pinned verify and push a new
+PR15 head. Risks: narrow-label geometry, duplicate announcements and the unchanged size ceiling.
+Owner image approval and first-attempt green CI on the final head remain required before merge.
+
+Round-5 checkpoints: all 66 expanded geometry/command cases pass in Chromium, Firefox and WebKit.
+Five themes cover Email, Full name and a 16-character wide label on selection/hover; six command
+cases plus unchanged Save/public API dispatch assert exact fresh feedback. The first-panel screenshot
+now includes its heading; the old clipped-scroll geometry remains an additional regression. A local
+Firefox hover race was fixed by scheduling positioning after hover state settles, with loaded fonts
+and an explicit flipped-placement assertion before the unchanged overlap assertions. An unintended
+line-height change in CSS consolidation was caught by the screenshot audit and corrected before the
+final Linux/full runs; the interrupted container output is retained as incomplete.
+
+Previous head `554348eda96c08b403bc2f8dbdc015dea80af8d1`: PR Verify 39879600917 and push Verify
+39879553666 both failed on attempt 1 (two Linux WebKit first-panel geometry cases; 1,177 browser
+passes). Advisory timings 39879600980 succeeded on attempt 1 and do not satisfy correctness. No
+workflow was re-run. Final-head correctness and owner screenshot approval are still required.
+
+Linux generation/comparison tests pass 88 checks, including the previous failing WebKit geometry.
+The wrapper exits 2 after completion because a comment edit changed the file offset while its shell
+was waiting for Docker. Saved script syntax is valid; a clean comparison with the script untouched
+is required before recording the Linux command PASS. Earlier logs remain intact. This is local
+verification; neither failed GitHub workflow was re-run.
+
+Final Linux comparison command PASS, exit 0: `sh scripts/linux-visuals.sh check owner-review`
+inside the pinned Playwright 1.56.1 image. It compares 19 Chromium workbench/geometry states,
+then passes 22 WebKit geometry/command cases and three Material read-only browser checks.
+The prior generation/comparison also passed those cases before the wrapper's source-offset error;
+that failed wrapper log remains separately retained. Builder bytes match across platforms: 29,982
+against the unchanged 30,000-byte ceiling. Round-5 baseline manifest: 30 affected images changed,
+374 byte-identical, no new PNGs; phone images remain unchanged. Full pinned native verify is next.
+
+### Final round-5 local verification — PASS
+
+Pinned `pnpm verify` exits 0 on final source under command-lifetime `caffeinate -diu`: lint/build/
+typecheck, **307 unit checks (44 files), 1,224 browser checks in Chromium/Firefox/WebKit, 17 size
+budgets and five exact work-count checks**. Product source and baseline hashes are unchanged during
+that complete run. Logs, times, command and source hashes are in `docs/reviews/m09b-round5-evidence/`.
+
+Acceptance PASS: whole labels through 16 wide characters in half-columns across five themes on
+selection/hover; compact toolbar with secondary actions and unchanged shortcuts; fresh exact messages
+for each requested command, unchanged settings Save and public dispatch; fresh desktop Build/reload;
+heading-visible first-panel flip plus retained clipped-scroll geometry. Existing move-count, toast
+pause/keyboard, tooltip, F6 and sentence-control regressions remain in the full three-browser suite.
+
+Linux clean comparison exits 0 with 44 checks after generation/comparison's 88 test passes and the
+separately retained wrapper error. Builder **29.95 kB before → 29.982 kB final**, below unchanged
+30 kB. Mac/Linux bytes match. Baseline scope: 30 affected changed, 374 byte-identical, no new PNGs;
+phone views unchanged. All 32 original trial artifacts retain their hashes.
+
+The review server is restarted at `http://127.0.0.1:4173/builder.html?approved` and left running.
+See `docs/reviews/m09b-live-review-round5.md` for all six states on both platforms. M09b remains open
+until owner approval and first-attempt green final-head PR CI; do not merge, start M09b+ or M09c yet.

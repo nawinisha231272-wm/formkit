@@ -208,3 +208,45 @@ and F6 without intercepting Option+Z. Six requested 1280×800 states are re-reco
 Bootstrap 5 on macOS/Linux. Final builder is 29.95 kB against unchanged 30 kB (prior checkpoint 30.83).
 Screenshot owner approval and first-attempt green current-head PR CI still gate merge. The trial report
 and raw artifacts remain verbatim; no M09b+ runtime feature is included.
+
+## Owner round-5 product fixes
+
+The trial report and all 32 original artifacts remain verbatim. Product changes reserve the full
+label before the key suffix, compact narrow toolbars with secondary actions in More, and share hover
+and selection placement. Every successful command now announces through the Move announcer,
+including unchanged settings Save and direct host dispatch. Delete retains its timed/pauseable Undo.
+Desktop creation already chose Build without persisting view mode; added reload and explicit
+screenshot setup coverage rather than inventing a storage contract.
+
+`builder-round5.spec.ts` checks five themes with Email, Full name and 16 wide characters on selection
+and hover, each requested command's exact replacement message, untouched-save feedback and public
+API feedback. `history-label.test.ts` checks no-op subject capture with unchanged identity/history.
+The heading-visible first-panel image and original clipped-scroll geometry are separate cases.
+
+The previous PR head's first Linux CI attempt failed two WebKit first-panel geometry assertions;
+its log and run links are retained in the round-5 owner-review record. No CI re-run was requested.
+An intermediate local run found a Firefox hover timing race (64 PASS / two FAIL). Placement now
+runs after hover state settles; fonts are ready before measuring, and the flipped-position attribute
+is asserted before the unchanged overlap checks. The subsequent 66-case geometry/command run passes
+in Chromium, Firefox and WebKit. Final full verification and pinned Linux checks remain pending.
+
+Budget work removes redundant CSS declarations, an unused pre-dialog Add fallback and duplicate
+feedback paths. It retains the unchanged 30 kB ceiling and introduces no runtime loading split.
+
+Linux generation and comparison each passed 19 Chromium, 22 WebKit and three read-only cases.
+The outer shell nevertheless exited 2: editing a comment in its source file during the long-running
+Docker command moved the file offset before the interpreter resumed. The embedded container script
+completed and exported the images; this is not a test pass for the wrapper. The final saved script
+passes `sh -n`. Run a fresh comparison without editing the script before recording wrapper PASS.
+The first interrupted capture (exit 143) and this wrapper failure are retained alongside final logs.
+
+### Final round-5 verification
+
+PASS: full pinned verify exits 0 with 307 unit, 1,224 browser, 17 size and five count checks. The clean
+Linux comparison passes all 44 cases and exits 0; its earlier wrapper/source-offset failure remains
+retained. Geometry, labels and every requested command run in all three engines. Toolbar tooltip
+coverage now checks the five visible actions; secondary Copy/Paste/JSON retain menu/shortcut coverage.
+No geometry assertion or threshold was relaxed. Builder 29,982 bytes remains below 30,000. Thirty
+affected PNGs changed, 374 remain identical, including phone views. All 32 immutable trial files match.
+Final logs/metadata are in `docs/reviews/m09b-round5-evidence/`; images in the round-5 review index.
+Owner image approval and first-attempt green current-head CI remain required; no merge is claimed.

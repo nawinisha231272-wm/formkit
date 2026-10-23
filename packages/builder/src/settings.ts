@@ -285,10 +285,7 @@ export class Settings {
       ui.t("ofb.settings"),
       (json ? ["JSON"] : groups).map((name) => ({
         value: name,
-        label:
-          ui.t(`ofb.group.${name}`) === `ofb.group.${name}`
-            ? name
-            : ui.t(`ofb.group.${name}`),
+        label: ui.t(`ofb.group.${name}`),
       })),
       activeTab,
       (value) => {
@@ -365,9 +362,7 @@ export class Settings {
           "aria-label",
           hasProblem
             ? ui.t("ofb.hasProblem", { tab: name })
-            : ui.t(`ofb.group.${name}`) === `ofb.group.${name}`
-              ? name
-              : ui.t(`ofb.group.${name}`),
+            : ui.t(`ofb.group.${name}`),
         );
       }
     }

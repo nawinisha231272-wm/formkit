@@ -187,3 +187,17 @@ canvas/outline regions and a visible toast action. Alt/Option+Z is not a builder
 
 The build uses pinned development-only Terser through tsup. The current 30 kB compressed package
 ceiling remains enforced; ADR-0018's 26 kB target applies to the later M09b+ split.
+
+### Command feedback and narrow columns
+
+Every successful command uses the same polite announcer and visible toast: Add, Duplicate, Delete,
+Paste, Wrap, settings Save and public `controller.builder.dispatch` all replace earlier feedback.
+Saving unchanged settings still announces completion without adding history. Move reports its final
+slot position/count. Delete keeps a reachable Undo action for eight seconds, paused on hover/focus;
+ordinary notices last five seconds. Expiry leaves the screen-reader message intact.
+
+In narrow columns the toolbar shows Edit, Move, Duplicate, Delete and More. Copy, Paste and Edit JSON
+remain in More; shortcuts are unchanged. Tag layout reserves the complete label before the key
+suffix, with one outside-edge placement rule for selection and hover. At desktop creation the builder
+always opens Build; view mode is not persisted. Below 768px it opens read-only Preview. Builder look
+storage does not control this initial view.

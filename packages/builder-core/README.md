@@ -141,3 +141,8 @@ schemas. UI-only empty-option warnings live in builder; all mutations still use 
 `builder.commandLabel(command)` returns the successful command's action type and original component
 label (or registered title), retained through undo/redo. UI hosts localize that action metadata into
 history announcements. Failed commands have no captured subject. Labels are instance-local.
+
+Successful no-op commands also capture `commandLabel` subject metadata, without publishing a patch
+or adding history. Whole-definition commands fall back to the original form title. Browser hosts use
+this metadata for completion feedback as well as undo/redo, so unchanged settings Save replaces stale
+live text. Failed commands do not acquire a successful captured subject.

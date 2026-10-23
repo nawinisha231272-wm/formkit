@@ -211,3 +211,24 @@ preserving focus. Ctrl/Cmd+Z on the focused empty Undo button announces Nothing 
 undo/redo applies only when exactly one builder exists; embedded multiple-builder hosts retain local
 shortcut scope. F6 cycles builder regions and reachable toast action; Option+Z is never intercepted.
 No merge before owner image approval and first-attempt green CI. Budget stays 30 kB for this review.
+
+## M09b live-review round 5 — 2026-10-22
+
+At 1280×800, half-column name tags preserve the whole label through 16 characters in all five
+builder themes. Reserve label space first; truncate the secondary ` · key` suffix first, retaining
+full title/ARIA text. Narrow component toolbars collapse to Edit, Move, Duplicate, Delete and More;
+Copy, Paste and Edit JSON remain in More with their existing shortcuts. Hover and selection share
+one placement rule: outside the top edge when clear, otherwise both below. The first-panel-field
+visual fixture includes its panel heading and asserts that the below placement is exercised. Keep
+the clipped-scroll geometry regression separately, without hiding the heading in the review image.
+
+Every successful builder command, including unchanged settings Save and public command dispatch,
+uses the same announcer as Move. Add, Duplicate, Delete, Paste, Wrap and settings Save replace stale
+live text and the visible toast (for example, “Duplicated Email”, “Deleted Phone” and “Saved settings
+for Email”). Move retains its actual destination count. Delete retains its eight-second reachable
+Undo action; expiry does not clear the independent live announcement. Failed commands announce their
+diagnostics instead. Successful no-op commands capture subject metadata without a history entry.
+
+Each new desktop builder opens Build. View mode is not persisted; the user's Builder look preference
+is independent. Below 768px the existing read-only Preview rule still applies. Approved desktop
+screenshot fixtures explicitly select Build before interacting or capturing.

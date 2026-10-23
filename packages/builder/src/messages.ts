@@ -67,6 +67,18 @@ const english: Readonly<Record<string, string>> = {
   "ofb.history.Unwrap": "unwrap of {label}",
   "ofb.history.ReplaceDefinition": "edit of {label}",
   "ofb.history.RestoreSnapshot": "edit of {label}",
+  "ofb.did.AddComponent": "Added {label}",
+  "ofb.did.RemoveComponent": "Deleted {label}",
+  "ofb.did.MoveComponent": "Moved {label}",
+  "ofb.did.DuplicateComponent": "Duplicated {label}",
+  "ofb.did.PasteComponent": "Pasted {label}",
+  "ofb.did.UpdateProperty": "Updated {label}",
+  "ofb.did.UpdateComponent": "Saved settings for {label}",
+  "ofb.did.ChangeKey": "Changed key for {label}",
+  "ofb.did.WrapInLayout": "Wrapped {label}",
+  "ofb.did.Unwrap": "Unwrapped {label}",
+  "ofb.did.ReplaceDefinition": "Updated {label}",
+  "ofb.did.RestoreSnapshot": "Restored {label}",
   "ofb.undo": "Undo",
   "ofb.redo": "Redo",
   "ofb.issues": "Issues ({count})",
@@ -113,11 +125,9 @@ const english: Readonly<Record<string, string>> = {
   "ofb.copied": "Copied {label}. Choose a slot and paste.",
   "ofb.deleteCancelled": "Deletion cancelled by your app.",
   "ofb.collapse": "Collapse or expand",
-  "ofb.deleted": "Deleted {label}. Press Ctrl+Z to undo.",
   "ofb.pickedUp": "Picked up {label}. Use arrow keys to move, Space to drop.",
   "ofb.position": "{label}, {target}, position {index} of {count}.",
   "ofb.moved": "Moved {label} into {target}, position {index} of {count}.",
-  "ofb.added": "Added {label} into {target}, position {index} of {count}.",
   "ofb.refused": "Can't drop here: {reason}",
   "ofb.dragCancelled": "Move cancelled.",
   "ofb.and": "and",
@@ -137,13 +147,6 @@ const english: Readonly<Record<string, string>> = {
   "ofb.editorTitle": "{type} · {label}",
   "ofb.key": "Key",
   "ofb.settings": "Settings",
-  "ofb.group.Display": "Display",
-  "ofb.group.Data": "Data",
-  "ofb.group.Validation": "Validation",
-  "ofb.group.Conditional": "Conditional",
-  "ofb.group.Logic": "Logic",
-  "ofb.group.Layout": "Layout",
-  "ofb.group.Accessibility": "Accessibility",
   "ofb.hasProblem": "{tab} has a problem",
   "ofb.noProperties": "No settings in this tab.",
   "ofb.livePreview": "Live preview",
@@ -161,9 +164,6 @@ const english: Readonly<Record<string, string>> = {
   "ofb.editorConflict":
     "This component changed outside the editor. Close and reopen it to continue.",
   "ofb.readOnlyJson": "Locked by your app. This JSON is read-only.",
-  "ofb.all": "All",
-  "ofb.any": "Any",
-  "ofb.match": "Match",
 };
 export function createMessages(
   overrides: Readonly<Record<string, string>> = {},
@@ -175,7 +175,10 @@ export function createMessages(
       ? overrides[key]!
       : translated !== undefined && translated !== key
         ? translated
-        : (english[key] ?? defaultMessage(key, params));
+        : (english[key] ??
+          (key.startsWith("ofb.group.")
+            ? key.slice(10)
+            : defaultMessage(key, params)));
     return template.replace(/\{([A-Za-z0-9_]+)\}/g, (match, name: string) =>
       params?.[name] === undefined ? match : String(params[name]),
     );

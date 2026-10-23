@@ -1,6 +1,6 @@
 /** Appearance comes exclusively from --ofb-* tokens and scoped primitive recipes. */
 export const primitiveStyle = `
-.of-builder{font-family:var(--ofb-font-family);font-size:var(--ofb-font-size);color:var(--ofb-text);background:var(--ofb-canvas);line-height:1.5;color-scheme:light}
+.of-builder{font:var(--ofb-font-size)/1.45 var(--ofb-font-family);color:var(--ofb-text);background:var(--ofb-canvas);color-scheme:light}
 .of-builder[data-ofb-mode="dark"]{color-scheme:dark}
 .of-builder,.of-builder *{box-sizing:border-box}
 .of-builder [hidden]{display:none!important}

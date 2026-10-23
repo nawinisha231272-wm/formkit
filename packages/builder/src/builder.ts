@@ -2,10 +2,11 @@ import {
   createBuilder,
   AddComponent,
   RemoveComponent,
+  MoveComponent,
   ReplaceDefinition,
   WrapInLayout,
 } from "@ourform/builder-core";
-import type { JsonPatchOp } from "@ourform/builder-core";
+import type { Command, JsonPatchOp } from "@ourform/builder-core";
 import {
   createFormHost,
   createFormController,
@@ -28,7 +29,7 @@ import { builderStyle } from "./style";
 import { primitiveStyle } from "./primitive-style";
 import { resolveChrome, chromeStyle } from "./theme";
 import type { ChromeOptions } from "./theme";
-import { element, button, componentLocation } from "./types";
+import { element, button, componentLocation, componentTitle } from "./types";
 import type {
   BuilderOptions,
   BuilderController,
@@ -173,9 +174,9 @@ export function createBuilderController(
   );
   const announce: UI["announce"] = (message, action) => {
     dismiss();
+    status.textContent = "";
     if (!message) return;
     // Toast expiry never clears the independent polite live-region message.
-    status.textContent = "";
     queueMicrotask(() => {
       if (!destroyed) status.textContent = message;
     });
@@ -196,28 +197,6 @@ export function createBuilderController(
     started = Date.now();
     resume();
   };
-  for (const direction of ["undo", "redo"] as const) {
-    const execute = core[direction].bind(core);
-    core[direction] = () => {
-      const command = core
-        .getState()
-        .history[direction === "undo" ? "past" : "future"].at(-1);
-      const label = command ? core.commandLabel(command) : undefined;
-      const diagnostics = execute();
-      if (diagnostics.length) report(diagnostics);
-      else
-        announce(
-          label
-            ? t(direction === "undo" ? "ofb.undid" : "ofb.redid", {
-                command: t(`ofb.history.${label.action}`, {
-                  label: label.label,
-                }),
-              })
-            : t(direction === "undo" ? "ofb.nothingUndo" : "ofb.nothingRedo"),
-        );
-      return diagnostics;
-    };
-  }
   document.addEventListener(
     "keydown",
     (event) => {
@@ -233,8 +212,60 @@ export function createBuilderController(
     },
     { signal: events.signal },
   );
+  const diagnosticText = (diagnostics: readonly Diagnostic[]) =>
+    diagnostics.map((d) => `${d.code}: ${d.message}`).join(" · ");
   const report = (diagnostics: readonly Diagnostic[]) =>
-    announce(diagnostics.map((d) => `${d.code}: ${d.message}`).join(" · "));
+    announce(diagnosticText(diagnostics));
+  const complete = (
+    command: Command | undefined,
+    diagnostics: Diagnostic[],
+    direction?: "undo" | "redo",
+  ) => {
+    if (diagnostics.some((d) => d.severity === "error")) report(diagnostics);
+    else {
+      const subject = command && core.commandLabel(command);
+      const label = subject?.label || t("ofb.formRoot");
+      let message = subject
+        ? direction
+          ? t(direction === "undo" ? "ofb.undid" : "ofb.redid", {
+              command: t(`ofb.history.${subject.action}`, { label }),
+            })
+          : t(`ofb.did.${subject.action}`, { label })
+        : t(direction === "undo" ? "ofb.nothingUndo" : "ofb.nothingRedo");
+      if (!direction && command instanceof MoveComponent) {
+        const location = canvas.location(command.componentId);
+        if (location)
+          message = t("ofb.moved", {
+            label,
+            target: location.parent
+              ? `${componentTitle(ui, location.parent)} / ${canvas.caption(canvas.slots(location.parent).find((slot) => slot.name === location.slot)!)}`
+              : t("ofb.formRoot"),
+            index: location.index + 1,
+            count: location.siblings.length,
+          });
+      }
+      if (diagnostics.length) message += ` · ${diagnosticText(diagnostics)}`;
+      announce(
+        message,
+        !direction && command instanceof RemoveComponent
+          ? { label: t("ofb.undo"), run: () => core.undo() }
+          : undefined,
+      );
+    }
+    return diagnostics;
+  };
+  for (const direction of ["undo", "redo"] as const) {
+    const execute = core[direction].bind(core);
+    core[direction] = () => {
+      const command = core
+        .getState()
+        .history[direction === "undo" ? "past" : "future"].at(-1);
+      return complete(command, execute(), direction);
+    };
+  }
+  const executeCommand = core.dispatch.bind(core);
+  core.dispatch = (command, options) =>
+    complete(command, executeCommand(command, options));
   const dispatch: UI["dispatch"] = (command, dispatchOptions) => {
     if (destroyed) return [];
     if (
@@ -247,17 +278,18 @@ export function createBuilderController(
           composed: true,
         }),
       )
-    )
-      return [
+    ) {
+      const diagnostics: Diagnostic[] = [
         {
           severity: "error",
           code: "delete-cancelled",
           message: t("ofb.deleteCancelled"),
         },
       ];
-    const diagnostics = core.dispatch(command, dispatchOptions);
-    report(diagnostics);
-    return diagnostics;
+      report(diagnostics);
+      return diagnostics;
+    }
+    return core.dispatch(command, dispatchOptions);
   };
   const ui: UI = {
     document,
@@ -300,23 +332,21 @@ export function createBuilderController(
   );
   toolbar.setAttribute("role", "group");
   toolbar.setAttribute("aria-label", t("of.builder.actions"));
-  const undo = button(ui, t("of.builder.undo"), () => {
-    undo.focus();
-    if (core.getState().history.past.length) core.undo();
-  });
-  undo.id = `${prefix}undo`;
-  const redo = button(ui, t("of.builder.redo"), () => {
-    redo.focus();
-    if (core.getState().history.future.length) core.redo();
-  });
-  redo.id = `${prefix}redo`;
-  for (const [button, name] of [
-    [undo, "undo"],
-    [redo, "redo"],
-  ] as const) {
-    button.replaceChildren(icon(document, name, options.icons));
-    button.dataset.ofbPrimitive = "IconButton";
-  }
+  const historyButton = (direction: "undo" | "redo") => {
+    const control = button(ui, t(`of.builder.${direction}`), () => {
+      control.focus();
+      if (
+        core.getState().history[direction === "undo" ? "past" : "future"].length
+      )
+        core[direction]();
+    });
+    control.id = `${prefix}${direction}`;
+    control.replaceChildren(icon(document, direction, options.icons));
+    control.dataset.ofbPrimitive = "IconButton";
+    return control;
+  };
+  const undo = historyButton("undo"),
+    redo = historyButton("redo");
   const wrapperLabel = element(document, "label", t("of.builder.wrapType"));
   const wrapper = element(document, "select");
   wrapperLabel.append(wrapper);
@@ -398,7 +428,6 @@ export function createBuilderController(
   searchLabel.append(search);
   const palette = part("div", "palette", "of-builder-palette");
   palette.id = `${prefix}palette`;
-  const outlineHeading = element(document, "h3", t("of.builder.outline"));
   const outline = part("div", "outline", "of-builder-outline");
   library.append(searchLabel, palette);
   const canvasPanel = panel("canvas-panel", "of.builder.canvas");
@@ -408,7 +437,7 @@ export function createBuilderController(
   canvasPanel.append(instructions, canvasHost);
   const inspector = panel("inspector", "of.builder.properties", true);
   inspector.classList.add("of-builder-inspector");
-  inspector.append(outlineHeading, outline);
+  inspector.append(outline);
   grid.append(library, canvasPanel, inspector);
   const bottom = part("div", "bottom", "of-builder-bottom");
   const previewPanel = panel("preview-panel", "of.builder.preview");

@@ -7,7 +7,7 @@ import {
 import type { ComponentNode } from "@ourform/schema";
 import type { ToolbarAction, UI } from "./types";
 import { actionButton, disableAction, menu } from "./primitives";
-import { element, componentTitle } from "./types";
+import { element } from "./types";
 import { icon } from "./icons";
 import type { BuilderIcons } from "./icons";
 
@@ -29,8 +29,8 @@ const order: ToolbarAction[] = [
   "copy",
   "paste",
   "json",
-  "more",
   "delete",
+  "more",
 ];
 const shortcuts: Partial<Record<Action, string>> = {
   edit: "Enter",
@@ -102,18 +102,9 @@ export class ComponentActions {
       case "paste":
         this.context.paste();
         break;
-      case "delete": {
-        const result = ui.dispatch(new RemoveComponent(node.id));
-        if (!result.some((d) => d.severity === "error"))
-          ui.announce(
-            ui.t("ofb.deleted", { label: componentTitle(ui, node) }),
-            {
-              label: ui.t("ofb.undo"),
-              run: () => ui.builder.undo(),
-            },
-          );
+      case "delete":
+        ui.dispatch(new RemoveComponent(node.id));
         break;
-      }
       case "wrap":
         ui.dispatch(new WrapInLayout(node.id, "panel"));
         break;
@@ -171,7 +162,7 @@ export class ComponentActions {
     this.closeMenu();
     const { ui, root } = this.context;
     const actions: Action[] = more
-      ? ["cut", "wrap", "unwrap", "collapse"]
+      ? ["copy", "paste", "json", "cut", "wrap", "unwrap", "collapse"]
       : [
           ...order.filter((a) => a !== "more"),
           "cut",

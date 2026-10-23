@@ -199,3 +199,8 @@ Successful commands expose `builder.commandLabel(command)` with the stable actio
 component label/title. History, Undo and Redo use that same metadata even after deletion or selection
 changes. The browser host localizes action text. Empty-history keyboard actions announce their own
 result without altering history. See spec 10 for focus-preserving header actions and toast behavior.
+
+Successful no-op commands also capture `commandLabel` subject metadata, without publishing a patch
+or adding history. Whole-definition commands fall back to the original form title. Browser hosts use
+this metadata for completion feedback as well as undo/redo, so unchanged settings Save replaces stale
+live text. Failed commands do not acquire a successful captured subject.

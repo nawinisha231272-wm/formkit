@@ -6,7 +6,7 @@ export const workbenchStyle = `
 .of-builder .ofb-brand-mark{display:grid;place-items:center;inline-size:30px;block-size:30px;background:var(--ofb-accent);color:var(--ofb-accent-contrast);border-radius:var(--ofb-radius);font-weight:var(--ofb-font-weight-bold)}
 .of-builder .ofb-breadcrumb{display:flex;align-items:center;gap:12px;color:var(--ofb-text-muted)}
 .of-builder .ofb-breadcrumb strong{color:var(--ofb-text)}
-.of-builder .ofb-header-actions{display:flex;align-items:center;gap:6px;flex-basis:auto;margin-inline-start:auto}
+.of-builder .ofb-header-actions{display:flex;align-items:center;gap:6px;margin-inline-start:auto}
 .of-builder .ofb-header>label{display:flex;align-items:center;gap:8px;font-size:var(--ofb-font-size-small);color:var(--ofb-text-muted)}
 .of-builder .ofb-header select{font:inherit;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius);padding:6px;color:var(--ofb-text);background:var(--ofb-surface)}
 .of-builder .ofb-mode-tabs{background:var(--ofb-surface-raised);border:0;border-radius:var(--ofb-radius);padding:3px;gap:0;margin-inline-start:auto}
@@ -25,13 +25,10 @@ export const workbenchStyle = `
 .of-builder [data-builder-part=canvas-panel]>p{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}
 .of-builder .of-builder-canvas{background:var(--ofb-surface);border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-panel);box-shadow:var(--ofb-shadow-1);padding:32px;min-block-size:400px}
 .of-builder .of-builder-inspector{border-inline-start:1px solid var(--ofb-border);grid-column:auto}
-.of-builder .of-builder-inspector>h2{display:none}
-.of-builder .of-builder-inspector>h3{font-size:var(--ofb-font-size);margin:0 0 12px;border-block-end:1px solid var(--ofb-border);padding-block-end:12px}
 .of-builder .of-builder-outline{margin:0;max-block-size:55vh}
 .of-builder .of-builder-toolbar{margin-block-start:20px;gap:6px;align-items:center}
 .of-builder .of-builder-toolbar button{font-size:var(--ofb-font-size-small)}
 .of-builder .of-builder-toolbar label{font-size:var(--ofb-font-size-small);inline-size:100%}
-.of-builder .of-builder-toolbar select{max-inline-size:100%}
 .of-builder .of-builder-bottom{display:block;margin:0;padding:24px;min-block-size:calc(100vh - 100px)}
 .of-builder .of-builder-bottom>.of-builder-panel{max-inline-size:960px;margin:auto;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-panel);padding:24px}
 .of-builder .ofb-data-panel{max-inline-size:960px;margin:auto;padding:24px;border:1px solid var(--ofb-border);background:var(--ofb-surface);border-radius:var(--ofb-radius-panel)}
@@ -73,7 +70,7 @@ export const workbenchStyle = `
 .of-builder .ofb-mode-tabs>button{padding-inline:8px}
 .of-builder .ofb-header>label{flex-shrink:0;gap:4px}
 .of-builder .ofb-header>label select{max-inline-size:116px}
-.of-builder .ofb-header-actions{flex-shrink:0;margin-inline-start:auto;gap:4px}
+.of-builder .ofb-header-actions{flex-shrink:0;gap:4px}
 .of-builder .ofb-header-actions button{padding-inline:8px;font-size:var(--ofb-font-size-small)}
 }
 `;

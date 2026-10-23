@@ -83,7 +83,6 @@ export interface UI {
   palette?: PaletteOptions;
   actions?: readonly ToolbarAction[];
   icons?: BuilderIcons;
-  added?: (id: string) => void;
   add?: (
     type: string,
     target: DropTarget,

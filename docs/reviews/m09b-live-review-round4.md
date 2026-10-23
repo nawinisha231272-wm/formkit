@@ -2,6 +2,10 @@
 
 Owner approval: **pending**. No merge is authorized until approval and first-attempt green PR CI.
 
+Superseded by [round 5](m09b-live-review-round5.md). This records the earlier local result. Its PR
+head's first Linux CI attempt later failed two WebKit geometry checks; the round-5 record retains
+the run URLs, failed logs and the preserved regression. These images are updated in place by round 5.
+
 Six requested 1280×800 states. Tags/toolbar remain outside field content, preserve the first
 character, carry full title/ARIA text and avoid neighbouring headings/labels. The same controls
 flip below when the top edge lacks room; vendor Bootstrap margin utilities cannot override the

@@ -6,6 +6,7 @@ for (const theme of ["material", "bootstrap5"])
     "selected-column",
     "hover-neighbour",
     "first-panel-field",
+    "clipped-first-panel-field",
   ])
     test(`${theme} 1280: ${state} name tag stays outside content`, async ({
       page,
@@ -14,18 +15,43 @@ for (const theme of ["material", "bootstrap5"])
       await page.goto(
         `/builder.html?approved&theme=${theme}&chrome=match-form`,
       );
+      await page.getByRole("tab", { name: "Build", exact: true }).click();
+      await page.evaluate(() => document.fonts.ready);
       const field = page.locator(
-        `#canvas [data-field-id="${state === "first-panel-field" ? "fullName" : "email"}"]`,
+        `#canvas [data-field-id="${state.includes("first-panel-field") ? "fullName" : "email"}"]`,
       );
       await field.focus();
       if (state === "first-panel-field") {
-        await field.evaluate((el) => {
-          const port = el.closest('[data-builder-part="canvas-panel"]')!;
-          port.scrollTop +=
-            el.getBoundingClientRect().top -
-            port.getBoundingClientRect().top -
-            2;
-        });
+        const panel = page.locator('#canvas [data-field-id="contactPanel"]');
+        await expect(panel.locator(":scope > .of-layout-title")).toBeVisible();
+        expect(
+          await panel.evaluate(
+            (el) =>
+              el.getBoundingClientRect().top >=
+              el
+                .closest('[data-builder-part="canvas-panel"]')!
+                .getBoundingClientRect().top,
+          ),
+        ).toBe(true);
+        await expect(field).toHaveAttribute("data-ofb-chrome-below", "");
+      }
+      if (state === "clipped-first-panel-field") {
+        await field.evaluate(
+          (el) =>
+            new Promise<void>((resolve) => {
+              const port = el.closest('[data-builder-part="canvas-panel"]')!;
+              port.addEventListener(
+                "scroll",
+                () => requestAnimationFrame(() => resolve()),
+                { once: true },
+              );
+              port.scrollTop +=
+                el.getBoundingClientRect().top -
+                port.getBoundingClientRect().top -
+                2;
+            }),
+        );
+        await expect(field).toHaveAttribute("data-ofb-chrome-below", "");
       }
       let shown = field;
       if (state === "hover-neighbour") {
@@ -34,6 +60,7 @@ for (const theme of ["material", "bootstrap5"])
           .focus();
         shown = page.locator('#canvas [data-field-id="fullName"]');
         await shown.hover();
+        await expect(shown).toHaveAttribute("data-ofb-chrome-below", "");
       }
       const tag = shown.locator(":scope > .ofb-selection-label");
       await expect(tag).toBeVisible();
@@ -96,7 +123,10 @@ for (const theme of ["material", "bootstrap5"])
       expect(boxes.first).toBeGreaterThanOrEqual(boxes.tag.left);
       expect(boxes.first).toBeLessThan(boxes.tag.right);
       await page.evaluate(() => document.fonts.ready);
-      if (info.project.name === "chromium")
+      if (
+        info.project.name === "chromium" &&
+        state !== "clipped-first-panel-field"
+      )
         await expect(page).toHaveScreenshot(`round4-${theme}-${state}.png`, {
           animations: "disabled",
           maxDiffPixelRatio: 0.02,

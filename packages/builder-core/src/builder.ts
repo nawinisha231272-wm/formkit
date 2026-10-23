@@ -212,11 +212,6 @@ export function createBuilder(
           ),
       ];
       if (diagnostics.some((d) => d.severity === "error")) return diagnostics;
-      if (
-        JSON.stringify(state.definition) ===
-        JSON.stringify(result.state.definition)
-      )
-        return diagnostics;
       const id =
         "componentId" in command && typeof command.componentId === "string"
           ? command.componentId
@@ -233,8 +228,14 @@ export function createBuilder(
             ? (engine.getField(node.type)?.builder?.title ??
               engine.getField(node.type)?.title)
             : "") ||
+          state.definition.title?.trim() ||
           "",
       });
+      if (
+        JSON.stringify(state.definition) ===
+        JSON.stringify(result.state.definition)
+      )
+        return diagnostics;
       const inverse = command.invert(state);
       // Snapshot the successful forward state too: redo never generates new ids or defaults.
       const forward = inverse.invert(result.state);
