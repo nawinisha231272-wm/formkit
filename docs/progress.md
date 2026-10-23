@@ -28,6 +28,34 @@ M09d's plan/ADR-0019 is accepted with the owner amendments below. The separate o
 budget needs a measured numeric ceiling and owner approval before M09d ships, following ADR-0018's
 consumer-build accounting. No automatic budget increase or unbounded kit allowance is authorized.
 
+M09b+ split accounting requires owner clarification in proposed ADR-0020: the pre-split published
+builder entry is 29,982 Brotli bytes, while the minimal consumer's entire bundled transitive closure
+is 64,613. Does the 26 kB ceiling cover builder-owned initial code/styles or that full closure?
+No budget is changed or dependency cost hidden while awaiting the answer. Command-bar/History
+numeric budgets also need measured approval before shipping.
+
+## M09b+ — Step 0 and split ADR ready for review — 2026-10-23
+
+Branch `m09b-plus-authoring`, from approved/merged PR #15. Product source is unchanged. The carried-over
+step 0 passes **69 focused checks** in Chromium, Firefox and WebKit, including the new exact Unwrap
+feedback/undo/redo regression. Existing round-4/5 assertions are unchanged. Evidence, commands,
+before-size probe, screenshots and the zero-change baseline manifest are in
+[the review report](reviews/m09b-plus-split-plan.md). All 404 PNGs remain byte-identical to merged
+main (202 per platform); no pixel/count/size threshold, deadline or retry changed.
+Pinned `pnpm lint`, `tsc --noEmit -p tsconfig.tests.json` and ESLint of the new regression test pass. Local checks
+resolve all 24 links/anchors in the changed documentation. No product implementation is changed.
+
+The first local run passed the 66 existing cases but failed three copies of the new test's incorrect
+expected label/Copy message. Corrected that new fixture expectation, retaining exact text assertions;
+the complete final 69-test run passes. Both logs are retained in the report. This was local test
+development, not a rerun of GitHub CI. Full M09b+ verify and feature acceptance are not claimed.
+
+Proposed ADR-0020 records module ownership, consumer/load evidence, fixed budgets, host lifecycle,
+offline/CSP acceptance and the size-accounting question above. Per the owner's latest instruction,
+report when this split ADR is ready and stop for review before implementation. Selection/command
+contract ADR and deterministic replay/keyboard tests follow the split before new commands are coded.
+Keep one milestone branch/PR, with the plan first; M09c/M09d remain behind their owner gates.
+
 ## Owner decisions — M09b closure and M09b+ start — 2026-10-23
 
 Owner explicitly approved all M09b PR #15 screenshots at full head
@@ -52,8 +80,10 @@ measured proposal before shipping. Risks: asynchronous focus/lifecycle preservat
 accounting, consumer/CSP/offline loaders, bulk lock/scope atomicity and unchanged correctness gates.
 Future M09c/M09d instructions are a roadmap, not permission to skip the intervening owner gates.
 
-The supplied owner-decisions attachment ends mid-sentence in M09d's kit author guide item. The
-complete M09b+ instructions are actionable; the missing ending was requested without blocking them.
+The initial owner-decisions attachment ended mid-sentence in M09d's kit author guide item. The
+owner supplied the complete ending: start kit releases at 1.0.0, retain the three acceptance demos
+and fresh author evidence, and stop for owner delivery review. These are recorded in the M09d plan.
+The owner explicitly requested a report when the M09b+ split ADR is ready, or earlier if blocked.
 
 ## M09d — Owner plan amendments — 2026-10-23
 

@@ -1,0 +1,12 @@
+{
+  "scope": "pre-split read-only esbuild consumer probe; not final Vite/Angular/vanilla/CDN acceptance",
+  "publishedBuilder": {
+    "raw": 124040,
+    "brotli": 29982
+  },
+  "minimalFullConsumer": {
+    "raw": 264157,
+    "brotli": 64613
+  },
+  "inputs": 1945
+}

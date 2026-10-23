@@ -58,7 +58,7 @@ path instead of copying controls or adding built-in-specific property panels.
   from installed versions** (`1.0.0` → `^1.0.0`) for active kits/dependencies. Compatible patch/minor
   1.x upgrades keep forms valid; npm-semver's narrower 0.x caret rules remain. Any change to canonical
   values, validation or composite structure requires a **major kit version bump**, documented in
-  the kit author guide. Missing/incompatible requirements return `missing-kit`, and nothing fetches
+  the kit author guide; start kit releases at 1.0.0. Missing/incompatible requirements return `missing-kit`, and nothing fetches
   a package or executes imported source. Runtime defaults and builder-only Add defaults stay distinct.
 - Resolve presentation/defaults from base → derived → dependency/dependent kit → host → explicit
   instance, with wildcard before exact within a layer. Unrelated conflicting kit writes fail.

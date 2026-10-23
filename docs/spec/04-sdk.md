@@ -675,7 +675,8 @@ Diagnostics/provenance still record the exact installed version used for a parti
 
 The kit author guide must require a **major kit release for any change to canonical values,
 validation or composite structure**, even if described as a fix. Patch/minor releases may make
-compatible presentation/configuration additions only. Kit format version and engine/plugin ranges
+compatible presentation/configuration additions only. Start kit releases at **1.0.0**; npm 0.x
+caret ranges do not allow the same minor-upgrade compatibility as 1.x. Kit format version and engine/plugin ranges
 remain separate. Test unchanged forms against compatible patch/minor releases, reject an incompatible
 major with `missing-kit`, and do not silently migrate saved definitions/history.
 
