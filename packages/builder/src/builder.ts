@@ -67,7 +67,7 @@ export function createBuilderController(
     pointerStyle +
     workbenchStyle;
   const appearanceStyle = element(document, "style");
-  const status = element(document, "div", "", "of-builder-status");
+  const status = element(document, "div", "", "of-builder-status of-sr-only");
   status.id = `${prefix}diagnostics`;
   status.setAttribute("role", "status");
   status.setAttribute("aria-live", "polite");
@@ -102,9 +102,137 @@ export function createBuilderController(
     jsonDirty = false;
   const values = new Map<string, unknown>();
   const t = createMessages(options.messages, options.t);
-  const announce = (message: string) => {
-    status.textContent = message;
+  const notice = element(document, "div", "", "of-builder-toast");
+  notice.dataset.ofbPrimitive = "Toast";
+  notice.hidden = true;
+  shell.append(notice);
+  let announcementTimer: ReturnType<typeof setTimeout> | undefined;
+  let remaining = 0,
+    started = 0,
+    hovering = false,
+    ticking = false;
+  const dismiss = () => {
+    clearTimeout(announcementTimer);
+    ticking = false;
+    notice.hidden = true;
   };
+  const pause = () => {
+    clearTimeout(announcementTimer);
+    if (ticking) remaining = Math.max(0, remaining - (Date.now() - started));
+    ticking = false;
+  };
+  const resume = () => {
+    if (notice.hidden || hovering || notice.contains(document.activeElement))
+      return;
+    started = Date.now();
+    ticking = true;
+    announcementTimer = setTimeout(dismiss, remaining);
+  };
+  notice.addEventListener("mouseenter", () => {
+    pause();
+    hovering = true;
+  });
+  notice.addEventListener("mouseleave", () => {
+    hovering = false;
+    resume();
+  });
+  notice.addEventListener("focusin", pause);
+  notice.addEventListener("focusout", () => queueMicrotask(resume));
+  shell.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "F6") {
+        const regions = [
+          notice.hidden ? null : notice.querySelector("button"),
+          shell.querySelector(".ofb-header button"),
+          shell.querySelector(".of-builder-palette button"),
+          shell.querySelector(
+            '.of-builder-canvas [data-field-id][tabindex="0"]',
+          ),
+          shell.querySelector(
+            '.of-builder-outline [role="treeitem"][tabindex="0"]',
+          ),
+        ].filter((node): node is HTMLElement => node instanceof HTMLElement);
+        const current = regions.findIndex(
+          (node) =>
+            node === document.activeElement ||
+            node.parentElement?.contains(document.activeElement),
+        );
+        const next =
+          regions[
+            (current + (event.shiftKey ? regions.length - 1 : 1)) %
+              regions.length
+          ];
+        if (next) {
+          event.preventDefault();
+          next.focus();
+        }
+      }
+    },
+    { signal: events.signal },
+  );
+  const announce: UI["announce"] = (message, action) => {
+    dismiss();
+    if (!message) return;
+    // Toast expiry never clears the independent polite live-region message.
+    status.textContent = "";
+    queueMicrotask(() => {
+      if (!destroyed) status.textContent = message;
+    });
+    notice.replaceChildren(document.createTextNode(message));
+    if (action) {
+      const undoAction = document.createElement("button");
+      undoAction.type = "button";
+      undoAction.textContent = action.label;
+      undoAction.setAttribute("aria-keyshortcuts", "F6");
+      undoAction.onclick = () => {
+        dismiss();
+        action.run();
+      };
+      notice.append(undoAction);
+    }
+    notice.hidden = false;
+    remaining = action ? 8000 : 5000;
+    started = Date.now();
+    resume();
+  };
+  for (const direction of ["undo", "redo"] as const) {
+    const execute = core[direction].bind(core);
+    core[direction] = () => {
+      const command = core
+        .getState()
+        .history[direction === "undo" ? "past" : "future"].at(-1);
+      const label = command ? core.commandLabel(command) : undefined;
+      const diagnostics = execute();
+      if (diagnostics.length) report(diagnostics);
+      else
+        announce(
+          label
+            ? t(direction === "undo" ? "ofb.undid" : "ofb.redid", {
+                command: t(`ofb.history.${label.action}`, {
+                  label: label.label,
+                }),
+              })
+            : t(direction === "undo" ? "ofb.nothingUndo" : "ofb.nothingRedo"),
+        );
+      return diagnostics;
+    };
+  }
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (
+        event.target === document.body &&
+        document.querySelectorAll(".of-builder").length === 1 &&
+        (event.ctrlKey || event.metaKey) &&
+        event.key.toLowerCase() === "z"
+      ) {
+        event.preventDefault();
+        core[event.shiftKey ? "redo" : "undo"]();
+      }
+    },
+    { signal: events.signal },
+  );
   const report = (diagnostics: readonly Diagnostic[]) =>
     announce(diagnostics.map((d) => `${d.code}: ${d.message}`).join(" · "));
   const dispatch: UI["dispatch"] = (command, dispatchOptions) => {
@@ -172,9 +300,15 @@ export function createBuilderController(
   );
   toolbar.setAttribute("role", "group");
   toolbar.setAttribute("aria-label", t("of.builder.actions"));
-  const undo = button(ui, t("of.builder.undo"), () => core.undo());
+  const undo = button(ui, t("of.builder.undo"), () => {
+    undo.focus();
+    if (core.getState().history.past.length) core.undo();
+  });
   undo.id = `${prefix}undo`;
-  const redo = button(ui, t("of.builder.redo"), () => core.redo());
+  const redo = button(ui, t("of.builder.redo"), () => {
+    redo.focus();
+    if (core.getState().history.future.length) core.redo();
+  });
   redo.id = `${prefix}redo`;
   for (const [button, name] of [
     [undo, "undo"],
@@ -336,18 +470,12 @@ export function createBuilderController(
   root.append(shell);
   const updateButtons = () => {
     const state = core.getState();
-    undo.disabled = !state.history.past.length;
+    undo.setAttribute("aria-disabled", String(!state.history.past.length));
     const last = state.history.past.at(-1);
-    undo.title =
-      last instanceof AddComponent
-        ? t("ofb.undoAdd", {
-            title: t(
-              host.engine.getField(last.componentType)!.builder?.title ??
-                host.engine.getField(last.componentType)!.title,
-            ),
-          })
-        : t("ofb.undo");
-    redo.disabled = !state.history.future.length;
+    undo.title = last
+      ? `${t("ofb.undo")} ${t(`ofb.history.${last.type}`, { label: core.commandLabel(last).label })}`
+      : t("ofb.undo");
+    redo.setAttribute("aria-disabled", String(!state.history.future.length));
     const lock = state.selection ? core.lockLevel(state.selection) : undefined;
     wrap.disabled = !state.selection || lock === "all";
     wrap.title = lock === "all" ? t("ofb.lock.edit") : "";
@@ -545,6 +673,7 @@ export function createBuilderController(
         }),
       );
     }
+    if (ops.length) announce("");
     render(ops);
     if (ops.length) {
       const detail: SchemaChange = Object.freeze({
@@ -696,6 +825,7 @@ export function createBuilderController(
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      clearTimeout(announcementTimer);
       events.abort();
       settings.close();
       unsubscribe();

@@ -1,10 +1,10 @@
 # ADR-0018 — Builder feature loading and size budgets
 
-Status: accepted by the owner with amendments on 2026-10-22. Implement at the start of M09c, after M09b approval.
+Status: accepted by the owner with amendments on 2026-10-22. Implement at the start of M09b+, after M09b approval.
 
 The M09b builder is close to its unchanged 30 kB compressed budget (last focused measurement:
 29.92 kB). Additional Logic functionality should not increase the initial builder payload. M09b
-ships no loading split; this ADR describes the M09c implementation and its acceptance checks.
+ships no loading split; this ADR describes the M09b+ implementation and its acceptance checks.
 
 ## Accepted boundaries
 
@@ -46,7 +46,7 @@ its declared shared dependencies; it must not preload the map or JSON editor. Op
 only its editor closure; opening the dependency map loads its closure (including Logic only if the
 implementation actually requires it). Reopening an already loaded feature makes no new module
 request. Record emitted filenames, compressed bytes and observed network requests for initial Build
-and each first-open route in the M09c performance report, using both cold and warm sessions.
+and each first-open route in the M09b+ loading report, using both cold and warm sessions.
 The exact emitted chunk names and measured route bytes are pending implementation, not claims about
 M09b.
 
@@ -70,5 +70,12 @@ remain in builder-core; lazy UI modules cannot bypass them. Multiple builders mu
 
 Acceptance: separate unchanged-budget checks in CI; network assertions for every route; first-open,
 reopen, failure/retry, cancellation/destroy and host isolation checks; all supported browsers and
-existing correctness, accessibility and deterministic count gates. This work begins M09c only after
-M09b approval. M09b+ remains a separate proposal awaiting owner review.
+existing correctness, accessibility and deterministic count gates. This split begins M09b+, after
+M09b approval, before the approved authoring shortcuts are implemented.
+
+## Owner amendment — M09b+ interaction contracts
+
+The split is the first M09b+ task, with command-bar loading deferred from its first release and core
+≤26 kB. Inline label editing opens the dialog for translation-key labels. Quick-add lists only
+components accepted by the destination slot. Outline multi-selection uses Shift+arrows. Bulk editing
+shows shared properties only. Cross-scope moves are refused atomically, with a visible reason.

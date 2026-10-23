@@ -94,7 +94,10 @@ for (const route of ["toolbar", "context", "shortcut"] as const)
       }
       await expect(page.getByRole("dialog")).toHaveCount(0);
       expect(await history()).toBe(1);
-      await page.getByRole("button", { name: "Undo", exact: true }).click();
+      await page
+        .locator(".ofb-header-actions")
+        .getByRole("button", { name: "Undo", exact: true })
+        .click();
       expect(
         await page.evaluate(() =>
           JSON.stringify(window.miniBuilder.builder.getState().definition),

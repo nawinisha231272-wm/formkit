@@ -102,7 +102,13 @@ export function sidebar({ host, outline, ui }: Context) {
       history.replaceChildren();
       for (const command of state.history.past)
         history.append(
-          element(ui.document, "li", ui.t(`ofb.command.${command.type}`)),
+          element(
+            ui.document,
+            "li",
+            ui.t(`ofb.history.${command.type}`, {
+              label: ui.builder.commandLabel(command).label,
+            }),
+          ),
         );
       if (!state.history.past.length)
         history.append(element(ui.document, "li", ui.t("ofb.noHistory")));

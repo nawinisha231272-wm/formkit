@@ -1,0 +1,17 @@
+{
+  "command": "caffeinate -diu npx --offline --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm verify",
+  "platform": "darwin-arm64",
+  "browserWorkers": 2,
+  "started": "2026-10-22T20:19:10.622892-04:00",
+  "finished": "2026-10-22T20:38:57.111368-04:00",
+  "exitCode": 0,
+  "unitTests": 307,
+  "unitFiles": 44,
+  "browserTests": 1179,
+  "sizeBudgets": 17,
+  "workCountChecks": 5,
+  "builderBrotliKB": 29.95,
+  "builderBudgetKB": 30,
+  "sleepWakeTransitionsDuringSuccessfulRun": [],
+  "logSha256": "4346872a535d2a02daae273718bd32f86d772226d8f33c9b447ea2ded87e6eb6"
+}

@@ -162,9 +162,9 @@ before acknowledgement, those edits stay unsaved; `markSaved()` cannot label a n
 Calling either acknowledgement without an outstanding request has no effect. The demo simulates
 successful host acknowledgement. Remove the contradictory “Form ready to save” announcement.
 
-## Proposed M09b+ — authoring shortcuts (owner review required)
+## M09b+ — authoring shortcuts (owner approved)
 
-**Proposal only; not approved for implementation.** Deliver after M09b screenshot approval and before
+**Approved with owner amendments.** Start with ADR-0018’s loading split, then deliver the shortcuts and polish after M09b screenshot approval and before
 M09c. See `docs/milestones/M09b-plus.md`. Keep changes small and use the existing command/lock/slot contracts:
 
 1. Inline label editing: double-click or a keyboard action edits the canvas label; Enter commits one
@@ -180,6 +180,34 @@ M09c. See `docs/milestones/M09b-plus.md`. Keep changes small and use the existin
 Acceptance proposal: all four flows work by mouse and keyboard, with axe in every builder theme;
 no focus/state loss on theme changes; atomic exact undo/redo, including randomized selection/move
 sequences; no duplicate descendant operations; locked/illegal targets refused with no partial mutation.
-Update only changed visual states, retain count/size budgets, run full pinned verify. Owner reviews this
-plan before building it. Reusable sections/templates, tablet width tooling, preview test data, guided
+Update only changed visual states, retain count/size budgets, run full pinned verify. The owner approved the plan with the amendments in ADR-0018 and M09b-plus.md. Reusable sections/templates, tablet width tooling, preview test data, guided
 pre-save fixes and persistent version history/diff/restore remain backlog after M10a, not this proposal.
+
+## M09b live-review announcements — owner amendment, 2026-10-22
+
+Plain visible notices expire after five seconds. Action toasts, including delete's Undo, remain eight
+seconds and pause their remaining lifetime while hovered or keyboard focus is inside. F6 region cycling reaches
+the visible Undo action without activating it; expose the shortcut accessibly. Replacing a notice
+removes the previous one immediately. Expiring visible content never clears or truncates the separate
+polite screen-reader announcement. Ctrl/Cmd+Z remains available after the toast closes, through the
+normal command history. Test remaining-time pause/resume for hover and focus in every browser.
+
+The polite live region is screen-reader-only; the toast is the sole visible announcement surface.
+Clear and reset the live-region text for every new message, including repeated identical messages.
+Undo/Redo replace both messages using the command label (for example, “Undid move of Email” and
+“Redid move of Email”); empty history announces “Nothing to undo” or “Nothing to redo”. A theme,
+chrome or mode re-render must not replay an old toast. Move completion reports the actual final
+destination position and sibling count. Tooltips use no-wrap/max-content sizing, centred above
+their buttons and clamped inside the viewport; all five builder themes have single-line checks.
+
+## M09b live-review round 4 — 2026-10-22
+
+Selection and hover tags remain outside component content, start-aligned on the outline edge;
+the toolbar aligns to the other side. Narrow tags truncate their end with ellipsis and preserve full
+title/ARIA text. If the scrollport has insufficient room above, both flip below, with space reserved
+for neighbours. Check geometry and 1280×800 Material/Bootstrap 5 captures for selected column field,
+hovered neighbour and first panel field. Undo/Redo use aria-disabled and no-op activation when empty,
+preserving focus. Ctrl/Cmd+Z on the focused empty Undo button announces Nothing to undo. Body-level
+undo/redo applies only when exactly one builder exists; embedded multiple-builder hosts retain local
+shortcut scope. F6 cycles builder regions and reachable toast action; Option+Z is never intercepted.
+No merge before owner image approval and first-attempt green CI. Budget stays 30 kB for this review.

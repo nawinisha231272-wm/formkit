@@ -29,6 +29,12 @@ export function tooltip(
   tip.hidden = true;
   const show = () => {
     tip.hidden = false;
+    const rect = target.getBoundingClientRect();
+    tip.style.position = "fixed";
+    tip.style.inset = "auto";
+    tip.style.transform = "none";
+    tip.style.left = `${Math.max(8, Math.min(rect.left + (rect.width - tip.offsetWidth) / 2, context.document.documentElement.clientWidth - tip.offsetWidth - 8))}px`;
+    tip.style.top = `${Math.max(8, rect.top - tip.offsetHeight - 6)}px`;
     target.setAttribute("aria-describedby", tip.id);
   };
   const hide = () => {
@@ -336,4 +342,40 @@ export function toast(context: PrimitiveContext, message: string) {
   // Announcements are owned by the builder's single polite live region.
   element.textContent = message;
   return element;
+}
+
+/** Place transient selection chrome outside field content and within its scrollport. */
+export function placeSelection(root: HTMLElement, scrollport: HTMLElement) {
+  const tag = root.querySelector<HTMLElement>(":scope > .ofb-selection-label");
+  const toolbar = root.querySelector<HTMLElement>(
+    ":scope > .ofb-component-toolbar",
+  );
+  if (!tag || !toolbar || getComputedStyle(toolbar).display === "none") return;
+  const box = root.getBoundingClientRect();
+  root.style.setProperty(
+    "--ofb-chrome-height",
+    `${Math.max(tag.offsetHeight, toolbar.offsetHeight)}px`,
+  );
+  tag.style.maxInlineSize = `${Math.max(0, box.width - toolbar.getBoundingClientRect().width - 8)}px`;
+  const height = Math.max(tag.offsetHeight, toolbar.offsetHeight) + 4;
+  const headingCollision = [
+    ...scrollport.querySelectorAll("h1,h2,h3,legend,label,.of-layout-title"),
+  ].some((heading) => {
+    const range = root.ownerDocument.createRange();
+    range.selectNodeContents(heading);
+    const r = range.getBoundingClientRect();
+    return (
+      r.width > 0 &&
+      r.left < box.right &&
+      r.right > box.left &&
+      r.top < box.top &&
+      r.bottom > box.top - height
+    );
+  });
+  root.toggleAttribute(
+    "data-ofb-chrome-below",
+    headingCollision ||
+      box.top - Math.max(tag.offsetHeight, toolbar.offsetHeight) - 4 <
+        Math.max(0, scrollport.getBoundingClientRect().top),
+  );
 }

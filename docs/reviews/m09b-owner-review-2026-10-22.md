@@ -1,7 +1,9 @@
 # M09b owner review — 2026-10-22
 
 Status: **implementation screenshots await owner approval**. Original designs remain approved; this
-review does not imply approval of the changed implementation. M09b+ is proposed only, and M09c is not started.
+review does not imply approval of the changed implementation. M09b+ is approved as a plan, starts
+after M09b approval, and has not been implemented. M09c is not started. The latest selection states
+and verification record are in [live review round 4](m09b-live-review-round4.md).
 
 ## Changed views
 
@@ -43,5 +45,6 @@ result are recorded in progress.md after generation and verification complete.
 
 The independent trial report is unchanged. Product responses are in
 [fixes.md](../rehearsals/m09b-builder/fixes.md). Proposed next work is
-[spec 10: M09b+](../spec/10-builder-ux.md#proposed-m09b--authoring-shortcuts-owner-review-required)
-and [M09b-plus.md](../milestones/M09b-plus.md). Approval is required before building those four features.
+[spec 10: M09b+](../spec/10-builder-ux.md#m09b--authoring-shortcuts-owner-approved)
+and [M09b-plus.md](../milestones/M09b-plus.md). M09b screenshot approval is required before building
+those four approved features.

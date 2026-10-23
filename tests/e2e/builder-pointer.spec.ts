@@ -51,7 +51,7 @@ test("Pointer Events drop uses a column slot and keeps the addition private unti
   expect(columnTypes).toEqual(["text", "email"]);
   await expect(
     page.getByRole("button", { name: "Undo", exact: true }),
-  ).toHaveAttribute("title", "Undo Add Email");
+  ).toHaveAttribute("title", "Undo add of Email 2");
   await page.getByRole("button", { name: "Undo", exact: true }).click();
   expect(
     await page.evaluate(() =>

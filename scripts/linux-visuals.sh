@@ -79,7 +79,7 @@ run_visual() {
   local snapshot_args=()
   if [ "$1" = record ]; then snapshot_args=(--update-snapshots=all); fi
   if [ "$OURFORM_VISUAL_SUITE" = owner-review ]; then
-    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-visual.spec.ts tests/e2e/builder-review-visual.spec.ts --project=chromium --workers=1 --max-failures=1 "${snapshot_args[@]}" || return $?
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-visual.spec.ts tests/e2e/builder-review-visual.spec.ts tests/e2e/builder-round4.spec.ts --project=chromium --workers=1 --max-failures=1 "${snapshot_args[@]}" || return $?
     npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/themes.spec.ts --workers=1 --max-failures=1 --grep "material: read-only prevents" "${snapshot_args[@]}"
   elif [ "$OURFORM_VISUAL_SUITE" = m09 ]; then
     npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/tabs.spec.ts --workers=1 --max-failures=1 --grep "visual conformance" "${snapshot_args[@]}" || return $?

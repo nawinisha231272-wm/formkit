@@ -105,7 +105,13 @@ export class ComponentActions {
       case "delete": {
         const result = ui.dispatch(new RemoveComponent(node.id));
         if (!result.some((d) => d.severity === "error"))
-          ui.announce(ui.t("ofb.deleted", { label: componentTitle(ui, node) }));
+          ui.announce(
+            ui.t("ofb.deleted", { label: componentTitle(ui, node) }),
+            {
+              label: ui.t("ofb.undo"),
+              run: () => ui.builder.undo(),
+            },
+          );
         break;
       }
       case "wrap":

@@ -18,7 +18,7 @@ import { ComponentActions } from "./component-actions";
 import { icon, componentIcon } from "./icons";
 import { paletteGroups } from "./palette";
 import { describeExpression, controlledFields } from "./signals";
-import { chip, labelledInput } from "./primitives";
+import { chip, labelledInput, placeSelection } from "./primitives";
 type Entry = { node: ComponentNode; parent?: ComponentNode };
 const attribute = (element: HTMLElement, name: string, value: string) => {
   if (element.getAttribute(name) !== value) element.setAttribute(name, value);
@@ -61,6 +61,30 @@ export class Canvas {
     root.addEventListener("keydown", this.keydown);
     root.addEventListener("focusin", this.followFocus);
     picker.addEventListener("change", this.pick);
+    const position = () => {
+      if (this.pointer.active) return;
+      const port =
+        host.closest<HTMLElement>('[data-builder-part="canvas-panel"]') ?? host;
+      const selected = ui.builder.getState().selection;
+      const hovered = host.querySelector<HTMLElement>(
+        "[data-field-id]:hover:not(:has([data-field-id]:hover))",
+      );
+      if (selected && this.#roots.has(selected))
+        placeSelection(this.#roots.get(selected)!, port);
+      if (hovered) placeSelection(hovered, port);
+    };
+    root.addEventListener("pointerover", position, { signal: ui.signal });
+    root.addEventListener("focusin", () => requestAnimationFrame(position), {
+      signal: ui.signal,
+    });
+    root.addEventListener("scroll", position, {
+      capture: true,
+      signal: ui.signal,
+    });
+    ui.document.defaultView!.addEventListener("resize", position, {
+      signal: ui.signal,
+    });
+
     for (const group of paletteGroups(ui)) {
       palette.append(element(ui.document, "h3", group.label));
       for (const item of group.components) {
@@ -131,8 +155,16 @@ export class Canvas {
             ui.t(source.id ? "ofb.moved" : "ofb.added", {
               label: source.label,
               target: label,
-              index: (target.index ?? 0) + 1,
-              count: 1,
+              index:
+                (this.location(
+                  source.id ?? ui.builder.getState().selection ?? "",
+                )?.index ??
+                  target.index ??
+                  0) + 1,
+              count:
+                this.location(
+                  source.id ?? ui.builder.getState().selection ?? "",
+                )?.siblings.length ?? 1,
             }),
           );
       },
@@ -460,6 +492,8 @@ export class Canvas {
       handle.dataset.dragId = node.id;
       handle.dataset.id = node.id;
       handle.classList.add("ofb-selection-label");
+      handle.title = handle.textContent;
+      handle.setAttribute("aria-label", handle.textContent);
       root.prepend(handle);
       const toolbar = savedToolbars.get(node.id) ?? this.actions.toolbar(node);
       root.prepend(toolbar);

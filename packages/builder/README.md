@@ -176,5 +176,14 @@ enforced. The header shows the type icon and location. Empty labels use register
 
 New Select additions have editable Option 1/Option 2; existing runtime defaults remain empty. Issues
 flags empty Select/Radio options without rejecting a deliberate wire definition. Palette order favors
-common fields, and no unregistered future component is shown. M09b+ is a proposal in spec 10, not
-implemented functionality.
+common fields, and no unregistered future component is shown. M09b+ is an approved plan in spec 10,
+pending M09b screenshot approval before implementation.
+
+Undo/Redo use `aria-disabled` instead of native disabling so exhausting history does not discard
+keyboard focus. Disabled activation is a no-op. Ctrl/Cmd+Z announces an empty history from the
+focused header button. Body-level undo/redo is enabled only when this is the sole builder; embedded
+multiple instances scope shortcuts to their own roots. F6/Shift+F6 cycle header, palette, selected
+canvas/outline regions and a visible toast action. Alt/Option+Z is not a builder shortcut.
+
+The build uses pinned development-only Terser through tsup. The current 30 kB compressed package
+ceiling remains enforced; ADR-0018's 26 kB target applies to the later M09b+ split.

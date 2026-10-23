@@ -36,8 +36,7 @@ export const workbenchStyle = `
 .of-builder .of-builder-bottom>.of-builder-panel{max-inline-size:960px;margin:auto;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-panel);padding:24px}
 .of-builder .ofb-data-panel{max-inline-size:960px;margin:auto;padding:24px;border:1px solid var(--ofb-border);background:var(--ofb-surface);border-radius:var(--ofb-radius-panel)}
 .of-builder .ofb-data-panel pre{white-space:pre-wrap;overflow:auto}
-.of-builder .of-builder-status:empty{display:none}
-.of-builder .of-builder-status{position:fixed;inset:auto 24px 20px auto;z-index:60;max-inline-size:min(600px,90vw);padding:10px 16px;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius);color:var(--ofb-text);background:var(--ofb-surface);box-shadow:var(--ofb-shadow-2)}
+.of-builder .of-builder-toast{position:fixed;inset:auto 24px 20px auto;z-index:60;max-inline-size:min(600px,90vw);padding:10px 16px;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius);color:var(--ofb-text);background:var(--ofb-surface);box-shadow:var(--ofb-shadow-2)}
 @media(max-width:1100px){.of-builder .of-builder-grid{grid-template-columns:210px minmax(280px,1fr) 230px}.of-builder [data-builder-part=canvas-panel]{padding:16px}.of-builder .of-builder-canvas{padding:20px}.of-builder .ofb-header{gap:10px}}
 @media(max-width:767px){.of-builder .ofb-header{padding:10px}.of-builder .ofb-breadcrumb,.of-builder .ofb-header>label{display:none}.of-builder .of-builder-bottom{padding:12px}.of-builder .ofb-mode-tabs{margin:0}.of-builder .ofb-mode-tabs>button{padding:6px 8px}}
 

@@ -1961,3 +1961,111 @@ was an earlier focused measurement, not the final measurement. No budget was rai
 Scoped pinned-image Linux generation/comparison passes. The manifest records 20 changed baseline
 files, six new images and 368 unchanged files. All 32 original trial artifacts remain unchanged.
 Current-head remote first-attempt CI, PR merge and owner image approval remain pending.
+
+## M09b live review follow-up — in progress
+
+Branch m09b-live-review from merged PR14. Fix real destination move counts, tooltip layout/placement,
+and expiring/replaced announcements with explicit Undo/Redo messages; assert exact move text for
+same-slot, slot-to-slot and column moves. Only changed drag images are regenerated. Full pinned verify
+and first-attempt current-head PR CI precede merge; owner screenshot approval remains pending.
+M09b+ approved with amendments: ADR-0018 split first, core ≤26 kB, then authoring shortcuts and the
+owner polish list. M09c remains later. Risks: source/destination indexing, shared history routes,
+timer cleanup and the unchanged current size ceiling.
+
+Toast owner amendment: plain notices five seconds; action notices eight seconds with remaining-time
+pause while hovered/focused; Alt+Z reaches Undo; ordinary history survives toast dismissal. Visible
+expiry is independent of the polite live region. Implementation and clock-driven cross-browser tests
+are being verified; no PASS claimed yet. The initial test launch found the task-owned preview port
+occupied; stopped that preview before the build/test run. Other live-review fixes remain in progress.
+
+Toast focused verification PASS: six Chromium/Firefox/WebKit checks cover hover/focus remaining-time
+pause, Alt+Z focus on Undo, expiry without clearing the independent live-region text, and Ctrl/Cmd+Z
+restoring the deleted field after expiry. Build passed 24 tasks. Logs: /tmp/m09b-live-build.log and
+/tmp/m09b-toast-tests-3.log. The earlier timer test used an advancing clock at a one-millisecond
+boundary; freezing the clock makes remaining-time assertions deterministic without changing durations.
+Full verification, unchanged size ceiling, action-replacement coverage and remaining live-review fixes
+still need completion before merge. No final milestone PASS is claimed.
+
+## M09b live review round 3 — in progress
+
+Owner requires single-line viewport-clamped toolbar tooltips in all five themes, command-derived
+Undo/Redo messages (including empty history), no stale toast replay, one visible toast plus an
+independent SR-only repeatable live region, 1280px selection tag/toolbar collision handling and
+Material/Bootstrap 5 baselines. Replace Alt+Z with F6 region cycling to preserve text input. Fix before
+recording images; full verify and first-attempt PR CI required. Do not merge before owner approval.
+Prior live-review verification failed (16 browser failures); preserve the log. Most Delete failures
+are ambiguous global Undo locators now that the action toast has its own Undo; scope the toolbar tests
+without removing their assertions. Other failures need individual inspection. No completion claimed.
+
+Round-3 focused verification: workspace build passes (24 tasks); headless history-label regression
+passes after correcting its form metadata and same-slot insertion index. Cross-browser round-3 tests
+cover single-line/clamped tooltips in five themes, shared undo/redo/empty messages, expired-toast theme
+replay prevention, SR-only region geometry, F6 cycling and non-interception of Option+Z input; toast
+pause/keyboard regression included. Logs /tmp/m09b-round3-browser-4.log and
+/tmp/m09b-round3-label-tests-3.log. Record final suite result only after completion. Prior failed logs
+are retained. Remaining work: exact move-message cases, selection/tag visual assertions at 1280px,
+changed platform baselines, full verify and owner approval; do not merge. New toast Undo ambiguity is
+addressed by scoping existing toolbar assertions, preserving their intent and assertion values.
+
+## M09b live review round 4 — in progress
+
+Owner accepted round-3 items 1–4 in live review. Remaining selection chrome stays outside content,
+left tag/right toolbar on one edge, starts text at its first character, truncates with full title/ARIA,
+and flips both below when scrollport lacks space; reserve below space to avoid the next heading.
+Add six 1280×800 Material/Bootstrap 5 states and geometry assertions. Undo/Redo keep focus with
+aria-disabled/no-op click; one-builder body shortcuts announce empty history. F6 remains the region
+shortcut, preserving Option+Z text input. Reduce current builder size (30.83 kB prior measurement)
+below unchanged 30 kB; report actual final size. No screenshots approved or merge authorized yet.
+
+Round-4 size checkpoint PASS: builder 29.99 kB against unchanged 30 kB (before: 30.83 kB at the
+round-3 checkpoint). All 17 package budgets pass; log /tmp/m09b-round4-size-5.log. Build-only Terser
+5.44.1 uses tsup's supported minifier with three safe compression passes; no runtime dependency or
+feature-loading boundary changed. Consolidated command label use and removed unused harness messages
+and redundant styles. Earlier size failures remain in /tmp/m09b-round4-size{,-2,-3,-4}.log. This is
+not full verification; final consumer behavior and snapshots still require the browser suite.
+
+Round-4 regression checkpoint: 195 expanded browser cases pass across Chromium/Firefox/WebKit;
+the final 48 tooltip/history/geometry/toast cases pass after removing tooltip-only width declarations
+accidentally copied into the SVG icon rule. That defect made WebKit header icons 300px wide; an
+explicit 16px icon-width assertion now guards it. All six previously failing WebKit routes pass.
+The failed full run (six failures) is retained; the other five navigation/teardown stalls passed in
+isolation, without claiming that the icon defect caused them. No deadline or assertion was relaxed.
+Pinned Linux generation and comparison pass (17 workbench/control states plus three Material
+read-only checks each). Current size is 29.95 kB; final full-run size remains to be recorded.
+
+Coverage audit found the exact destination-count cases had not yet been committed. Added
+`builder-move-announcements.spec.ts`: within a slot, between slots and between columns, exact
+pickup/drop position and count, stored sibling order, byte-identical undo and command-derived
+undo/redo text. All nine cases pass across the three browsers. Interrupted the in-progress full run
+after 203 browser passes to include these additions in a fresh complete run; that interrupted log is
+retained separately and is not a verification result. The final full run and owner approval remain
+pending. These are local development runs, not CI re-runs.
+
+The subsequent complete run exits 1: 307 unit checks pass, 1,171 browser cases pass and eight
+WebKit cases time out (navigation, page setup/evaluate or context teardown). Retained as
+`m09b-round4-final-verify.log.gz`. Power evidence records idle sleep at 19:47:35 EDT followed by
+repeated sleep/dark-wake cycles through 20:17:20 during the 19:25:43–20:18:06 run; one nominal
+30-second failure lasted 3.2 minutes. Sleep is a concrete environmental cause to remove, not a
+reason to mark the run green. Retry the unchanged tests with command-lifetime `caffeinate -diu`
+assertions; no permanent power settings, timeouts, retries or correctness checks change. That
+complete local run is in progress. Size/count stages were not reached in the failed full run.
+
+### Final round-4 local verification — PASS
+
+The unchanged final code and tests pass full pinned `pnpm verify`, exit 0, with command-lifetime
+`caffeinate -diu` on macOS arm64: lint/build/typecheck, **307 unit tests (44 files), 1,179 browser
+tests across Chromium/Firefox/WebKit, 17 size budgets and five exact work-count checks**. Browser
+tests use the normal local two-worker configuration; retries and deadlines are unchanged. The
+successful run records no sleep/wake transitions. Its complete log, command, times and hash are
+archived in `docs/reviews/m09b-round4-evidence/`; prior failed and interrupted logs remain intact.
+
+Builder: **30.83 kB before → 29.95 kB final**, against the unchanged **30 kB** Brotli ceiling.
+Only a pinned build-time minifier was added; no runtime dependency or lazy-loading split is shipped.
+ADR-0018's accepted split begins M09b+ after M09b approval, superseding the older M09c placement.
+Six new requested states per platform are linked in `docs/reviews/m09b-live-review-round4.md`.
+Manifest: 16 existing PNGs changed, 12 new PNGs, 376 existing PNGs byte-identical to PR14.
+All 32 original trial artifacts still match their provenance hashes.
+
+The playground dev server is restarted at `http://127.0.0.1:4173/builder.html?approved` and left running.
+M09b remains open: owner approval of these images and first-attempt current-head PR CI are required
+before merge. No owner approval is inferred from automated geometry or visual comparisons.

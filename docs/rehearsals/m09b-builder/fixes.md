@@ -170,3 +170,41 @@ Final corrected regression: PASS, all 18 checks across Chromium/Firefox/WebKit
 306 unit / 1,122 browser / 17 size / five count checks. Archived logs are in
 `docs/reviews/m09b-owner-review-evidence/`. Earlier pending verification statements above are
 historical checkpoints; owner screenshot approval and remote CI remain pending.
+
+## Live review rounds 3/4 follow-up
+
+Round 4's first expanded run passed 192 of 195 browser checks. All three failures were the pointer
+fixture's exact Undo title: the new shared command label correctly names the newly added “Email 2”,
+while the assertion expected the type title Email. Updated the exact expected string to
+“Undo add of Email 2”; kept the private-add, history, schema and undo assertions unchanged.
+The suite still enforces the original 600ms hover threshold. After a collapsed container opens,
+refresh hit-test bounds synchronously so the next pointer event can reach an inactive tab.
+Logs /tmp/m09b-round4-focused-and-mac-2.log and earlier failures are retained.
+Selection tags now use start justification as well as start text alignment; tests check the first
+character rect is within the tag. Requested screenshots must be explicitly re-recorded, because
+small tag changes can otherwise compare within the unchanged pixel tolerance and retain old PNGs.
+
+The exact move-count regression now covers all three requested routes through public keyboard drop
+controls: same slot, different slot and different column. It asserts the full live-region/toast
+message, destination sibling order, exact undo/redo text and byte-identical undo. Nine checks pass
+across Chromium, Firefox and WebKit (`/tmp/m09b-round4-move-counts.log`). The full run in progress
+was interrupted to include this previously missing coverage; it is not recorded as a full pass.
+The final icon-width correction is scoped to SVG icons; tooltip no-wrap/max-content positioning
+remains intact. Earlier full-run WebKit failures and the interrupted run are retained separately.
+All 32 immutable trial artifacts remain unchanged; these are product responses, not edits to its report.
+
+### Final round-4 verification
+
+PASS: pinned full verify exits 0, with 307 unit checks, all 1,179 browser checks, 17 size budgets
+and five exact count checks. The Mac slept during an earlier failed full run; both its eight WebKit
+timeouts and power transitions are retained. A command-scoped keep-awake assertion enabled a complete
+run with no sleep/wake transitions, without changing permanent settings, deadlines or retries.
+Logs and command metadata: `docs/reviews/m09b-round4-evidence/`.
+
+Product fixes cover the exact move counts, command-derived history messages, timed/pauseable toasts,
+independent SR-only repeated announcements, no stale toast replay, single-line/clamped tooltips,
+outside-content selection chrome with preserved first characters, empty-history focus/body shortcuts
+and F6 without intercepting Option+Z. Six requested 1280×800 states are re-recorded for Material and
+Bootstrap 5 on macOS/Linux. Final builder is 29.95 kB against unchanged 30 kB (prior checkpoint 30.83).
+Screenshot owner approval and first-attempt green current-head PR CI still gate merge. The trial report
+and raw artifacts remain verbatim; no M09b+ runtime feature is included.
