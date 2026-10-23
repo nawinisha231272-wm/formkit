@@ -44,7 +44,10 @@ test("registry palette and generated Rating/native editors drive JSON, preview, 
   ).toBeVisible();
   await mode(page, "JSON");
   await expect(page.locator("#builder-patch")).toContainText('"op": "replace"');
-  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await page
+    .locator(".ofb-header-actions")
+    .getByRole("button", { name: "Undo", exact: true })
+    .click();
   await mode(page, "Preview");
   await expect(
     page.locator("#preview").getByRole("button", { name: "5 of 5 stars" }),
@@ -111,7 +114,10 @@ test("registry palette and generated Rating/native editors drive JSON, preview, 
     .getByRole("button", { name: "Delete", exact: true })
     .click();
   await expect(page.locator('#preview input[type="search"]')).toHaveCount(0);
-  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await page
+    .locator(".ofb-header-actions")
+    .getByRole("button", { name: "Undo", exact: true })
+    .click();
   await mode(page, "Preview");
   await expect(page.locator('#preview input[type="search"]')).toBeDisabled();
   const result = await new AxeBuilder({ page }).analyze();
@@ -309,7 +315,10 @@ test("base placeholder, required validation and hidden editors affect the shared
   await save(page);
   await mode(page, "Preview");
   await expect(page.getByPlaceholder("Your full name")).toBeHidden();
-  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await page
+    .locator(".ofb-header-actions")
+    .getByRole("button", { name: "Undo", exact: true })
+    .click();
   await expect(page.getByPlaceholder("Your full name")).toBeVisible();
   dialog = await edit(page, "Validation");
   await dialog.getByLabel("Required", { exact: true }).uncheck();

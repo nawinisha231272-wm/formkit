@@ -18,7 +18,7 @@ import { ComponentActions } from "./component-actions";
 import { icon, componentIcon } from "./icons";
 import { paletteGroups } from "./palette";
 import { describeExpression, controlledFields } from "./signals";
-import { chip, labelledInput } from "./primitives";
+import { chip, labelledInput, placeSelection } from "./primitives";
 type Entry = { node: ComponentNode; parent?: ComponentNode };
 const attribute = (element: HTMLElement, name: string, value: string) => {
   if (element.getAttribute(name) !== value) element.setAttribute(name, value);
@@ -61,6 +61,32 @@ export class Canvas {
     root.addEventListener("keydown", this.keydown);
     root.addEventListener("focusin", this.followFocus);
     picker.addEventListener("change", this.pick);
+    const position = () => {
+      if (this.pointer.active || ui.signal.aborted) return;
+      const port =
+        host.closest<HTMLElement>('[data-builder-part="canvas-panel"]') ?? host;
+      const selected = ui.builder.getState().selection;
+      const hovered = host.querySelector<HTMLElement>(
+        "[data-field-id]:hover:not(:has([data-field-id]:hover))",
+      );
+      if (selected && this.#roots.has(selected))
+        placeSelection(this.#roots.get(selected)!, port);
+      if (hovered) placeSelection(hovered, port);
+    };
+    this.position = () => requestAnimationFrame(position);
+    ui.document.fonts.addEventListener("loadingdone", position, {
+      signal: ui.signal,
+    });
+    for (const event of ["pointerover", "focusin"])
+      root.addEventListener(event, this.position, { signal: ui.signal });
+    root.addEventListener("scroll", position, {
+      capture: true,
+      signal: ui.signal,
+    });
+    ui.document.defaultView!.addEventListener("resize", position, {
+      signal: ui.signal,
+    });
+
     for (const group of paletteGroups(ui)) {
       palette.append(element(ui.document, "h3", group.label));
       for (const item of group.components) {
@@ -113,28 +139,12 @@ export class Canvas {
         this.#collapsed.delete(id);
         this.refresh(true);
       },
-      commit: (source, target, label) => {
-        const before = ui.builder.getState().definition;
-        const result = source.id
-          ? ui.dispatch(
-              new MoveComponent(source.id, {
-                ...target,
-                renameConflicts: true,
-              }),
-            )
-          : this.add(source.type, target);
-        if (
-          !result.some((d) => d.severity === "error") &&
-          before !== ui.builder.getState().definition
-        )
-          ui.announce(
-            ui.t(source.id ? "ofb.moved" : "ofb.added", {
-              label: source.label,
-              target: label,
-              index: (target.index ?? 0) + 1,
-              count: 1,
-            }),
+      commit: (source, target) => {
+        if (source.id)
+          ui.dispatch(
+            new MoveComponent(source.id, { ...target, renameConflicts: true }),
           );
+        else this.add(source.type, target);
       },
     });
     this.actions = new ComponentActions({
@@ -221,8 +231,7 @@ export class Canvas {
           ui.t("ofb.addType", { title: ui.t(item.title) }),
           () => {
             this.closeMini();
-            if (this.ui.add) this.ui.add(item.type, target, origin);
-            else this.add(item.type, target);
+            this.ui.add!(item.type, target, origin);
           },
         );
         items.append(add);
@@ -266,14 +275,7 @@ export class Canvas {
     );
   }
   add(type: string, target: DropTarget): Diagnostic[] {
-    if (this.ui.add) return this.ui.add(type, target, this.pointer.origin);
-    const diagnostics = this.ui.dispatch(
-      new AddComponent(type, { ...target, naming: "camel" }),
-    );
-    const id = this.ui.builder.getState().selection;
-    if (id && !diagnostics.some((d) => d.severity === "error"))
-      this.ui.added?.(id);
-    return diagnostics;
+    return this.ui.add!(type, target, this.pointer.origin);
   }
   entries(): Entry[] {
     const result: Entry[] = [];
@@ -366,6 +368,7 @@ export class Canvas {
     );
     return [];
   }
+  position: () => void;
   refresh(decorate: boolean): void {
     const selected = this.ui.builder.getState().selection;
     const location = selected ? this.location(selected) : undefined;
@@ -411,6 +414,7 @@ export class Canvas {
     this.drawPicker();
     this.updateTargets();
     this.onLocalChange();
+    this.position();
   }
   decorate(reuse = false): void {
     const savedHandles = reuse
@@ -453,13 +457,22 @@ export class Canvas {
           }),
           () => {},
         );
-      handle.textContent = node.key
-        ? `${componentTitle(this.ui, node)} · ${node.key}`
-        : componentTitle(this.ui, node);
+      handle.textContent = componentTitle(this.ui, node);
+      if (node.key)
+        handle.append(
+          element(
+            this.ui.document,
+            "span",
+            ` · ${node.key}`,
+            "ofb-selection-key",
+          ),
+        );
       handle.className = "of-builder-handle";
       handle.dataset.dragId = node.id;
       handle.dataset.id = node.id;
       handle.classList.add("ofb-selection-label");
+      handle.title = handle.textContent;
+      handle.setAttribute("aria-label", handle.textContent);
       root.prepend(handle);
       const toolbar = savedToolbars.get(node.id) ?? this.actions.toolbar(node);
       root.prepend(toolbar);

@@ -24,6 +24,7 @@ test("approved screen 1: Neutral workbench with Material form and real pointer i
 }, info) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/builder.html?approved&chrome=neutral&theme=material");
+  await page.getByRole("tab", { name: "Build", exact: true }).click();
   await collapseCompany(page);
   const source = page.locator('#palette [data-type="email"]');
   const from = (await source.boundingBox())!,
@@ -61,6 +62,7 @@ test("approved screen 2: generated modal and actual Bootstrap 5 error-state prev
 }, info) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/builder.html?approved&chrome=neutral&theme=bootstrap5");
+  await page.getByRole("tab", { name: "Build", exact: true }).click();
   await page
     .getByRole("button", { name: "Edit settings", exact: true })
     .click();
@@ -94,6 +96,7 @@ for (const theme of ["bootstrap4", "bootstrap5", "material"])
   }, info) => {
     await page.setViewportSize({ width: 1440, height: 960 });
     await page.goto(`/builder.html?approved&theme=${theme}`);
+    await page.getByRole("tab", { name: "Build", exact: true }).click();
     await collapseCompany(page);
     await expect(page.locator(".of-builder")).toHaveAttribute(
       "data-ofb-theme",
@@ -112,6 +115,7 @@ test("approved screen 5: dark compact chrome retains a light Material canvas", a
 }, info) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/builder.html?approved&theme=material&compact");
+  await page.getByRole("tab", { name: "Build", exact: true }).click();
   await page.evaluate(() =>
     window.nestedBuilder.setChrome({
       theme: "material",

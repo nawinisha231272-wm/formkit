@@ -26,6 +26,7 @@ export interface Builder {
   lockLevel(componentId: string): LockLevel | undefined;
   canDrop(type: string, target: DropTarget, movingId?: string): Diagnostic[];
   getState(): BuilderState;
+  commandLabel(command: Command): { action: Command["type"]; label: string };
   select(componentId: string | null): void;
   dispatch(command: Command, options?: DispatchOptions): Diagnostic[];
   undo(): Diagnostic[];
@@ -58,6 +59,10 @@ export function createBuilder(
     throw new Error(
       `Invalid initial builder definition: ${JSON.stringify(initial.diagnostics)}`,
     );
+  const labels = new WeakMap<
+    Command,
+    { action: Command["type"]; label: string }
+  >();
   let state: BuilderState = freeze({
     definition: copy(initial.form.definition),
     selection: null,
@@ -130,6 +135,9 @@ export function createBuilder(
         throw new Error(`Unknown component: ${id}`);
       if (id !== state.selection) editGroup = undefined;
       publish({ ...state, selection: id }, []);
+    },
+    commandLabel(command) {
+      return labels.get(command) ?? { action: command.type, label: "" };
     },
     dispatch(command, dispatchOptions = {}) {
       const group = dispatchOptions.historyGroup;
@@ -204,6 +212,25 @@ export function createBuilder(
           ),
       ];
       if (diagnostics.some((d) => d.severity === "error")) return diagnostics;
+      const id =
+        "componentId" in command && typeof command.componentId === "string"
+          ? command.componentId
+          : result.state.selection;
+      const node = id
+        ? (locate(state.definition, id)?.node ??
+          locate(result.state.definition, id)?.node)
+        : undefined;
+      labels.set(command, {
+        action: command.type,
+        label:
+          node?.label?.trim() ||
+          (node
+            ? (engine.getField(node.type)?.builder?.title ??
+              engine.getField(node.type)?.title)
+            : "") ||
+          state.definition.title?.trim() ||
+          "",
+      });
       if (
         JSON.stringify(state.definition) ===
         JSON.stringify(result.state.definition)

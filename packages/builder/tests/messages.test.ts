@@ -10,4 +10,16 @@ test("builder chrome uses English defaults, explicit overrides and host translat
   expect(t("of.builder.undo")).toBe("Undo");
   expect(t("Unknown literal caption")).toBe("Unknown literal caption");
   expect(t("ofb.controls")).toBe("Controls {count} fields");
+  expect(t("ofb.group.Display")).toBe("Display");
+  expect(t("ofb.group.Customer details")).toBe("Customer details");
+  expect(
+    createMessages({ "ofb.group.Display": "Presentation" })(
+      "ofb.group.Display",
+    ),
+  ).toBe("Presentation");
+  expect(
+    createMessages({}, (key) =>
+      key === "ofb.group.Display" ? "Affichage" : key,
+    )("ofb.group.Display"),
+  ).toBe("Affichage");
 });

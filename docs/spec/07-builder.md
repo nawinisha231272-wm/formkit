@@ -194,3 +194,13 @@ There is no new root logic-rule format in M09b.
 The 2026-10-22 owner review in spec 10 supersedes the initial expression-editor harness: synchronized
 sentence-first rows, searchable pickers, focus-following selection, static Display metadata, default
 Select choices/empty-choice warnings and host-confirmed save status. See ADR-0017.
+
+Successful commands expose `builder.commandLabel(command)` with the stable action type and captured
+component label/title. History, Undo and Redo use that same metadata even after deletion or selection
+changes. The browser host localizes action text. Empty-history keyboard actions announce their own
+result without altering history. See spec 10 for focus-preserving header actions and toast behavior.
+
+Successful no-op commands also capture `commandLabel` subject metadata, without publishing a patch
+or adding history. Whole-definition commands fall back to the original form title. Browser hosts use
+this metadata for completion feedback as well as undo/redo, so unchanged settings Save replaces stale
+live text. Failed commands do not acquire a successful captured subject.

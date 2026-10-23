@@ -170,3 +170,83 @@ Final corrected regression: PASS, all 18 checks across Chromium/Firefox/WebKit
 306 unit / 1,122 browser / 17 size / five count checks. Archived logs are in
 `docs/reviews/m09b-owner-review-evidence/`. Earlier pending verification statements above are
 historical checkpoints; owner screenshot approval and remote CI remain pending.
+
+## Live review rounds 3/4 follow-up
+
+Round 4's first expanded run passed 192 of 195 browser checks. All three failures were the pointer
+fixture's exact Undo title: the new shared command label correctly names the newly added “Email 2”,
+while the assertion expected the type title Email. Updated the exact expected string to
+“Undo add of Email 2”; kept the private-add, history, schema and undo assertions unchanged.
+The suite still enforces the original 600ms hover threshold. After a collapsed container opens,
+refresh hit-test bounds synchronously so the next pointer event can reach an inactive tab.
+Logs /tmp/m09b-round4-focused-and-mac-2.log and earlier failures are retained.
+Selection tags now use start justification as well as start text alignment; tests check the first
+character rect is within the tag. Requested screenshots must be explicitly re-recorded, because
+small tag changes can otherwise compare within the unchanged pixel tolerance and retain old PNGs.
+
+The exact move-count regression now covers all three requested routes through public keyboard drop
+controls: same slot, different slot and different column. It asserts the full live-region/toast
+message, destination sibling order, exact undo/redo text and byte-identical undo. Nine checks pass
+across Chromium, Firefox and WebKit (`/tmp/m09b-round4-move-counts.log`). The full run in progress
+was interrupted to include this previously missing coverage; it is not recorded as a full pass.
+The final icon-width correction is scoped to SVG icons; tooltip no-wrap/max-content positioning
+remains intact. Earlier full-run WebKit failures and the interrupted run are retained separately.
+All 32 immutable trial artifacts remain unchanged; these are product responses, not edits to its report.
+
+### Final round-4 verification
+
+PASS: pinned full verify exits 0, with 307 unit checks, all 1,179 browser checks, 17 size budgets
+and five exact count checks. The Mac slept during an earlier failed full run; both its eight WebKit
+timeouts and power transitions are retained. A command-scoped keep-awake assertion enabled a complete
+run with no sleep/wake transitions, without changing permanent settings, deadlines or retries.
+Logs and command metadata: `docs/reviews/m09b-round4-evidence/`.
+
+Product fixes cover the exact move counts, command-derived history messages, timed/pauseable toasts,
+independent SR-only repeated announcements, no stale toast replay, single-line/clamped tooltips,
+outside-content selection chrome with preserved first characters, empty-history focus/body shortcuts
+and F6 without intercepting Option+Z. Six requested 1280×800 states are re-recorded for Material and
+Bootstrap 5 on macOS/Linux. Final builder is 29.95 kB against unchanged 30 kB (prior checkpoint 30.83).
+Screenshot owner approval and first-attempt green current-head PR CI still gate merge. The trial report
+and raw artifacts remain verbatim; no M09b+ runtime feature is included.
+
+## Owner round-5 product fixes
+
+The trial report and all 32 original artifacts remain verbatim. Product changes reserve the full
+label before the key suffix, compact narrow toolbars with secondary actions in More, and share hover
+and selection placement. Every successful command now announces through the Move announcer,
+including unchanged settings Save and direct host dispatch. Delete retains its timed/pauseable Undo.
+Desktop creation already chose Build without persisting view mode; added reload and explicit
+screenshot setup coverage rather than inventing a storage contract.
+
+`builder-round5.spec.ts` checks five themes with Email, Full name and 16 wide characters on selection
+and hover, each requested command's exact replacement message, untouched-save feedback and public
+API feedback. `history-label.test.ts` checks no-op subject capture with unchanged identity/history.
+The heading-visible first-panel image and original clipped-scroll geometry are separate cases.
+
+The previous PR head's first Linux CI attempt failed two WebKit first-panel geometry assertions;
+its log and run links are retained in the round-5 owner-review record. No CI re-run was requested.
+An intermediate local run found a Firefox hover timing race (64 PASS / two FAIL). Placement now
+runs after hover state settles; fonts are ready before measuring, and the flipped-position attribute
+is asserted before the unchanged overlap checks. The subsequent 66-case geometry/command run passes
+in Chromium, Firefox and WebKit. Final full verification and pinned Linux checks remain pending.
+
+Budget work removes redundant CSS declarations, an unused pre-dialog Add fallback and duplicate
+feedback paths. It retains the unchanged 30 kB ceiling and introduces no runtime loading split.
+
+Linux generation and comparison each passed 19 Chromium, 22 WebKit and three read-only cases.
+The outer shell nevertheless exited 2: editing a comment in its source file during the long-running
+Docker command moved the file offset before the interpreter resumed. The embedded container script
+completed and exported the images; this is not a test pass for the wrapper. The final saved script
+passes `sh -n`. Run a fresh comparison without editing the script before recording wrapper PASS.
+The first interrupted capture (exit 143) and this wrapper failure are retained alongside final logs.
+
+### Final round-5 verification
+
+PASS: full pinned verify exits 0 with 307 unit, 1,224 browser, 17 size and five count checks. The clean
+Linux comparison passes all 44 cases and exits 0; its earlier wrapper/source-offset failure remains
+retained. Geometry, labels and every requested command run in all three engines. Toolbar tooltip
+coverage now checks the five visible actions; secondary Copy/Paste/JSON retain menu/shortcut coverage.
+No geometry assertion or threshold was relaxed. Builder 29,982 bytes remains below 30,000. Thirty
+affected PNGs changed, 374 remain identical, including phone views. All 32 immutable trial files match.
+Final logs/metadata are in `docs/reviews/m09b-round5-evidence/`; images in the round-5 review index.
+Owner image approval and first-attempt green current-head CI remain required; no merge is claimed.

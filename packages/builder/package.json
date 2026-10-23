@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --sourcemap --minify",
+    "build": "tsup src/index.ts --format esm --dts --clean --sourcemap",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

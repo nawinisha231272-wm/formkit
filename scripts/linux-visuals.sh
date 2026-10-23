@@ -74,12 +74,15 @@ if [ "$OURFORM_VISUAL_SUITE" = author ]; then visual_file=tests/e2e/authoring.sp
 if [ "$OURFORM_VISUAL_SUITE" = boolean ]; then visual_file=tests/e2e/nullable-boolean.spec.ts; visual_filter="nullable boolean:"; fi
 if [ "$OURFORM_VISUAL_SUITE" = tabs ]; then visual_file=tests/e2e/tabs.spec.ts; visual_filter="visual conformance"; fi
 if [ "$OURFORM_VISUAL_SUITE" = builder ]; then visual_file=tests/e2e/builder-hosts.spec.ts; visual_filter="visual conformance"; fi
-# Only screenshot cases belong to image recording; full pnpm verify retains every functional/axe case.
+# Snapshot suites record Chromium images. Owner review also preserves Linux WebKit regressions;
+# full pnpm verify retains every functional/axe case in all three browsers.
 run_visual() {
   local snapshot_args=()
   if [ "$1" = record ]; then snapshot_args=(--update-snapshots=all); fi
   if [ "$OURFORM_VISUAL_SUITE" = owner-review ]; then
-    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-visual.spec.ts tests/e2e/builder-review-visual.spec.ts --project=chromium --workers=1 --max-failures=1 "${snapshot_args[@]}" || return $?
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-visual.spec.ts tests/e2e/builder-review-visual.spec.ts tests/e2e/builder-round4.spec.ts --project=chromium --workers=1 --max-failures=1 "${snapshot_args[@]}" || return $?
+    # Preserve the old first-attempt CI failure as a Linux WebKit regression, including clipped scroll geometry.
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-round4.spec.ts tests/e2e/builder-round5.spec.ts --project=webkit --workers=1 --max-failures=1 || return $?
     npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/themes.spec.ts --workers=1 --max-failures=1 --grep "material: read-only prevents" "${snapshot_args[@]}"
   elif [ "$OURFORM_VISUAL_SUITE" = m09 ]; then
     npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/tabs.spec.ts --workers=1 --max-failures=1 --grep "visual conformance" "${snapshot_args[@]}" || return $?

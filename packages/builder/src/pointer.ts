@@ -588,7 +588,8 @@ export class PointerDrag {
         if (element.dataset.ofTab) element.click();
         else if (element.dataset.fieldId)
           this.context.expand(element.dataset.fieldId);
-        this.invalidate();
+        // Opening changes hit targets immediately; the next pointer event must use their new bounds.
+        this.#cache();
       }, 600);
   }
   #autoScroll = () => {

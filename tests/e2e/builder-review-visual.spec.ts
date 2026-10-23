@@ -7,6 +7,7 @@ test("owner review: sentence-first Conditional settings with synchronized expres
 }, info) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/builder.html?approved&chrome=neutral&theme=material");
+  await page.getByRole("tab", { name: "Build", exact: true }).click();
   await page
     .getByRole("button", { name: "Edit settings", exact: true })
     .click();
@@ -44,6 +45,7 @@ test("owner review: Builder look and keyboard destinations are in header More", 
 }, info) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/builder.html?approved&chrome=neutral&theme=material");
+  await page.getByRole("tab", { name: "Build", exact: true }).click();
   await page.locator(".ofb-header-menu > summary").click();
   await expect(
     page.getByRole("combobox", { name: "Builder look", exact: true }),

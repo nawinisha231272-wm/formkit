@@ -1,0 +1,26 @@
+{
+  "image": "mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a",
+  "platform": "linux-x64",
+  "host": "darwin-arm64, Docker amd64 emulation",
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "generationAndComparison": {
+    "command": "sh scripts/linux-visuals.sh review owner-review",
+    "testCasesPerPass": {
+      "chromium": 19,
+      "webkit": 22,
+      "materialReadOnly": 3
+    },
+    "testResult": "88 PASS",
+    "wrapperExitCode": 2,
+    "wrapperError": "Source-file comment edited during the long-running shell; file offset changed after Docker completed. Container tests and image export completed."
+  },
+  "cleanComparison": {
+    "command": "sh scripts/linux-visuals.sh check owner-review",
+    "exitCode": 0,
+    "testCases": 44,
+    "log": "m09b-round5-linux-clean-check.log.gz"
+  },
+  "builderBrotliBytes": 29982,
+  "builderBudgetBytes": 30000
+}

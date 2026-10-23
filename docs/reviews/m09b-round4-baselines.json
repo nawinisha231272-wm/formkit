@@ -1,0 +1,136 @@
+{
+  "base": "3f96bb9b20eea9ee9981937a936689efda5410cd",
+  "unchangedExisting": 376,
+  "changed": [
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-review-visual.spec.ts/chromium/review-builder-look-menu.png",
+      "before": "cad9bc628c517d4ceef9de66259bdc0274eb176da15ecb3fd91454a87dfe8075",
+      "after": "0e59b9c0eab420595092e442cd6f78d412af3b3df150746fa43416d372f7fb7b"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-review-visual.spec.ts/chromium/review-conditional-sentence.png",
+      "before": "d4925e746a316bdf2d096cdbef783d97abc341c80962699dd093d83706877a7f",
+      "after": "8b3f0989367e797e2bd2f2c1bb6c3337819992bf171174f5385735174cfa1269"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-1-neutral-material-drag.png",
+      "before": "f6b795eaafc020b5fea2bfbea22304b8bc30b1c86ac8f2a0298ba6617f67b541",
+      "after": "3eee390a531176d2ccfc98726c4698ff7c369be063c650064e3f83d486672902"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-2-neutral-edit-dialog.png",
+      "before": "c402e6b1aa6e4cf1e4a4288bacdab545f0079a6025c5a1127d9b4b43dd7f30df",
+      "after": "7d8f6e849f2ef148ca01545ab3996ae66a28d8da570ff41afc75f0f0e061659e"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-bootstrap4.png",
+      "before": "bdeb61c595b2bd587fbb621ef87d0dcd895d3f4e165a15439c59e62bf2c98e8d",
+      "after": "ed4f214519928dd20648b9747584fdea50ef4f249eef8d9b61a495fce7cc6ed9"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-bootstrap5.png",
+      "before": "e110f56a02e9c9150652665fee548ad9ac425b3c29e88a8f820a99cfe95ae6df",
+      "after": "41034080cb2e951e08f3b7cdac742f3ed394ab5084022cd70c45fd0dace9d2af"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-dark-compact.png",
+      "before": "3281c4a70974a5fce3ec4b6e22e3e4adc4d087b58452b338c1d6ec5e6dd42c88",
+      "after": "7f2525b43d22782908868e20c53108a6ce21dbfe5547fc7ac2d9df6384696a7e"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-material.png",
+      "before": "c553b83e3a5c508e62108ef09a5afc0016be158feb4b5dc9becb02be7f37fd1f",
+      "after": "15e7a1e0bb1552bdf31b7c1296ea2048f5364c123cb64f771fe0c27917f1d835"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-review-visual.spec.ts/chromium/review-builder-look-menu.png",
+      "before": "ceae3fb16c0fd8610164b66debb733b49f7fbb2995159c474cf7b8fcc2a9ac83",
+      "after": "1970e52d941462014854fa428c84a0eeafcf2fbd74d291d0529c4d78cb6280be"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-review-visual.spec.ts/chromium/review-conditional-sentence.png",
+      "before": "29c00e42f5b649cc8ae87543d70a2226a0cbce689a8eb7606a2c2bf34b86268e",
+      "after": "5bea7e6737bbff08dd8c87d95c9a4ef640348f4ec76027a7fd4310f394273cf5"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-1-neutral-material-drag.png",
+      "before": "b8d28d73533d65621c03abe9fc2e4e08a6db32c29d94a8b3ff37dfe9a97be14c",
+      "after": "a6edadb903791d7632ceac75ad0fd1bece1bc446a22319ee0663d3cd11e1960e"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-2-neutral-edit-dialog.png",
+      "before": "6652a396861a5933ededd31052ebd178510159038bd104097b82ef5fd35de723",
+      "after": "5771e238079deaffc1af59672f0832baedb6ec9e2bfba4cad49eee0949dd3dcb"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-bootstrap4.png",
+      "before": "1a8a0ee5ccc9c4fb00c730db96ec71f739851b1538fe004a3546b16770a65319",
+      "after": "7aa423a678febc2ef82e70b8056e3b131652964346ac246d5d0aea9eac4a9959"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-bootstrap5.png",
+      "before": "9378d0e38d161af5dc9f72f917184d6fe67e53a70f8490a20c7f07368ea9da6b",
+      "after": "ace8568f5f99baa01f393f371d807f792e02406a730afa2226b0f51ee8ba93ee"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-dark-compact.png",
+      "before": "aa63902f3857de874c139995d150eb77fac4780b4451bcb716e4976da5a05a56",
+      "after": "f47920c41732852b285edddaee1b8d8956d5eab08a0d3938e907d7049eb1ad63"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-material.png",
+      "before": "c1e5b0ee706efc7a47129e152111e1b6d7f711518b1e5ade09edf79506a880ae",
+      "after": "90512bdc9f94291414a578e1a65af18addc41fa8925a2046c81a203d357399d5"
+    }
+  ],
+  "new": [
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-bootstrap5-first-panel-field.png",
+      "sha256": "a5a14c7dd9f56c20794d8f3d7e280f63174bc833c6078ae6b62409b39dd9839c"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-bootstrap5-hover-neighbour.png",
+      "sha256": "bed11cd65f937f975c9f5bd3afafbc304bfdcd68b3a82d51fef4265ee1045145"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-bootstrap5-selected-column.png",
+      "sha256": "68db9a59fba176e1dc29c5cd60b34e1b919622a64f61d4519183010bb1c8371b"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-material-first-panel-field.png",
+      "sha256": "b6380883fc4c66424b63a618cdb6e85dd3d18076befa8c99f01ca82d7c40fb75"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-material-hover-neighbour.png",
+      "sha256": "5e652d32e3ac0fc6be944a2d8f001bef420a4b06b6075a5e8ace995da47b2891"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-material-selected-column.png",
+      "sha256": "d1cc6315e4531384afc4eb94fac61c94a6f9f06d680ec47a626e3cd28b7ede54"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-bootstrap5-first-panel-field.png",
+      "sha256": "35f63c4e78dfd4407a6b31af43b3987976ee0c2c1e3e281b4f723bc3f5c75c1f"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-bootstrap5-hover-neighbour.png",
+      "sha256": "2b650a48aaa0b9bba390df8c25fb00a874eb0b58967bccb20c86b52f4bc651b8"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-bootstrap5-selected-column.png",
+      "sha256": "d4df5630b836bd81755416ae5e40460de01be8fb98794b10f38c1a4cd08d2d20"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-material-first-panel-field.png",
+      "sha256": "afc0e7036e3e2cbda2fc9de1f382fa3f7364ee01264ecb1e0a7adf0b11e1ad76"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-material-hover-neighbour.png",
+      "sha256": "6ab562702e86fdf831b95e4265128c9432c6ec0fb70d00710f09dceb3ea7574f"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-material-selected-column.png",
+      "sha256": "f8fd310451334c0c508da1006981b40d8bd6e0ce144c2c086e545195edcf8f17"
+    }
+  ]
+}

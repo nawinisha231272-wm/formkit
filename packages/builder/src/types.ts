@@ -74,7 +74,7 @@ export interface UI {
   builder: Builder;
   t(key: string, params?: Record<string, unknown>): string;
   dispatch(command: Command, options?: DispatchOptions): Diagnostic[];
-  announce(message: string): void;
+  announce(message: string, action?: { label: string; run(): void }): void;
   liveProperties?: boolean;
   propertyIssue?: (key: string, message: string | undefined) => void;
   form?: () => CompiledForm | undefined;
@@ -83,7 +83,6 @@ export interface UI {
   palette?: PaletteOptions;
   actions?: readonly ToolbarAction[];
   icons?: BuilderIcons;
-  added?: (id: string) => void;
   add?: (
     type: string,
     target: DropTarget,

@@ -29,6 +29,12 @@ export function tooltip(
   tip.hidden = true;
   const show = () => {
     tip.hidden = false;
+    const rect = target.getBoundingClientRect();
+    tip.style.position = "fixed";
+    tip.style.inset = "auto";
+    tip.style.transform = "none";
+    tip.style.left = `${Math.max(8, Math.min(rect.left + (rect.width - tip.offsetWidth) / 2, context.document.documentElement.clientWidth - tip.offsetWidth - 8))}px`;
+    tip.style.top = `${Math.max(8, rect.top - tip.offsetHeight - 6)}px`;
     target.setAttribute("aria-describedby", tip.id);
   };
   const hide = () => {
@@ -336,4 +342,53 @@ export function toast(context: PrimitiveContext, message: string) {
   // Announcements are owned by the builder's single polite live region.
   element.textContent = message;
   return element;
+}
+
+/** Place transient selection chrome outside field content and within its scrollport. */
+export function placeSelection(root: HTMLElement, scrollport: HTMLElement) {
+  const tag = root.querySelector<HTMLElement>(":scope > .ofb-selection-label");
+  const toolbar = root.querySelector<HTMLElement>(
+    ":scope > .ofb-component-toolbar",
+  );
+  if (!tag || !toolbar || getComputedStyle(toolbar).display === "none") return;
+  root.removeAttribute("data-ofb-chrome-below");
+  const box = root.getBoundingClientRect();
+  const text = root.ownerDocument.createRange();
+  text.selectNodeContents(tag.firstChild!);
+  const labelWidth = text.getBoundingClientRect().width;
+  tag.style.setProperty("--ofb-label-width", `${labelWidth}px`);
+  toolbar.toggleAttribute(
+    "data-ofb-compact",
+    box.width < 360 && !!toolbar.querySelector('[data-ofb-action="more"]'),
+  );
+  toolbar.style.maxInlineSize = `${Math.max(40, box.width - labelWidth - 22)}px`;
+  tag.style.maxInlineSize = `${Math.max(0, box.width - toolbar.getBoundingClientRect().width - 8)}px`;
+  const height = Math.max(tag.offsetHeight, toolbar.offsetHeight);
+  root.style.setProperty("--ofb-chrome-height", `${height}px`);
+  const regions = [
+    tag.getBoundingClientRect(),
+    toolbar.getBoundingClientRect(),
+  ];
+  const headingCollision = [
+    ...scrollport.querySelectorAll("h1,h2,h3,legend,label,.of-layout-title"),
+  ].some((heading) => {
+    text.selectNodeContents(heading);
+    const r = text.getBoundingClientRect();
+    return (
+      r.width > 0 &&
+      regions.some(
+        (area) =>
+          r.left < area.right &&
+          r.right > area.left &&
+          r.top < area.bottom &&
+          r.bottom > area.top,
+      )
+    );
+  });
+  root.toggleAttribute(
+    "data-ofb-chrome-below",
+    headingCollision ||
+      box.top - height - 4 <
+        Math.max(0, scrollport.getBoundingClientRect().top),
+  );
 }

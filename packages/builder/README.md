@@ -176,5 +176,28 @@ enforced. The header shows the type icon and location. Empty labels use register
 
 New Select additions have editable Option 1/Option 2; existing runtime defaults remain empty. Issues
 flags empty Select/Radio options without rejecting a deliberate wire definition. Palette order favors
-common fields, and no unregistered future component is shown. M09b+ is a proposal in spec 10, not
-implemented functionality.
+common fields, and no unregistered future component is shown. M09b+ is an approved plan in spec 10,
+pending M09b screenshot approval before implementation.
+
+Undo/Redo use `aria-disabled` instead of native disabling so exhausting history does not discard
+keyboard focus. Disabled activation is a no-op. Ctrl/Cmd+Z announces an empty history from the
+focused header button. Body-level undo/redo is enabled only when this is the sole builder; embedded
+multiple instances scope shortcuts to their own roots. F6/Shift+F6 cycle header, palette, selected
+canvas/outline regions and a visible toast action. Alt/Option+Z is not a builder shortcut.
+
+The build uses pinned development-only Terser through tsup. The current 30 kB compressed package
+ceiling remains enforced; ADR-0018's 26 kB target applies to the later M09b+ split.
+
+### Command feedback and narrow columns
+
+Every successful command uses the same polite announcer and visible toast: Add, Duplicate, Delete,
+Paste, Wrap, settings Save and public `controller.builder.dispatch` all replace earlier feedback.
+Saving unchanged settings still announces completion without adding history. Move reports its final
+slot position/count. Delete keeps a reachable Undo action for eight seconds, paused on hover/focus;
+ordinary notices last five seconds. Expiry leaves the screen-reader message intact.
+
+In narrow columns the toolbar shows Edit, Move, Duplicate, Delete and More. Copy, Paste and Edit JSON
+remain in More; shortcuts are unchanged. Tag layout reserves the complete label before the key
+suffix, with one outside-edge placement rule for selection and hover. At desktop creation the builder
+always opens Build; view mode is not persisted. Below 768px it opens read-only Preview. Builder look
+storage does not control this initial view.
