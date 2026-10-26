@@ -1,20 +1,3 @@
-import {
-  bootstrap4Theme,
-  builderTheme as bootstrap4BuilderTheme,
-} from "@ourform/theme-bootstrap4";
-import {
-  bootstrap5Theme,
-  builderTheme as bootstrap5BuilderTheme,
-} from "@ourform/theme-bootstrap5";
-import {
-  tailwindTheme,
-  builderTheme as tailwindBuilderTheme,
-} from "@ourform/theme-tailwind";
-import {
-  materialTheme,
-  builderTheme as materialBuilderTheme,
-} from "@ourform/theme-material";
-import { builderTheme as neutralBuilderTheme } from "@ourform/theme-base";
 import { createEngine } from "@ourform/core";
 import type {
   Engine,
@@ -26,19 +9,10 @@ import type { RegisteredField } from "@ourform/sdk";
 import { mount } from "./render";
 import type { FormView, RenderOptions } from "./render";
 import type { Views } from "./shell";
-export const defaultThemes = Object.freeze([
-  bootstrap4Theme,
-  bootstrap5Theme,
-  tailwindTheme,
-  materialTheme,
-]);
-export const defaultBuilderThemes = Object.freeze([
-  neutralBuilderTheme,
-  bootstrap4BuilderTheme,
-  bootstrap5BuilderTheme,
-  tailwindBuilderTheme,
-  materialBuilderTheme,
-]);
+/** @deprecated Themes are explicit host configuration. Retained empty during migration. */
+export const defaultThemes = Object.freeze([]);
+/** @deprecated Builder recipes are explicit per builder instance. */
+export const defaultBuilderThemes = Object.freeze([]);
 export interface HostOptions extends Omit<RenderOptions, "views" | "onSubmit"> {
   schema: unknown;
   engine?: Engine;
@@ -170,7 +144,7 @@ export function createFormController(
     view = mount(root, session, {
       ...options,
       ...(nativeHost ? { nativeHost } : {}),
-      themes: options.themes ?? defaultThemes,
+      themes: options.themes ?? [],
       engine,
       views,
     });

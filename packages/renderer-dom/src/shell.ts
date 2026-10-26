@@ -46,6 +46,7 @@ export function shellVNode(
   actions?: { submit(): void; reset(): void; emit(name: string): void },
   onBlur?: () => void,
   layoutInteraction: LayoutInteraction = {},
+  styleClass?: (key: string, declarations: string) => string,
 ): VNode {
   presentation = {
     ...presentation,
@@ -77,6 +78,12 @@ export function shellVNode(
     : typeof entry.node.ariaLabel === "string" && entry.node.ariaLabel
       ? entry.node.ariaLabel
       : undefined;
+  const declarations = Object.entries({
+    ...theme.tokens,
+    "--of-column-span": String(entry.node.layout?.width ?? 12),
+  })
+    .map(([key, value]) => `${key}:${value}`)
+    .join(";");
   const rootProps = {
     key: entry.node.id,
     ...(entry.node.tooltip ? { title: entry.node.tooltip } : {}),
@@ -87,13 +94,8 @@ export function shellVNode(
     "data-of-disabled": String(state.disabled),
     ...(design ? { "data-of-design-node": entry.node.id } : {}),
     hidden: !state.visible && !design,
-    class: cl("root"),
-    style: Object.entries({
-      ...theme.tokens,
-      "--of-column-span": String(entry.node.layout?.width ?? 12),
-    })
-      .map(([key, value]) => `${key}:${value}`)
-      .join(";"),
+    class: `${cl("root")}${styleClass ? ` ${styleClass(entry.node.id, declarations)}` : ""}`,
+    ...(styleClass ? {} : { style: declarations }),
   };
   if (view?.layout || (entry.model.slots && !entry.model.value))
     return layoutVNode(
@@ -104,6 +106,7 @@ export function shellVNode(
       prefix,
       layoutInteraction,
       t,
+      styleClass,
     );
   if (!entry.model.value && !view?.portable)
     return h(

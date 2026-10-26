@@ -19,6 +19,7 @@ import type { FormController } from "@ourform/renderer-dom";
 import nativeSchema from "../../../fixtures/forms/native/host-feedback.json";
 import onboardingSchema from "../../../fixtures/forms/onboarding/customer.json";
 import onboardingData from "../../../fixtures/forms/onboarding/customer.data.json";
+import { baseTheme } from "@ourform/themes/base";
 const query = new URLSearchParams(location.search);
 const schema = query.has("protected")
   ? protectedSchema
@@ -176,7 +177,7 @@ document.querySelector("#app")!.replaceChildren(host);
 const application = await bootstrapApplication(App, {
   providers: [
     provideZonelessChangeDetection(),
-    provideOurForm(),
+    provideOurForm({ themes: [baseTheme], theme: baseTheme }),
     provideFormField("employee", EmployeeLookup),
     provideFormField("employeeObject", EmployeeObject, {
       value: employeeValue,

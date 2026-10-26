@@ -13,17 +13,10 @@ import type {
 } from "@ourform/schema";
 import { createFormController } from "@ourform/renderer-dom";
 import type { FormController } from "@ourform/renderer-dom";
+import { defaultMessage } from "@ourform/sdk";
 import type { Theme, ThemeMode } from "@ourform/sdk";
-import {
-  actionButton,
-  dialog,
-  drawer,
-  tabs,
-  labelledInput,
-} from "./primitives";
+import type { FeatureLoader } from "./feature-loader";
 import { renderProperties } from "./editors";
-import { icon, componentIcon } from "./icons";
-import { element, componentTitle, componentLocation } from "./types";
 import type { BuilderOptions, UI } from "./types";
 
 function find(nodes: ComponentNode[], id: string): ComponentNode | undefined {
@@ -44,20 +37,72 @@ const baseTabs = [
   "Layout",
   "Accessibility",
 ];
+const english: Readonly<Record<string, string>> = {
+  "ofb.writeExpression": "Write as expression",
+  "ofb.complexExpression":
+    "Edit this expression below; simple rule rows cannot represent it.",
+  "ofb.editorTitle": "{type} · {label}",
+  "ofb.key": "Key",
+  "ofb.hasProblem": "{tab} has a problem",
+  "ofb.noProperties": "No settings in this tab.",
+  "ofb.livePreview": "Live preview",
+  "ofb.previewState": "Preview state",
+  "ofb.default": "Default",
+  "ofb.focus": "Focus",
+  "ofb.error": "Error",
+  "ofb.disabled": "Disabled",
+  "ofb.previewHint":
+    "Changes show here instantly and apply to the form when you save.",
+  "ofb.drawerHint":
+    "Changes apply live. Undo groups edits to the same field within 500 ms.",
+  "ofb.saveHint": "Esc cancels · Ctrl+Enter saves · Save is one undo step",
+  "ofb.editorConflict":
+    "This component changed outside the editor. Close and reopen it to continue.",
+};
+function messages(base: UI["t"]): UI["t"] {
+  return (key, params) => {
+    const translated = base(key, params);
+    const template = translated === key ? english[key] : translated;
+    return template
+      ? template.replace(/\{([A-Za-z0-9_]+)\}/g, (match, name: string) =>
+          params?.[name] === undefined ? match : String(params[name]),
+        )
+      : defaultMessage(key, params);
+  };
+}
 export interface SettingsContext {
   host: HTMLElement;
   ui: UI;
   options: BuilderOptions;
+  features: FeatureLoader;
   appearance(): { theme: Theme | string; mode: ThemeMode };
   data(): unknown;
   remove(id: string): void;
   closed(origin?: HTMLElement): void;
 }
-interface PendingAddition {
+export interface PendingAddition {
   type: string;
   target: DropTarget;
   definition: FormDefinition;
   origin?: HTMLElement;
+}
+export interface SettingsFrame {
+  local: AbortController;
+  container: HTMLElement;
+  overlay?: ReturnType<typeof import("./primitives").dialog>;
+  shown: boolean;
+  tools: {
+    actionButton: typeof import("./primitives").actionButton;
+    tabs: typeof import("./primitives").tabs;
+    labelledInput: typeof import("./primitives").labelledInput;
+    featureOutlet: typeof import("./feature-outlet").featureOutlet;
+    icon: typeof import("./icons").icon;
+    componentIcon: typeof import("./icons").componentIcon;
+    element: typeof import("./types").element;
+    button: typeof import("./types").button;
+    componentTitle: typeof import("./types").componentTitle;
+    componentLocation: typeof import("./types").componentLocation;
+  };
 }
 /** A private draft is separate from the customer's schema/history until modal Save. */
 export class Settings {
@@ -74,28 +119,15 @@ export class Settings {
   restyle(): void {
     this.#appearance?.();
   }
-  add(type: string, target: DropTarget, origin?: HTMLElement): Diagnostic[] {
-    const { ui } = this.context;
-    const draft = createBuilder(ui.engine, ui.builder.getState().definition);
-    const diagnostics = draft.dispatch(
-      new AddComponent(type, { ...target, naming: "camel" }),
-    );
-    const id = draft.getState().selection;
-    if (id && !diagnostics.some((d) => d.severity === "error")) {
-      const focused =
-        origin ?? (ui.document.activeElement as HTMLElement | null);
-      this.open(id, false, {
-        type,
-        target,
-        definition: draft.getState().definition,
-        ...(focused ? { origin: focused } : {}),
-      });
-    }
-    return diagnostics;
-  }
-  open(id: string, json = false, addition?: PendingAddition): void {
+  open(
+    id: string,
+    json = false,
+    addition: PendingAddition | undefined,
+    frame: SettingsFrame,
+  ): void {
     this.close();
-    const { ui, options, host } = this.context;
+    const { ui: inherited, options, host } = this.context;
+    const ui: UI = { ...inherited, t: messages(inherited.t) };
     const definition = addition?.definition ?? ui.builder.getState().definition;
     const selectedNode = find(definition.components, id);
     if (!selectedNode) return;
@@ -105,10 +137,11 @@ export class Settings {
       ui.announce(ui.t("ofb.lock.edit"));
       return;
     }
-    const local = new AbortController();
+    const local = frame.local;
     const context = {
       document: ui.document,
       signal: local.signal,
+      _ofbStyle: ui._ofbStyle,
       ...(options.icons ? { icons: options.icons } : {}),
     };
     const draft = createBuilder(ui.engine, definition, {
@@ -131,11 +164,20 @@ export class Settings {
     let activeTab = json ? "JSON" : "Display";
     let state = "default";
     let disposed = false;
-    let overlay: ReturnType<typeof dialog> | undefined;
-    const container = isDrawer
-      ? drawer(context, ui.t("ofb.settings"))
-      : (overlay = dialog(context, ui.t("ofb.settings"), () => close()))
-          .element;
+    const overlay = frame.overlay;
+    const container = frame.container;
+    const {
+      actionButton,
+      tabs,
+      labelledInput,
+      featureOutlet,
+      icon,
+      componentIcon,
+      element,
+      button,
+      componentTitle,
+      componentLocation,
+    } = frame.tools;
     container.classList.add("ofb-settings");
     const close = (committed = false) => {
       if (disposed) return;
@@ -301,7 +343,7 @@ export class Settings {
     editors.setAttribute("role", "tabpanel");
     body.append(editors, previewPane);
     container.append(header, bar.element, body, error, footer);
-    host.append(container);
+    if (!container.isConnected) host.append(container);
     const problem = (property: string, message: string | undefined) => {
       if (message) problems.set(property, message);
       else problems.delete(property);
@@ -532,32 +574,14 @@ export class Settings {
       else close(true);
     }
     if (json) {
-      const field = labelledInput(context, ui.t("ofb.editJson"), "textarea");
-      const input = field.input as HTMLTextAreaElement;
-      input.value = JSON.stringify(original, null, 2);
-      input.readOnly = readonly;
-      input.dataset.property = "JSON";
-      input.addEventListener(
-        "input",
-        () => {
-          try {
-            change(JSON.parse(input.value) as ComponentNode, "JSON");
-          } catch (cause) {
-            problem(
-              "JSON",
-              ui.t("ofb.invalidJson", {
-                message: cause instanceof Error ? cause.message : String(cause),
-              }),
-            );
-          }
-        },
-        { signal: local.signal },
-      );
-      editors.append(field.wrapper);
-      if (readonly)
-        editors.prepend(element(ui.document, "p", ui.t("ofb.readOnlyJson")));
+      const jsonUI = { ...ui, signal: local.signal };
+      const outlet = featureOutlet(editors, jsonUI, this.context.features);
+      outlet.open("json", ({ mountComponentJson }) => {
+        mountComponentJson(editors, jsonUI, original, readonly, change, problem, { labelledInput, element });
+        editors.querySelector<HTMLElement>("textarea")?.focus();
+      });
     } else {
-      renderProperties(editors, draftUI);
+      renderProperties(editors, draftUI, { actionButton, element, button });
       const hidden = options.editor?.properties?.[original.type]?.hide ?? [];
       for (const input of editors.querySelectorAll<
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -612,7 +636,7 @@ export class Settings {
       },
       { signal: local.signal },
     );
-    overlay?.show();
+    if (!frame.shown) overlay?.show();
     editors
       .querySelector<HTMLElement>("input:not(:disabled),textarea,select")
       ?.focus();
@@ -628,3 +652,5 @@ export class Settings {
     );
   }
 }
+
+export { settingsStyle } from "./settings-style";

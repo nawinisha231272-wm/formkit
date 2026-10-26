@@ -53,7 +53,7 @@ export interface PointerContext {
 /** Geometry is read at pickup and invalidation, never by the pointer-move handler. */
 export class PointerDrag {
   #pending: Pending | undefined;
-  origin: HTMLElement | undefined;
+  _ofbOrigin: HTMLElement | undefined;
   #active:
     | { source: Source; keyboard: boolean; pointerId?: number }
     | undefined;
@@ -80,8 +80,8 @@ export class PointerDrag {
   #suppressClick = false;
   #observer: ResizeObserver;
   #events = new AbortController();
-  constructor(readonly context: PointerContext) {
-    const { root, ui } = context;
+  constructor(readonly _ofbContext: PointerContext) {
+    const { root, ui } = _ofbContext;
     this.#ghost = element(ui.document, "div", "", "ofb-drag-ghost");
     this.#line = element(ui.document, "div", "", "ofb-insertion-line");
     this.#feedback = element(ui.document, "div", "", "ofb-drag-feedback");
@@ -94,11 +94,11 @@ export class PointerDrag {
     root.addEventListener("pointerdown", this.down, { signal });
     root.addEventListener("pointermove", this.move, { signal });
     root.addEventListener("pointerup", this.up, { signal });
-    root.addEventListener("pointercancel", () => this.cancel(), { signal });
+    root.addEventListener("pointercancel", () => this._ofbCancel(), { signal });
     root.addEventListener(
       "lostpointercapture",
       () => {
-        if (this.#active?.pointerId !== undefined) this.cancel();
+        if (this.#active?.pointerId !== undefined) this._ofbCancel();
       },
       { signal },
     );
@@ -122,14 +122,14 @@ export class PointerDrag {
       signal,
     });
     this.#observer = new ResizeObserver(this.invalidate);
-    this.#observer.observe(context.host);
-    this.#observer.observe(context.root);
+    this.#observer.observe(_ofbContext.host);
+    this.#observer.observe(_ofbContext.root);
   }
-  get active() {
+  get _ofbActive() {
     return this.#active !== undefined;
   }
   #source(target: Element): Source | undefined {
-    const { palette, outline, host } = this.context;
+    const { palette, outline, host } = this._ofbContext;
     if (target.closest<HTMLElement>('[role="treeitem"]')?.dataset.builderSlot)
       return;
     const add = target.closest<HTMLElement>("[data-type]");
@@ -144,21 +144,21 @@ export class PointerDrag {
     if (!source || (!host.contains(source) && !outline.contains(source)))
       return undefined;
     const id = source.dataset.dragId ?? source.dataset.fieldId;
-    const node = this.context
+    const node = this._ofbContext
       .entries()
       .find((entry) => entry.node.id === id)?.node;
     return node
       ? {
           id: node.id,
           type: node.type,
-          label: componentTitle(this.context.ui, node),
+          label: componentTitle(this._ofbContext.ui, node),
         }
       : undefined;
   }
   down = (event: PointerEvent) => {
     if (event.button !== 0 || this.#active || this.#pending) return;
     this.#suppressClick = false;
-    this.origin = this.context.ui.document.activeElement as
+    this._ofbOrigin = this._ofbContext.ui.document.activeElement as
       | HTMLElement
       | undefined;
     const target = event.target as Element;
@@ -184,7 +184,7 @@ export class PointerDrag {
     if (pending.touch)
       pending.timer = setTimeout(() => {
         if (this.#pending === pending)
-          this.start(source, false, event.pointerId);
+          this._ofbStart(source, false, event.pointerId);
       }, 300);
   };
   move = (event: PointerEvent) => {
@@ -196,7 +196,7 @@ export class PointerDrag {
         this.#clearPending();
         return;
       }
-      this.start(pending.source, false, event.pointerId);
+      this._ofbStart(pending.source, false, event.pointerId);
     }
     if (
       !this.#active ||
@@ -241,28 +241,28 @@ export class PointerDrag {
     this.#at(event.clientX, event.clientY);
     this.#drop();
   };
-  start(source: Source, keyboard: boolean, pointerId?: number): void {
+  _ofbStart(source: Source, keyboard: boolean, pointerId?: number): void {
     this.#clearPending();
-    if (source.id && this.context.ui.builder.lockLevel(source.id) === "all") {
-      this.context.ui.announce(this.context.ui.t("ofb.lock.move"));
+    if (source.id && this._ofbContext.ui.builder.lockLevel(source.id) === "all") {
+      this._ofbContext.ui.announce(this._ofbContext.ui.t("ofb.lock.move"));
       return;
     }
-    if (source.id) this.context.ui.builder.select(source.id);
+    if (source.id) this._ofbContext.ui.builder.select(source.id);
     this.#active = {
       source,
       keyboard,
       ...(pointerId === undefined ? {} : { pointerId }),
     };
-    this.context.root.dataset.ofbDragging = "true";
-    if (pointerId !== undefined) this.context.root.setPointerCapture(pointerId);
+    this._ofbContext.root.dataset.ofbDragging = "true";
+    if (pointerId !== undefined) this._ofbContext.root.setPointerCapture(pointerId);
     this.#ghost.textContent = source.label;
     this.#ghost.hidden = false;
     this.#cache();
-    this.context.ui.announce(
-      this.context.ui.t("ofb.pickedUp", { label: source.label }),
+    this._ofbContext.ui.announce(
+      this._ofbContext.ui.t("ofb.pickedUp", { label: source.label }),
     );
     if (keyboard && source.id) {
-      const from = this.context.location(source.id);
+      const from = this._ofbContext.location(source.id);
       const slot = this.#slots.find(
         (slot) =>
           slot.target.parentId === from?.parent?.id &&
@@ -275,20 +275,20 @@ export class PointerDrag {
         });
     }
   }
-  keyboard(id: string): void {
-    if (this.active) return;
-    const node = this.context
+  _ofbKeyboard(id: string): void {
+    if (this._ofbActive) return;
+    const node = this._ofbContext
       .entries()
       .find((entry) => entry.node.id === id)?.node;
     if (node)
-      this.start(
-        { type: node.type, id, label: componentTitle(this.context.ui, node) },
+      this._ofbStart(
+        { type: node.type, id, label: componentTitle(this._ofbContext.ui, node) },
         true,
       );
   }
   #cache() {
     if (!this.#active) return;
-    const { root, host, scroll, entries, children, slots } = this.context;
+    const { root, host, scroll, entries, children, slots } = this._ofbContext;
     this.#origin = root.getBoundingClientRect();
     const frame = scroll.getBoundingClientRect(),
       form = host.getBoundingClientRect();
@@ -341,7 +341,7 @@ export class PointerDrag {
     const outer = make(
       undefined,
       undefined,
-      this.context.ui.t("ofb.formRoot"),
+      this._ofbContext.ui.t("ofb.formRoot"),
       host,
       0,
     );
@@ -365,7 +365,7 @@ export class PointerDrag {
         const target = make(
           node,
           slot.name,
-          `${componentTitle(this.context.ui, node)} / ${this.context.caption(slot)}`,
+          `${componentTitle(this._ofbContext.ui, node)} / ${this._ofbContext.caption(slot)}`,
           owner,
           depth,
         );
@@ -416,11 +416,10 @@ export class PointerDrag {
     const bounds = this.#clip,
       origin = this.#origin;
     if (origin) {
-      this.#ghost.style.setProperty(
+      this._ofbContext.ui._ofbStyle(
+        this.#ghost,
         "--ofb-pointer-x",
         `${x - origin.left + 14}px`,
-      );
-      this.#ghost.style.setProperty(
         "--ofb-pointer-y",
         `${y - origin.top + 14}px`,
       );
@@ -492,14 +491,14 @@ export class PointerDrag {
       renameConflicts: true,
     };
     const key = JSON.stringify(target),
-      definition = this.context.ui.builder.getState().definition;
+      definition = this._ofbContext.ui.builder.getState().definition;
     if (
       key !== this.#preflightKey ||
       definition !== this.#preflightDefinition
     ) {
       this.#preflightKey = key;
       this.#preflightDefinition = definition;
-      this.#preflight = this.context.ui.builder.canDrop(
+      this.#preflight = this._ofbContext.ui.builder.canDrop(
         active.source.type,
         target,
         active.source.id,
@@ -509,12 +508,12 @@ export class PointerDrag {
     const signature = JSON.stringify([target, diagnostics.map((d) => d.code)]);
     if (signature !== this.#lastPosition) {
       this.#lastPosition = signature;
-      this.context.ui.announce(
+      this._ofbContext.ui.announce(
         diagnostics.length
-          ? this.context.ui.t("ofb.refused", {
+          ? this._ofbContext.ui.t("ofb.refused", {
               reason: diagnostics.map((d) => d.message).join(" · "),
             })
-          : this.context.ui.t("ofb.position", {
+          : this._ofbContext.ui.t("ofb.position", {
               label: active.source.label,
               target: position.slot.label,
               index: position.index + 1,
@@ -533,12 +532,12 @@ export class PointerDrag {
       position.slot.children[position.index]?.rect.top ??
       position.slot.children.at(-1)?.rect.bottom ??
       position.slot.rect.top + 12;
-    this.#line.style.setProperty(
+    this._ofbContext.ui._ofbStyle(
+      this.#line,
       "--ofb-line-x",
       `${position.slot.rect.left - origin.left}px`,
-    );
-    this.#line.style.setProperty("--ofb-line-y", `${y - origin.top}px`);
-    this.#line.style.setProperty(
+      "--ofb-line-y",
+      `${y - origin.top}px`,
       "--ofb-line-width",
       `${position.slot.rect.width}px`,
     );
@@ -551,12 +550,12 @@ export class PointerDrag {
         Math.abs(this.#lastX - position.slot.rect.right)
           ? position.slot.rect.left
           : position.slot.rect.right;
-      this.#line.style.setProperty("--ofb-line-x", `${edge - origin.left}px`);
-      this.#line.style.setProperty(
+      this._ofbContext.ui._ofbStyle(
+        this.#line,
+        "--ofb-line-x",
+        `${edge - origin.left}px`,
         "--ofb-line-y",
         `${position.slot.rect.top - origin.top}px`,
-      );
-      this.#line.style.setProperty(
         "--ofb-line-height",
         `${position.slot.rect.height}px`,
       );
@@ -567,11 +566,10 @@ export class PointerDrag {
       ? diagnostics.map((d) => d.message).join(" · ")
       : position.slot.label;
     this.#feedback.dataset.refused = String(!!diagnostics.length);
-    this.#feedback.style.setProperty(
+    this._ofbContext.ui._ofbStyle(
+      this.#feedback,
       "--ofb-pointer-x",
       `${position.slot.rect.left - origin.left}px`,
-    );
-    this.#feedback.style.setProperty(
       "--ofb-pointer-y",
       `${y - origin.top - 28}px`,
     );
@@ -583,11 +581,11 @@ export class PointerDrag {
     this.#hover = target;
     if (target)
       this.#hoverTimer = setTimeout(() => {
-        if (!this.active) return;
+        if (!this._ofbActive) return;
         const element = target as HTMLElement;
         if (element.dataset.ofTab) element.click();
         else if (element.dataset.fieldId)
-          this.context.expand(element.dataset.fieldId);
+          this._ofbContext.expand(element.dataset.fieldId);
         // Opening changes hit targets immediately; the next pointer event must use their new bounds.
         this.#cache();
       }, 600);
@@ -595,12 +593,12 @@ export class PointerDrag {
   #autoScroll = () => {
     this.#scrollFrame = 0;
     if (!this.#active || !this.#velocity) return;
-    this.context.scroll.scrollTop += this.#velocity;
+    this._ofbContext.scroll.scrollTop += this.#velocity;
     this.#scrollFrame = requestAnimationFrame(this.#autoScroll);
   };
   keydown = (event: KeyboardEvent) => {
     if (!this.#active) {
-      this.origin = undefined;
+      this._ofbOrigin = undefined;
       if (
         event.key !== " " ||
         (event.target as HTMLElement).matches("input,textarea,select")
@@ -610,13 +608,13 @@ export class PointerDrag {
       if (!source?.id) return;
       event.preventDefault();
       event.stopImmediatePropagation();
-      this.start(source, true);
+      this._ofbStart(source, true);
       return;
     }
     if (event.key === "Escape") {
       event.preventDefault();
       event.stopImmediatePropagation();
-      this.cancel();
+      this._ofbCancel();
       return;
     }
     if (!this.#active.keyboard) return;
@@ -672,7 +670,7 @@ export class PointerDrag {
         }
       : undefined;
     const errors = target
-      ? this.context.ui.builder.canDrop(
+      ? this._ofbContext.ui.builder.canDrop(
           active.source.type,
           target,
           active.source.id,
@@ -681,18 +679,18 @@ export class PointerDrag {
     this.#suppressClick = !active.keyboard;
     this.#finish();
     if (!position || !target) {
-      this.context.ui.announce(this.context.ui.t("ofb.dragCancelled"));
+      this._ofbContext.ui.announce(this._ofbContext.ui.t("ofb.dragCancelled"));
       return;
     }
     if (errors.length) {
-      this.context.ui.announce(
-        this.context.ui.t("ofb.refused", {
+      this._ofbContext.ui.announce(
+        this._ofbContext.ui.t("ofb.refused", {
           reason: errors.map((d) => d.message).join(" · "),
         }),
       );
       return;
     }
-    this.context.commit(active.source, target, position.slot.label);
+    this._ofbContext.commit(active.source, target, position.slot.label);
   }
   #clearPending() {
     clearTimeout(this.#pending?.timer);
@@ -709,7 +707,7 @@ export class PointerDrag {
     cancelAnimationFrame(this.#scrollFrame);
     this.#cacheFrame = this.#scrollFrame = this.#velocity = 0;
     this.#ghost.hidden = this.#line.hidden = this.#feedback.hidden = true;
-    delete this.context.root.dataset.ofbDragging;
+    delete this._ofbContext.root.dataset.ofbDragging;
     for (const slot of this.#slots) {
       delete slot.owner.dataset.ofbDropTarget;
       delete slot.owner.dataset.ofbDropRefused;
@@ -719,17 +717,17 @@ export class PointerDrag {
     this.#lastPosition = this.#preflightKey = "";
     this.#preflight = [];
     this.#hoverTargets = [];
-    if (pointer !== undefined && this.context.root.hasPointerCapture(pointer))
-      this.context.root.releasePointerCapture(pointer);
+    if (pointer !== undefined && this._ofbContext.root.hasPointerCapture(pointer))
+      this._ofbContext.root.releasePointerCapture(pointer);
   }
-  cancel(): void {
-    const active = this.active;
+  _ofbCancel(): void {
+    const active = this._ofbActive;
     if (this.#active && !this.#active.keyboard) this.#suppressClick = true;
     this.#finish();
     if (active)
-      this.context.ui.announce(this.context.ui.t("ofb.dragCancelled"));
+      this._ofbContext.ui.announce(this._ofbContext.ui.t("ofb.dragCancelled"));
   }
-  destroy(): void {
+  _ofbDestroy(): void {
     this.#finish();
     this.#events.abort();
     this.#observer.disconnect();

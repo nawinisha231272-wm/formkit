@@ -5,6 +5,15 @@ import {
 } from "@ourform/element";
 import type { OurFormBuilderElement } from "@ourform/element";
 import { stringProperty } from "@ourform/sdk";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
+import { bootstrap4BuilderTheme } from "@ourform/builder/themes/bootstrap4";
+import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5";
+import { tailwindBuilderTheme } from "@ourform/builder/themes/tailwind";
+import { materialBuilderTheme } from "@ourform/builder/themes/material";
 import { recordBuilderEvents } from "../../shared/builder-types";
 import schema from "../../../fixtures/forms/nested-tabs/customer.json";
 import data from "../../../fixtures/forms/nested-tabs/customer.data.json";
@@ -133,6 +142,12 @@ const field = registerElementField("acme.native", "builder-native-input", {
 recordBuilderEvents();
 const query = new URLSearchParams(location.search),
   mount = document.getElementById("mount")!;
+const loading = {
+  preload: query.get("preload") === "idle" ? "idle" as const : "none" as const,
+  settingsPreload: query.get("settingsPreload") === "none" ? "none" as const : "idle" as const,
+  ...(query.has("assetBase") ? { assetBase: query.get("assetBase")! } : {}),
+  ...(query.has("styleNonce") ? { styleNonce: query.get("styleNonce")! } : {}),
+};
 let definition: unknown = schema;
 if (query.has("element")) {
   defineOurFormBuilderElement();
@@ -140,6 +155,9 @@ if (query.has("element")) {
     "our-form-builder",
   ) as OurFormBuilderElement;
   if (query.has("shadow")) builder.setAttribute("shadow", "");
+  Object.assign(builder, loading);
+  builder.themes = [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme];
+  builder.builderThemes = [bootstrap4BuilderTheme, bootstrap5BuilderTheme, tailwindBuilderTheme, materialBuilderTheme];
   builder.schema = definition;
   builder.fields = [field];
   builder.addEventListener("of-ready", () => {
@@ -163,9 +181,12 @@ if (query.has("element")) {
     root = document.createElement("div");
     mount.append(root);
     window.builderHost = renderBuilder(root, {
+      ...loading,
       schema: definition,
       data,
       fields: [field],
+      themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
+      builderThemes: [bootstrap4BuilderTheme, bootstrap5BuilderTheme, tailwindBuilderTheme, materialBuilderTheme],
       onSchemaChange: (change) => {
         definition = change.definition;
         window.builderChanges.push(change);

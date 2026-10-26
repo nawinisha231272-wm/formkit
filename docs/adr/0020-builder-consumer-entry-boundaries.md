@@ -1,6 +1,6 @@
 # ADR-0020 — Consumer entry boundaries for the builder loading split
 
-Status: proposed — owner review before split implementation
+Status: accepted by the owner with the no-growth amendment on 2026-10-23
 Date: 2026-10-23
 Milestone: M09b+
 Related: accepted ADR-0018; accepted ADR-0019 remains M09d
@@ -10,7 +10,8 @@ Related: accepted ADR-0018; accepted ADR-0019 remains M09d
 The owner approved M09b screenshots at `79e69f688b1779696449465fbe34869460018cd0`.
 PR #15 merged as `0b3b452c46096e852248ca11872f9697888c621e` after both Verify runs
 passed on attempt 1. M09b+ starts with the ADR-0018 split, before authoring shortcuts.
-This ADR records a concrete split plan and an accounting question; it changes no accepted ceiling.
+This ADR records the accepted split plan and accounting boundary. Existing ceilings stay fixed;
+the owner additionally gates the full initial transitive closure at 64,613 Brotli bytes.
 
 A read-only probe of the unchanged published build on Node 22.22.3, esbuild 0.25.12 and default
 `node:zlib.brotliCompressSync` reports:
@@ -27,7 +28,7 @@ builder-core, renderer, theme registrations and their transitive dependencies; i
 fixture, native framework app or new shortcut. It is a baseline probe, not a completed split,
 Vite/Angular acceptance, cold-route measurement or evidence that the 26 kB target is met.
 
-## Proposed split boundaries
+## Accepted split boundaries
 
 - Keep palette/canvas/outline, command dispatch and undo/redo, standard component settings and their
   compact sentence expression controls, Data/Preview and host save events in the core entry.
@@ -52,32 +53,32 @@ Vite/Angular acceptance, cold-route measurement or evidence that the 26 kB targe
   abortable lifecycle prevent stale loads mounting after navigation/destroy; teardown releases
   feature subscriptions. Reopening a loaded feature does not make another module request.
 
-## Budget accounting — explicit owner decision required
+## Accepted budget accounting — owner decision 2026-10-23
 
 ADR-0018 fixes core builder at **26 kB**, Logic at **10 kB**, JSON at **8 kB**, dependency map at
 **10 kB**, and the existing deferred union at **28 kB**. Command bar/History need additional measured,
 owner-approved individual and aggregate allowances; none is granted by this ADR. No kit loader or
 validator may be charged to these entries; ADR-0019 keeps them optional and separately budgeted.
 
-The published-entry and whole-consumer numbers above measure different things. The old 29.982 kB
-check excludes package dependencies. The requested new consumer accounting must explicitly determine
-whether the 26 kB ceiling applies to the builder-owned initial entry or to the entire initial
-transitive closure. Do not silently substitute one for the other or move code to unbudgeted chunks.
+The **≤29 kB** ceiling applies to **builder-owned initial code and styles after a consumer
+production build**: the incremental builder on top of the form runtime an app already uses. Shared
+form-runtime dependencies (core, renderer, themes and other shared packages) retain their existing
+budgets and must be fully reported in every size report, attributing each shared chunk once.
 
-Proposed interpretation for review: enforce the 26 kB ceiling on builder-owned initial code/styles
-**after** a consumer production build; report and account for the common form-runtime closure under
-its existing package budgets as well. Also publish full initial transfer and every first-open route's
-actual transitive closure, counting shared chunks exactly once in the union. Consumer-owned runtime
-bytes must never disappear from that report. This interpretation is **not accepted** until the owner
-confirms it; if 26 kB means the whole initial closure instead, plan to that stricter contract.
+Also enforce **no growth of the entire initial transitive closure: ≤64,613 Brotli bytes**. Include
+all initially required builder/runtime/shared code and styles; no bytes may disappear through
+relabeling or chunk placement. Logic, JSON editor, dependency map, command bar and History chunks
+are excluded only while truly deferred: they make no initial request and remain under their own
+ADR-0018 budgets. Report each full first-open transfer closure and the union of shared chunks once.
+Any later increase to 64,613 requires a measured proposal and explicit owner approval.
 
-Once the boundary is settled, prototype/measure the extracted History and upcoming command search,
+Prototype/measure the extracted History and upcoming command search,
 then bring their numeric budget proposal with emitted files and transfer evidence before shipping.
 Do not raise existing ceilings or infer a new allowance from the 28 kB Logic/JSON/map union.
 
 ## Implementation and acceptance plan
 
-1. Settle the accounting boundary above. Write selection/bulk-command contracts in a separate ADR
+1. Enforce the accepted accounting boundary above. Write selection/bulk-command contracts in a separate ADR
    before those commands are implemented; retain stable ids/keys and the approved interaction rules.
 2. Split build outputs and feature ownership; wire the instance loader and host `assetBase`/`preload`
    options through vanilla, Element, React and Angular without global mutable configuration.
@@ -91,5 +92,36 @@ Do not raise existing ceilings or infer a new allowance from the 28 kB Logic/JSO
    coverage. Full pinned verify and first-attempt current-head CI are required for delivery; owner
    screenshot approval remains mandatory. Keep 127.0.0.1:4173 running at handover.
 
-No split, new host option or authoring shortcut is implemented by this planning ADR. The baseline
-measurements above are before-only; no after number or milestone PASS is claimed.
+## Accepted Settings amendment — 2026-10-25
+
+ADR-0018's retained-core wording is amended only for generated Settings: modal/drawer editor UI and
+styles load as their own deferred entry, while the dialog frame, focus/loading/error lifecycle,
+commands, locks, schema/draft/Add semantics and validation remain initial. PointerDrag remains
+initial and responds to its first pointerdown. Settings idle-preloads by default through the separate
+`settingsPreload` policy; `none` remains available. Loading failure exposes its reason, Retry, and for
+private Add, Add with defaults. The Settings entry gets an owner-approved individual budget outside
+the 28 kB Logic/JSON/map aggregate and is included in a newly reported deferred total.
+
+The full-initial gate remains 64,613 bytes. The opt-in-theme amendment below supersedes the earlier
+26,000-byte builder-owned limit and candidate-deferral review.
+
+## Accepted opt-in-theme and option-B amendment — 2026-10-26
+
+The owner accepted the measured opt-in-theme design and option B. The main builder includes Neutral
+chrome, Settings remains lazy, and context menu, toolbar More, Issues and clipboard remain initial.
+There is no secondary-tools entry. Explicit form-theme and builder-recipe subpaths, instance-local
+registration, registered-only picker options, host-owned lazy theme loaders, Material's Base
+dependency, custom recipes, per-theme/all-theme script builds and compatibility exports are required.
+
+The builder-owned ceiling is **29,000 Brotli bytes**, including Neutral and registered builder recipes.
+The measured reason is approximately 1.4 kB transferred from shared runtime accounting plus about
+1 kB M09b+ headroom. The entire initial closure remains **≤64,613 bytes with no growth** and is the
+primary consumer gate. Settings ≤8,000, Logic/JSON/map ≤28,000 combined and
+Logic/JSON/map/Settings ≤36,000 are unchanged. New menu/panel/dialog features default to lazy loading;
+each reports both initial deltas and stops before crossing either ceiling.
+
+Implementation now follows the accepted option-B boundary. The final pinned production probe reports
+27,484 builder-owned initial bytes and 61,049 full minimal initial bytes. Settings is 7,391 bytes;
+Logic/JSON/map/Settings share-counted union is 8,136 bytes. The reproducible host and per-theme
+distribution report is `docs/reviews/m09b-plus-loading-split.md`. These measurements do not authorize
+unresolved command-bar/History budgets or any M09c implementation.

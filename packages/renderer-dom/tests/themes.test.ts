@@ -50,7 +50,7 @@ test("registries reject duplicates, cycles and missing themes, with no state sha
     "tailwind",
   );
   expect(() => resolveTheme("tailwind")).toThrow("Unknown theme");
-  expect(() => resolveTheme("base", { themes: [baseTheme] })).toThrow(
+  expect(() => resolveTheme("base", { themes: [baseTheme, baseTheme] })).toThrow(
     "Duplicate theme",
   );
   expect(() =>
@@ -206,6 +206,7 @@ test("SSR nested none containers and cell labels retain hierarchy; custom messag
   const session = engine.createSession(result.form);
   await session.validate();
   const html = renderToString(session, {
+    themes: [baseTheme],
     views: new Map([["text", { ...textField.views, shell: "cell" }]]),
     presentation: { child: { cellLabel: "Quantity, item A" } },
     t: (key) => (key === "of.required" ? "Translated error" : key),
@@ -218,6 +219,7 @@ test("SSR nested none containers and cell labels retain hierarchy; custom messag
     html.indexOf('data-field-id="child"'),
   );
   const ownShell = renderToString(session, {
+    themes: [baseTheme],
     views: new Map([["text", { ...textField.views, shell: "none" }]]),
   });
   expect(ownShell).not.toContain("<label");

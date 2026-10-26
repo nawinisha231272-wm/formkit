@@ -20,6 +20,7 @@ import type { FormController } from "@ourform/renderer-dom";
 import nativeSchema from "../../../fixtures/forms/native/host-feedback.json";
 import onboardingSchema from "../../../fixtures/forms/onboarding/customer.json";
 import onboardingData from "../../../fixtures/forms/onboarding/customer.data.json";
+import { baseTheme } from "@ourform/themes/base";
 const query = new URLSearchParams(location.search);
 const schema = query.has("protected")
   ? protectedSchema
@@ -146,6 +147,8 @@ function App() {
         {
           ref,
           schema,
+          themes: [baseTheme],
+          theme: baseTheme,
           data: query.has("uncontrolled") ? undefined : data,
           defaultData: initialData,
           readOnly: new URLSearchParams(location.search).has("readonly"),

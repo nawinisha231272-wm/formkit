@@ -4,20 +4,19 @@ import {
   RemoveComponent,
   MoveComponent,
   ReplaceDefinition,
-  WrapInLayout,
 } from "@ourform/builder-core";
 import type { Command, JsonPatchOp } from "@ourform/builder-core";
 import {
   createFormHost,
   createFormController,
   mount,
-  defaultThemes,
 } from "@ourform/renderer-dom";
 import type { FormController, FormView } from "@ourform/renderer-dom";
 import type { Diagnostic, FormDefinition } from "@ourform/schema";
 import { createMessages } from "./messages";
-import { Settings } from "./settings";
-import { settingsStyle } from "./settings-style";
+import { SettingsLoader } from "./settings-loader";
+import { createFeatureLoader } from "./feature-loader";
+import { featureOutlet } from "./feature-outlet";
 import { pointerStyle } from "./pointer-style";
 import type { Theme, ThemeMode } from "@ourform/sdk";
 import { Canvas } from "./canvas";
@@ -64,15 +63,56 @@ export function createBuilderController(
   style.textContent =
     primitiveStyle +
     builderStyle +
-    settingsStyle +
     pointerStyle +
     workbenchStyle;
   const appearanceStyle = element(document, "style");
+  if (options.styleNonce) style.nonce = appearanceStyle.nonce = options.styleNonce;
+  let dynamicStyleId = 0;
+  const _ofbStyle: UI["_ofbStyle"] = (target, ...declarations) => {
+    let rule = (target as HTMLElement & { _ofbRule?: CSSStyleDeclaration })
+      ._ofbRule;
+    if (!rule) {
+      const name = instance + dynamicStyleId++;
+      target.classList.add(name);
+      const sheet = style.sheet!;
+      const index = sheet.insertRule(`.${name}{}`);
+      rule = (sheet.cssRules[index] as CSSStyleRule).style;
+      (target as HTMLElement & { _ofbRule?: CSSStyleDeclaration })._ofbRule =
+        rule;
+    }
+    for (let index = 0; index < declarations.length;)
+      rule.setProperty(declarations[index++]!, declarations[index++]!);
+  };
   const status = element(document, "div", "", "of-builder-status of-sr-only");
   status.id = `${prefix}diagnostics`;
   status.setAttribute("role", "status");
   status.setAttribute("aria-live", "polite");
-  let theme: Theme | string = options.theme ?? "base",
+  const registeredThemes: Theme[] = [...(options.themes ?? [])];
+  const configuredTheme = options.theme;
+  if (
+    typeof configuredTheme === "object" &&
+    !registeredThemes.some((item) => item.name === configuredTheme.name)
+  )
+    registeredThemes.push(configuredTheme);
+  const registeredBuilderThemes = [...(options.builderThemes ?? [])];
+  const lazyThemes = new Map<string, NonNullable<BuilderOptions["lazyThemes"]>[number]>();
+  for (const registration of options.lazyThemes ?? []) {
+    if (
+      lazyThemes.has(registration.name) ||
+      registeredThemes.some((item) => item.name === registration.name)
+    )
+      throw new Error(`Duplicate theme registration: ${registration.name}`);
+    lazyThemes.set(registration.name, registration);
+  }
+  if (!registeredThemes.length && !lazyThemes.size)
+    throw new Error(
+      "Builder requires at least one registered form theme. Import one from @ourform/themes/<name>.",
+    );
+  let theme: Theme | string =
+      configuredTheme ??
+      registeredThemes[0]?.name ??
+      options.lazyThemes?.[0]?.name ??
+      "base",
     mode: ThemeMode = options.themeMode ?? "light";
   let chrome = { ...options.chrome };
   const preferenceKey = options.preferenceKey ?? "ourform.builder.look";
@@ -89,7 +129,7 @@ export function createBuilderController(
       chrome,
       typeof theme === "string" ? theme : theme.name,
       mode,
-      options.builderThemes,
+      registeredBuilderThemes,
     );
     appearanceStyle.textContent = chromeStyle(resolved, instance);
     shell.dataset.ofbTheme = resolved.name;
@@ -99,8 +139,7 @@ export function createBuilderController(
   applyChrome();
   let preview: FormController | undefined;
   let design: FormView | undefined;
-  let destroyed = false,
-    jsonDirty = false;
+  let destroyed = false;
   const values = new Map<string, unknown>();
   const t = createMessages(options.messages, options.t);
   const notice = element(document, "div", "", "of-builder-toast");
@@ -233,12 +272,12 @@ export function createBuilderController(
           : t(`ofb.did.${subject.action}`, { label })
         : t(direction === "undo" ? "ofb.nothingUndo" : "ofb.nothingRedo");
       if (!direction && command instanceof MoveComponent) {
-        const location = canvas.location(command.componentId);
+        const location = canvas._ofbLocation(command.componentId);
         if (location)
           message = t("ofb.moved", {
             label,
             target: location.parent
-              ? `${componentTitle(ui, location.parent)} / ${canvas.caption(canvas.slots(location.parent).find((slot) => slot.name === location.slot)!)}`
+              ? `${componentTitle(ui, location.parent)} / ${canvas._ofbCaption(canvas._ofbSlots(location.parent).find((slot) => slot.name === location.slot)!)}`
               : t("ofb.formRoot"),
             index: location.index + 1,
             count: location.siblings.length,
@@ -299,6 +338,7 @@ export function createBuilderController(
     form: () => preview?.session.form,
     t,
     announce,
+    _ofbStyle,
     dispatch,
     ...(options.icons ? { icons: options.icons } : {}),
     ...(options.palette ? { palette: options.palette } : {}),
@@ -325,13 +365,6 @@ export function createBuilderController(
     el.append(title);
     return el;
   };
-  const toolbar = part(
-    "div",
-    "toolbar",
-    "of-builder-toolbar of-builder-chrome",
-  );
-  toolbar.setAttribute("role", "group");
-  toolbar.setAttribute("aria-label", t("of.builder.actions"));
   const historyButton = (direction: "undo" | "redo") => {
     const control = button(ui, t(`of.builder.${direction}`), () => {
       control.focus();
@@ -347,32 +380,6 @@ export function createBuilderController(
   };
   const undo = historyButton("undo"),
     redo = historyButton("redo");
-  const wrapperLabel = element(document, "label", t("of.builder.wrapType"));
-  const wrapper = element(document, "select");
-  wrapperLabel.append(wrapper);
-  wrapper.setAttribute("aria-label", t("of.builder.wrapType"));
-  for (const model of host.engine
-    .listFields()
-    .filter((m) => m.kind === "layout")) {
-    const option = element(
-      document,
-      "option",
-      t(model.builder?.title ?? model.title),
-    );
-    option.value = model.type;
-    wrapper.append(option);
-  }
-  const wrap = button(ui, t("of.builder.wrap"), () => {
-    const id = core.getState().selection;
-    if (id) dispatch(new WrapInLayout(id, wrapper.value));
-  });
-  const destinationLabel = element(
-    document,
-    "label",
-    t("of.builder.insertInto"),
-  );
-  const picker = element(document, "select");
-  destinationLabel.append(picker);
   const appearanceLabel = element(
     document,
     "label",
@@ -381,26 +388,33 @@ export function createBuilderController(
   const appearance = element(document, "select");
   appearance.id = `${prefix}builder-theme`;
   for (const name of [
-    "base",
-    "bootstrap4",
-    "bootstrap5",
-    "tailwind",
-    "material",
-    ...(options.themes ?? []).map((theme) => theme.name),
+    ...registeredThemes.map((theme) => theme.name),
+    ...lazyThemes.keys(),
   ])
     if (!Array.from(appearance.options).some((o) => o.value === name)) {
+      const registration = lazyThemes.get(name);
       const option = element(
         document,
         "option",
-        t(`ofb.theme.${name}`) === `ofb.theme.${name}`
-          ? name
-          : t(`ofb.theme.${name}`),
+        registration?.label ??
+          (t(`ofb.theme.${name}`) === `ofb.theme.${name}`
+            ? name
+            : t(`ofb.theme.${name}`)),
       );
       option.value = name;
       appearance.append(option);
     }
   appearance.value = typeof theme === "string" ? theme : theme.name;
   appearanceLabel.append(appearance);
+  const appearanceStatus = element(
+    document,
+    "span",
+    "",
+    "ofb-feature-status",
+  );
+  appearanceStatus.setAttribute("role", "status");
+  appearanceStatus.hidden = true;
+  appearanceLabel.append(appearanceStatus);
   const modeLabel = element(document, "label", t("of.builder.appearance"));
   const modes = element(document, "select");
   modes.id = `${prefix}builder-mode`;
@@ -411,15 +425,6 @@ export function createBuilderController(
   }
   modes.value = mode;
   modeLabel.append(modes);
-  toolbar.append(
-    undo,
-    redo,
-    wrapperLabel,
-    wrap,
-    destinationLabel,
-    appearanceLabel,
-    modeLabel,
-  );
   const grid = part("div", "grid", "of-builder-grid");
   const library = panel("library", "of.builder.palette", true);
   const searchLabel = element(document, "label", t("of.builder.search"));
@@ -459,43 +464,28 @@ export function createBuilderController(
   previewControls.append(submit);
   previewPanel.append(previewHost, previewControls, result);
   const jsonPanel = panel("json-panel", "of.builder.json", true);
-  const json = part("textarea", "json", "of-builder-json");
-  json.id = `${prefix}builder-json`;
-  json.setAttribute("aria-label", t("of.builder.json"));
-  json.spellcheck = false;
-  const apply = button(ui, t("of.builder.applyJson"), () => {
-    try {
-      const diagnostics = load(JSON.parse(json.value));
-      if (!diagnostics.some((d) => d.severity === "error")) {
-        jsonDirty = false;
-        json.value = JSON.stringify(core.getState().definition, null, 2);
+  let lastPatch: readonly JsonPatchOp[] = [];
+  let jsonView: { update(): void; focus(): void } | undefined;
+  const window = document.defaultView!;
+  const features = createFeatureLoader(options, document.baseURI, events.signal, {
+    schedule(callback) {
+      if (window.requestIdleCallback) {
+        const id = window.requestIdleCallback(callback);
+        return () => window.cancelIdleCallback(id);
       }
-    } catch (cause) {
-      announce(
-        t("of.builder.invalidJson", {
-          message: cause instanceof Error ? cause.message : "",
-        }),
-      );
-    }
+      const id = window.setTimeout(callback, 200);
+      return () => window.clearTimeout(id);
+    },
   });
-  const reload = button(ui, t("of.builder.reloadJson"), () => {
-    jsonDirty = false;
-    json.value = JSON.stringify(core.getState().definition, null, 2);
-  });
-  const patch = part("pre", "patch", "of-builder-patch");
-  patch.id = `${prefix}builder-patch`;
-  patch.tabIndex = 0;
-  patch.setAttribute("role", "region");
-  patch.setAttribute("aria-label", t("of.builder.patch"));
-  jsonPanel.append(
-    json,
-    apply,
-    reload,
-    element(document, "h3", t("of.builder.patch")),
-    patch,
-  );
+  const jsonOutlet = featureOutlet(jsonPanel, ui, features);
+  const showJson = () => {
+    if (jsonView) return;
+    jsonOutlet.open("json", ({ mountJsonPanel }) => {
+      jsonView = mountJsonPanel(jsonPanel, ui, prefix, load, () => lastPatch, { element, button });
+    });
+  };
   bottom.append(previewPanel, jsonPanel);
-  shell.append(style, appearanceStyle, toolbar, status, grid, bottom);
+  shell.append(style, appearanceStyle, status, grid, bottom);
   root.append(shell);
   const updateButtons = () => {
     const state = core.getState();
@@ -506,29 +496,27 @@ export function createBuilderController(
       : t("ofb.undo");
     redo.setAttribute("aria-disabled", String(!state.history.future.length));
     const lock = state.selection ? core.lockLevel(state.selection) : undefined;
-    wrap.disabled = !state.selection || lock === "all";
-    wrap.title = lock === "all" ? t("ofb.lock.edit") : "";
   };
   const canvas = new Canvas(
     shell,
     canvasHost,
     palette,
     outline,
-    picker,
     ui,
     updateButtons,
   );
-  const settings = new Settings({
+  const settings = new SettingsLoader({
     host: shell,
     ui,
     options,
+    features,
     appearance: () => ({ theme, mode }),
     data: () => preview?.session.getData() ?? {},
     remove: (id) => dispatch(new RemoveComponent(id)),
     closed: (origin) => {
       if (destroyed) return;
       if (origin?.isConnected) origin.focus();
-      else canvas.focusSelected();
+      else canvas._ofbFocusSelected();
     },
   });
   ui.reveal = (id) => {
@@ -536,13 +524,13 @@ export function createBuilderController(
     design?.focus(id);
     if (origin?.isConnected) origin.focus({ preventScroll: true });
   };
-  ui.edit = (id, json = false) => settings.open(id, json);
+  ui.edit = (id, json = false) => settings._ofbOpen(id, json);
   ui.add = (type, target, origin) => {
     if (
       options.editor?.openOnAdd !== false &&
       options.editor?.mode !== "drawer"
     ) {
-      const diagnostics = settings.add(type, target, origin);
+      const diagnostics = settings._ofbAdd(type, target, origin);
       report(diagnostics);
       return diagnostics;
     }
@@ -555,10 +543,10 @@ export function createBuilderController(
       !diagnostics.some((d) => d.severity === "error") &&
       options.editor?.openOnAdd !== false
     )
-      settings.open(id);
+      settings._ofbOpen(id);
     return diagnostics;
   };
-  const side = sidebar({ host: inspector, outline, ui });
+  const side = sidebar({ host: inspector, outline, ui, features });
   const bench = workbench({
     root,
     shell,
@@ -567,9 +555,12 @@ export function createBuilderController(
     bottom,
     previewPanel,
     jsonPanel,
+    modeChanged: (value) => {
+      if (value === "json") showJson();
+      else jsonOutlet.cancel();
+    },
     appearance: appearanceLabel,
     modes: modeLabel,
-    legacy: toolbar,
     showIssues: () => side.show("issues"),
     look: () => chrome.theme ?? "match-form",
     setLook: (value) => {
@@ -628,6 +619,7 @@ export function createBuilderController(
     try {
       preview = createFormController(previewHost, {
         ...options,
+        themes: registeredThemes,
         engine: host.engine,
         schema,
         data,
@@ -641,7 +633,7 @@ export function createBuilderController(
         ...options,
         engine: host.engine,
         views: host.views,
-        themes: options.themes ?? defaultThemes,
+        themes: registeredThemes,
         theme,
         themeMode: mode,
         mode: "design",
@@ -670,11 +662,10 @@ export function createBuilderController(
     )?.dataset.builderPart;
     if (ops.length) {
       rebuild();
-      patch.textContent = JSON.stringify(ops, null, 2);
-      if (!jsonDirty)
-        json.value = JSON.stringify(core.getState().definition, null, 2);
+      lastPatch = ops;
+      jsonView?.update();
     }
-    canvas.refresh(!!ops.length);
+    canvas._ofbRefresh(!!ops.length);
     bench.update(!!ops.length);
     side.update();
     const selected = core.getState().selection;
@@ -688,7 +679,7 @@ export function createBuilderController(
       canvasPanel.querySelector("h2")!.textContent = t("of.builder.canvas");
     updateButtons();
     if (ops.length && (focusedPart === "canvas" || focusedPart === "outline"))
-      canvas.focusSelected(focusedPart === "outline");
+      canvas._ofbFocusSelected(focusedPart === "outline");
   }
   let lastSelection = core.getState().selection;
   const unsubscribe = core.subscribe((state, ops) => {
@@ -745,21 +736,93 @@ export function createBuilderController(
   const refreshAppearance = (action: () => void) => {
     const focused = activeElement();
     action();
-    canvas.decorate(true);
-    canvas.updateTargets();
+    canvas._ofbDecorate(true);
+    canvas._ofbUpdateTargets();
     if (focused?.isConnected && activeElement() !== focused)
       focused.focus({ preventScroll: true });
   };
-  const setTheme = (next: Theme | string) => {
+  const applyTheme = (next: Theme | string) => {
     assertAlive();
-    refreshAppearance(() => {
-      preview?.view.setTheme(next);
-      design?.setTheme(next);
-    });
+    if (preview && design)
+      refreshAppearance(() => {
+        preview!.view.setTheme(next);
+        design!.setTheme(next);
+      });
     theme = next;
     applyChrome();
-    settings.restyle();
+    settings._ofbRestyle();
     appearance.value = typeof next === "string" ? next : next.name;
+    if (!preview || !design) rebuild();
+  };
+  let themeRequest = 0;
+  const loadTheme = (name: string): void => {
+    const registration = lazyThemes.get(name);
+    if (!registration) {
+      applyTheme(name);
+      return;
+    }
+    const request = ++themeRequest;
+    const focused = activeElement();
+    appearance.disabled = true;
+    appearanceLabel.setAttribute("aria-busy", "true");
+    appearanceStatus.hidden = false;
+    appearanceStatus.replaceChildren(
+      t("ofb.featureLoading", { feature: registration.label ?? name }),
+    );
+    announce(appearanceStatus.textContent ?? "");
+    void registration
+      .load()
+      .then((loaded) => {
+        if (destroyed || request !== themeRequest) return;
+        if (loaded.theme.name !== name)
+          throw new Error(
+            `Lazy theme ${name} loaded theme ${loaded.theme.name}.`,
+          );
+        if (registeredThemes.some((item) => item.name === name))
+          throw new Error(`Duplicate theme registration: ${name}`);
+        registeredThemes.push(loaded.theme);
+        if (loaded.builderTheme) {
+          if (
+            registeredBuilderThemes.some(
+              (item) => item.name === loaded.builderTheme!.name,
+            )
+          )
+            throw new Error(
+              `Duplicate builder theme registration: ${loaded.builderTheme.name}`,
+            );
+          registeredBuilderThemes.push(loaded.builderTheme);
+        }
+        lazyThemes.delete(name);
+        appearance.disabled = false;
+        appearanceLabel.removeAttribute("aria-busy");
+        appearanceStatus.hidden = true;
+        applyTheme(loaded.theme);
+        (focused?.isConnected ? focused : appearance).focus({
+          preventScroll: true,
+        });
+      })
+      .catch((cause: unknown) => {
+        if (destroyed || request !== themeRequest) return;
+        appearance.disabled = false;
+        appearanceLabel.removeAttribute("aria-busy");
+        appearanceStatus.hidden = false;
+        const reason =
+          cause instanceof Error ? cause.message : String(cause);
+        appearanceStatus.replaceChildren(
+          t("ofb.featureFailed", { feature: registration.label ?? name }),
+          element(document, "small", reason),
+          button(ui, t("ofb.retry"), () => loadTheme(name)),
+        );
+        announce(appearanceStatus.firstChild?.textContent ?? "");
+        (focused?.isConnected ? focused : appearance).focus({
+          preventScroll: true,
+        });
+      });
+  };
+  const setTheme = (next: Theme | string) => {
+    const name = typeof next === "string" ? next : next.name;
+    if (typeof next === "string" && lazyThemes.has(name)) loadTheme(name);
+    else applyTheme(next);
   };
   const setMode = (next: ThemeMode) => {
     assertAlive();
@@ -769,7 +832,7 @@ export function createBuilderController(
     });
     mode = next;
     applyChrome();
-    settings.restyle();
+    settings._ofbRestyle();
     modes.value = next;
   };
   appearance.addEventListener("change", () => setTheme(appearance.value), {
@@ -778,13 +841,6 @@ export function createBuilderController(
   modes.addEventListener("change", () => setMode(modes.value as ThemeMode), {
     signal: events.signal,
   });
-  json.addEventListener(
-    "input",
-    () => {
-      jsonDirty = true;
-    },
-    { signal: events.signal },
-  );
   search.addEventListener(
     "input",
     () => {
@@ -802,9 +858,9 @@ export function createBuilderController(
     "change",
     () => {
       if (destroyed) return;
-      settings.close();
+      settings._ofbClose();
       rebuild();
-      canvas.refresh(true);
+      canvas._ofbRefresh(true);
       bench.update();
       side.update();
       submit.disabled = phone.matches;
@@ -812,9 +868,12 @@ export function createBuilderController(
     { signal: events.signal },
   );
   rebuild();
+  if (typeof theme === "string" && lazyThemes.has(theme))
+    queueMicrotask(() => {
+      if (!destroyed) loadTheme(theme as string);
+    });
   submit.disabled = phone.matches;
-  json.value = JSON.stringify(core.getState().definition, null, 2);
-  canvas.refresh(true);
+  canvas._ofbRefresh(true);
   bench.update();
   side.update();
   updateButtons();
@@ -827,7 +886,7 @@ export function createBuilderController(
     load,
     selectSlot: (target) => {
       assertAlive();
-      return canvas.choose(target);
+      return canvas._ofbChoose(target);
     },
     setTheme,
     setMode,
@@ -845,7 +904,7 @@ export function createBuilderController(
         next,
         typeof theme === "string" ? theme : theme.name,
         mode,
-        options.builderThemes,
+        registeredBuilderThemes,
       );
       chrome = { ...next };
       applyChrome();
@@ -856,9 +915,9 @@ export function createBuilderController(
       destroyed = true;
       clearTimeout(announcementTimer);
       events.abort();
-      settings.close();
+      settings._ofbClose();
       unsubscribe();
-      canvas.destroy();
+      canvas._ofbDestroy();
       design?.destroy();
       preview?.destroy();
       design = undefined;

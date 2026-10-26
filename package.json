@@ -14,7 +14,8 @@
     "format": "prettier --write .",
     "test": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "size": "size-limit",
+    "size": "size-limit && node scripts/builder-size-gate.mjs && node scripts/builder-consumer-report.mjs",
+    "size:builder-consumers": "node scripts/builder-consumer-report.mjs",
     "verify": "pnpm lint && pnpm build && pnpm typecheck && pnpm test && pnpm test:e2e && pnpm size && pnpm benchmark:counts",
     "dev": "pnpm build && pnpm --filter @ourform/playground dev",
     "changeset": "changeset",
@@ -75,7 +76,8 @@
     "typescript": "6.0.2",
     "typescript-eslint": "8.72.0",
     "vite": "6.3.5",
-    "vitest": "3.2.4"
+    "vitest": "3.2.4",
+    "@ourform/themes": "workspace:*"
   },
   "size-limit": [
     {

@@ -2,7 +2,6 @@ import {
   Pencil,
   GripVertical,
   Copy,
-  Clipboard,
   Code,
   Ellipsis,
   Trash2,
@@ -11,7 +10,6 @@ import {
   Search,
   Undo2,
   Redo2,
-  Eye,
   Save,
   ChevronDown,
   ChevronRight,
@@ -40,9 +38,6 @@ import {
   Info,
   CircleAlert,
   Check,
-  Scissors,
-  Layers,
-  CornerUpLeft,
 } from "lucide";
 
 const icons = {
@@ -50,7 +45,7 @@ const icons = {
   move: GripVertical,
   duplicate: Copy,
   copy: Copy,
-  paste: Clipboard,
+  paste: Copy,
   json: Code,
   more: Ellipsis,
   delete: Trash2,
@@ -59,7 +54,6 @@ const icons = {
   search: Search,
   undo: Undo2,
   redo: Redo2,
-  preview: Eye,
   save: Save,
   expand: ChevronDown,
   collapse: ChevronRight,
@@ -89,9 +83,9 @@ const icons = {
   info: Info,
   issues: CircleAlert,
   check: Check,
-  cut: Scissors,
-  wrap: Layers,
-  unwrap: CornerUpLeft,
+  cut: Copy,
+  wrap: Braces,
+  unwrap: Braces,
 } as const;
 export type BuilderIconName = keyof typeof icons;
 export const isIconName = (name: string): name is BuilderIconName =>

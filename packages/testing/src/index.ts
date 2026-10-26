@@ -1,4 +1,5 @@
-import { bootstrap4Theme } from "@ourform/theme-bootstrap4";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
 import { createEngine } from "@ourform/core";
 import {
   textField,
@@ -8,9 +9,9 @@ import {
 } from "@ourform/components";
 import { mount } from "@ourform/renderer-dom";
 import type { ThemeMode, FormDefinition } from "@ourform/sdk";
-import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
-import { tailwindTheme } from "@ourform/theme-tailwind";
-import { materialTheme } from "@ourform/theme-material";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
 export const themeNames = [
   "base",
   "bootstrap4",
@@ -120,7 +121,7 @@ export function createThemeConformance(
   const view = mount(root, session, {
     engine,
     views,
-    themes: [bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
+    themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
     theme: options.theme ?? "base",
     themeMode: options.mode ?? "light",
     presentation: {

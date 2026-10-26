@@ -1,4 +1,9 @@
 import { renderForm } from "@ourform/element";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
 import type { FormController } from "@ourform/renderer-dom";
 import schema from "../../fixtures/forms/nested-tabs/customer.json";
 import data from "../../fixtures/forms/nested-tabs/customer.data.json";
@@ -8,6 +13,7 @@ if (query.has("disabled"))
   Object.assign(definition.components[0]!, { disabledWhen: true });
 const controller = renderForm(document.getElementById("tabs-form")!, {
   schema: definition,
+  themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
   data,
   readOnly: query.has("readonly"),
 });

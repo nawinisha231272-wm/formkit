@@ -1,11 +1,14 @@
 import { componentChildren } from "@ourform/schema";
 import { UpdateProperty, ChangeKey } from "@ourform/builder-core";
 import type { PanelProperty } from "@ourform/builder-core";
-import { actionButton } from "./primitives";
 import { picker } from "./picker";
 import type { Expr, ExprOp, ComponentNode } from "@ourform/schema";
-import { element, button } from "./types";
 import type { UI } from "./types";
+interface EditorTools {
+  actionButton: typeof import("./primitives").actionButton;
+  element: typeof import("./types").element;
+  button: typeof import("./types").button;
+}
 function all(nodes: ComponentNode[]): ComponentNode[] {
   return nodes.flatMap((node) => [node, ...all(componentChildren(node))]);
 }
@@ -21,7 +24,9 @@ function expression(
   ui: UI,
   property: PanelProperty,
   componentId: string,
+  tools: EditorTools,
 ): HTMLElement {
+  const { actionButton, element, button } = tools;
   const host = element(ui.document, "section", "", "of-builder-expression");
   host.dataset.expression = property.key;
   host.setAttribute("aria-label", ui.t(property.label));
@@ -124,6 +129,7 @@ function expression(
             join = value;
             publishRows();
           },
+          element,
         ).element,
       );
     data.forEach((row, index) => {
@@ -147,6 +153,7 @@ function expression(
           row.field = value;
           publishRows();
         },
+        element,
       );
       const op = picker(
         ui,
@@ -161,6 +168,7 @@ function expression(
           comparison.disabled = value === "empty";
           publishRows();
         },
+        element,
       );
       const valueLabel = element(
         ui.document,
@@ -252,7 +260,12 @@ function expression(
   sync(property.value);
   return host;
 }
-export function renderProperties(host: HTMLElement, ui: UI): void {
+export function renderProperties(
+  host: HTMLElement,
+  ui: UI,
+  tools: EditorTools,
+): void {
+  const { element } = tools;
   const selected = ui.builder.getState().selection;
   host.replaceChildren();
   if (!selected) return;
@@ -270,7 +283,7 @@ export function renderProperties(host: HTMLElement, ui: UI): void {
     );
     for (const property of group.properties) {
       if (property.kind === "expr") {
-        const editor = expression(ui, property, selected);
+        const editor = expression(ui, property, selected, tools);
         editor.hidden = !property.visible;
         fieldset.append(editor);
         continue;

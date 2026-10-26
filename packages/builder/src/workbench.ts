@@ -15,9 +15,9 @@ interface WorkbenchContext {
   bottom: HTMLElement;
   previewPanel: HTMLElement;
   jsonPanel: HTMLElement;
+  modeChanged(mode: Mode): void;
   appearance: HTMLElement;
   modes: HTMLElement;
-  legacy: HTMLElement;
   look(): string;
   setLook(value: string): void;
   showIssues(): void;
@@ -28,11 +28,7 @@ interface WorkbenchContext {
 /** Header and mode panels share the existing controller; switching never remounts a form. */
 export function workbench(context: WorkbenchContext) {
   const { ui, shell, grid, bottom, previewPanel, jsonPanel } = context;
-  const primitiveContext = {
-    document: ui.document,
-    signal: ui.signal,
-    ...(ui.icons ? { icons: ui.icons } : {}),
-  };
+  const primitiveContext = ui;
   const header = element(ui.document, "header", "", "ofb-header");
   const brand = element(ui.document, "div", "", "ofb-brand");
   const mark = element(ui.document, "span", "O", "ofb-brand-mark");
@@ -119,7 +115,7 @@ export function workbench(context: WorkbenchContext) {
   }
   look.onchange = () => context.setLook(look.value);
   lookLabel.append(look);
-  preferences.append(lookLabel, context.modes, context.legacy);
+  preferences.append(lookLabel, context.appearance, context.modes);
   more.append(menuToggle, preferences);
   more.addEventListener(
     "keydown",
@@ -164,6 +160,7 @@ export function workbench(context: WorkbenchContext) {
     modeTabs.set(value);
     content.setAttribute("aria-labelledby", `${contentId}-${value}`);
     if (value === "data") refreshData();
+    context.modeChanged(value);
   };
   const modeTabs = tabs(
     primitiveContext,
@@ -190,13 +187,7 @@ export function workbench(context: WorkbenchContext) {
   const content = element(ui.document, "div", "", "ofb-workspace");
   content.id = contentId;
   content.setAttribute("role", "tabpanel");
-  const preview = actionButton(
-    primitiveContext,
-    ui.t("ofb.preview"),
-    () => switchMode("preview"),
-    { icon: "preview" },
-  );
-  actions.append(context.undo, context.redo, issues, preview, save);
+  actions.append(context.undo, context.redo, issues, save);
   header.append(
     brand,
     breadcrumb,
@@ -261,7 +252,6 @@ export function workbench(context: WorkbenchContext) {
         b.dataset.tab === "logic" ||
         (media.matches && b.dataset.tab !== "preview");
     actions.hidden = media.matches;
-    context.legacy.hidden = media.matches;
     shell.toggleAttribute("data-ofb-readonly", media.matches);
   };
   media.addEventListener("change", mobile, { signal: ui.signal });

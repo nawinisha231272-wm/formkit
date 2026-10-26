@@ -1,21 +1,22 @@
+import type { FeatureLoader } from "./feature-loader";
+import { featureOutlet } from "./feature-outlet";
 import type { UI } from "./types";
+import type { Diagnostic } from "@ourform/schema";
 import { builderIssues } from "./issues";
 import { element, componentTitle } from "./types";
 import { actionButton, tabs } from "./primitives";
 import { describeExpression, controlledFields } from "./signals";
+import { mountIssues } from "./features/secondary-tools";
 
 interface Context {
   host: HTMLElement;
   outline: HTMLElement;
   ui: UI;
+  features: FeatureLoader;
 }
 /** Outline, diagnostics and history are views of the same headless builder state. */
-export function sidebar({ host, outline, ui }: Context) {
-  const context = {
-    document: ui.document,
-    signal: ui.signal,
-    ...(ui.icons ? { icons: ui.icons } : {}),
-  };
+export function sidebar({ host, outline, ui, features }: Context) {
+  const context = ui;
   const issues = element(ui.document, "div", "", "ofb-sidebar-issues");
   const history = element(ui.document, "ol", "", "ofb-sidebar-history");
   const panel = element(ui.document, "div", "", "ofb-sidebar-panel");
@@ -65,11 +66,22 @@ export function sidebar({ host, outline, ui }: Context) {
   panel.setAttribute("role", "tabpanel");
   panel.append(outline, issues, history);
   host.replaceChildren(bar.element, panel, info);
+  let historyView: { update(): void } | undefined;
+  let issuesView: { update(diagnostics: readonly Diagnostic[]): void } | undefined;
+  const outlet = featureOutlet(history, ui, features);
   function show(value: string) {
     bar.set(value);
     outline.hidden = value !== "outline";
     issues.hidden = value !== "issues";
     history.hidden = value !== "history";
+    if (value === "issues" && !issuesView)
+      issuesView = mountIssues(issues, ui, diagnostics, () => show("outline"), {
+        actionButton,
+        element,
+      });
+    if (value === "history" && !historyView)
+      outlet.open("history", ({ mountHistory }) => { historyView = mountHistory(history, ui, element); });
+    else if (value !== "history") outlet.cancel();
     panel.setAttribute("aria-labelledby", `${id}-${value}`);
   }
   let definition:
@@ -81,37 +93,13 @@ export function sidebar({ host, outline, ui }: Context) {
     if (definition !== state.definition) {
       definition = state.definition;
       diagnostics = builderIssues(ui, definition);
-      issues.replaceChildren();
-      for (const diagnostic of diagnostics) {
-        const button = actionButton(context, diagnostic.message, () => {
-          if (diagnostic.componentId) {
-            ui.builder.select(diagnostic.componentId);
-            ui.reveal?.(diagnostic.componentId);
-            show("outline");
-          }
-        });
-        issues.append(button);
-      }
-      if (!diagnostics.length)
-        issues.append(element(ui.document, "p", ui.t("ofb.noIssues")));
+      issuesView?.update(diagnostics);
       const issueButton = bar.buttons.find((b) => b.dataset.tab === "issues")!;
       issueButton.textContent = ui.t("ofb.issues", {
         count: diagnostics.length,
       });
       issueButton.setAttribute("aria-label", issueButton.textContent);
-      history.replaceChildren();
-      for (const command of state.history.past)
-        history.append(
-          element(
-            ui.document,
-            "li",
-            ui.t(`ofb.history.${command.type}`, {
-              label: ui.builder.commandLabel(command).label,
-            }),
-          ),
-        );
-      if (!state.history.past.length)
-        history.append(element(ui.document, "li", ui.t("ofb.noHistory")));
+      historyView?.update();
     }
     const form = ui.form?.(),
       entry = state.selection ? form?.byId[state.selection] : undefined;

@@ -9,6 +9,15 @@ import { createBuilder as createPortableBuilder } from "@ourform/builder";
 import { builtinComponents } from "@ourform/components";
 import type { BuilderController } from "@ourform/builder";
 import type { FormController } from "@ourform/renderer-dom";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
+import { bootstrap4BuilderTheme } from "@ourform/builder/themes/bootstrap4";
+import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5";
+import { tailwindBuilderTheme } from "@ourform/builder/themes/tailwind";
+import { materialBuilderTheme } from "@ourform/builder/themes/material";
 import { defineLayout } from "@ourform/sdk";
 import { customerReference } from "./builder-fields";
 import approved from "../../fixtures/forms/builder-ux/customer-onboarding.json";
@@ -62,8 +71,46 @@ const rootSection = defineLayout({
   title: "Root section",
   rootOnly: true,
 });
+const materialIsLazy = query.get("lazyTheme") === "material";
+let materialLoadAttempts = 0;
 const options = {
   schema,
+  themes: [
+    baseTheme,
+    bootstrap4Theme,
+    bootstrap5Theme,
+    tailwindTheme,
+    ...(materialIsLazy ? [] : [materialTheme]),
+  ],
+  builderThemes: [
+    bootstrap4BuilderTheme,
+    bootstrap5BuilderTheme,
+    tailwindBuilderTheme,
+    ...(materialIsLazy ? [] : [materialBuilderTheme]),
+  ],
+  ...(materialIsLazy
+    ? {
+        lazyThemes: [
+          {
+            name: "material",
+            label: "Material",
+            async load() {
+              materialLoadAttempts++;
+              if (query.has("slowTheme"))
+                await new Promise((resolve) => setTimeout(resolve, 350));
+              if (query.has("failTheme") && materialLoadAttempts === 1)
+                throw new Error("Local theme bundle unavailable");
+              const [{ materialTheme: form }, { materialBuilderTheme: recipe }] =
+                await Promise.all([
+                  import("@ourform/themes/material"),
+                  import("@ourform/builder/themes/material"),
+                ]);
+              return { theme: form, builderTheme: recipe };
+            },
+          },
+        ],
+      }
+    : {}),
   fields: query.has("demos")
     ? [...employeeFields, customerReference, card, rootSection]
     : [
@@ -73,6 +120,10 @@ const options = {
         customerReference,
       ],
   idPrefix: "",
+  preload: query.get("preload") === "idle" ? "idle" as const : "none" as const,
+  settingsPreload: query.get("settingsPreload") === "none" ? "none" as const : "idle" as const,
+  ...(query.has("assetBase") ? { assetBase: query.get("assetBase")! } : {}),
+  ...(query.has("styleNonce") ? { styleNonce: query.get("styleNonce")! } : {}),
   ...(query.has("approved") ? { data: approvedData } : {}),
   theme: query.get("theme") ?? "base",
   themeMode: query.get("mode") === "dark" ? "dark" : "light",

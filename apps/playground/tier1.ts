@@ -4,7 +4,7 @@ import { createApplication } from "@angular/platform-browser";
 import { createElement } from "react";
 import { createRoot } from "react-dom/client";
 import { Form } from "@ourform/react";
-import { OurFormComponent } from "@ourform/angular";
+import { OurFormComponent, provideOurForm } from "@ourform/angular";
 import { renderForm } from "@ourform/element";
 import { createConformanceEngine } from "@ourform/testing";
 import { validateSubmission, toSubmissionSchema } from "@ourform/validation";
@@ -15,6 +15,11 @@ import type {
   SubmitResult,
   ValidationResult,
 } from "@ourform/core";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
 import schema from "../../fixtures/forms/tier1/registration.json";
 import goodData from "../../fixtures/forms/tier1/registration.data.json";
 const query = new URLSearchParams(location.search);
@@ -107,6 +112,7 @@ const common = {
   readOnly: query.has("readonly"),
   data: query.has("readonly") ? goodData : undefined,
   onSubmit: submitted,
+  themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
 };
 const adapter = query.get("host") ?? "dom";
 document.querySelector("#host-name")!.textContent =
@@ -117,7 +123,7 @@ if (adapter === "react") {
   unmount = () => root.unmount();
 } else if (adapter === "angular") {
   const app = await createApplication({
-    providers: [provideZonelessChangeDetection()],
+    providers: [provideZonelessChangeDetection(), provideOurForm({ themes: common.themes })],
   });
   const ref = createComponent(OurFormComponent, {
     hostElement: host,

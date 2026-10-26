@@ -16,6 +16,7 @@ export function layoutVNode(
   prefix: string,
   interaction: LayoutInteraction,
   t: (key: string) => string,
+  styleClass?: (key: string, declarations: string) => string,
 ): VNode {
   const id = `${prefix}${entry.node.id}`;
   const slots = resolveSlots(entry.model, entry.node);
@@ -122,7 +123,14 @@ export function layoutVNode(
               "data-of-slot-owner": entry.node.id,
               class: entry.node.columns ? "of-column" : "of-slot",
               ...(entry.node.columns
-                ? {
+                ? styleClass
+                  ? {
+                      class: `of-column ${styleClass(
+                        `${entry.node.id}-${slot.name}`,
+                        `--of-column-span:${entry.node.columns[slots.indexOf(slot)]!.width}`,
+                      )}`,
+                    }
+                  : {
                     style: `--of-column-span:${entry.node.columns[slots.indexOf(slot)]!.width}`,
                   }
                 : {}),

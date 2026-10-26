@@ -3,6 +3,7 @@ import { renderForm, defineOurFormElement } from "@ourform/element";
 import nativeSchema from "../../../fixtures/forms/native/host-feedback.json";
 import onboardingSchema from "../../../fixtures/forms/onboarding/customer.json";
 import onboardingData from "../../../fixtures/forms/onboarding/customer.data.json";
+import { baseTheme } from "@ourform/themes/base";
 const query = new URLSearchParams(location.search);
 const schema = query.has("protected")
   ? protectedSchema
@@ -25,6 +26,8 @@ import { employeeFields as fields } from "./employee-fields";
 const output = document.querySelector("#result")!;
 const form = renderForm("#form", {
   schema,
+  themes: [baseTheme],
+  theme: baseTheme,
   defaultData: initialData,
   fields,
   readOnly: new URLSearchParams(location.search).has("readonly"),

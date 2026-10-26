@@ -52,14 +52,17 @@ export type {
   BuilderOptions,
   SchemaChange,
 } from "@ourform/builder";
-export const OUR_FORM_OPTIONS = new InjectionToken<Partial<HostOptions>>(
+type OurFormOptions = Partial<
+  HostOptions & Pick<BuilderOptions, "builderThemes" | "lazyThemes" | "chrome">
+>;
+export const OUR_FORM_OPTIONS = new InjectionToken<OurFormOptions>(
   "OurForm options",
 );
 export const OUR_FORM_FIELDS = new InjectionToken<readonly RegisteredField[]>(
   "OurForm fields",
 );
 export function provideOurForm(
-  options: Partial<HostOptions> = {},
+  options: OurFormOptions = {},
 ): EnvironmentProviders {
   return makeEnvironmentProviders([
     { provide: OUR_FORM_OPTIONS, useValue: options },
@@ -218,6 +221,7 @@ export class OurFormComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() data: unknown;
   @Input() defaultData: unknown;
   @Input() theme: HostOptions["theme"];
+  @Input() themes: HostOptions["themes"];
   @Input() themeMode: HostOptions["themeMode"];
   @Input() readOnly: boolean | undefined;
   @Input() engine: HostOptions["engine"];
@@ -244,7 +248,7 @@ export class OurFormComponent implements AfterViewInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.#mounted) return;
     if (
-      ["schema", "engine", "fields", "readOnly"].some((key) => changes[key])
+      ["schema", "engine", "fields", "readOnly", "themes"].some((key) => changes[key])
     ) {
       this.rebuild();
       return;
@@ -277,6 +281,7 @@ export class OurFormComponent implements AfterViewInit, OnChanges, OnDestroy {
             this.#options.defaultData ??
             {},
           theme: this.theme ?? this.#options.theme ?? "base",
+          themes: this.themes ?? this.#options.themes ?? [],
           themeMode: this.themeMode ?? this.#options.themeMode ?? "light",
           readOnly: this.readOnly ?? this.#options.readOnly ?? false,
           ...(this.engine ? { engine: this.engine } : {}),
@@ -335,6 +340,10 @@ export class OurFormBuilderComponent
   @Input() schema: unknown;
   @Input() theme: BuilderOptions["theme"];
   @Input() chrome: BuilderOptions["chrome"];
+  @Input() assetBase: BuilderOptions["assetBase"];
+  @Input() preload: BuilderOptions["preload"];
+  @Input() settingsPreload: BuilderOptions["settingsPreload"];
+  @Input() styleNonce: BuilderOptions["styleNonce"];
   @Input() themeMode: BuilderOptions["themeMode"];
   @Input() engine: BuilderOptions["engine"];
   @Input() fields: readonly RegisteredField[] = [];
@@ -359,7 +368,7 @@ export class OurFormBuilderComponent
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.#mounted) return;
-    if (["engine", "fields"].some((key) => changes[key])) {
+    if (["engine", "fields", "assetBase", "preload", "settingsPreload", "styleNonce"].some((key) => changes[key])) {
       this.rebuild();
       return;
     }
@@ -387,6 +396,12 @@ export class OurFormBuilderComponent
         theme: this.theme ?? this.#options.theme ?? "base",
         themeMode: this.themeMode ?? this.#options.themeMode ?? "light",
         ...(this.chrome ? { chrome: this.chrome } : {}),
+        ...(this.assetBase !== undefined ? { assetBase: this.assetBase } : {}),
+        ...(this.preload !== undefined ? { preload: this.preload } : {}),
+        ...(this.settingsPreload !== undefined
+          ? { settingsPreload: this.settingsPreload }
+          : {}),
+        ...(this.styleNonce !== undefined ? { styleNonce: this.styleNonce } : {}),
         ...(this.engine ? { engine: this.engine } : {}),
         fields: [
           ...builtinComponents,

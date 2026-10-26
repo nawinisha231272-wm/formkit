@@ -16,6 +16,15 @@ import {
 } from "@ourform/angular";
 import type { BuilderController, SchemaChange } from "@ourform/angular";
 import { stringProperty } from "@ourform/sdk";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
+import { bootstrap4BuilderTheme } from "@ourform/builder/themes/bootstrap4";
+import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5";
+import { tailwindBuilderTheme } from "@ourform/builder/themes/tailwind";
+import { materialBuilderTheme } from "@ourform/builder/themes/material";
 import { recordBuilderEvents } from "../../shared/builder-types";
 import schema from "../../../fixtures/forms/nested-tabs/customer.json";
 import data from "../../../fixtures/forms/nested-tabs/customer.data.json";
@@ -76,10 +85,15 @@ Component({
   outputs: ["valueChange", "blur"],
 })(NativeText);
 recordBuilderEvents();
+const query = new URLSearchParams(location.search);
 class App {
   readonly schema = signal<unknown>(schema);
   readonly theme = signal("base");
   readonly mounted = signal(true);
+  readonly preload = query.get("preload") === "idle" ? "idle" as const : "none" as const;
+  readonly settingsPreload = query.get("settingsPreload") === "none" ? "none" as const : "idle" as const;
+  readonly assetBase = query.get("assetBase") ?? undefined;
+  readonly styleNonce = query.get("styleNonce") ?? undefined;
   readonly application = inject(ApplicationRef);
   constructor() {
     window.builderAttach = () => this.mounted.set(true);
@@ -117,6 +131,10 @@ Component({
       <our-form-builder
         [schema]="schema()"
         [theme]="theme()"
+        [preload]="preload"
+        [settingsPreload]="settingsPreload"
+        [assetBase]="assetBase"
+        [styleNonce]="styleNonce"
         (schemaChange)="schema.set($event)"
         (changed)="changed($event)"
         (ready)="ready($event)"
@@ -125,5 +143,12 @@ Component({
   </main>`,
 })(App);
 void bootstrapApplication(App, {
-  providers: [provideZonelessChangeDetection(), provideOurForm({ data })],
+  providers: [
+    provideZonelessChangeDetection(),
+    provideOurForm({
+      data,
+      themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
+      builderThemes: [bootstrap4BuilderTheme, bootstrap5BuilderTheme, tailwindBuilderTheme, materialBuilderTheme],
+    }),
+  ],
 });

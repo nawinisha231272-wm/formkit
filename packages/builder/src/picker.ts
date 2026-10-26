@@ -1,4 +1,3 @@
-import { element } from "./types";
 import type { UI } from "./types";
 
 /** Editable combobox: typing filters; only an explicit choice changes the definition. */
@@ -8,6 +7,7 @@ export function picker(
   choices: readonly { value: string; label: string }[],
   initial: string,
   change: (value: string) => void,
+  element: typeof import("./types").element,
 ) {
   const host = element(ui.document, "label", label, "ofb-picker");
   const input = element(ui.document, "input");

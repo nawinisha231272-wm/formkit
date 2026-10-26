@@ -326,7 +326,7 @@ retain the existing patch/history/focus/save-acknowledgement contracts, all five
 
 Kit JSON loading/validation is opt-in through the separate entry in spec 04, outside the core builder
 payload. No-kit builders include/request none of it; kit-aware builders consume the resolved manifest
-or explicitly opt into the loader. Preserve ADR-0018's ≤26 kB core ceiling and account for the kit
+or explicitly opt into the loader. Preserve ADR-0018's ≤29 kB builder-owned initial ceiling and account for the kit
 entry under its own owner-approved consumer-build budget, with shared chunks counted once.
 
 The future **Save as reusable component** action writes kit presets using this published format.

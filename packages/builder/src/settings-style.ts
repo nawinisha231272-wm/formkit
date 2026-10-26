@@ -1,4 +1,13 @@
 export const settingsStyle = `
+.of-builder-property{display:grid;gap:4px;margin-block:8px}
+.of-builder-expression{margin-block:8px}.of-builder-expression fieldset{margin:8px 0}.of-builder-expression label{display:grid;gap:4px;margin-block:6px}
+.of-builder input[data-ofb-primitive="Switch"]{appearance:none;position:relative;inline-size:34px;block-size:20px;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-pill);background:var(--ofb-surface-raised);cursor:pointer;flex-shrink:0}
+.of-builder input[data-ofb-primitive="Switch"]::after{content:"";position:absolute;inline-size:14px;block-size:14px;inset:2px auto auto 2px;border-radius:var(--ofb-radius-pill);background:var(--ofb-text-muted)}
+.of-builder input[data-ofb-primitive="Switch"]:checked{background:var(--ofb-accent);border-color:var(--ofb-accent)}
+.of-builder input[data-ofb-primitive="Switch"]:checked::after{transform:translateX(14px);background:var(--ofb-accent-contrast)}
+.of-builder [data-ofb-primitive="SegmentedControl"]{display:flex;align-items:center;gap:4px;overflow-x:auto;flex-shrink:0;padding:3px;background:var(--ofb-surface-raised);border-radius:var(--ofb-radius)}
+.of-builder [data-ofb-primitive="SegmentedControl"]>button{min-block-size:28px;border-color:var(--ofb-transparent);background:var(--ofb-transparent);padding:4px 10px}
+.of-builder [data-ofb-primitive="SegmentedControl"]>button[aria-pressed="true"]{background:var(--ofb-surface);box-shadow:var(--ofb-shadow-1)}
 .of-builder .ofb-settings-header{display:flex;align-items:start;justify-content:space-between;gap:16px;padding:20px 24px 12px}
 .of-builder .ofb-settings-header h2{font-size:var(--ofb-font-size-title);font-weight:var(--ofb-font-weight-bold);margin:0}
 .of-builder .ofb-settings-header small,.of-builder .ofb-muted{font-size:var(--ofb-font-size-small);color:var(--ofb-text-muted)}

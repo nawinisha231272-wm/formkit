@@ -1,6 +1,10 @@
 import { defaultMessage } from "@ourform/sdk";
 
 const english: Readonly<Record<string, string>> = {
+  "ofb.featureLoading": "Loading {feature}…",
+  "ofb.featureFailed": "Could not load {feature}. Your changes are preserved.",
+  "ofb.retry": "Retry",
+  "ofb.addWithDefaults": "Add with defaults",
   "ofb.breadcrumb": "Form location",
   "ofb.submissionSchema": "Submission JSON Schema",
   "ofb.sampleData": "Sample data",
@@ -18,7 +22,6 @@ const english: Readonly<Record<string, string>> = {
   "ofb.untitled": "Untitled form",
   "ofb.draft": "Draft",
   "ofb.unsaved": "Unsaved changes",
-  "ofb.saved": "Saved",
   "ofb.save": "Save",
   "ofb.saving": "Saving…",
   "ofb.savedTime": "Saved {time}",
@@ -27,9 +30,6 @@ const english: Readonly<Record<string, string>> = {
   "ofb.builderLook": "Builder look",
   "ofb.matchForm": "Match form",
   "ofb.settingsMenu": "Builder settings",
-  "ofb.writeExpression": "Write as expression",
-  "ofb.complexExpression":
-    "Edit this expression below; simple rule rows cannot represent it.",
   "ofb.emptyOptions": "{label} has no options. Add choices in Display.",
   "ofb.build": "Build",
   "ofb.logic": "Logic",
@@ -38,12 +38,6 @@ const english: Readonly<Record<string, string>> = {
   "ofb.json": "JSON",
   "ofb.modes": "Builder mode",
   "ofb.logicUnavailable": "Logic rules are not available yet.",
-  "ofb.appearance": "Appearance",
-  "ofb.density": "Density",
-  "ofb.light": "Light",
-  "ofb.dark": "Dark",
-  "ofb.comfortable": "Comfortable",
-  "ofb.compact": "Compact",
   "ofb.theme.base": "Base",
   "ofb.theme.neutral": "Neutral",
   "ofb.theme.bootstrap4": "Bootstrap 4",
@@ -55,32 +49,7 @@ const english: Readonly<Record<string, string>> = {
   "ofb.redid": "Redid {command}",
   "ofb.nothingUndo": "Nothing to undo",
   "ofb.nothingRedo": "Nothing to redo",
-  "ofb.history.AddComponent": "add of {label}",
-  "ofb.history.RemoveComponent": "delete of {label}",
-  "ofb.history.MoveComponent": "move of {label}",
-  "ofb.history.DuplicateComponent": "duplicate of {label}",
-  "ofb.history.PasteComponent": "paste of {label}",
-  "ofb.history.UpdateProperty": "edit of {label}",
-  "ofb.history.UpdateComponent": "edit of {label}",
-  "ofb.history.ChangeKey": "edit of {label}",
-  "ofb.history.WrapInLayout": "wrap of {label}",
-  "ofb.history.Unwrap": "unwrap of {label}",
-  "ofb.history.ReplaceDefinition": "edit of {label}",
-  "ofb.history.RestoreSnapshot": "edit of {label}",
-  "ofb.did.AddComponent": "Added {label}",
-  "ofb.did.RemoveComponent": "Deleted {label}",
-  "ofb.did.MoveComponent": "Moved {label}",
-  "ofb.did.DuplicateComponent": "Duplicated {label}",
-  "ofb.did.PasteComponent": "Pasted {label}",
-  "ofb.did.UpdateProperty": "Updated {label}",
-  "ofb.did.UpdateComponent": "Saved settings for {label}",
-  "ofb.did.ChangeKey": "Changed key for {label}",
-  "ofb.did.WrapInLayout": "Wrapped {label}",
-  "ofb.did.Unwrap": "Unwrapped {label}",
-  "ofb.did.ReplaceDefinition": "Updated {label}",
-  "ofb.did.RestoreSnapshot": "Restored {label}",
   "ofb.undo": "Undo",
-  "ofb.redo": "Redo",
   "ofb.issues": "Issues ({count})",
   "ofb.noIssues": "No issues found.",
   "ofb.search": "Search components",
@@ -89,7 +58,6 @@ const english: Readonly<Record<string, string>> = {
   "ofb.advanced": "Advanced",
   "ofb.outline": "Outline",
   "ofb.history": "History",
-  "ofb.noHistory": "Your edits will appear here.",
   "ofb.selected": "Selected component",
   "ofb.canvas": "Form canvas",
   "ofb.add": "Add component",
@@ -104,14 +72,9 @@ const english: Readonly<Record<string, string>> = {
   "ofb.edit": "Edit",
   "ofb.move": "Move",
   "ofb.duplicate": "Duplicate",
-  "ofb.copy": "Copy",
-  "ofb.paste": "Paste",
-  "ofb.cut": "Cut",
   "ofb.editJson": "Edit JSON",
   "ofb.more": "More",
   "ofb.delete": "Delete",
-  "ofb.wrap": "Wrap in layout",
-  "ofb.unwrap": "Unwrap",
   "ofb.close": "Close",
   "ofb.cancel": "Cancel",
   "ofb.lock": "Locked by your app",
@@ -119,12 +82,10 @@ const english: Readonly<Record<string, string>> = {
   "ofb.lock.delete": "Locked by your app: can't delete",
   "ofb.lock.edit": "Locked by your app: can't edit",
   "ofb.lock.move": "Locked by your app: can't move",
-  "ofb.lock.structure": "Locked by your app: can't change type or data scope",
   "ofb.selectFirst": "Select a component first.",
   "ofb.nothingToPaste": "Copy or cut a component first.",
   "ofb.copied": "Copied {label}. Choose a slot and paste.",
   "ofb.deleteCancelled": "Deletion cancelled by your app.",
-  "ofb.collapse": "Collapse or expand",
   "ofb.pickedUp": "Picked up {label}. Use arrow keys to move, Space to drop.",
   "ofb.position": "{label}, {target}, position {index} of {count}.",
   "ofb.moved": "Moved {label} into {target}, position {index} of {count}.",
@@ -144,27 +105,28 @@ const english: Readonly<Record<string, string>> = {
   "ofb.expr.not": "not {field}",
   "ofb.controls": "Controls {count} fields",
   "ofb.shownWhen": "Shown when {condition}",
-  "ofb.editorTitle": "{type} · {label}",
-  "ofb.key": "Key",
   "ofb.settings": "Settings",
-  "ofb.hasProblem": "{tab} has a problem",
-  "ofb.noProperties": "No settings in this tab.",
-  "ofb.livePreview": "Live preview",
-  "ofb.previewState": "Preview state",
-  "ofb.default": "Default",
-  "ofb.focus": "Focus",
-  "ofb.error": "Error",
-  "ofb.disabled": "Disabled",
-  "ofb.previewHint":
-    "Changes show here instantly and apply to the form when you save.",
-  "ofb.drawerHint":
-    "Changes apply live. Undo groups edits to the same field within 500 ms.",
-  "ofb.saveHint": "Esc cancels · Ctrl+Enter saves · Save is one undo step",
-  "ofb.invalidJson": "Enter valid JSON: {message}",
-  "ofb.editorConflict":
-    "This component changed outside the editor. Close and reopen it to continue.",
-  "ofb.readOnlyJson": "Locked by your app. This JSON is read-only.",
 };
+const commandWords: Readonly<Record<string, readonly [string, string]>> = {
+  AddComponent: ["add", "Added"],
+  RemoveComponent: ["delete", "Deleted"],
+  MoveComponent: ["move", "Moved"],
+  DuplicateComponent: ["duplicate", "Duplicated"],
+  PasteComponent: ["paste", "Pasted"],
+  WrapInLayout: ["wrap", "Wrapped"],
+  Unwrap: ["unwrap", "Unwrapped"],
+  RestoreSnapshot: ["edit", "Restored"],
+  UpdateComponent: ["edit", "Saved settings for"],
+  ChangeKey: ["edit", "Changed key for"],
+};
+function commandMessage(key: string): string | undefined {
+  const match = /^ofb\.(history|did)\.(.+)$/.exec(key);
+  if (!match) return;
+  const words = commandWords[match[2]!] ?? ["edit", "Updated"];
+  return match[1] === "history"
+    ? `${words[0]} of {label}`
+    : `${words[1]} {label}`;
+}
 export function createMessages(
   overrides: Readonly<Record<string, string>> = {},
   translate?: typeof defaultMessage,
@@ -175,7 +137,7 @@ export function createMessages(
       ? overrides[key]!
       : translated !== undefined && translated !== key
         ? translated
-        : (english[key] ??
+        : (english[key] ?? commandMessage(key) ??
           (key.startsWith("ofb.group.")
             ? key.slice(10)
             : defaultMessage(key, params)));

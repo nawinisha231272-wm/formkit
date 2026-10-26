@@ -6,6 +6,7 @@ export interface PrimitiveContext {
   document: Document;
   signal: AbortSignal;
   icons?: BuilderIcons;
+  _ofbStyle?: (element: HTMLElement, ...declarations: string[]) => void;
 }
 export function primitive<K extends keyof HTMLElementTagNameMap>(
   context: PrimitiveContext,
@@ -30,11 +31,14 @@ export function tooltip(
   const show = () => {
     tip.hidden = false;
     const rect = target.getBoundingClientRect();
-    tip.style.position = "fixed";
-    tip.style.inset = "auto";
-    tip.style.transform = "none";
-    tip.style.left = `${Math.max(8, Math.min(rect.left + (rect.width - tip.offsetWidth) / 2, context.document.documentElement.clientWidth - tip.offsetWidth - 8))}px`;
-    tip.style.top = `${Math.max(8, rect.top - tip.offsetHeight - 6)}px`;
+    context._ofbStyle?.(
+      tip,
+      "position", "fixed",
+      "inset", "auto",
+      "transform", "none",
+      "left", `${Math.max(8, Math.min(rect.left + (rect.width - tip.offsetWidth) / 2, context.document.documentElement.clientWidth - tip.offsetWidth - 8))}px`,
+      "top", `${Math.max(8, rect.top - tip.offsetHeight - 6)}px`,
+    );
     target.setAttribute("aria-describedby", tip.id);
   };
   const hide = () => {
@@ -345,7 +349,7 @@ export function toast(context: PrimitiveContext, message: string) {
 }
 
 /** Place transient selection chrome outside field content and within its scrollport. */
-export function placeSelection(root: HTMLElement, scrollport: HTMLElement) {
+export function placeSelection(root: HTMLElement, scrollport: HTMLElement, context: PrimitiveContext) {
   const tag = root.querySelector<HTMLElement>(":scope > .ofb-selection-label");
   const toolbar = root.querySelector<HTMLElement>(
     ":scope > .ofb-component-toolbar",
@@ -356,15 +360,23 @@ export function placeSelection(root: HTMLElement, scrollport: HTMLElement) {
   const text = root.ownerDocument.createRange();
   text.selectNodeContents(tag.firstChild!);
   const labelWidth = text.getBoundingClientRect().width;
-  tag.style.setProperty("--ofb-label-width", `${labelWidth}px`);
+  context._ofbStyle?.(tag, "--ofb-label-width", `${labelWidth}px`);
   toolbar.toggleAttribute(
     "data-ofb-compact",
     box.width < 360 && !!toolbar.querySelector('[data-ofb-action="more"]'),
   );
-  toolbar.style.maxInlineSize = `${Math.max(40, box.width - labelWidth - 22)}px`;
-  tag.style.maxInlineSize = `${Math.max(0, box.width - toolbar.getBoundingClientRect().width - 8)}px`;
+  context._ofbStyle?.(
+    toolbar,
+    "max-inline-size",
+    `${Math.max(40, box.width - labelWidth - 22)}px`,
+  );
+  context._ofbStyle?.(
+    tag,
+    "max-inline-size",
+    `${Math.max(0, box.width - toolbar.getBoundingClientRect().width - 8)}px`,
+  );
   const height = Math.max(tag.offsetHeight, toolbar.offsetHeight);
-  root.style.setProperty("--ofb-chrome-height", `${height}px`);
+  context._ofbStyle?.(root, "--ofb-chrome-height", `${height}px`);
   const regions = [
     tag.getBoundingClientRect(),
     toolbar.getBoundingClientRect(),

@@ -9,6 +9,7 @@ import fixture from "../../../fixtures/forms/nested-tabs/customer.json";
 import good from "../../../fixtures/forms/nested-tabs/customer.data.json";
 import bad from "../../../fixtures/forms/nested-tabs/customer.invalid.json";
 import type { FormDefinition } from "@ourform/schema";
+import { baseTheme } from "@ourform/themes/base";
 test("Tabs slots share scope, SSR places children in named panels and Node submission matches required rules", async () => {
   const engine = createEngine();
   for (const field of builtinComponents) engine.register(field.model);
@@ -18,6 +19,7 @@ test("Tabs slots share scope, SSR places children in named panels and Node submi
   expect(result.form.byId.email?.path).toEqual(["contact", "email"]);
   const session = engine.createSession(result.form, { data: good });
   const options = {
+    themes: [baseTheme],
     views: new Map(
       builtinComponents.map((field) => [field.model.type, field.views]),
     ),
@@ -99,6 +101,7 @@ test("slot captions are literal unless labelKey opts into translation with an En
   const session = e.createSession(compiled.form);
   const views = new Map([[layout.model.type, layout.views]]);
   const translated = renderToString(session, {
+    themes: [baseTheme],
     views,
     t: (key) =>
       key === "acme.second"
@@ -110,7 +113,7 @@ test("slot captions are literal unless labelKey opts into translation with an En
   expect(translated).toContain(">of.required</button>");
   expect(translated).toContain(">Translated second</button>");
   expect(translated).not.toContain("Wrongly translated literal");
-  expect(renderToString(session, { views, t: (key) => key })).toContain(
+  expect(renderToString(session, { views, themes: [baseTheme], t: (key) => key })).toContain(
     ">English second</button>",
   );
   session.dispose();

@@ -28,11 +28,62 @@ M09d's plan/ADR-0019 is accepted with the owner amendments below. The separate o
 budget needs a measured numeric ceiling and owner approval before M09d ships, following ADR-0018's
 consumer-build accounting. No automatic budget increase or unbounded kit allowance is authorized.
 
-M09b+ split accounting requires owner clarification in proposed ADR-0020: the pre-split published
-builder entry is 29,982 Brotli bytes, while the minimal consumer's entire bundled transitive closure
-is 64,613. Does the 26 kB ceiling cover builder-owned initial code/styles or that full closure?
-No budget is changed or dependency cost hidden while awaiting the answer. Command-bar/History
-numeric budgets also need measured approval before shipping.
+M09b+ accounting was amended by the owner on 2026-10-26: builder-owned initial code/styles
+≤29 kB after consumer build, including Neutral chrome and selected builder recipes; shared runtime stays under existing budgets and is fully reported;
+full initial transitive closure ≤64,613 Brotli bytes, no growth. ADR-0020 is accepted. Command-bar/
+History numeric budgets still need a measured proposal and owner approval before shipping.
+
+Resolved implementation question (2026-10-25): the owner approved generated Settings UI/styles as
+a lazy entry, with frame/focus/loading/error, commands, locks, schema/draft/Add semantics and
+validation initial; PointerDrag stays initial. Settings defaults to idle preload through a separate
+policy, with host opt-out. ADR-0018/0020 record the exact failure/Retry/Add-with-defaults contract.
+
+Resolved measured boundary decision (2026-10-26): adopt explicit opt-in themes and option B. The
+probe measured Bootstrap 5 at 27,937 builder-owned / 61,189 full-initial Brotli bytes with Settings
+lazy and context menu/More/Issues/clipboard initial. Neutral-only was 26,549 / 58,987; Bootstrap 5
+with both Settings and secondary tools lazy was rejected because the context menu would not be
+immediate. The previous all-theme snapshot was 26,049 / 61,622. The owner raised builder-owned from
+26,000 to 29,000 for the approximately 1.4 kB accounting move plus about 1 kB M09b+ headroom; the
+64,613 full-closure no-growth gate and all deferred budgets remain unchanged. Implement no
+secondary-tools chunk.
+
+## M09b+ — Opt-in themes and Settings split implemented — 2026-10-26
+
+Implemented the accepted option-B split: the root builder owns Neutral chrome; form themes and
+matching recipes are explicit per-instance subpath registrations; host-owned extra themes may load
+on selection with accessible progress/Retry/focus preservation. Material registers Base. Generated
+Settings is a separate lazy entry, idle-preloaded by default with a `none` opt-out. PointerDrag,
+context/More, Issues and all clipboard behavior remain initial; no secondary-tools chunk ships.
+Compatibility theme entries remain and form JSON is unchanged.
+
+Canonical production-consumer measurements PASS: **27,484 / 29,000** builder-owned initial,
+**61,049 / 64,613** full minimal initial, **7,391 / 8,000** Settings, **745 / 28,000**
+Logic/JSON/map, and **8,136 / 36,000** including Settings. All currently emitted deferred entries
+total 8,524 Brotli bytes. Vite vanilla/React, Angular CLI and every per-theme/all-theme script-tag
+closure are recorded in `docs/reviews/m09b-plus-loading-split.md` and its JSON manifest. Focused
+loading coverage passes **51 tests** across Chromium, Firefox and WebKit, including strict CSP,
+offline/custom assetBase, Settings slow/fail/retry/Add-with-defaults/cancel and lazy-theme failure/
+retry. Full milestone verification remains pending while M09b+ authoring features are built.
+
+## M09b+ — Selection and command contract — 2026-10-26
+
+ADR-0021 records the owner-approved selection semantics before shortcut implementation: primary
+focus selection plus an instance-local ordered set, ancestor normalization, Shift range/Cmd-Ctrl
+toggle, exact atomic refusal for locks and cross-scope operations, shared builder-core command paths,
+and byte-identical bounded undo. Inline labels preserve keys and defer translation-key labels to
+Settings. Precise quick-add uses exact slot/index filtering. The lazy command bar reuses palette,
+jump and action metadata and remains unshipped until its measured numeric chunk ceiling is approved.
+
+## M09b+ — Accepted loading split implementation plan — 2026-10-23
+
+Continue on `m09b-plus-authoring` / PR #16. The owner accepted ADR-0020 and authorized the split.
+Update both ADR budget tables first; then extract JSON/history/feature boundaries, add the per-instance
+loader with static imports plus CDN assetBase and none/idle policies, and thread options through hosts.
+Add consumer production-build/no-growth accounting and browser lifecycle/CSP/offline checks; measure
+History/command-search budgets before shipping. Preserve compact settings expressions and all existing
+commands/state. Logic/map UI remains M09c, persistent history remains deferred. Run focused checks as
+modules move, then pinned full verify and targeted baseline comparison. Risks: async focus/draft
+preservation, consumer shared-chunk accounting and strict-CSP asset ownership. No new ceiling is raised.
 
 ## M09b+ — Step 0 and split ADR ready for review — 2026-10-23
 
@@ -105,8 +156,8 @@ ADR-0019 is **accepted with owner amendments**, retaining the eight-edge bound a
    require a major bump for canonical-value, validation or composite-structure changes. Compatible
    patch/minor upgrades and incompatible majors get explicit future acceptance checks.
 5. Loader/meta-schema validation moves to an opt-in `@ourform/core/kits` entry, with no kit code or
-   schema cost in no-kit apps. Add a separate measured/approved size budget; preserve the ≤26 kB
-   core builder, existing route/aggregate ceilings and shared-chunk accounting.
+   schema cost in no-kit apps. Add a separate measured/approved size budget; preserve the ≤29 kB
+   builder-owned initial, existing route/aggregate ceilings and shared-chunk accounting.
 6. Plan `ourform create-kit`, `ourform kit validate <file>` with engine-identical diagnostics/JSON
    Pointers, and published schema autocomplete. Future Save as reusable component writes this preset
    format; its UI/gallery/storage remain deferred after M10a.

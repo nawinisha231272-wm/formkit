@@ -281,7 +281,8 @@ test("openOnAdd false commits defaults without settings; duplicate and wrap neve
     .getByRole("button", { name: "More", exact: true })
     .click();
   await page
-    .getByRole("menuitem", { name: "Wrap in layout", exact: true })
+    .locator(".ofb-action-menu")
+    .getByRole("button", { name: "Wrap in layout", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(

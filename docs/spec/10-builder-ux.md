@@ -33,6 +33,13 @@ Modal (default) or right-side drawer (editor.mode: 'drawer').
 
 - Every shipped theme package exports two things: the form theme (spec 05) and a builderTheme: --ofb-\* token values (font family, accent, accent-contrast, surface, surface-raised, border, text, text-muted, danger, success, logic, focus-ring, radius, control height, shadow-1/2) plus optional recipes for primitives (e.g. Material: pill buttons, underline tabs, outlined inputs; Bootstrap 4/5: square-ish buttons, bordered nav tabs).
 - Builder themes shipped: Neutral (default chrome from the approved mockups), Bootstrap 4, Bootstrap 5, Tailwind, Material. Each has light and dark token sets and works in both densities.
+- The root `@ourform/builder` entry ships Neutral only. Form themes are explicit
+  `@ourform/themes/<name>` registrations and matching chrome recipes are explicit
+  `@ourform/builder/themes/<name>` registrations. The picker lists only eager/lazy themes registered
+  on that builder instance. Lazy selection uses the shared accessible loading/retry/focus contract,
+  configurable `assetBase`, strict CSP and offline host-owned imports. Material also registers Base.
+  Per-theme script bundles and an all-theme playground bundle are generated from the same sources;
+  form JSON is unchanged.
 - chrome.theme: 'match-form' (default) makes the chrome follow the canvas theme chosen in the header; any named builder theme can be pinned instead. Host apps can register their own with defineBuilderTheme({ name, extends, tokens, recipes }).
 - Switching theme restyles chrome and canvas in place: no rebuild, selection, open dialog, focus, undo history and drag state are preserved.
 - Builder-specific signal colours keep their meaning in every theme: selection/drop = accent, refusal/delete = danger, logic badges = logic colour (orange family), conditional visibility = info.
@@ -44,6 +51,10 @@ Modal (default) or right-side drawer (editor.mode: 'drawer').
 ```ts
 createBuilder(el, definition, {
   theme: "bootstrap5",
+  themes: [bootstrap5Theme],
+  builderThemes: [bootstrap5BuilderTheme],
+  lazyThemes: [{ name: "material", load: loadMaterialTheme }],
+  settingsPreload: "idle", // default; "none" is the host opt-out
   chrome: {
     theme:
       "match-form" |

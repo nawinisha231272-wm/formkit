@@ -40,7 +40,7 @@ test("owner review: sentence-first Conditional settings with synchronized expres
   ).toEqual([]);
 });
 
-test("owner review: Builder look and keyboard destinations are in header More", async ({
+test("owner review: Builder look is in header More and destinations are in component More", async ({
   page,
 }, info) => {
   await page.setViewportSize({ width: 1440, height: 960 });
@@ -50,6 +50,16 @@ test("owner review: Builder look and keyboard destinations are in header More", 
   await expect(
     page.getByRole("combobox", { name: "Builder look", exact: true }),
   ).toHaveValue("neutral");
+  await expect(
+    page.getByRole("combobox", { name: "Insert into", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("combobox", { name: "Layout to wrap in", exact: true }),
+  ).toHaveCount(0);
+  await page.locator(".ofb-header-menu > summary").click();
+  const selected = page.locator('#canvas [data-field-id="email"]');
+  await selected.focus();
+  await selected.getByRole("button", { name: "More", exact: true }).click();
   await expect(
     page.getByRole("combobox", { name: "Insert into", exact: true }),
   ).toBeVisible();
@@ -62,7 +72,7 @@ test("owner review: Builder look and keyboard destinations are in header More", 
       animations: "disabled",
       maxDiffPixelRatio: 0.02,
     });
-  await page.locator(".ofb-header-menu select").first().press("Escape");
+  await page.getByRole("combobox", { name: "Insert into", exact: true }).press("Escape");
   await expect(
     page.getByRole("combobox", { name: "Builder look", exact: true }),
   ).toBeHidden();

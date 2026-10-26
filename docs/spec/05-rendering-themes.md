@@ -1,6 +1,7 @@
 # 05 — Rendering and themes
 
-Status: normative. Packages: `@ourform/renderer-dom`, `@ourform/theme-*`.
+Status: normative. Packages: `@ourform/renderer-dom`, `@ourform/themes`, compatibility
+`@ourform/theme-*` entries.
 
 ## Renderer
 
@@ -122,6 +123,22 @@ export interface Theme {
   It has Bootstrap 4 class mapping and compiled fallback; the legacy `bootstrap` alias remains Bootstrap 5.
 - Every theme passes the theme conformance suite: all states, validation, disabled, read-only,
   focus, hover, multi-value, nested grid, wizard, RTL, dark and high-contrast.
+
+### M09b+ opt-in theme entries (ADR-0018/0020)
+
+The renderer and `@ourform/builder` import no form theme by default. Hosts register only the themes
+used by an instance from `@ourform/themes/base`, `/bootstrap4`, `/bootstrap5`, `/tailwind` or
+`/material`. Material declares/loads Base because it extends Base. Existing `@ourform/theme-*`
+packages remain compatibility re-exports during migration; all entries share the same descriptors
+and conformance tests. Missing names and duplicate registrations fail clearly.
+
+Theme selection belongs to host configuration and never changes form JSON. Builder recipes are
+separate opt-in entries at `@ourform/builder/themes/<name>`; Neutral chrome is the only recipe in the
+root builder entry. Registries are per renderer/builder instance. A host may declare an additional
+theme through an offline-capable lazy loader; only registered eager/lazy names appear in the picker.
+Loading preserves schema, history, selection and focus, exposes accessible progress/retry, respects
+strict CSP and configurable `assetBase`, and ignores late completion after destroy. Script-tag
+distribution is generated from these sources as one bundle per theme plus an all-theme demo bundle.
 
 ## M02 renderer selection
 

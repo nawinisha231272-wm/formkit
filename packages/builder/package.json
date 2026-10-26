@@ -10,10 +10,30 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./themes/base": {
+      "types": "./dist/themes/base.d.ts",
+      "import": "./dist/themes/base.js"
+    },
+    "./themes/bootstrap4": {
+      "types": "./dist/themes/bootstrap4.d.ts",
+      "import": "./dist/themes/bootstrap4.js"
+    },
+    "./themes/bootstrap5": {
+      "types": "./dist/themes/bootstrap5.d.ts",
+      "import": "./dist/themes/bootstrap5.js"
+    },
+    "./themes/tailwind": {
+      "types": "./dist/themes/tailwind.d.ts",
+      "import": "./dist/themes/tailwind.js"
+    },
+    "./themes/material": {
+      "types": "./dist/themes/material.d.ts",
+      "import": "./dist/themes/material.js"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --sourcemap",
+    "build": "tsup",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -22,6 +42,11 @@
     "@ourform/renderer-dom": "workspace:*",
     "@ourform/schema": "workspace:*",
     "@ourform/sdk": "workspace:*",
+    "@ourform/theme-base": "workspace:*",
+    "@ourform/theme-bootstrap4": "workspace:*",
+    "@ourform/theme-bootstrap5": "workspace:*",
+    "@ourform/theme-material": "workspace:*",
+    "@ourform/theme-tailwind": "workspace:*",
     "lucide": "1.61.0"
   }
 }

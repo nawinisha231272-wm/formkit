@@ -73,7 +73,7 @@ path instead of copying controls or adding built-in-specific property panels.
   without kits pay no kit loader/schema bytes. Give this entry a separate enforced consumer-build
   budget, counting shared chunks once and reporting incremental bytes. Its numeric ceiling needs
   a measured proposal and owner approval before shipping; no unbounded allowance or automatic
-  increase is granted. ADR-0018's ≤26 kB core builder and existing entry/aggregate budgets stay fixed.
+  increase is granted. ADR-0018's ≤29 kB builder-owned initial and existing entry/aggregate budgets stay fixed.
 - Add **`ourform create-kit`** and **`ourform kit validate <file>`**, sharing engine diagnostics and
   JSON Pointers, explicit trusted local registrations and offline schema resolution. Publish the kit
   schema for editor autocomplete. The future **Save as reusable component** action writes presets

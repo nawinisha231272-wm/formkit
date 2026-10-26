@@ -5,6 +5,7 @@ import bootstrap4Css from "bootstrap4/dist/css/bootstrap.min.css?raw";
 import bootstrapCss from "bootstrap/dist/css/bootstrap.min.css?raw";
 import { renderForm } from "@ourform/renderer-dom";
 import { createThemeConformance } from "@ourform/testing";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
 import type { ThemeMode } from "@ourform/sdk";
 const query = new URLSearchParams(location.search);
 if (query.has("bootstrap")) {
@@ -37,7 +38,7 @@ const legacy = () =>
     document.querySelector<HTMLElement>("#second")!,
     fixture.session,
     fixture.views,
-    "bootstrap",
+    bootstrap5Theme,
   );
 declare global {
   interface Window {

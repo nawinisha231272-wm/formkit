@@ -531,8 +531,9 @@ must be proposed with consumer-build measurements and accepted before shipping, 
 additional feature entries; it is not an unbounded allowance. Measure the actual kit-enabled
 consumer closure, including parsing/validation code and required schema assets, with shared chunks
 counted once and the incremental cost over the equivalent no-kit build reported. Cover Vite/React,
-Angular CLI, vanilla and script-tag consumers, offline and strict CSP. ADR-0018's **≤26 kB core
-builder** and every existing entry/aggregate ceiling remain unchanged; no automatic budget increases.
+Angular CLI, vanilla and script-tag consumers, offline and strict CSP. ADR-0018's **≤29 kB
+builder-owned initial** and every existing entry/aggregate ceiling remain unchanged; no automatic
+budget increases.
 
 ### Kit loading and data-only properties
 

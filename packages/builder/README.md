@@ -85,12 +85,52 @@ fields explicitly; framework wrappers include the built-ins for you. For example
 ```ts
 import { createBuilder } from "@ourform/builder";
 import { builtinComponents } from "@ourform/components";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5";
 const builder = createBuilder(document.querySelector("#builder")!, definition, {
   fields: [...builtinComponents, customerReference],
-  theme: "material",
+  themes: [bootstrap5Theme],
+  builderThemes: [bootstrap5BuilderTheme],
+  theme: "bootstrap5",
   chrome: { theme: "match-form", density: "comfortable" },
 });
 ```
+
+`@ourform/builder` ships Neutral chrome and imports no form theme. Register only the form themes and
+matching builder recipes the instance needs. The picker lists only registered eager/lazy themes. A
+custom recipe from `defineBuilderTheme` uses the same `builderThemes` registry. Material extends Base,
+so its convenience entry supplies both form descriptors:
+
+```ts
+import { materialThemes } from "@ourform/themes/material";
+import { materialBuilderTheme } from "@ourform/builder/themes/material";
+
+const builder = createBuilder(root, definition, {
+  themes: materialThemes,
+  builderThemes: [materialBuilderTheme],
+  theme: "material",
+  lazyThemes: [
+    {
+      name: "bootstrap5",
+      label: "Bootstrap 5",
+      load: async () => ({
+        theme: (await import("@ourform/themes/bootstrap5")).bootstrap5Theme,
+        builderTheme: (await import("@ourform/builder/themes/bootstrap5"))
+          .bootstrap5BuilderTheme,
+      }),
+    },
+  ],
+});
+```
+
+Lazy loaders are host-owned, local/offline imports. Selection opens an accessible loading state;
+failure preserves theme/focus and offers Retry. Destroy ignores late results. Theme registration is
+instance-local, makes no network request itself, and never changes form JSON. Existing
+`@ourform/theme-*` packages remain compatibility entry points during migration.
+
+Generated script distribution provides `ourform-builder.<theme>.min.js` for each theme and
+`ourform-builder.all-themes.min.js` for demos. Supply `assetBase` when deferred chunks live somewhere
+other than the entry script directory. All chunks work with local/offline hosting and strict CSP.
 
 ## M09b host lock contract
 
@@ -185,8 +225,11 @@ focused header button. Body-level undo/redo is enabled only when this is the sol
 multiple instances scope shortcuts to their own roots. F6/Shift+F6 cycle header, palette, selected
 canvas/outline regions and a visible toast action. Alt/Option+Z is not a builder shortcut.
 
-The build uses pinned development-only Terser through tsup. The current 30 kB compressed package
-ceiling remains enforced; ADR-0018's 26 kB target applies to the later M09b+ split.
+The build uses pinned development-only Terser through tsup. Consumer-build gates are builder-owned
+initial ≤29,000 Brotli bytes and full minimal initial closure ≤64,613 bytes. Generated Settings is a
+separate ≤8,000-byte lazy chunk and idle-preloads after first render unless
+`settingsPreload: "none"`. `preload: "idle"` independently preloads Logic and JSON. See ADR-0018 and
+ADR-0020 for entry ownership and aggregate budgets.
 
 ### Command feedback and narrow columns
 

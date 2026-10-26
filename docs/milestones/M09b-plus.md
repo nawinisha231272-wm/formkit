@@ -2,8 +2,9 @@
 
 Status: **approved with owner amendments; starts after M09b approval**. Depends on M09b screenshot approval.
 Prerequisite satisfied: PR #15 approved at `79e69f6`, merged as `0b3b452` on 2026-10-23 after
-first-attempt green PR/push Verify. Work is on `m09b-plus-authoring`; stop for review of the split
-plan in proposed ADR-0020 before implementation. ADR-0018's existing ceilings remain unchanged.
+first-attempt green PR/push Verify. Work is on `m09b-plus-authoring`; ADR-0020 is accepted with
+the owner's opt-in-theme/option-B amendment. Proceed with the split: builder-owned ≤29 kB and full
+initial transitive closure ≤64,613 Brotli bytes, with existing runtime/lazy budgets unchanged.
 Order: M09b → M09b+ → M09c → M09d → M10a → M10b. M09d is an accepted plan (ADR-0019),
 with implementation starting only after M09c. No M09c root logic is included here.
 
@@ -13,7 +14,8 @@ use builder-core commands, slot validation and host locks. Before implementation
 and command contracts in an ADR and add deterministic replay/keyboard coverage. Existing keys remain
 stable when a label is edited. Respect cancellation and private modal additions.
 
-Delivery starts with ADR-0018 split (core ≤26 kB), then inline label editing → precise quick-add → shared action search → multi-select.
+Delivery starts with ADR-0018 split (builder-owned initial ≤29 kB; full initial closure ≤64,613
+bytes), then inline label editing → precise quick-add → shared action search → multi-select.
 Verify every action by pointer and keyboard, all five themes, axe, focus/appearance preservation,
 atomic rollback/refusal, bounded history and exact undo/redo. Full pinned verify, changed-state images
 and owner review are required. Owner amendments below are part of acceptance.

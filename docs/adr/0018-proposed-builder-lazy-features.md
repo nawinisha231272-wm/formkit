@@ -18,17 +18,27 @@ remain in core; loading the History view must not be necessary to undo an edit. 
 per module; feature state, subscriptions and DOM belong to each builder instance. Dependencies
 continue to follow the architecture; headless packages acquire no browser or feature dependencies.
 
-| Entry          | Compressed limit  | What triggers its first load                  |
-| -------------- | ----------------- | --------------------------------------------- |
-| Core builder   | 26 kB after split | Import/create builder                         |
-| Logic mode     | 10 kB             | First activation of root Logic mode           |
-| JSON editor    | 8 kB              | First JSON mode or component Edit JSON action |
-| Dependency map | 10 kB             | First request to open the dependency map      |
+| Entry / accounting scope                                                | Compressed limit                                                            | What triggers its first load                                                   |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Builder-owned initial code/styles, after consumer build                 | ≤29 kB                                                                      | Import/create builder, including Neutral chrome and registered builder recipes |
+| Entire initial transitive closure, including runtime/shared code/styles | ≤64,613 bytes; no growth                                                    | Initial builder load; deferred chunks excluded only while not requested        |
+| Shared form-runtime dependencies                                        | Existing package budgets, unchanged; reported fully, each shared chunk once | As required by the initial/first-open route                                    |
+| Logic mode                                                              | 10 kB                                                                       | First activation of root Logic mode                                            |
+| JSON editor                                                             | 8 kB                                                                        | First JSON mode or component Edit JSON action                                  |
+| Dependency map                                                          | 10 kB                                                                       | First request to open the dependency map                                       |
 
 Command bar and History/diff must also have independent CI size budgets before their implementation
 ships. Their numeric ceilings require a separate proposal; they do not inherit an unbounded allowance
-or silently consume the existing 28 kB Logic/JSON/map allowance. The core target is **≤26 kB** after
-the split, leaving room for M09b+. M09b retains its current 30 kB check until this split lands.
+or silently consume the existing 28 kB Logic/JSON/map allowance. The core target is **≤29 kB** after
+the split, including approximately 1 kB headroom for M09b+.
+
+Owner accounting amendment (2026-10-23), accepted in ADR-0020: the builder-owned ceiling is
+initial code/styles on top of the existing form runtime, not a substitute for reporting the whole
+initial closure. Also gate that full initial transitive closure at **64,613 Brotli bytes, no growth**.
+A later increase requires a measured proposal and explicit owner approval. Shared runtime remains
+under its existing budgets and appears fully in every report, with each shared chunk attributed once.
+Lazy Logic/JSON/map/command-bar/History chunks stay outside the initial closure only while deferred
+and remain under their own budgets. Do not conceal an initial request as deferred bytes.
 
 Size each entry **after a consumer production build**, as consumers receive it, including runtime
 loader code and CSS/assets required by the route. Cover Vite/React, Angular CLI, vanilla and the
@@ -76,6 +86,60 @@ M09b approval, before the approved authoring shortcuts are implemented.
 ## Owner amendment — M09b+ interaction contracts
 
 The split is the first M09b+ task, with command-bar loading deferred from its first release and core
-≤26 kB. Inline label editing opens the dialog for translation-key labels. Quick-add lists only
+≤29 kB. Inline label editing opens the dialog for translation-key labels. Quick-add lists only
 components accepted by the destination slot. Outline multi-selection uses Shift+arrows. Bulk editing
 shows shared properties only. Cross-scope moves are refused atomically, with a visible reason.
+
+## Owner amendment — generated Settings boundary (2026-10-25)
+
+Generated Settings UI and its styles are a separate lazy entry. The modal/drawer frame, focus and
+accessible loading/error state, command dispatch, locks, schema state, validation, and private Add
+draft semantics remain initial. PointerDrag and its first-pointerdown response remain initial.
+Settings preloads after first render at idle by default; hosts can set `settingsPreload: 'none'`.
+This is separate from `preload`, whose accepted default remains `none` for Logic/JSON.
+
+Add/Edit opens its frame immediately with `aria-busy` and an announcement. Failure displays the
+reason and Retry; Add also offers “Add with defaults”, exactly matching `openOnAdd:false`. Cancel
+discards the private Add with no history entry. Slow, failed, retried and cancelled loading preserves
+focus, schema, selection, draft and history. Cover strict CSP, offline/custom `assetBase`, and all
+three browsers. Settings receives an independent measured budget outside the 28 kB Logic/JSON/map
+aggregate; its ceiling and the revised deferred-union ceiling require owner approval before shipping.
+
+The full-initial ceiling remains 64,613 bytes. The later opt-in-theme amendment below supersedes the
+26,000-byte builder-owned ceiling and the candidate-deferral instruction.
+
+## Owner amendment — opt-in themes and final initial boundary (2026-10-26)
+
+Themes are explicit per builder instance. `@ourform/builder` imports Neutral chrome only; form themes
+come from `@ourform/themes/<name>` and matching builder recipes from
+`@ourform/builder/themes/<name>`. The picker lists only registered themes. A host may register a lazy
+theme loader under the same accessible loading/retry/focus, offline, strict-CSP and `assetBase`
+principles as other lazy features. Material registers Base as its dependency. Custom
+`defineBuilderTheme` recipes use the same instance registry. Generated script-tag bundles provide one
+entry per theme plus an all-themes playground entry. Compatibility entries remain during migration;
+form JSON does not change.
+
+Ship measured option B: generated Settings remains lazy, while context menu, toolbar More, Issues and
+all clipboard UI/handlers stay initial. Do not ship a secondary-tools chunk. The builder-owned initial
+ceiling rises from 26,000 to **29,000 Brotli bytes** because Neutral plus the match-form/theme registry
+(approximately 1.4 kB) move into builder-owned accounting and M09b+ retains about 1 kB headroom. The
+full initial closure remains the primary no-growth gate at **64,613 bytes**. Settings stays ≤8,000;
+Logic/JSON/map stays ≤28,000 combined; Logic/JSON/map/Settings stays ≤36,000. Every feature PR reports
+builder-owned and full-closure deltas. New menus, panels and dialogs are lazy by default; crossing
+either initial ceiling stops for an owner decision.
+
+## M09b+ implementation evidence — 2026-10-26
+
+The accepted option-B split and opt-in-theme design are implemented on the M09b+ branch. Generated
+Settings is lazy and defaults to idle preload; its frame, focus, draft/history semantics, validation,
+failure/Retry and Add-with-defaults behavior remain initial. Pointer drag, context/More menus, Issues
+and every clipboard handler/buffer/system operation remain initial. No `secondary-tools` entry ships.
+
+The pinned consumer probe measures **27,484** builder-owned initial bytes and **61,049** full minimal
+initial bytes (Brotli). Settings is **7,391**; Logic/JSON/map is **745**; their union with Settings is
+**8,136**; all currently emitted deferred entries total **8,524**. These pass every accepted ceiling.
+Framework and per-theme script-distribution closures are recorded separately in
+`docs/reviews/m09b-plus-loading-split.md`; they include host/framework/built-in code and do not replace
+the canonical minimal-consumer gates. Browser coverage exercises Vite vanilla/React, Angular CLI and
+script-tag hosts under strict CSP, local/offline assets and custom `assetBase`, with Settings lifecycle
+and lazy-theme failure/retry in Chromium, Firefox and WebKit.

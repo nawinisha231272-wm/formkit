@@ -298,7 +298,17 @@ export const FormBuilder = forwardRef<BuilderController, FormBuilderProps>(
         setPreview(null);
         setPortals(new Map());
       };
-    }, [engine, fields]);
+    }, [
+      engine,
+      fields,
+      props.assetBase,
+      props.preload,
+      props.settingsPreload,
+      props.styleNonce,
+      props.themes,
+      props.builderThemes,
+      props.lazyThemes,
+    ]);
     useLayoutEffect(() => {
       if (props.schema !== loadedSchema.current) {
         controller.current?.load(props.schema);
