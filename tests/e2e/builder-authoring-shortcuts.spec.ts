@@ -1,6 +1,119 @@
 import { expect, test } from "@playwright/test";
 import type {} from "../../apps/playground/builder";
 
+test("declared layout captions edit Panel, Fieldset and custom SDK layout", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?approved&settingsPreload=none&demos");
+  await page.evaluate(() => {
+    const controller = window.nestedBuilder;
+    const definition = structuredClone(
+      controller.builder.getState().definition,
+    );
+    definition.components = [
+      {
+        id: "panel-test",
+        type: "panel",
+        key: "panelKey",
+        label: "Panel heading",
+        components: [],
+      },
+      {
+        id: "fieldset-test",
+        type: "fieldset",
+        key: "fieldsetKey",
+        label: "Legend",
+        components: [],
+      },
+      {
+        id: "card-test",
+        type: "acme.card",
+        key: "cardKey",
+        label: "Card heading",
+        components: [],
+      },
+      {
+        id: "columns-test",
+        type: "columns",
+        columns: [{ width: 12, components: [] }],
+      },
+    ];
+    controller.load(definition);
+  });
+  for (const [id, key] of [
+    ["panel-test", "panelKey"],
+    ["fieldset-test", "fieldsetKey"],
+    ["card-test", "cardKey"],
+  ]) {
+    const field = page.locator(`#canvas [data-field-id="${id}"]`);
+    await field.focus();
+    await page.keyboard.press("Shift+F2");
+    const input = field.getByRole("textbox", { name: "Edit label" });
+    await input.fill(`Updated ${id}`);
+    await input.press("Enter");
+    await expect(field.locator(":scope > .of-layout-title")).toHaveText(
+      `Updated ${id}`,
+    );
+    const node = await page.evaluate(
+      (nodeId) =>
+        window.nestedBuilder.builder
+          .getState()
+          .definition.components.find((item) => item.id === nodeId),
+      id,
+    );
+    expect(node?.key).toBe(key);
+    expect(node?.label).toBe(`Updated ${id}`);
+  }
+  await page.locator('#canvas [data-field-id="columns-test"]').focus();
+  await page.keyboard.press("Shift+F2");
+  await expect(page.locator(".of-builder-toast")).toContainText(
+    "No caption to edit",
+  );
+});
+
+test("inline label blur commits once; empty blur and Escape retain the old value", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?approved&settingsPreload=none");
+  const field = page.locator('#canvas [data-field-id="email"]');
+  await field.focus();
+  await page.keyboard.press("Shift+F2");
+  const input = field.getByRole("textbox", { name: "Edit label", exact: true });
+  await input.fill("  Work email  ");
+  await page
+    .getByRole("searchbox", { name: "Search components" })
+    .first()
+    .click();
+  await expect(field.locator('[id="design-email_label"]')).toContainText(
+    "Work email",
+  );
+  expect(
+    await page.evaluate(
+      () => window.miniBuilder.builder.getState().history.past.length,
+    ),
+  ).toBe(1);
+  await field.focus();
+  await page.keyboard.press("Shift+F2");
+  await input.fill("   ");
+  await page
+    .getByRole("searchbox", { name: "Search components" })
+    .first()
+    .click();
+  await expect(page.locator(".of-builder-toast")).toContainText("Label");
+  await expect(field.locator('[id="design-email_label"]')).toContainText(
+    "Work email",
+  );
+  await field.focus();
+  await page.keyboard.press("Shift+F2");
+  await input.fill("Cancelled");
+  await input.press("Escape");
+  expect(
+    await page.evaluate(
+      () => window.miniBuilder.builder.getState().history.past.length,
+    ),
+  ).toBe(1);
+});
+
 test("inline label edit is one command, preserves the key and supports keyboard cancel", async ({
   page,
 }) => {

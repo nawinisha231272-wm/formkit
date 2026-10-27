@@ -73,6 +73,22 @@ Command search remains unshipped. Its numeric lazy-chunk budget still requires a
 and owner approval; multi-select follows it in the approved milestone order. Full pinned milestone
 verification and owner delivery review remain pending.
 
+## M09b+ — Layout caption decision — 2026-10-27
+
+Owner resolved the layout-caption question: Panel and Fieldset continue using `node.label`, with no
+wire migration. Optional builder caption metadata defaults to `label` and supports `false`; only
+visibly rendered captions offer inline editing. The owner corrected the earlier title/legend wording.
+
+Implementation evidence: `builder-authoring-shortcuts.spec.ts` passes 15/15 in Chromium, Firefox
+and WebKit, including Panel, Fieldset, explicitly declared SDK card, headingless Columns, blur,
+empty and Escape. `packages/sdk/tests/layout.test.ts` passes 4/4; lint and all 45 typecheck tasks
+pass. The first fixture run failed because the demo was not registered and Save replaced the error
+toast; the fixture now enables demos and clicks the palette search field. A subsequent broad run
+overlapped typecheck's clean rebuild and encountered unavailable package outputs; the sequential
+final browser run passed. No old blur-cancel assertion was changed. Consumer size is 28,857 / 29,000
+builder-owned initial and 63,623 / 64,613 full initial, deltas +90 and +136 Brotli bytes from
+`c9457cd`. Full milestone verification and combined multi-selection measurement remain pending.
+
 ## M09b+ — Owner acceptance of ADR-0021 — 2026-10-27
 
 The owner accepted ADR-0021 with amendments covering structural-only normalization, anchor/primary

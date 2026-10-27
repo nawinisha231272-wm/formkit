@@ -72,6 +72,7 @@ const english: Readonly<Record<string, string>> = {
   "ofb.edit": "Edit",
   "ofb.editLabel": "Edit label",
   "ofb.labelRequired": "Label cannot be empty.",
+  "ofb.noCaption": "No caption to edit.",
   "ofb.move": "Move",
   "ofb.duplicate": "Duplicate",
   "ofb.editJson": "Edit JSON",

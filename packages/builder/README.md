@@ -251,3 +251,12 @@ remain in More; shortcuts are unchanged. Tag layout reserves the complete label 
 suffix, with one outside-edge placement rule for selection and hover. At desktop creation the builder
 always opens Build; view mode is not persisted. Below 768px it opens read-only Preview. Builder look
 storage does not control this initial view.
+
+## Declared builder caption
+
+`ComponentModel.builder.caption` identifies the displayed inline-edit property and defaults to
+`label` when omitted; `false` opts out. `defineField` and `defineLayout` accept `caption` with
+the same meaning. Panel and Fieldset continue to use `node.label` for their heading and legend.
+Inline editing is available only when the caption is visibly rendered. Enter or blur commits one
+trimmed update, Escape cancels, and an empty caption is refused with a visible reason. A `labelKey`
+opens Settings; editing never changes the data key.

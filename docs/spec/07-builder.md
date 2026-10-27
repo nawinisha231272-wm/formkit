@@ -331,3 +331,12 @@ entry under its own owner-approved consumer-build budget, with shared chunks cou
 
 The future **Save as reusable component** action writes kit presets using this published format.
 It is not an M09d UI task and remains deferred with reusable sections/templates until after M10a.
+
+## Declared builder caption
+
+`ComponentModel.builder.caption` identifies the displayed inline-edit property and defaults to
+`label` when omitted; `false` opts out. `defineField` and `defineLayout` accept `caption` with
+the same meaning. Panel and Fieldset continue to use `node.label` for their heading and legend.
+Inline editing is available only when the caption is visibly rendered. Enter or blur commits one
+trimmed update, Escape cancels, and an empty caption is refused with a visible reason. A `labelKey`
+opens Settings; editing never changes the data key.

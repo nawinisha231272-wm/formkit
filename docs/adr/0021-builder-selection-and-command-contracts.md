@@ -43,7 +43,10 @@ state without modifying schema or adding a history entry.
 
 Inline label Enter or blur commits one `UpdateProperty` command; Escape cancels. Trim whitespace
 and refuse an empty caption with a visible reason. Edit the model-declared display-caption property
-(label for fields; title or legend for layouts as declared), never the data key. `all` locks refuse
+(default `label` for fields and layouts), never the data key. Panel and Fieldset keep `node.label`;
+there is no wire migration. A model may declare another caption property or opt out with `false`.
+Inline edit is offered only when that caption is visibly rendered; otherwise announce “No caption to
+edit” or open Settings. `all` locks refuse
 the command. Translation-key captions open generated Settings.
 
 Precise quick-add passes the exact `{parentId, slot, index}` to the existing Add draft path. Search

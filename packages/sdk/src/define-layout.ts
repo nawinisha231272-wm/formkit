@@ -7,6 +7,7 @@ import { h } from "./vnode";
 export function defineLayout(spec: {
   type: string;
   title: string;
+  caption?: string | false;
   dataScope?: "none" | "object";
   tag?: LayoutView["tag"];
   columns?: boolean;
@@ -44,6 +45,7 @@ export function defineLayout(spec: {
     builder: Object.freeze({
       title: spec.title,
       group: "Layouts",
+      ...(spec.caption !== undefined ? { caption: spec.caption } : {}),
       ...(spec.rootOnly ? { rootOnly: true } : {}),
     }),
   });

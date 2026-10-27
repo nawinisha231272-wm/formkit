@@ -725,3 +725,12 @@ Include originating kit/plugin, type/base, dependency chain and JSON Pointer loc
 applicable; do not render raw executable/HTML fragments in messages. Errors are localized with
 English defaults. Node/browser parity covers canonical values, ordered errors and submission schema;
 builder-only palette/editor policies do not alter validation or serialization.
+
+## Declared builder caption
+
+`ComponentModel.builder.caption` identifies the displayed inline-edit property and defaults to
+`label` when omitted; `false` opts out. `defineField` and `defineLayout` accept `caption` with
+the same meaning. Panel and Fieldset continue to use `node.label` for their heading and legend.
+Inline editing is available only when the caption is visibly rendered. Enter or blur commits one
+trimmed update, Escape cancels, and an empty caption is refused with a visible reason. A `labelKey`
+opens Settings; editing never changes the data key.

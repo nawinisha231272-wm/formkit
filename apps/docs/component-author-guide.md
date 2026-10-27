@@ -413,3 +413,12 @@ layouts. See `@ourform/builder` README for keyboard authoring and lifecycle deta
 
 Slot captions are literal text by default, including text that matches a catalog key. Optional
 `labelKey: "acme.card.body"` opts into host translation with `label: "Contents"` as its English fallback.
+
+## Declared builder caption
+
+`ComponentModel.builder.caption` identifies the displayed inline-edit property and defaults to
+`label` when omitted; `false` opts out. `defineField` and `defineLayout` accept `caption` with
+the same meaning. Panel and Fieldset continue to use `node.label` for their heading and legend.
+Inline editing is available only when the caption is visibly rendered. Enter or blur commits one
+trimmed update, Escape cancels, and an empty caption is refused with a visible reason. A `labelKey`
+opens Settings; editing never changes the data key.

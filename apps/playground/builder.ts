@@ -61,6 +61,7 @@ const schema = query.has("empty")
 const card = defineLayout({
   type: "acme.card",
   title: "SDK card",
+  caption: "label",
   slots: [
     { name: "body", label: "Fields only", accepts: ["field"], max: 2 },
     { name: "extra", label: "Extra fields", accepts: ["field"], max: 1 },

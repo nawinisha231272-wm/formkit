@@ -229,26 +229,49 @@ export class Canvas {
       this._ofbUi.announce(this._ofbUi.t("ofb.lock.edit"));
       return;
     }
-    if (entry.node.labelKey?.trim()) {
-      this._ofbUi.edit?.(id);
-      return;
-    }
+    const property =
+      this._ofbUi.engine.getField(entry.node.type)?.builder?.caption ?? "label";
     const root = this.#roots.get(id);
     const caption =
       origin ??
       root?.querySelector<HTMLElement>(
         ":scope > .of-label,:scope > .of-layout-title,:scope > legend.of-label",
       );
-    if (!caption || caption.dataset.ofbEditingLabel === "true") return;
+    if (
+      property === false ||
+      !caption ||
+      !caption.isConnected ||
+      !caption.getClientRects().length
+    ) {
+      this._ofbUi.announce(this._ofbUi.t("ofb.noCaption"));
+      return;
+    }
+    if (caption.dataset.ofbEditingLabel === "true") return;
+    if (property === "label" && entry.node.labelKey?.trim()) {
+      this._ofbUi.edit?.(id);
+      return;
+    }
     caption.dataset.ofbEditingLabel = "true";
     caption.hidden = true;
     const input = element(this._ofbUi.document, "input");
     input.className = "ofb-inline-label";
-    input.value = entry.node.label ?? componentTitle(this._ofbUi, entry.node);
+    const value = property
+      .split(".")
+      .reduce<unknown>(
+        (value, key) =>
+          value && typeof value === "object"
+            ? (value as Record<string, unknown>)[key]
+            : undefined,
+        entry.node,
+      );
+    input.value =
+      typeof value === "string"
+        ? value
+        : componentTitle(this._ofbUi, entry.node);
     input.setAttribute("aria-label", this._ofbUi.t("ofb.editLabel"));
     caption.after(input);
     let finished = false;
-    const close = (commit: boolean) => {
+    const close = (commit: boolean, restoreFocus = true) => {
       if (finished) return;
       finished = true;
       const value = input.value.trim();
@@ -261,9 +284,9 @@ export class Canvas {
           caption.focus();
           return;
         }
-        this._ofbUi.dispatch(new UpdateProperty(id, "label", value));
+        this._ofbUi.dispatch(new UpdateProperty(id, property, value));
       }
-      this.#roots.get(id)?.focus();
+      if (restoreFocus) this.#roots.get(id)?.focus();
     };
     input.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
@@ -274,7 +297,7 @@ export class Canvas {
         close(false);
       }
     });
-    input.addEventListener("blur", () => close(false), { once: true });
+    input.addEventListener("blur", () => close(true, false), { once: true });
     input.focus();
     input.select();
   }

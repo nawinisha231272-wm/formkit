@@ -4,6 +4,7 @@
 "@ourform/builder-core": minor
 "@ourform/builder": minor
 "@ourform/renderer-dom": minor
+"@ourform/sdk": minor
 ---
 
 Add explicit translated component labels, inline literal-label editing and a lazy exact-slot quick-add
