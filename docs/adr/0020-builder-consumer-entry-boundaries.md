@@ -152,13 +152,19 @@ Every future lazy chunk requires an owner-approved ceiling before shipping. Quic
 
 ## Owner decision — builder-core consumer accounting
 
+| Consumer-build gate                        | Brotli ceiling |
+| ------------------------------------------ | -------------: |
+| Builder UI initial (excludes builder-core) |   29,000 bytes |
+| Builder-core initial contribution          |    7,050 bytes |
+| Full initial closure                       |   64,613 bytes |
+
 Keep the established builder UI boundary, now named **builder UI initial (excludes builder-core)**,
 and the full initial closure boundary. Report builder-core separately as the marginal Brotli difference
 between the full consumer build and the otherwise identical build with `@ourform/builder-core`
 externalized; static shared output is counted once in each closure. Compression and chunk changes
 mean this is a marginal contribution, not a sum of independently compressed source files. At the
-current head it measures **6,675 bytes**, suggesting a ceiling of **7,050 bytes** (105%, rounded up
-to 50). The third gate is pending owner confirmation and is not yet enforced. Every combined-feature
+the baseline measures **6,675 bytes**. The owner confirmed the **7,050-byte** ceiling (105%,
+rounded up to 50), and the third gate is enforced. Every combined-feature
 report must show all three measurements and moved-code attribution. Headless selection may move to
 builder-core only within the confirmed ceiling; full closure remains at most 64,613 bytes. Compact
 first, then measure headless placement, then propose at most a one-time 29,500 UI ceiling if needed.

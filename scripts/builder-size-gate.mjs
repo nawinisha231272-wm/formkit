@@ -6,8 +6,7 @@ const entrySource =
   'import { createBuilder } from "@ourform/builder"; import { bootstrap5Theme } from "@ourform/themes/bootstrap5"; import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5"; globalThis.mountOurFormBuilder = [createBuilder, bootstrap5Theme, bootstrap5BuilderTheme];';
 const limits = {
   builderUiInitial: 29_000,
-  // Set to the owner-confirmed ceiling; a proposed baseline is not approval.
-  builderCoreInitial: null,
+  builderCoreInitial: 7_050,
   fullInitial: 64_613,
   logic: 10_000,
   json: 8_000,
@@ -161,7 +160,7 @@ const report = {
   builderCore: {
     contribution: coreContribution,
     proposedCeiling: proposedCoreLimit,
-    enforced: limits.builderCoreInitial !== null,
+    enforced: true,
     withoutCoreInitial: withoutCoreReport.initial,
   },
   fullInitial: fullReport.initial,
@@ -196,12 +195,11 @@ const checks = [
     limits.logicJsonMapSettings,
   ],
 ];
-if (limits.builderCoreInitial !== null)
-  checks.push([
-    "builder-core initial contribution",
-    coreContribution,
-    limits.builderCoreInitial,
-  ]);
+checks.push([
+  "builder-core initial contribution",
+  coreContribution,
+  limits.builderCoreInitial,
+]);
 const failures = checks.filter(([, actual, limit]) => actual > limit);
 if (failures.length) {
   for (const [name, actual, limit] of failures)
