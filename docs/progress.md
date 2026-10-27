@@ -30,8 +30,8 @@ consumer-build accounting. No automatic budget increase or unbounded kit allowan
 
 M09b+ accounting was amended by the owner on 2026-10-26: builder-owned initial code/styles
 ≤29 kB after consumer build, including Neutral chrome and selected builder recipes; shared runtime stays under existing budgets and is fully reported;
-full initial transitive closure ≤64,613 Brotli bytes, no growth. ADR-0020 is accepted. Command-bar/
-History numeric budgets still need a measured proposal and owner approval before shipping.
+full initial transitive closure ≤64,613 Brotli bytes, no growth. ADR-0020 is accepted. The command-bar closure budget is approved at 4,500 bytes with lazy indexing; History/diff still needs a
+measured budget and owner approval before shipping.
 
 Resolved implementation question (2026-10-25): the owner approved generated Settings UI/styles as
 a lazy entry, with frame/focus/loading/error, commands, locks, schema/draft/Add semantics and
@@ -72,6 +72,18 @@ Pinned `pnpm lint`, all **45/45** package typecheck tasks plus the test TypeScri
 Command search remains unshipped. Its numeric lazy-chunk budget still requires a measured proposal
 and owner approval; multi-select follows it in the approved milestone order. Full pinned milestone
 verification and owner delivery review remain pending.
+
+## M09b+ — Owner decision on command-bar budget — 2026-10-27
+
+The owner approved a 4,500-byte command closure with lazy indexing. The 29,000 builder-owned and
+64,613 full-initial ceilings remain fixed; target 28,800 builder-owned. Before shipping the command
+bar or multi-select, measure both together, including the initial selection model, keyboard handling,
+rendering and announcements; report the separate lazy bulk-editor size and propose its ceiling. If
+the combined initial exceeds 29,000, present measured compaction or shared headless selection options.
+First activation displays an immediate accessible frame; 500-field indexing has an advisory 50 ms
+target and deterministic work-count gate. Indexing must not block typing; cache until schema changes.
+No protected initial behavior moves and no additional feature is deferred without owner approval.
+History/diff remains unbudgeted and unshipped.
 
 ## M09b+ — Command-bar measurement proposal — 2026-10-27
 

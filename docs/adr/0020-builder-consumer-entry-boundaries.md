@@ -125,3 +125,17 @@ Implementation now follows the accepted option-B boundary. The final pinned prod
 Logic/JSON/map/Settings share-counted union is 8,136 bytes. The reproducible host and per-theme
 distribution report is `docs/reviews/m09b-plus-loading-split.md`. These measurements do not authorize
 unresolved command-bar/History budgets or any M09c implementation.
+
+## Owner amendment — command bar and multi-select, 2026-10-27
+
+The command-bar consumer closure has an approved **4,500 Brotli-byte** ceiling with lazy indexing.
+Builder-owned initial remains ≤29,000 bytes (target ≤28,800); the full initial closure remains
+≤64,613 bytes. Preserve all owner-protected initial behavior and defer nothing else without approval.
+Before shipping either the command bar or multi-select, measure their combined initial builder-owned
+and full-closure sizes, and measure the separately lazy bulk editor with a proposed ceiling. If the
+combined initial exceeds 29,000, present measured compaction or shared headless selection alternatives.
+
+On first Ctrl/Cmd+K the accessible frame appears immediately. Indexing the 500-field fixture is
+advisory ≤50 ms and has a deterministic index-work count gate; typing is never blocked by results.
+Reopening uses the cached index, rebuilt only on schema changes. History/diff remains unbudgeted
+and unshipped.

@@ -143,3 +143,17 @@ Framework and per-theme script-distribution closures are recorded separately in
 the canonical minimal-consumer gates. Browser coverage exercises Vite vanilla/React, Angular CLI and
 script-tag hosts under strict CSP, local/offline assets and custom `assetBase`, with Settings lifecycle
 and lazy-theme failure/retry in Chromium, Firefox and WebKit.
+
+## Owner amendment — command bar and multi-select, 2026-10-27
+
+The command-bar consumer closure has an approved **4,500 Brotli-byte** ceiling with lazy indexing.
+Builder-owned initial remains ≤29,000 bytes (target ≤28,800); the full initial closure remains
+≤64,613 bytes. Preserve all owner-protected initial behavior and defer nothing else without approval.
+Before shipping either the command bar or multi-select, measure their combined initial builder-owned
+and full-closure sizes, and measure the separately lazy bulk editor with a proposed ceiling. If the
+combined initial exceeds 29,000, present measured compaction or shared headless selection alternatives.
+
+On first Ctrl/Cmd+K the accessible frame appears immediately. Indexing the 500-field fixture is
+advisory ≤50 ms and has a deterministic index-work count gate; typing is never blocked by results.
+Reopening uses the cached index, rebuilt only on schema changes. History/diff remains unbudgeted
+and unshipped.
