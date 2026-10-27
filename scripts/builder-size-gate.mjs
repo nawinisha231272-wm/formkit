@@ -5,7 +5,9 @@ import { resolve } from "node:path";
 const entrySource =
   'import { createBuilder } from "@ourform/builder"; import { bootstrap5Theme } from "@ourform/themes/bootstrap5"; import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5"; globalThis.mountOurFormBuilder = [createBuilder, bootstrap5Theme, bootstrap5BuilderTheme];';
 const limits = {
-  builderOwnedInitial: 29_000,
+  builderUiInitial: 29_000,
+  // Set to the owner-confirmed ceiling; a proposed baseline is not approval.
+  builderCoreInitial: null,
   fullInitial: 64_613,
   logic: 10_000,
   json: 8_000,
@@ -16,7 +18,7 @@ const limits = {
   logicJsonMapSettings: 36_000,
 };
 
-async function bundle(external) {
+async function bundle(external, omitBuilderCore = false) {
   return build({
     stdin: {
       contents: entrySource,
@@ -31,6 +33,7 @@ async function bundle(external) {
     outdir: "/tmp/ourform-builder-size",
     write: false,
     metafile: true,
+    ...(omitBuilderCore ? { external: ["@ourform/builder-core"] } : {}),
     ...(external
       ? {
           packages: "external",
@@ -132,26 +135,44 @@ function analyze(result) {
   };
 }
 
-const [owned, full] = await Promise.all([bundle(true), bundle(false)]);
+const [owned, full, withoutBuilderCore] = await Promise.all([
+  bundle(true),
+  bundle(false),
+  bundle(false, true),
+]);
 const ownedReport = analyze(owned);
 const fullReport = analyze(full);
+const withoutCoreReport = analyze(withoutBuilderCore);
+const coreContribution =
+  fullReport.initial.brotli - withoutCoreReport.initial.brotli;
+if (coreContribution <= 0)
+  throw new Error("Builder-core contribution measurement is non-positive.");
+const proposedCoreLimit = Math.ceil((coreContribution * 1.05) / 50) * 50;
 const report = {
   method: {
     tool: "esbuild 0.25.12 consumer production build + node:zlib Brotli",
     entrySource,
     sharedChunks: "counted once per closure",
+    builderCore:
+      "Marginal compressed initial consumer closure: full build minus otherwise identical build externalizing @ourform/builder-core; bundling and Brotli can change shared output bytes.",
   },
   limits,
-  builderOwned: ownedReport,
+  builderUiInitialExcludingBuilderCore: ownedReport,
+  builderCore: {
+    contribution: coreContribution,
+    proposedCeiling: proposedCoreLimit,
+    enforced: limits.builderCoreInitial !== null,
+    withoutCoreInitial: withoutCoreReport.initial,
+  },
   fullInitial: fullReport.initial,
 };
 console.log(JSON.stringify(report, null, 2));
 
 const checks = [
   [
-    "builder-owned initial",
+    "builder UI initial (excludes builder-core)",
     ownedReport.initial.brotli,
-    limits.builderOwnedInitial,
+    limits.builderUiInitial,
   ],
   ["full initial closure", fullReport.initial.brotli, limits.fullInitial],
   ["Logic", ownedReport.features.logic.brotli, limits.logic],
@@ -175,6 +196,12 @@ const checks = [
     limits.logicJsonMapSettings,
   ],
 ];
+if (limits.builderCoreInitial !== null)
+  checks.push([
+    "builder-core initial contribution",
+    coreContribution,
+    limits.builderCoreInitial,
+  ]);
 const failures = checks.filter(([, actual, limit]) => actual > limit);
 if (failures.length) {
   for (const [name, actual, limit] of failures)

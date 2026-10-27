@@ -24,11 +24,21 @@ deviations from spec, open questions.
 
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
 
+M09b+ combined sizing plan: first compact current initial code, then measure a headless selection
+variant, then present a ceiling proposal only if necessary. The existing `builder-size-gate.mjs`
+externalizes `@ourform/builder-core` in its builder-owned measurement; the full-initial measurement
+bundles it. Thus moving selection code there affects the full-closure gate even if the current
+builder-owned calculation excludes it. Do not treat this placement as a size saving without reporting
+both gates and the headless bytes. A standalone, minified representative builder-core export bundle
+with dependencies external measures 6,873 Brotli bytes; this is contextual and cannot be added to
+consumer totals because shared chunks and compression differ. Combined prototypes, bulk editor,
+and 500-field count/timing measurements are still pending.
+
 M09d's plan/ADR-0019 is accepted with the owner amendments below. The separate optional kit-entry
 budget needs a measured numeric ceiling and owner approval before M09d ships, following ADR-0018's
 consumer-build accounting. No automatic budget increase or unbounded kit allowance is authorized.
 
-M09b+ accounting was amended by the owner on 2026-10-26: builder-owned initial code/styles
+M09b+ accounting was amended by the owner on 2026-10-26: builder UI initial (excludes builder-core) code/styles
 ≤29 kB after consumer build, including Neutral chrome and selected builder recipes; shared runtime stays under existing budgets and is fully reported;
 full initial transitive closure ≤64,613 Brotli bytes, no growth. ADR-0020 is accepted. The command-bar closure budget is approved at 4,500 bytes with lazy indexing; History/diff still needs a
 measured budget and owner approval before shipping.
@@ -59,7 +69,7 @@ failure/Retry and focus/selection preservation use the shared lazy-feature contr
 Browser evidence PASS: `builder-loading.spec.ts` plus `builder-authoring-shortcuts.spec.ts` pass
 **42/42** in Chromium, Firefox and WebKit. The Firefox selection-chrome double-click path also passes
 **9/9** repeated checks across all three engines. Focused schema/renderer/feature-loader tests pass
-**25/25**. The final consumer gate is **28,767 / 29,000** builder-owned initial and
+**25/25**. The final consumer gate is **28,767 / 29,000** builder UI initial (excludes builder-core) and
 **63,487 / 64,613** full initial. This checkpoint adds 1,283 and 2,438 Brotli bytes respectively
 over the loading-split baseline. The quick-add closure is 3,403 bytes including a 2,901-byte shared
 initial primitive chunk; its feature-specific loaded cost is 502 bytes (602 including the distinct
@@ -86,7 +96,7 @@ pass. The first fixture run failed because the demo was not registered and Save 
 toast; the fixture now enables demos and clicks the palette search field. A subsequent broad run
 overlapped typecheck's clean rebuild and encountered unavailable package outputs; the sequential
 final browser run passed. No old blur-cancel assertion was changed. Consumer size is 28,857 / 29,000
-builder-owned initial and 63,623 / 64,613 full initial, deltas +90 and +136 Brotli bytes from
+builder UI initial (excludes builder-core) and 63,623 / 64,613 full initial, deltas +90 and +136 Brotli bytes from
 `c9457cd`. Full milestone verification and combined multi-selection measurement remain pending.
 
 ## M09b+ — Owner acceptance of ADR-0021 — 2026-10-27
@@ -113,9 +123,9 @@ History/diff remains unbudgeted and unshipped.
 
 Production code remains unchanged from checkpoint `c9457cd`. A temporary consumer-build probe measured
 two complete Ctrl/Cmd+K designs, then was removed. Building palette/jump/action items in initial code
-measured **29,102** builder-owned initial, **63,830** full initial and a **3,512** command closure;
+measured **29,102** builder UI initial (excludes builder-core), **63,830** full initial and a **3,512** command closure;
 it exceeds the fixed builder gate by 102 bytes. Moving indexing into the lazy command module measured
-**29,044** builder-owned initial, **63,753** full initial, **4,218** for the command closure and
+**29,044** builder UI initial (excludes builder-core), **63,753** full initial, **4,218** for the command closure and
 **13,299** across all emitted deferred entries; it exceeds the builder gate by 44 bytes while the
 primary full-closure gate retains 860 bytes of headroom.
 
@@ -137,7 +147,7 @@ Settings is a separate lazy entry, idle-preloaded by default with a `none` opt-o
 context/More, Issues and all clipboard behavior remain initial; no secondary-tools chunk ships.
 Compatibility theme entries remain and form JSON is unchanged.
 
-Canonical production-consumer measurements PASS: **27,484 / 29,000** builder-owned initial,
+Canonical production-consumer measurements PASS: **27,484 / 29,000** builder UI initial (excludes builder-core),
 **61,049 / 64,613** full minimal initial, **7,391 / 8,000** Settings, **745 / 28,000**
 Logic/JSON/map, and **8,136 / 36,000** including Settings. All currently emitted deferred entries
 total 8,524 Brotli bytes. Vite vanilla/React, Angular CLI and every per-theme/all-theme script-tag
@@ -238,7 +248,7 @@ ADR-0019 is **accepted with owner amendments**, retaining the eight-edge bound a
    patch/minor upgrades and incompatible majors get explicit future acceptance checks.
 5. Loader/meta-schema validation moves to an opt-in `@ourform/core/kits` entry, with no kit code or
    schema cost in no-kit apps. Add a separate measured/approved size budget; preserve the ≤29 kB
-   builder-owned initial, existing route/aggregate ceilings and shared-chunk accounting.
+   builder UI initial (excludes builder-core), existing route/aggregate ceilings and shared-chunk accounting.
 6. Plan `ourform create-kit`, `ourform kit validate <file>` with engine-identical diagnostics/JSON
    Pointers, and published schema autocomplete. Future Save as reusable component writes this preset
    format; its UI/gallery/storage remain deferred after M10a.
@@ -2390,3 +2400,16 @@ phone views unchanged. All 32 original trial artifacts retain their hashes.
 The review server is restarted at `http://127.0.0.1:4173/builder.html?approved` and left running.
 See `docs/reviews/m09b-live-review-round5.md` for all six states on both platforms. M09b remains open
 until owner approval and first-attempt green final-head PR CI; do not merge, start M09b+ or M09c yet.
+
+## Owner decision — builder-core consumer accounting
+
+Keep the established builder UI boundary, now named **builder UI initial (excludes builder-core)**,
+and the full initial closure boundary. Report builder-core separately as the marginal Brotli difference
+between the full consumer build and the otherwise identical build with `@ourform/builder-core`
+externalized; static shared output is counted once in each closure. Compression and chunk changes
+mean this is a marginal contribution, not a sum of independently compressed source files. At the
+current head it measures **6,675 bytes**, suggesting a ceiling of **7,050 bytes** (105%, rounded up
+to 50). The third gate is pending owner confirmation and is not yet enforced. Every combined-feature
+report must show all three measurements and moved-code attribution. Headless selection may move to
+builder-core only within the confirmed ceiling; full closure remains at most 64,613 bytes. Compact
+first, then measure headless placement, then propose at most a one-time 29,500 UI ceiling if needed.

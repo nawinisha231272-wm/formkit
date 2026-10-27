@@ -60,7 +60,7 @@ ADR-0018 fixes core builder at **26 kB**, Logic at **10 kB**, JSON at **8 kB**, 
 approved the command-bar ceiling below; History remains unbudgeted. No kit loader or
 validator may be charged to these entries; ADR-0019 keeps them optional and separately budgeted.
 
-The **≤29 kB** ceiling applies to **builder-owned initial code and styles after a consumer
+The **≤29 kB** ceiling applies to **builder UI initial (excludes builder-core) code and styles after a consumer
 production build**: the incremental builder on top of the form runtime an app already uses. Shared
 form-runtime dependencies (core, renderer, themes and other shared packages) retain their existing
 budgets and must be fully reported in every size report, attributing each shared chunk once.
@@ -121,7 +121,7 @@ Logic/JSON/map/Settings ≤36,000 are unchanged. New menu/panel/dialog features 
 each reports both initial deltas and stops before crossing either ceiling.
 
 Implementation now follows the accepted option-B boundary. The final pinned production probe reports
-27,484 builder-owned initial bytes and 61,049 full minimal initial bytes. Settings is 7,391 bytes;
+27,484 builder UI initial (excludes builder-core) bytes and 61,049 full minimal initial bytes. Settings is 7,391 bytes;
 Logic/JSON/map/Settings share-counted union is 8,136 bytes. The reproducible host and per-theme
 distribution report is `docs/reviews/m09b-plus-loading-split.md`. These measurements do not authorize
 unresolved command-bar/History budgets or any M09c implementation.
@@ -129,7 +129,7 @@ unresolved command-bar/History budgets or any M09c implementation.
 ## Owner amendment — command bar and multi-select, 2026-10-27
 
 The command-bar consumer closure has an approved **4,500 Brotli-byte** ceiling with lazy indexing.
-Builder-owned initial remains ≤29,000 bytes (target ≤28,800); the full initial closure remains
+Builder UI initial (excludes builder-core) remains ≤29,000 bytes (target ≤28,800); the full initial closure remains
 ≤64,613 bytes. Preserve all owner-protected initial behavior and defer nothing else without approval.
 Before shipping either the command bar or multi-select, measure their combined initial builder-owned
 and full-closure sizes, and measure the separately lazy bulk editor with a proposed ceiling. If the
@@ -149,3 +149,16 @@ and unshipped.
 
 Every future lazy chunk requires an owner-approved ceiling before shipping. Quick-add measured
 3,403 bytes including shared chunks; the size gate enforces its main and Retry closures.
+
+## Owner decision — builder-core consumer accounting
+
+Keep the established builder UI boundary, now named **builder UI initial (excludes builder-core)**,
+and the full initial closure boundary. Report builder-core separately as the marginal Brotli difference
+between the full consumer build and the otherwise identical build with `@ourform/builder-core`
+externalized; static shared output is counted once in each closure. Compression and chunk changes
+mean this is a marginal contribution, not a sum of independently compressed source files. At the
+current head it measures **6,675 bytes**, suggesting a ceiling of **7,050 bytes** (105%, rounded up
+to 50). The third gate is pending owner confirmation and is not yet enforced. Every combined-feature
+report must show all three measurements and moved-code attribution. Headless selection may move to
+builder-core only within the confirmed ceiling; full closure remains at most 64,613 bytes. Compact
+first, then measure headless placement, then propose at most a one-time 29,500 UI ceiling if needed.
