@@ -59,6 +59,7 @@ const english: Readonly<Record<string, string>> = {
   "ofb.outline": "Outline",
   "ofb.history": "History",
   "ofb.selected": "Selected component",
+  "ofb.selectionCount": "{count} selected",
   "ofb.canvas": "Form canvas",
   "ofb.add": "Add component",
   "ofb.addType": "Add {title}",

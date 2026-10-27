@@ -40,4 +40,5 @@ export const pointerStyle = `
 .of-builder .ofb-canvas-lock{position:absolute;inset:6px 6px auto auto;color:var(--ofb-text-muted);display:inline-flex}
 .of-builder .ofb-insertion-line[data-orientation="vertical"]{inline-size:2px;block-size:var(--ofb-line-height)}
 .of-builder .ofb-signal-row{display:flex;gap:6px;flex-wrap:wrap;margin-block:6px;pointer-events:none}
+.of-builder [data-of-multiselected="true"]{outline:2px solid var(--ofb-accent);outline-offset:3px}
 `;
