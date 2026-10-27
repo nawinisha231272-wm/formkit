@@ -20,7 +20,7 @@ import { ComponentActions } from "./component-actions";
 import { icon, componentIcon } from "./icons";
 import { paletteGroups } from "./palette";
 import { describeExpression, controlledFields } from "./signals";
-import { chip, placeSelection } from "./primitives";
+import { chip, placeSelection, dialog } from "./primitives";
 import type { FeatureLoader } from "./feature-loader";
 import { SelectionSet } from "./selection-set";
 type Entry = { node: ComponentNode; parent?: ComponentNode };
@@ -28,6 +28,7 @@ const attribute = (element: HTMLElement, name: string, value: string) => {
   if (element.getAttribute(name) !== value) element.setAttribute(name, value);
 };
 export class Canvas {
+  #commands: (() => void) | undefined;
   readonly selectionSet = new SelectionSet();
   #selectionFocus = false;
   _ofbTarget: DropTarget = {};
@@ -1242,6 +1243,72 @@ export class Canvas {
       }),
     );
   }
+  openCommands() {
+    if (this.#commands) return;
+    const ui = this._ofbUi;
+    const origin = ui.document.activeElement as HTMLElement | null;
+    const local = new AbortController();
+    const frame = dialog(
+      { ...ui, signal: local.signal },
+      ui.t("ofb.commands"),
+      () => close(),
+    );
+    const close = () => {
+      local.abort();
+      frame.close();
+      frame.element.remove();
+      this.#commands = undefined;
+      origin?.focus();
+    };
+    this.#commands = close;
+    ui.signal.addEventListener("abort", close, { once: true });
+    const host = element(ui.document, "div");
+    frame.element.append(host);
+    this._ofbRoot.append(frame.element);
+    frame.show();
+    host.tabIndex = -1;
+    host.focus();
+    const load = () => {
+      host.setAttribute("aria-busy", "true");
+      host.textContent = ui.t("ofb.featureLoading", {
+        feature: ui.t("ofb.commands"),
+      });
+      ui.announce(host.textContent);
+      void this._ofbFeatures
+        .load("commands")
+        .then(({ mountCommands }) => {
+          if (local.signal.aborted) return;
+          mountCommands(host, ui, {
+            selection: () => this.selectionSet.members,
+            target: () => this._ofbTarget,
+            jump: (id) => {
+              this.selectionSet.select(id);
+              ui.builder.select(id);
+              this._ofbFocusSelected();
+            },
+            action: (action, ids) => {
+              if (ids.length !== 1) {
+                ui.announce(ui.t("ofb.singleAction"));
+                return;
+              }
+              const node = this._ofbEntries().find(
+                ({ node }) => node.id === ids[0],
+              )?.node;
+              if (node) this._ofbActions._ofbExecute(action, node);
+            },
+            close,
+          });
+        })
+        .catch((cause: unknown) => {
+          if (local.signal.aborted) return;
+          host.removeAttribute("aria-busy");
+          host.textContent =
+            cause instanceof Error ? cause.message : String(cause);
+          host.append(button(ui, ui.t("ofb.retry"), load));
+        });
+    };
+    load();
+  }
   labelPointerDown = (event: PointerEvent) => {
     if (event.button !== 0) return;
     const target = event.target as Element;
@@ -1291,6 +1358,11 @@ export class Canvas {
     this._ofbEditLabel(root.dataset.fieldId!, caption);
   };
   keydown = (event: KeyboardEvent) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      this.openCommands();
+      return;
+    }
     if (
       this._ofbPointer._ofbActive ||
       this._ofbRoot.hasAttribute("data-ofb-readonly")

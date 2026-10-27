@@ -83,6 +83,17 @@ Command search remains unshipped. Its numeric lazy-chunk budget still requires a
 and owner approval; multi-select follows it in the approved milestone order. Full pinned milestone
 verification and owner delivery review remain pending.
 
+## M09b+ — Combined prototype in progress
+
+The selection draft is now wired to the immediate canvas/outline presentation and Shift+arrow
+range navigation. The command bar opens its initial dialog frame before lazy download; a lazy
+instance-keyed index caches by immutable schema identity, yields every 50 nodes and preserves
+frozen child arrays. Its 500-field unit workload visits exactly 500 nodes; reopening returns the
+same promise and a changed schema rebuilds. Focused evidence: 5 unit tests and 6 browser checks
+across Chromium, Firefox and WebKit. Bulk actions/editor, selection history restoration, remaining
+keyboard/modifier acceptance and full measurement are still in progress; this is a prototype
+checkpoint, not milestone delivery or size acceptance. No compaction or placement change is applied.
+
 ## M09b+ — Layout caption decision — 2026-10-27
 
 Owner resolved the layout-caption question: Panel and Fieldset continue using `node.label`, with no
