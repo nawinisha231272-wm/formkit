@@ -14,7 +14,13 @@ import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
 import { tailwindTheme } from "@ourform/themes/tailwind";
 import { materialTheme } from "@ourform/themes/material";
 
-const themes = [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme];
+const themes = [
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+];
 
 export const shortRating = definePreset("sample.short-rating", {
   base: ratingField,

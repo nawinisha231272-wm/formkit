@@ -72,7 +72,9 @@ test("owner review: Builder look is in header More and destinations are in compo
       animations: "disabled",
       maxDiffPixelRatio: 0.02,
     });
-  await page.getByRole("combobox", { name: "Insert into", exact: true }).press("Escape");
+  await page
+    .getByRole("combobox", { name: "Insert into", exact: true })
+    .press("Escape");
   await expect(
     page.getByRole("combobox", { name: "Builder look", exact: true }),
   ).toBeHidden();

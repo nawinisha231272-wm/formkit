@@ -243,7 +243,10 @@ export class PointerDrag {
   };
   _ofbStart(source: Source, keyboard: boolean, pointerId?: number): void {
     this.#clearPending();
-    if (source.id && this._ofbContext.ui.builder.lockLevel(source.id) === "all") {
+    if (
+      source.id &&
+      this._ofbContext.ui.builder.lockLevel(source.id) === "all"
+    ) {
       this._ofbContext.ui.announce(this._ofbContext.ui.t("ofb.lock.move"));
       return;
     }
@@ -254,7 +257,8 @@ export class PointerDrag {
       ...(pointerId === undefined ? {} : { pointerId }),
     };
     this._ofbContext.root.dataset.ofbDragging = "true";
-    if (pointerId !== undefined) this._ofbContext.root.setPointerCapture(pointerId);
+    if (pointerId !== undefined)
+      this._ofbContext.root.setPointerCapture(pointerId);
     this.#ghost.textContent = source.label;
     this.#ghost.hidden = false;
     this.#cache();
@@ -282,7 +286,11 @@ export class PointerDrag {
       .find((entry) => entry.node.id === id)?.node;
     if (node)
       this._ofbStart(
-        { type: node.type, id, label: componentTitle(this._ofbContext.ui, node) },
+        {
+          type: node.type,
+          id,
+          label: componentTitle(this._ofbContext.ui, node),
+        },
         true,
       );
   }
@@ -717,7 +725,10 @@ export class PointerDrag {
     this.#lastPosition = this.#preflightKey = "";
     this.#preflight = [];
     this.#hoverTargets = [];
-    if (pointer !== undefined && this._ofbContext.root.hasPointerCapture(pointer))
+    if (
+      pointer !== undefined &&
+      this._ofbContext.root.hasPointerCapture(pointer)
+    )
       this._ofbContext.root.releasePointerCapture(pointer);
   }
   _ofbCancel(): void {

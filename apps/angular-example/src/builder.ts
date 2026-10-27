@@ -90,8 +90,12 @@ class App {
   readonly schema = signal<unknown>(schema);
   readonly theme = signal("base");
   readonly mounted = signal(true);
-  readonly preload = query.get("preload") === "idle" ? "idle" as const : "none" as const;
-  readonly settingsPreload = query.get("settingsPreload") === "none" ? "none" as const : "idle" as const;
+  readonly preload =
+    query.get("preload") === "idle" ? ("idle" as const) : ("none" as const);
+  readonly settingsPreload =
+    query.get("settingsPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const);
   readonly assetBase = query.get("assetBase") ?? undefined;
   readonly styleNonce = query.get("styleNonce") ?? undefined;
   readonly application = inject(ApplicationRef);
@@ -147,8 +151,19 @@ void bootstrapApplication(App, {
     provideZonelessChangeDetection(),
     provideOurForm({
       data,
-      themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
-      builderThemes: [bootstrap4BuilderTheme, bootstrap5BuilderTheme, tailwindBuilderTheme, materialBuilderTheme],
+      themes: [
+        baseTheme,
+        bootstrap4Theme,
+        bootstrap5Theme,
+        tailwindTheme,
+        materialTheme,
+      ],
+      builderThemes: [
+        bootstrap4BuilderTheme,
+        bootstrap5BuilderTheme,
+        tailwindBuilderTheme,
+        materialBuilderTheme,
+      ],
     }),
   ],
 });

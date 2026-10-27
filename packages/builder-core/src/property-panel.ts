@@ -20,6 +20,7 @@ export interface PropertyPanelModel {
 }
 const base: [string, PropertyDefinition["kind"], string][] = [
   ["label", "string", "Display"],
+  ["labelKey", "string", "Display"],
   ["description", "string", "Display"],
   ["placeholder", "string", "Display"],
   ["tooltip", "string", "Display"],

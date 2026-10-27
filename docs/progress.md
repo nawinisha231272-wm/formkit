@@ -47,6 +47,32 @@ immediate. The previous all-theme snapshot was 26,049 / 61,622. The owner raised
 64,613 full-closure no-growth gate and all deferred budgets remain unchanged. Implement no
 secondary-tools chunk.
 
+## M09b+ — Inline labels and precise quick-add checkpoint — 2026-10-27
+
+Implemented the first two authoring features after the loading split. Literal labels edit in place
+by double-click or Shift+F2 as one `UpdateProperty` command; Escape cancels and keys remain stable.
+An explicit `labelKey` opens generated Settings and renders through the normal translation catalog
+with the literal label as fallback. Hover/focus insertion markers load a searchable quick-add menu,
+filter registered components through `canDrop`, and preserve the exact parent/slot/index. Loading,
+failure/Retry and focus/selection preservation use the shared lazy-feature contract.
+
+Browser evidence PASS: `builder-loading.spec.ts` plus `builder-authoring-shortcuts.spec.ts` pass
+**42/42** in Chromium, Firefox and WebKit. The Firefox selection-chrome double-click path also passes
+**9/9** repeated checks across all three engines. Focused schema/renderer/feature-loader tests pass
+**25/25**. The final consumer gate is **28,767 / 29,000** builder-owned initial and
+**63,487 / 64,613** full initial. This checkpoint adds 1,283 and 2,438 Brotli bytes respectively
+over the loading-split baseline. The quick-add closure is 3,403 bytes including a 2,901-byte shared
+initial primitive chunk; its feature-specific loaded cost is 502 bytes (602 including the distinct
+Retry entry). All emitted deferred entries total 12,019 bytes. Exact files, commands and budget
+results are in `docs/reviews/m09b-plus-authoring-checkpoint.md`.
+
+Pinned `pnpm lint`, all **45/45** package typecheck tasks plus the test TypeScript project, and
+`git diff --check` pass on the checkpoint files.
+
+Command search remains unshipped. Its numeric lazy-chunk budget still requires a measured proposal
+and owner approval; multi-select follows it in the approved milestone order. Full pinned milestone
+verification and owner delivery review remain pending.
+
 ## M09b+ — Opt-in themes and Settings split implemented — 2026-10-26
 
 Implemented the accepted option-B split: the root builder owns Neutral chrome; form themes and

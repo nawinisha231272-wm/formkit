@@ -67,7 +67,9 @@ export function sidebar({ host, outline, ui, features }: Context) {
   panel.append(outline, issues, history);
   host.replaceChildren(bar.element, panel, info);
   let historyView: { update(): void } | undefined;
-  let issuesView: { update(diagnostics: readonly Diagnostic[]): void } | undefined;
+  let issuesView:
+    | { update(diagnostics: readonly Diagnostic[]): void }
+    | undefined;
   const outlet = featureOutlet(history, ui, features);
   function show(value: string) {
     bar.set(value);
@@ -80,7 +82,9 @@ export function sidebar({ host, outline, ui, features }: Context) {
         element,
       });
     if (value === "history" && !historyView)
-      outlet.open("history", ({ mountHistory }) => { historyView = mountHistory(history, ui, element); });
+      outlet.open("history", ({ mountHistory }) => {
+        historyView = mountHistory(history, ui, element);
+      });
     else if (value !== "history") outlet.cancel();
     panel.setAttribute("aria-labelledby", `${id}-${value}`);
   }

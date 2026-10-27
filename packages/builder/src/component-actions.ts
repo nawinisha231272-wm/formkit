@@ -1,4 +1,8 @@
-import { DuplicateComponent, RemoveComponent, Unwrap } from "@ourform/builder-core";
+import {
+  DuplicateComponent,
+  RemoveComponent,
+  Unwrap,
+} from "@ourform/builder-core";
 import type { DropTarget } from "@ourform/builder-core";
 import type { ComponentNode } from "@ourform/schema";
 import type { ToolbarAction, UI } from "./types";
@@ -25,13 +29,7 @@ interface Context {
   choose(target: DropTarget): void;
   wrap(id: string, type: string): void;
 }
-const order: ToolbarAction[] = [
-  "edit",
-  "move",
-  "duplicate",
-  "delete",
-  "more",
-];
+const order: ToolbarAction[] = ["edit", "move", "duplicate", "delete", "more"];
 const shortcuts: Partial<Record<Action, string>> = {
   edit: "Enter",
   move: "Space",

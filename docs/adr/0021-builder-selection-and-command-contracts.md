@@ -45,7 +45,10 @@ key, the inline action opens generated Settings instead of replacing translated 
 
 Precise quick-add passes the exact `{parentId, slot, index}` to the existing Add draft path. Search
 contains only registered palette entries for which `builder.canDrop(type, target)` has no errors.
-Save/Cancel/openOnAdd behavior is unchanged.
+Save/Cancel/openOnAdd behavior is unchanged. The menu is a lazy entry with an immediate accessible
+busy frame, Retry after failure, exact focus restoration and the shared offline/CSP/assetBase contract.
+Its first consumer measurement is 3,403 Brotli bytes including 2,901 bytes of an initial shared
+primitive chunk: 502 feature-specific loaded bytes, or 602 including its distinct Retry entry.
 
 ## Command search
 

@@ -3,6 +3,7 @@ import {
   AddComponent,
   MoveComponent,
   PasteComponent,
+  UpdateProperty,
   WrapInLayout,
 } from "@ourform/builder-core";
 import type { DropTarget } from "@ourform/builder-core";
@@ -19,7 +20,8 @@ import { ComponentActions } from "./component-actions";
 import { icon, componentIcon } from "./icons";
 import { paletteGroups } from "./palette";
 import { describeExpression, controlledFields } from "./signals";
-import { chip, labelledInput, placeSelection } from "./primitives";
+import { chip, placeSelection } from "./primitives";
+import type { FeatureLoader } from "./feature-loader";
 type Entry = { node: ComponentNode; parent?: ComponentNode };
 const attribute = (element: HTMLElement, name: string, value: string) => {
   if (element.getAttribute(name) !== value) element.setAttribute(name, value);
@@ -48,12 +50,16 @@ export class Canvas {
   #selectedLocation = "";
   #typeAhead = "";
   #lastKey = 0;
+  #labelPointer:
+    | { id: string; at: number; clientX: number; clientY: number }
+    | undefined;
   constructor(
     readonly _ofbRoot: HTMLElement,
     readonly _ofbHost: HTMLElement,
     readonly _ofbPalette: HTMLElement,
     readonly _ofbOutline: HTMLElement,
     readonly _ofbUi: UI,
+    readonly _ofbFeatures: FeatureLoader,
     readonly _ofbOnLocalChange: () => void,
   ) {
     const root = _ofbRoot,
@@ -62,6 +68,11 @@ export class Canvas {
       outline = _ofbOutline,
       ui = _ofbUi;
     root.addEventListener("click", this.click);
+    root.addEventListener("dblclick", this.doubleClick);
+    root.addEventListener("pointerdown", this.labelPointerDown, {
+      capture: true,
+      signal: ui.signal,
+    });
     root.addEventListener("keydown", this.keydown);
     root.addEventListener("focusin", this.followFocus);
     const position = () => {
@@ -211,57 +222,89 @@ export class Canvas {
     this.#mini?.remove();
     this.#mini = undefined;
   }
+  _ofbEditLabel(id: string, origin?: HTMLElement) {
+    const entry = this._ofbEntries().find(({ node }) => node.id === id);
+    if (!entry) return;
+    if (this._ofbUi.builder.lockLevel(id) === "all") {
+      this._ofbUi.announce(this._ofbUi.t("ofb.lock.edit"));
+      return;
+    }
+    if (entry.node.labelKey?.trim()) {
+      this._ofbUi.edit?.(id);
+      return;
+    }
+    const root = this.#roots.get(id);
+    const caption =
+      origin ??
+      root?.querySelector<HTMLElement>(
+        ":scope > .of-label,:scope > .of-layout-title,:scope > legend.of-label",
+      );
+    if (!caption || caption.dataset.ofbEditingLabel === "true") return;
+    caption.dataset.ofbEditingLabel = "true";
+    caption.hidden = true;
+    const input = element(this._ofbUi.document, "input");
+    input.className = "ofb-inline-label";
+    input.value = entry.node.label ?? componentTitle(this._ofbUi, entry.node);
+    input.setAttribute("aria-label", this._ofbUi.t("ofb.editLabel"));
+    caption.after(input);
+    let finished = false;
+    const close = (commit: boolean) => {
+      if (finished) return;
+      finished = true;
+      const value = input.value.trim();
+      input.remove();
+      caption.hidden = false;
+      delete caption.dataset.ofbEditingLabel;
+      if (commit) {
+        if (!value) {
+          this._ofbUi.announce(this._ofbUi.t("ofb.labelRequired"));
+          caption.focus();
+          return;
+        }
+        this._ofbUi.dispatch(new UpdateProperty(id, "label", value));
+      }
+      this.#roots.get(id)?.focus();
+    };
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        close(true);
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        close(false);
+      }
+    });
+    input.addEventListener("blur", () => close(false), { once: true });
+    input.focus();
+    input.select();
+  }
   _ofbOpenMini(origin: HTMLElement, target: DropTarget) {
     this._ofbCloseMini();
     const ui = this._ofbUi;
     const popup = element(ui.document, "section", "", "ofb-mini-palette");
     popup.setAttribute("role", "dialog");
     popup.setAttribute("aria-label", ui.t("ofb.add"));
-    const context = ui;
-    const search = labelledInput(context, ui.t("ofb.search"), "search");
-    const input = search.input as HTMLInputElement;
-    const items = element(ui.document, "div");
+    popup.setAttribute("aria-busy", "true");
+    popup.append(
+      element(
+        ui.document,
+        "p",
+        ui.t("ofb.featureLoading", { feature: ui.t("ofb.add") }),
+      ),
+    );
+    ui.announce(ui.t("ofb.featureLoading", { feature: ui.t("ofb.add") }));
     const source = paletteGroups(ui)
       .flatMap((group) => group.components)
-      .sort(
-        (a, b) => (this.#uses.get(b.type) ?? 0) - (this.#uses.get(a.type) ?? 0),
-      );
-    const draw = () => {
-      items.replaceChildren();
-      const query = input.value.trim().toLowerCase();
-      const results = query
-        ? source.filter((item) =>
-            `${ui.t(item.title)} ${item.type}`.toLowerCase().includes(query),
-          )
-        : source.slice(0, 6);
-      for (const item of results) {
-        const add = button(
-          ui,
-          ui.t("ofb.addType", { title: ui.t(item.title) }),
-          () => {
-            this._ofbCloseMini();
-            this._ofbUi.add!(item.type, target, origin);
-          },
-        );
-        items.append(add);
-      }
-      if (!results.length)
-        items.append(element(ui.document, "p", ui.t("ofb.noMatches")));
-    };
-    input.addEventListener("input", draw, { signal: ui.signal });
-    popup.addEventListener(
-      "keydown",
-      (event) => {
-        if (event.key === "Escape") {
-          event.preventDefault();
-          event.stopPropagation();
-          this._ofbCloseMini();
-          origin.focus();
-        }
-      },
-      { signal: ui.signal },
-    );
-    popup.append(search.wrapper, items);
+      .filter(
+        (item) =>
+          !ui.builder
+            .canDrop(item.type, target)
+            .some((diagnostic) => diagnostic.severity === "error"),
+      )
+      .map((item) => ({
+        ...item,
+        uses: this.#uses.get(item.type) ?? 0,
+      }));
     const rect = origin.getBoundingClientRect(),
       root = this._ofbRoot.getBoundingClientRect();
     this._ofbRoot.append(popup);
@@ -273,10 +316,39 @@ export class Canvas {
       `${rect.bottom - root.top + this._ofbRoot.scrollTop}px`,
     );
     this.#mini = popup;
-    draw();
-    input.focus();
+    const load = () => {
+      popup.setAttribute("aria-busy", "true");
+      void this._ofbFeatures
+        .load("quickAdd")
+        .then(({ mountQuickAdd }) => {
+          if (this.#mini !== popup || ui.signal.aborted) return;
+          mountQuickAdd(popup, ui, {
+            items: source,
+            add: (type) => this._ofbUi.add!(type, target, origin),
+            close: () => this._ofbCloseMini(),
+            origin,
+          });
+        })
+        .catch((cause: unknown) => {
+          if (this.#mini !== popup || ui.signal.aborted) return;
+          popup.removeAttribute("aria-busy");
+          popup.replaceChildren(
+            element(
+              ui.document,
+              "p",
+              ui.t("ofb.featureFailed", { feature: ui.t("ofb.add") }),
+            ),
+            button(ui, ui.t("ofb.retry"), load),
+          );
+          ui.announce(cause instanceof Error ? cause.message : String(cause));
+        });
+    };
+    load();
   }
-  _ofbChildren(parent: ComponentNode | undefined, slot?: string): ComponentNode[] {
+  _ofbChildren(
+    parent: ComponentNode | undefined,
+    slot?: string,
+  ): ComponentNode[] {
     const first = parent ? this._ofbSlots(parent)[0]?.name : "children";
     return (
       parent
@@ -315,7 +387,9 @@ export class Canvas {
   _ofbLocation(id: string) {
     const entry = this._ofbEntries().find((e) => e.node.id === id);
     if (!entry) return undefined;
-    const first = entry.parent ? this._ofbSlots(entry.parent)[0]?.name : "children";
+    const first = entry.parent
+      ? this._ofbSlots(entry.parent)[0]?.name
+      : "children";
     const slot =
       (entry.parent ? childSlot(entry.parent, entry.node) : entry.node.slot) ??
       first;
@@ -409,7 +483,10 @@ export class Canvas {
             };
       }
     }
-    if (this._ofbCutId && !this._ofbEntries().some((e) => e.node.id === this._ofbCutId))
+    if (
+      this._ofbCutId &&
+      !this._ofbEntries().some((e) => e.node.id === this._ofbCutId)
+    )
       this._ofbCutId = undefined;
     if (
       this._ofbTarget.parentId &&
@@ -417,7 +494,9 @@ export class Canvas {
         (e) =>
           e.node.id === this._ofbTarget.parentId &&
           this._ofbSlots(e.node).some(
-            (s) => s.name === (this._ofbTarget.slot ?? this._ofbSlots(e.node)[0]?.name),
+            (s) =>
+              s.name ===
+              (this._ofbTarget.slot ?? this._ofbSlots(e.node)[0]?.name),
           ),
       )
     )
@@ -486,12 +565,18 @@ export class Canvas {
       handle.title = handle.textContent;
       handle.setAttribute("aria-label", handle.textContent);
       root.prepend(handle);
-      const toolbar = savedToolbars.get(node.id) ?? this._ofbActions._ofbToolbar(node);
+      const toolbar =
+        savedToolbars.get(node.id) ?? this._ofbActions._ofbToolbar(node);
       root.prepend(toolbar);
       this.#toolbars.set(node.id, toolbar);
       root.dataset.ofbLocked = this._ofbUi.builder.lockLevel(node.id) ?? "";
       if (root.dataset.ofbLocked) {
-        const lock = element(this._ofbUi.document, "span", "", "ofb-canvas-lock");
+        const lock = element(
+          this._ofbUi.document,
+          "span",
+          "",
+          "ofb-canvas-lock",
+        );
         lock.setAttribute("role", "img");
         lock.setAttribute("aria-label", this._ofbUi.t("ofb.lock"));
         lock.title = this._ofbUi.t("ofb.lock");
@@ -528,7 +613,8 @@ export class Canvas {
       }
       root.dataset.dragId = node.id;
       root.dataset.ofCollapsed = String(this.#collapsed.has(node.id));
-      root.tabIndex = this._ofbUi.builder.getState().selection === node.id ? 0 : -1;
+      root.tabIndex =
+        this._ofbUi.builder.getState().selection === node.id ? 0 : -1;
     }
     const indicators = (
       parent: ComponentNode | undefined,
@@ -559,14 +645,26 @@ export class Canvas {
             this._ofbUi.t("of.builder.insertHere", { index: index + 1 }),
             () => {},
           );
-        marker.className = "of-builder-drop";
+        marker.className = "of-builder-drop ofb-quick-add";
         if (!children.length || (!parent && index === children.length)) {
           marker.classList.add("ofb-empty-slot");
           marker.textContent = this._ofbUi.t("ofb.emptySlot");
-        }
+        } else marker.textContent = "+";
         marker.dataset.dropParent = parent?.id ?? "";
         marker.dataset.dropSlot = slot ?? "";
         marker.dataset.dropIndex = String(index);
+        marker.onpointerdown = (event) => {
+          // Keep a pointer activation from moving focus to the insertion marker.
+          // WebKit otherwise transfers focus to the containing design node when
+          // the target state is refreshed, which changes the user's selection.
+          event.preventDefault();
+          event.stopPropagation();
+        };
+        marker.onclick = (event) => {
+          event.stopPropagation();
+          this._ofbChoose(target);
+          this._ofbOpenMini(marker, target);
+        };
         marker.setAttribute(
           "aria-label",
           this._ofbUi.t("of.builder.dropLocation", {
@@ -603,7 +701,9 @@ export class Canvas {
     const selected = this._ofbUi.builder.getState().selection;
     // A command may select a new/moved component while the old slot still owns focus.
     // Restore the current selection, never an ancestor inferred from the detached slot.
-    const focused = this._ofbOutline.contains(this._ofbUi.document.activeElement)
+    const focused = this._ofbOutline.contains(
+      this._ofbUi.document.activeElement,
+    )
       ? selected
       : undefined;
     let location = selected ? this._ofbLocation(selected) : undefined;
@@ -684,7 +784,12 @@ export class Canvas {
           "of-builder-tree-name",
         );
         if (componentChildren(node).length || this._ofbSlots(node).length > 1) {
-          const caret = element(this._ofbUi.document, "span", "", "ofb-tree-caret");
+          const caret = element(
+            this._ofbUi.document,
+            "span",
+            "",
+            "ofb-tree-caret",
+          );
           caret.append(
             icon(
               this._ofbUi.document,
@@ -873,22 +978,29 @@ export class Canvas {
     this._ofbCutId = id;
     this._ofbRefresh(false);
     this._ofbUi.announce(
-      this._ofbUi.t(this._ofbCutId ? "of.builder.cutReady" : "of.builder.selectFirst"),
+      this._ofbUi.t(
+        this._ofbCutId ? "of.builder.cutReady" : "of.builder.selectFirst",
+      ),
     );
   }
   _ofbPaste(): void {
     if (!this._ofbCutId && !this._ofbClipboard) {
       const clipboard = this._ofbUi.document.defaultView?.navigator.clipboard;
       if (clipboard)
-        void clipboard.readText().then((text) => {
-          if (this._ofbUi.signal.aborted) return;
-          try {
-            this._ofbClipboard = JSON.parse(text) as ComponentNode;
-            this._ofbPaste();
-          } catch {
-            this._ofbUi.announce(this._ofbUi.t("ofb.nothingToPaste"));
-          }
-        }).catch(() => this._ofbUi.announce(this._ofbUi.t("ofb.nothingToPaste")));
+        void clipboard
+          .readText()
+          .then((text) => {
+            if (this._ofbUi.signal.aborted) return;
+            try {
+              this._ofbClipboard = JSON.parse(text) as ComponentNode;
+              this._ofbPaste();
+            } catch {
+              this._ofbUi.announce(this._ofbUi.t("ofb.nothingToPaste"));
+            }
+          })
+          .catch(() =>
+            this._ofbUi.announce(this._ofbUi.t("ofb.nothingToPaste")),
+          );
       else this._ofbUi.announce(this._ofbUi.t("ofb.nothingToPaste"));
       return;
     }
@@ -954,7 +1066,8 @@ export class Canvas {
       this._ofbHost.contains(target)
     ) {
       const id = target.dataset.fieldId!;
-      if (this._ofbUi.builder.lockLevel(id) !== "all") this._ofbUi.builder.select(id);
+      if (this._ofbUi.builder.lockLevel(id) !== "all")
+        this._ofbUi.builder.select(id);
     }
   };
   click = (event: MouseEvent) => {
@@ -968,7 +1081,9 @@ export class Canvas {
     const slotToggle = target.closest<HTMLElement>("[data-slot-toggle]");
     if (slotToggle && this._ofbOutline.contains(slotToggle)) {
       const key = slotToggle.dataset.slotToggle!;
-      this._ofbSelectTreeRow(slotToggle.closest<HTMLElement>('[role="treeitem"]')!);
+      this._ofbSelectTreeRow(
+        slotToggle.closest<HTMLElement>('[role="treeitem"]')!,
+      );
       if (!this.#collapsedSlots.delete(key)) this.#collapsedSlots.add(key);
       this._ofbDrawOutline();
       this.#slotItems.get(key)?.focus();
@@ -982,8 +1097,7 @@ export class Canvas {
     const marker = target.closest<HTMLElement>(".of-builder-drop");
     if (marker && this.#targets.has(marker)) {
       this._ofbChoose(this.#targets.get(marker)!);
-      if (marker.classList.contains("ofb-empty-slot"))
-        this._ofbOpenMini(marker, this.#targets.get(marker)!);
+      this._ofbOpenMini(marker, this.#targets.get(marker)!);
       return;
     }
     const add = target.closest<HTMLElement>("[data-type]");
@@ -1017,7 +1131,9 @@ export class Canvas {
     }
     let field = target.closest<HTMLElement>("[data-field-id]");
     while (field && this._ofbHost.contains(field)) {
-      if (this._ofbEntries().some((e) => e.node.id === field!.dataset.fieldId)) {
+      if (
+        this._ofbEntries().some((e) => e.node.id === field!.dataset.fieldId)
+      ) {
         if (this._ofbUi.builder.lockLevel(field.dataset.fieldId!) === "all") {
           this._ofbUi.announce(this._ofbUi.t("ofb.lock.edit"));
           return;
@@ -1030,8 +1146,59 @@ export class Canvas {
         field.parentElement?.closest<HTMLElement>("[data-field-id]") ?? null;
     }
   };
+  labelPointerDown = (event: PointerEvent) => {
+    if (event.button !== 0) return;
+    const target = event.target as Element;
+    const field = target.closest<HTMLElement>("[data-field-id]");
+    const id = field?.dataset.fieldId;
+    const caption = target.closest<HTMLElement>(".of-label,.of-layout-title");
+    const previous = this.#labelPointer;
+    if (
+      id &&
+      previous?.id === id &&
+      event.timeStamp - previous.at < 750 &&
+      Math.hypot(
+        event.clientX - previous.clientX,
+        event.clientY - previous.clientY,
+      ) < 8
+    ) {
+      // Selecting a component exposes its chrome between clicks. In Firefox
+      // that chrome can become the second pointer target, so the browser never
+      // emits `dblclick` on the original label. Detect the same-place pointer
+      // sequence before presentation chrome can consume it.
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.#labelPointer = undefined;
+      this._ofbUi.builder.select(id);
+      this._ofbEditLabel(id, caption ?? undefined);
+      return;
+    }
+    this.#labelPointer =
+      caption && id
+        ? {
+            id,
+            at: event.timeStamp,
+            clientX: event.clientX,
+            clientY: event.clientY,
+          }
+        : undefined;
+  };
+  doubleClick = (event: MouseEvent) => {
+    const caption = (event.target as Element).closest<HTMLElement>(
+      ".of-label,.of-layout-title",
+    );
+    const root = caption?.closest<HTMLElement>("[data-field-id]");
+    if (!caption || !root || !this._ofbHost.contains(root)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this._ofbUi.builder.select(root.dataset.fieldId!);
+    this._ofbEditLabel(root.dataset.fieldId!, caption);
+  };
   keydown = (event: KeyboardEvent) => {
-    if (this._ofbPointer._ofbActive || this._ofbRoot.hasAttribute("data-ofb-readonly"))
+    if (
+      this._ofbPointer._ofbActive ||
+      this._ofbRoot.hasAttribute("data-ofb-readonly")
+    )
       return;
     const target = event.target as HTMLElement;
     if (
@@ -1055,6 +1222,7 @@ export class Canvas {
     ) {
       event.preventDefault();
       this._ofbChoose(this.#targets.get(marker)!);
+      this._ofbOpenMini(marker, this.#targets.get(marker)!);
       return;
     }
     const command = event.ctrlKey || event.metaKey;
@@ -1081,7 +1249,9 @@ export class Canvas {
         if (["ArrowLeft", "ArrowRight"].includes(event.key))
           this._ofbSelectTreeRow(tree);
         const rows = [
-          ...this._ofbOutline.querySelectorAll<HTMLElement>('[role="treeitem"]'),
+          ...this._ofbOutline.querySelectorAll<HTMLElement>(
+            '[role="treeitem"]',
+          ),
         ].filter((row) => !row.closest("[hidden]"));
         const index = rows.indexOf(tree);
         let next: HTMLElement | undefined;
@@ -1232,6 +1402,11 @@ export class Canvas {
       this._ofbFocusSelected(inOutline);
       return;
     }
+    if (event.shiftKey && event.key === "F2") {
+      event.preventDefault();
+      this._ofbEditLabel(id);
+      return;
+    }
     if (event.key === "Enter" || event.key === "F2") {
       event.preventDefault();
       if (this._ofbUi.edit) {
@@ -1289,6 +1464,7 @@ export class Canvas {
     this._ofbActions._ofbCloseMenu();
     this._ofbPointer._ofbDestroy();
     this._ofbRoot.removeEventListener("click", this.click);
+    this._ofbRoot.removeEventListener("dblclick", this.doubleClick);
     this._ofbRoot.removeEventListener("keydown", this.keydown);
     this._ofbRoot.removeEventListener("focusin", this.followFocus);
     this.#targets.clear();

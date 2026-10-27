@@ -108,8 +108,12 @@ const fields = [field];
 recordBuilderEvents();
 const query = new URLSearchParams(location.search);
 const loading = {
-  preload: query.get("preload") === "idle" ? "idle" as const : "none" as const,
-  settingsPreload: query.get("settingsPreload") === "none" ? "none" as const : "idle" as const,
+  preload:
+    query.get("preload") === "idle" ? ("idle" as const) : ("none" as const),
+  settingsPreload:
+    query.get("settingsPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const),
   ...(query.has("assetBase") ? { assetBase: query.get("assetBase")! } : {}),
   ...(query.has("styleNonce") ? { styleNonce: query.get("styleNonce")! } : {}),
 };
@@ -133,8 +137,19 @@ function App() {
             schema: definition,
             data,
             fields,
-            themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
-            builderThemes: [bootstrap4BuilderTheme, bootstrap5BuilderTheme, tailwindBuilderTheme, materialBuilderTheme],
+            themes: [
+              baseTheme,
+              bootstrap4Theme,
+              bootstrap5Theme,
+              tailwindTheme,
+              materialTheme,
+            ],
+            builderThemes: [
+              bootstrap4BuilderTheme,
+              bootstrap5BuilderTheme,
+              tailwindBuilderTheme,
+              materialBuilderTheme,
+            ],
             theme,
             onReady: (controller) => {
               window.builderHost = controller;

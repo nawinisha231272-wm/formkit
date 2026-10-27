@@ -11,36 +11,61 @@ const hosts = [
 const feature = /\/features\/(settings)\.js(?:\?|$)/;
 
 for (const [host, url, opaqueChunks] of hosts)
-  test(`${host} defers Settings until its first activation`, async ({ page }) => {
+  test(`${host} defers Settings until its first activation`, async ({
+    page,
+  }) => {
     const requested: string[] = [];
     const violations: string[] = [];
     const external: string[] = [];
     page.on("request", (request) => {
       const match = feature.exec(request.url());
       if (match) requested.push(match[1]!);
-      else if (opaqueChunks && request.resourceType() === "script" && request.url().endsWith(".js"))
+      else if (
+        opaqueChunks &&
+        request.resourceType() === "script" &&
+        request.url().endsWith(".js")
+      )
         requested.push(request.url());
-      if (/^https?:/.test(request.url()) && !request.url().startsWith(new URL(url).origin))
+      if (
+        /^https?:/.test(request.url()) &&
+        !request.url().startsWith(new URL(url).origin)
+      )
         external.push(request.url());
     });
     page.on("console", (message) => {
-      if (message.text().includes("Content Security Policy")) violations.push(message.text());
+      if (message.text().includes("Content Security Policy"))
+        violations.push(message.text());
     });
     await page.goto(`${url}?preload=none&settingsPreload=none`);
-    await expect(page.getByRole("tab", { name: "Build", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("tab", { name: "Build", exact: true }),
+    ).toBeVisible();
     if (opaqueChunks) requested.length = 0;
     await page.waitForTimeout(250);
     expect(requested).toEqual([]);
-    await page.getByRole("treeitem", { name: "Full name", exact: true }).click();
-    await page.getByRole("button", { name: "Edit settings", exact: true }).click();
-    await expect(page.getByRole("dialog").getByRole("tab", { name: "Display" })).toBeVisible();
+    await page
+      .getByRole("treeitem", { name: "Full name", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Edit settings", exact: true })
+      .click();
+    await expect(
+      page.getByRole("dialog").getByRole("tab", { name: "Display" }),
+    ).toBeVisible();
     if (opaqueChunks) expect(requested.length).toBeGreaterThan(0);
     else expect(requested).toEqual(["settings"]);
-    await page.getByRole("dialog").getByRole("button", { name: "Close" }).click();
-    const field = page.locator('[data-builder-part="canvas"] [data-field-id="name"]');
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Close" })
+      .click();
+    const field = page.locator(
+      '[data-builder-part="canvas"] [data-field-id="name"]',
+    );
     await field.focus();
     await field.getByRole("button", { name: "More", exact: true }).click();
-    await expect(page.locator(".ofb-action-menu").getByRole("button", { name: "Copy" })).toBeVisible();
+    await expect(
+      page.locator(".ofb-action-menu").getByRole("button", { name: "Copy" }),
+    ).toBeVisible();
     if (!opaqueChunks) expect(requested).toEqual(["settings"]);
     expect(external).toEqual([]);
     expect(violations).toEqual([]);

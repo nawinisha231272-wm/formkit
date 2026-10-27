@@ -79,7 +79,10 @@ test("Copy in toolbar More captures a snapshot; keyboard paste commits once with
     '[data-builder-part="canvas"] [data-field-id="cmp_rating"]',
   );
   await rating.getByRole("button", { name: "More", exact: true }).click();
-  await page.locator(".ofb-action-menu").getByRole("button", { name: "Copy", exact: true }).click();
+  await page
+    .locator(".ofb-action-menu")
+    .getByRole("button", { name: "Copy", exact: true })
+    .click();
   expect(
     await page.evaluate(
       () => window.miniBuilder.builder.getState().history.past.length,

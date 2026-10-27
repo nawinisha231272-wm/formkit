@@ -1,5 +1,6 @@
 export const pointerStyle = `
 .of-builder .of-builder-drop:not(.ofb-empty-slot){display:none}
+.of-builder [data-field-id]:hover>.of-builder-drop:not(.ofb-empty-slot),.of-builder [data-field-id]:focus-within>.of-builder-drop:not(.ofb-empty-slot),.of-builder .of-builder-drop:not(.ofb-empty-slot):focus{display:block}
 .of-builder .ofb-empty-slot{border:1px dashed var(--ofb-border);border-radius:var(--ofb-radius);color:var(--ofb-text-muted);background:var(--ofb-surface-raised);min-block-size:64px;padding:16px}
 .of-builder .of-builder-palette [data-type],.of-builder .of-builder-canvas [data-field-id],.of-builder .of-builder-outline [data-drag-id]{touch-action:none}
 .of-builder [data-of-tab]{touch-action:manipulation}
@@ -18,6 +19,7 @@ export const pointerStyle = `
 .of-builder [data-field-id]:hover:not(:has([data-field-id]:hover))>.ofb-component-toolbar,.of-builder [data-of-selected=true]>.ofb-component-toolbar,.of-builder .ofb-component-toolbar:focus-within{display:flex;visibility:visible}
 .of-builder .ofb-component-toolbar [data-ofb-primitive="IconButton"]{inline-size:28px;min-block-size:28px;padding:5px}
 .of-builder .ofb-selection-label{margin:0;display:block;position:absolute;inset:auto auto calc(100% + 3px) 0;max-inline-size:calc(100% - 254px);min-inline-size:0;text-align:start;justify-content:flex-start;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;visibility:hidden;min-block-size:20px;padding:2px 6px;background:var(--ofb-accent);color:var(--ofb-accent-contrast);border-color:var(--ofb-accent);font-size:var(--ofb-font-size-small);z-index:11}
+.of-builder .ofb-inline-label{position:relative;z-index:13;inline-size:min(100%,28rem);margin-block:0 8px;font:inherit;font-weight:600}
 .of-builder [data-field-id]:hover:not(:has([data-field-id]:hover))>.ofb-selection-label,.of-builder [data-of-selected=true]>.ofb-selection-label,.of-builder .ofb-selection-label:focus{visibility:visible}
 .of-builder [data-ofb-locked="all"]>.ofb-selection-label{display:none}
 .of-builder .of-builder-canvas:has([data-of-selected=true]) [data-field-id]:not([data-of-selected=true])>.ofb-component-toolbar{display:none;visibility:hidden}

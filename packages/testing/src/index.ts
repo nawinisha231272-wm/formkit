@@ -121,7 +121,13 @@ export function createThemeConformance(
   const view = mount(root, session, {
     engine,
     views,
-    themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
+    themes: [
+      baseTheme,
+      bootstrap4Theme,
+      bootstrap5Theme,
+      tailwindTheme,
+      materialTheme,
+    ],
     theme: options.theme ?? "base",
     themeMode: options.mode ?? "light",
     presentation: {

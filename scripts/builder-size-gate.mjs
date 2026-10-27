@@ -37,18 +37,18 @@ async function bundle(external) {
             {
               name: "ourform-builder-owned",
               setup(context) {
+                context.onResolve({ filter: /^@ourform\/builder$/ }, () => ({
+                  path: resolve("packages/builder/dist/index.js"),
+                }));
                 context.onResolve(
-                  { filter: /^@ourform\/builder$/ },
-                  () => ({ path: resolve("packages/builder/dist/index.js") }),
+                  { filter: /^@ourform\/builder\/themes\/bootstrap5$/ },
+                  () => ({
+                    path: resolve("packages/builder/dist/themes/bootstrap5.js"),
+                  }),
                 );
-              context.onResolve(
-                { filter: /^@ourform\/builder\/themes\/bootstrap5$/ },
-                () => ({ path: resolve("packages/builder/dist/themes/bootstrap5.js") }),
-              );
-              context.onResolve(
-                { filter: /^@ourform\/theme-base$/ },
-                () => ({ path: resolve("packages/theme-base/dist/index.js") }),
-              );
+                context.onResolve({ filter: /^@ourform\/theme-base$/ }, () => ({
+                  path: resolve("packages/theme-base/dist/index.js"),
+                }));
               },
             },
           ],
@@ -92,7 +92,8 @@ function analyze(result) {
   const initial = Object.keys(outputs).find(
     (output) => outputs[output].entryPoint === "minimal-builder-consumer.js",
   );
-  if (!initial) throw new Error("Builder size probe did not emit its consumer entry.");
+  if (!initial)
+    throw new Error("Builder size probe did not emit its consumer entry.");
   const featureRoot = (name) => {
     const suffix = `/features/${name}.js`;
     const output = Object.keys(outputs).find((candidate) =>
@@ -110,6 +111,8 @@ function analyze(result) {
       "map",
       "history",
       "commands",
+      "quick-add",
+      "quick-add-retry",
     ].map((name) => [name, closure([featureRoot(name)])]),
   );
   const deferredRoots = Object.keys(outputs).filter(
@@ -144,12 +147,20 @@ const report = {
 console.log(JSON.stringify(report, null, 2));
 
 const checks = [
-  ["builder-owned initial", ownedReport.initial.brotli, limits.builderOwnedInitial],
+  [
+    "builder-owned initial",
+    ownedReport.initial.brotli,
+    limits.builderOwnedInitial,
+  ],
   ["full initial closure", fullReport.initial.brotli, limits.fullInitial],
   ["Logic", ownedReport.features.logic.brotli, limits.logic],
   ["JSON", ownedReport.features.json.brotli, limits.json],
   ["dependency map", ownedReport.features.map.brotli, limits.map],
-  ["Logic/JSON/map union", ownedReport.logicJsonMap.brotli, limits.logicJsonMap],
+  [
+    "Logic/JSON/map union",
+    ownedReport.logicJsonMap.brotli,
+    limits.logicJsonMap,
+  ],
   ["Settings", ownedReport.features.settings.brotli, limits.settings],
   [
     "Logic/JSON/map/Settings union",

@@ -161,8 +161,15 @@ in the outline reveals its tab. Component actions share toolbar, context-menu an
 
 Use `palette: {groups: ["basic", "layout", "acme"], hidden: ["password"], order: {acme: 0}}` to filter
 registered builder entries. Default Fields/Layouts metadata maps to Basic/Layout; object scopes appear
-under Data. Empty-slot buttons open a searchable mini palette with six frequently used types from this
-editing session. Modal additions from either palette remain private until Save.
+under Data. Empty-slot and hover/focus **+** buttons lazy-load a searchable mini palette with six
+frequently used types from this editing session. Each button retains its exact parent, slot and
+insertion index, and the menu lists only registered components accepted there. Modal additions from
+either palette remain private until Save. Failure keeps selection/schema/history intact and exposes
+Retry; `assetBase` self-hosting uses `features/quick-add.js` under the Settings offline/CSP contract.
+
+Double-click a canvas caption or press Shift+F2 on its component to edit a literal label in place.
+Enter commits one UpdateProperty history step, Escape cancels, and the data key stays unchanged. If
+the component has `labelKey`, the action opens generated Settings so translated text is not replaced.
 
 Host options also support `toolbar.actions` (the shared toolbar/context action allowlist),
 `editor.tabs.hide` (case-insensitive group names), `editor.properties[type].hide` (metadata property
@@ -216,8 +223,8 @@ enforced. The header shows the type icon and location. Empty labels use register
 
 New Select additions have editable Option 1/Option 2; existing runtime defaults remain empty. Issues
 flags empty Select/Radio options without rejecting a deliberate wire definition. Palette order favors
-common fields, and no unregistered future component is shown. M09b+ is an approved plan in spec 10,
-pending M09b screenshot approval before implementation.
+common fields, and no unregistered future component is shown. M09b is approved; M09b+ implementation
+and evidence are tracked in spec 10 and its milestone report.
 
 Undo/Redo use `aria-disabled` instead of native disabling so exhausting history does not discard
 keyboard focus. Disabled activation is a no-op. Ctrl/Cmd+Z announces an empty history from the

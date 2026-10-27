@@ -18,10 +18,9 @@ test("a registered lazy theme loads on selection and preserves focus", async ({
   await theme.selectOption("material");
   await expect(theme.locator("..")).toHaveAttribute("aria-busy", "true");
   await expect(theme.locator("..")).toContainText("Loading Material");
-  await expect(page.locator('[data-builder-part="preview"].of-root')).toHaveAttribute(
-    "data-of-theme",
-    "material",
-  );
+  await expect(
+    page.locator('[data-builder-part="preview"].of-root'),
+  ).toHaveAttribute("data-of-theme", "material");
   await expect(theme).toHaveValue("material");
   await expect(theme).toBeFocused();
 });
@@ -37,15 +36,12 @@ test("a failed lazy theme keeps the current theme and Retry succeeds", async ({
   const status = theme.locator("..").getByRole("status");
   await expect(status).toContainText("Could not load Material");
   await expect(status).toContainText("Local theme bundle unavailable");
-  await expect(page.locator('[data-builder-part="preview"].of-root')).toHaveAttribute(
-    "data-of-theme",
-    "base",
-  );
+  await expect(
+    page.locator('[data-builder-part="preview"].of-root'),
+  ).toHaveAttribute("data-of-theme", "base");
   await status.getByRole("button", { name: "Retry" }).click();
-  await expect(page.locator('[data-builder-part="preview"].of-root')).toHaveAttribute(
-    "data-of-theme",
-    "material",
-  );
+  await expect(
+    page.locator('[data-builder-part="preview"].of-root'),
+  ).toHaveAttribute("data-of-theme", "material");
   await expect(theme).toBeFocused();
 });
-

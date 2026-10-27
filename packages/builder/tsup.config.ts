@@ -12,6 +12,8 @@ export default defineConfig({
     "features/logic": "src/features/logic.ts",
     "features/map": "src/features/map.ts",
     "features/commands": "src/features/commands.ts",
+    "features/quick-add": "src/features/quick-add.ts",
+    "features/quick-add-retry": "src/features/quick-add-retry.ts",
     "themes/base": "src/themes/base.ts",
     "themes/bootstrap4": "src/themes/bootstrap4.ts",
     "themes/bootstrap5": "src/themes/bootstrap5.ts",
@@ -32,23 +34,37 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   splitting: true,
-  esbuildPlugins: [{
-    name: "static-builder-css",
-    setup(build) {
-      build.onLoad({ filter: /(?:^|[/\\])(?:.*-style|style)\.ts$/ }, async ({ path }) => {
-        const source = await readFile(path, "utf8");
-        const match = /^export const (\w+) = `([\s\S]*)`;\s*$/.exec(source);
-        if (!match || match[2]!.includes("${")) return undefined;
-        const css = await transform(match[2]!, { loader: "css", minify: true, target: "es2022" });
-        return { contents: `export const ${match[1]} = ${JSON.stringify(css.code)};`, loader: "ts" };
-      });
+  esbuildPlugins: [
+    {
+      name: "static-builder-css",
+      setup(build) {
+        build.onLoad(
+          { filter: /(?:^|[/\\])(?:.*-style|style)\.ts$/ },
+          async ({ path }) => {
+            const source = await readFile(path, "utf8");
+            const match = /^export const (\w+) = `([\s\S]*)`;\s*$/.exec(source);
+            if (!match || match[2]!.includes("${")) return undefined;
+            const css = await transform(match[2]!, {
+              loader: "css",
+              minify: true,
+              target: "es2022",
+            });
+            return {
+              contents: `export const ${match[1]} = ${JSON.stringify(css.code)};`,
+              loader: "ts",
+            };
+          },
+        );
+      },
     },
-  }],
+  ],
   minify: "terser",
   terserOptions: {
     module: true,
     compress: { passes: 10 },
-    mangle: { properties: { regex: /^_ofb/ } },
+    // Lazy entries are minified independently, so cross-entry UI members must
+    // retain one spelling. Other internal _ofb members remain safely mangled.
+    mangle: { properties: { regex: /^_ofb/, reserved: ["_ofbStyle"] } },
     format: { comments: /@vite-ignore/ },
   },
 });

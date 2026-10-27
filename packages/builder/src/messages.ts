@@ -70,6 +70,8 @@ const english: Readonly<Record<string, string>> = {
   "ofb.noMatches": "No matching components.",
   "ofb.toolbar": "Component actions",
   "ofb.edit": "Edit",
+  "ofb.editLabel": "Edit label",
+  "ofb.labelRequired": "Label cannot be empty.",
   "ofb.move": "Move",
   "ofb.duplicate": "Duplicate",
   "ofb.editJson": "Edit JSON",
@@ -137,7 +139,8 @@ export function createMessages(
       ? overrides[key]!
       : translated !== undefined && translated !== key
         ? translated
-        : (english[key] ?? commandMessage(key) ??
+        : (english[key] ??
+          commandMessage(key) ??
           (key.startsWith("ofb.group.")
             ? key.slice(10)
             : defaultMessage(key, params)));

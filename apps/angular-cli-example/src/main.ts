@@ -1,9 +1,6 @@
 import { Component, signal } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
-import {
-  OurFormBuilderComponent,
-  provideOurForm,
-} from "@ourform/angular";
+import { OurFormBuilderComponent, provideOurForm } from "@ourform/angular";
 import type { BuilderController } from "@ourform/builder";
 import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
 import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5";
@@ -13,9 +10,7 @@ const schema = {
   $formVersion: "1.0",
   id: "angular-cli-builder",
   display: "form",
-  components: [
-    { id: "name", type: "text", key: "name", label: "Full name" },
-  ],
+  components: [{ id: "name", type: "text", key: "name", label: "Full name" }],
 };
 
 @Component({

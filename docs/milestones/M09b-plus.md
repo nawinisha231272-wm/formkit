@@ -43,3 +43,20 @@ and the heading-visible first-panel flip. Preserve all approved assertions and p
 Add the explicitly requested Unwrap announcement/exact-history regression alongside the existing
 Add/Duplicate/Delete/Paste/Wrap/settings checks. Record commands/results and the unchanged baseline
 manifest before splitting code; no screenshot approval is inferred for future M09b+ changes.
+
+## Implementation checkpoint — inline labels and quick-add
+
+Literal labels edit in place by double-click or Shift+F2; Enter commits one command and Escape
+cancels. Translation-key captions open generated Settings. `ComponentNode.labelKey` is public,
+schema-validated and rendered with its literal `label` fallback; validation messages use the resolved
+caption. Hover/focus insertion markers open a lazy searchable menu at their exact slot/index and filter
+through `canDrop`. Load failure preserves schema/history/selection and offers Retry. Final three-browser,
+axe, five-theme and size evidence is recorded after the consumer measurement below.
+
+Checkpoint evidence (2026-10-27): the full loading/authoring browser matrix passes **42/42** across
+Chromium, Firefox and WebKit, with a separate **9/9** repeated inline-label activation matrix. The
+consumer gates pass at **28,767 / 29,000** builder-owned initial and **63,487 / 64,613** full initial.
+The combined feature checkpoint adds 1,283 / 2,438 Brotli bytes over the accepted split baseline;
+the quick-add loaded closure is 3,403 bytes including 2,901 bytes already shared with initial code.
+See `../reviews/m09b-plus-authoring-checkpoint.md`. Command search, multi-select, full pinned verify
+and the owner gate remain open.

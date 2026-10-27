@@ -20,6 +20,11 @@ const entryPoints = Object.fromEntries([
   ["features/logic", "packages/builder/src/features/logic.ts"],
   ["features/map", "packages/builder/src/features/map.ts"],
   ["features/commands", "packages/builder/src/features/commands.ts"],
+  ["features/quick-add", "packages/builder/src/features/quick-add.ts"],
+  [
+    "features/quick-add-retry",
+    "packages/builder/src/features/quick-add-retry.ts",
+  ],
 ]);
 
 const themeSource = (selection) => {
@@ -29,10 +34,7 @@ const themeSource = (selection) => {
   );
   const uniqueForms = [...new Set(formNames)];
   const imports = uniqueForms
-    .map(
-      (name) =>
-        `import { ${name}Theme } from "@ourform/themes/${name}";`,
-    )
+    .map((name) => `import { ${name}Theme } from "@ourform/themes/${name}";`)
     .join("\n");
   const recipeNames = selected.filter((name) => name !== "base");
   const recipeImports = recipeNames

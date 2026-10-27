@@ -248,7 +248,9 @@ export class OurFormComponent implements AfterViewInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.#mounted) return;
     if (
-      ["schema", "engine", "fields", "readOnly", "themes"].some((key) => changes[key])
+      ["schema", "engine", "fields", "readOnly", "themes"].some(
+        (key) => changes[key],
+      )
     ) {
       this.rebuild();
       return;
@@ -368,7 +370,16 @@ export class OurFormBuilderComponent
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.#mounted) return;
-    if (["engine", "fields", "assetBase", "preload", "settingsPreload", "styleNonce"].some((key) => changes[key])) {
+    if (
+      [
+        "engine",
+        "fields",
+        "assetBase",
+        "preload",
+        "settingsPreload",
+        "styleNonce",
+      ].some((key) => changes[key])
+    ) {
       this.rebuild();
       return;
     }
@@ -401,7 +412,9 @@ export class OurFormBuilderComponent
         ...(this.settingsPreload !== undefined
           ? { settingsPreload: this.settingsPreload }
           : {}),
-        ...(this.styleNonce !== undefined ? { styleNonce: this.styleNonce } : {}),
+        ...(this.styleNonce !== undefined
+          ? { styleNonce: this.styleNonce }
+          : {}),
         ...(this.engine ? { engine: this.engine } : {}),
         fields: [
           ...builtinComponents,

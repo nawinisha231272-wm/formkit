@@ -13,7 +13,13 @@ if (query.has("disabled"))
   Object.assign(definition.components[0]!, { disabledWhen: true });
 const controller = renderForm(document.getElementById("tabs-form")!, {
   schema: definition,
-  themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
+  themes: [
+    baseTheme,
+    bootstrap4Theme,
+    bootstrap5Theme,
+    tailwindTheme,
+    materialTheme,
+  ],
   data,
   readOnly: query.has("readonly"),
 });

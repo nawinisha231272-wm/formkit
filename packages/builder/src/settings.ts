@@ -577,7 +577,15 @@ export class Settings {
       const jsonUI = { ...ui, signal: local.signal };
       const outlet = featureOutlet(editors, jsonUI, this.context.features);
       outlet.open("json", ({ mountComponentJson }) => {
-        mountComponentJson(editors, jsonUI, original, readonly, change, problem, { labelledInput, element });
+        mountComponentJson(
+          editors,
+          jsonUI,
+          original,
+          readonly,
+          change,
+          problem,
+          { labelledInput, element },
+        );
         editors.querySelector<HTMLElement>("textarea")?.focus();
       });
     } else {

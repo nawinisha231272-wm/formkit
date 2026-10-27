@@ -181,6 +181,11 @@ controlAttributes. Low-level mount requires explicit preset registration; host c
 renderForm wrapper include Bootstrap 4/5 and Tailwind. Actual framework stylesheet compatibility is
 tested with 4.6.2 and 5.3.8 independently; loading both global framework stylesheets together is not covered.
 
+M09b+: `ComponentNode.label` remains literal text and the English fallback. An explicit non-empty
+`labelKey` opts the visible shell/layout caption into host translation. Returning the key unchanged
+selects the literal fallback. Required/error messages receive the same resolved caption, so their
+visible name cannot disagree with the field label.
+
 M06 renders portable non-value views alongside layout containers, supplies portable actions and emits
 composed bubbling of-action events with {name,componentId,data}, plus optional onAction callbacks. Async
 validation forwards pending to aria-busy, a field description and the existing single live region.

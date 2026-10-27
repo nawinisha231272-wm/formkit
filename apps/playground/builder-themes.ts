@@ -38,7 +38,11 @@ const builder = renderBuilder(document.getElementById("builder")!, {
   themeMode: "light",
   chrome: { theme: "material", mode: "dark", density: "compact" },
   themes,
-  builderThemes: [bootstrap4BuilderTheme, bootstrap5BuilderTheme, materialBuilderTheme],
+  builderThemes: [
+    bootstrap4BuilderTheme,
+    bootstrap5BuilderTheme,
+    materialBuilderTheme,
+  ],
 });
 builder.builder.select("email");
 window.addEventListener("pagehide", () => {

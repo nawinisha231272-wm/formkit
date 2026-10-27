@@ -1,6 +1,10 @@
 import type { UI } from "../types";
 /** Only the command-log view is deferred. The headless undo/redo stack is always available. */
-export function mountHistory(host: HTMLElement, ui: UI, element: typeof import("../types").element) {
+export function mountHistory(
+  host: HTMLElement,
+  ui: UI,
+  element: typeof import("../types").element,
+) {
   ui._ofbStyle(
     host,
     "margin",
@@ -16,12 +20,24 @@ export function mountHistory(host: HTMLElement, ui: UI, element: typeof import("
     host.replaceChildren();
     const past = ui.builder.getState().history.past;
     for (const command of past)
-      host.append(element(ui.document, "li", ui.t(`ofb.history.${command.type}`, {
-        label: ui.builder.commandLabel(command).label,
-      })));
+      host.append(
+        element(
+          ui.document,
+          "li",
+          ui.t(`ofb.history.${command.type}`, {
+            label: ui.builder.commandLabel(command).label,
+          }),
+        ),
+      );
     if (!past.length) {
       const empty = ui.t("ofb.noHistory");
-      host.append(element(ui.document, "li", empty === "ofb.noHistory" ? "Your edits will appear here." : empty));
+      host.append(
+        element(
+          ui.document,
+          "li",
+          empty === "ofb.noHistory" ? "Your edits will appear here." : empty,
+        ),
+      );
     }
   };
   update();

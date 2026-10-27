@@ -33,11 +33,16 @@ export function tooltip(
     const rect = target.getBoundingClientRect();
     context._ofbStyle?.(
       tip,
-      "position", "fixed",
-      "inset", "auto",
-      "transform", "none",
-      "left", `${Math.max(8, Math.min(rect.left + (rect.width - tip.offsetWidth) / 2, context.document.documentElement.clientWidth - tip.offsetWidth - 8))}px`,
-      "top", `${Math.max(8, rect.top - tip.offsetHeight - 6)}px`,
+      "position",
+      "fixed",
+      "inset",
+      "auto",
+      "transform",
+      "none",
+      "left",
+      `${Math.max(8, Math.min(rect.left + (rect.width - tip.offsetWidth) / 2, context.document.documentElement.clientWidth - tip.offsetWidth - 8))}px`,
+      "top",
+      `${Math.max(8, rect.top - tip.offsetHeight - 6)}px`,
     );
     target.setAttribute("aria-describedby", tip.id);
   };
@@ -349,7 +354,11 @@ export function toast(context: PrimitiveContext, message: string) {
 }
 
 /** Place transient selection chrome outside field content and within its scrollport. */
-export function placeSelection(root: HTMLElement, scrollport: HTMLElement, context: PrimitiveContext) {
+export function placeSelection(
+  root: HTMLElement,
+  scrollport: HTMLElement,
+  context: PrimitiveContext,
+) {
   const tag = root.querySelector<HTMLElement>(":scope > .ofb-selection-label");
   const toolbar = root.querySelector<HTMLElement>(
     ":scope > .ofb-component-toolbar",

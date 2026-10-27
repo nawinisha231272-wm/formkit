@@ -65,7 +65,9 @@ for (const theme of [
     await field.getByRole("button", { name: "More", exact: true }).click();
     for (const action of ["Copy", "Paste", "Edit JSON"])
       await expect(
-        page.locator(".ofb-action-menu").getByRole("button", { name: action, exact: true }),
+        page
+          .locator(".ofb-action-menu")
+          .getByRole("button", { name: action, exact: true }),
       ).toBeVisible();
   });
 

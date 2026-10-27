@@ -30,12 +30,18 @@ for (const route of ["toolbar", "context", "shortcut"] as const)
       }
       if (route === "toolbar") {
         if (["Copy", "Paste", "Edit JSON"].includes(action)) {
-          await rating.getByRole("button", { name: "More", exact: true }).click();
-          await page.locator(".ofb-action-menu").getByRole("button", { name: action, exact: true }).click();
+          await rating
+            .getByRole("button", { name: "More", exact: true })
+            .click();
+          await page
+            .locator(".ofb-action-menu")
+            .getByRole("button", { name: action, exact: true })
+            .click();
         } else
-          await rating.getByRole("button", { name: action, exact: true }).click();
-      }
-      else if (route === "context") {
+          await rating
+            .getByRole("button", { name: action, exact: true })
+            .click();
+      } else if (route === "context") {
         await rating.click({ button: "right" });
         if (action !== "More")
           await page

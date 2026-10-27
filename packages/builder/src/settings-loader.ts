@@ -2,16 +2,17 @@ import { AddComponent, createBuilder } from "@ourform/builder-core";
 import type { DropTarget } from "@ourform/builder-core";
 import type { Diagnostic, FormDefinition } from "@ourform/schema";
 import type { FeatureLoader } from "./feature-loader";
-import { actionButton, dialog, drawer, labelledInput, tabs } from "./primitives";
+import {
+  actionButton,
+  dialog,
+  drawer,
+  labelledInput,
+  tabs,
+} from "./primitives";
 import { featureOutlet } from "./feature-outlet";
 import { componentIcon, icon } from "./icons";
-import {
-  button,
-  componentLocation,
-  componentTitle,
-  element,
-} from "./types";
-import type { BuilderOptions, UI } from "./types";
+import { button, componentLocation, componentTitle, element } from "./types";
+import type { BuilderOptions } from "./types";
 import type { Settings, SettingsContext, SettingsFrame } from "./settings";
 
 interface PendingAddition {
@@ -21,7 +22,8 @@ interface PendingAddition {
   origin?: HTMLElement;
 }
 
-export interface SettingsLoaderContext extends Omit<SettingsContext, "features"> {
+export interface SettingsLoaderContext
+  extends Omit<SettingsContext, "features"> {
   features: FeatureLoader;
   options: BuilderOptions;
 }
@@ -51,15 +53,23 @@ export class SettingsLoader {
   _ofbRestyle(): void {
     this.#view?.restyle();
   }
-  _ofbAdd(type: string, target: DropTarget, origin?: HTMLElement): Diagnostic[] {
+  _ofbAdd(
+    type: string,
+    target: DropTarget,
+    origin?: HTMLElement,
+  ): Diagnostic[] {
     const { ui } = this._ofbContext;
     const draft = createBuilder(ui.engine, ui.builder.getState().definition);
     const diagnostics = draft.dispatch(
       new AddComponent(type, { ...target, naming: "camel" }),
     );
     const id = draft.getState().selection;
-    if (id && !diagnostics.some((diagnostic) => diagnostic.severity === "error")) {
-      const focused = origin ?? (ui.document.activeElement as HTMLElement | null);
+    if (
+      id &&
+      !diagnostics.some((diagnostic) => diagnostic.severity === "error")
+    ) {
+      const focused =
+        origin ?? (ui.document.activeElement as HTMLElement | null);
       this._ofbOpen(id, false, {
         type,
         target,
@@ -72,7 +82,6 @@ export class SettingsLoader {
   _ofbOpen(id: string, json = false, addition?: PendingAddition): void {
     this._ofbClose();
     const { host, ui, options } = this._ofbContext;
-    const definition = addition?.definition ?? ui.builder.getState().definition;
     const level = ui.builder.lockLevel(id);
     if (level === "all" && !json) {
       ui.announce(ui.t("ofb.lock.edit"));
@@ -92,7 +101,9 @@ export class SettingsLoader {
       overlay?.close();
       container.remove();
       this.#loading = undefined;
-      this._ofbContext.closed(!committed && addition ? addition.origin : undefined);
+      this._ofbContext.closed(
+        !committed && addition ? addition.origin : undefined,
+      );
     };
     const container =
       options.editor?.mode === "drawer" && !json
@@ -142,60 +153,68 @@ export class SettingsLoader {
     };
     const load = () => {
       container.setAttribute("aria-busy", "true");
-      void this._ofbContext.features.load("settings").then((module) => {
-        if (local.signal.aborted || this.#loading?.local !== local) return;
-        if (!this.#style) {
-          this.#style = element(ui.document, "style");
-          if (options.styleNonce) this.#style.nonce = options.styleNonce;
-          this.#style.textContent = module.settingsStyle;
-          host.prepend(this.#style);
-        }
-        container.replaceChildren();
-        container.removeAttribute("aria-busy");
-        const bridge: SettingsContext = {
-          ...this._ofbContext,
-          closed: (origin) => {
-            this.#loading = undefined;
-            this.#view = undefined;
-            this._ofbContext.closed(origin);
-          },
-        };
-        this.#view = new module.Settings(bridge);
-        this.#view.open(id, json, addition, frame);
-      }).catch((cause: unknown) => {
-        if (local.signal.aborted || this.#loading?.local !== local) return;
-        container.removeAttribute("aria-busy");
-        status.replaceChildren(
-          ui.t("ofb.featureFailed", { feature: ui.t("ofb.settings") }),
-          element(
+      void this._ofbContext.features
+        .load("settings")
+        .then((module) => {
+          if (local.signal.aborted || this.#loading?.local !== local) return;
+          if (!this.#style) {
+            this.#style = element(ui.document, "style");
+            if (options.styleNonce) this.#style.nonce = options.styleNonce;
+            this.#style.textContent = module.settingsStyle;
+            host.prepend(this.#style);
+          }
+          container.replaceChildren();
+          container.removeAttribute("aria-busy");
+          const bridge: SettingsContext = {
+            ...this._ofbContext,
+            closed: (origin) => {
+              this.#loading = undefined;
+              this.#view = undefined;
+              this._ofbContext.closed(origin);
+            },
+          };
+          this.#view = new module.Settings(bridge);
+          this.#view.open(id, json, addition, frame);
+        })
+        .catch((cause: unknown) => {
+          if (local.signal.aborted || this.#loading?.local !== local) return;
+          container.removeAttribute("aria-busy");
+          status.replaceChildren(
+            ui.t("ofb.featureFailed", { feature: ui.t("ofb.settings") }),
+            element(
+              ui.document,
+              "small",
+              cause instanceof Error ? cause.message : String(cause),
+            ),
+          );
+          const actions = element(
             ui.document,
-            "small",
-            cause instanceof Error ? cause.message : String(cause),
-          ),
-        );
-        const actions = element(ui.document, "div", "", "ofb-feature-actions");
-        actions.append(actionButton(primitive, ui.t("ofb.retry"), load));
-        if (addition)
-          actions.append(
-            actionButton(
-              primitive,
-              ui.t("ofb.addWithDefaults"),
-              () => {
+            "div",
+            "",
+            "ofb-feature-actions",
+          );
+          actions.append(actionButton(primitive, ui.t("ofb.retry"), load));
+          if (addition)
+            actions.append(
+              actionButton(primitive, ui.t("ofb.addWithDefaults"), () => {
                 const diagnostics = ui.dispatch(
                   new AddComponent(addition.type, {
                     ...addition.target,
                     naming: "camel",
                   }),
                 );
-                if (!diagnostics.some((diagnostic) => diagnostic.severity === "error"))
+                if (
+                  !diagnostics.some(
+                    (diagnostic) => diagnostic.severity === "error",
+                  )
+                )
                   close(true);
-              },
-            ),
-          );
-        status.append(actions);
-        status.focus();
-        ui.announce(status.firstChild?.textContent ?? "");
-      });
+              }),
+            );
+          status.append(actions);
+          status.focus();
+          ui.announce(status.firstChild?.textContent ?? "");
+        });
     };
     load();
   }

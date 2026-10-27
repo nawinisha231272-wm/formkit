@@ -100,11 +100,13 @@ const options = {
                 await new Promise((resolve) => setTimeout(resolve, 350));
               if (query.has("failTheme") && materialLoadAttempts === 1)
                 throw new Error("Local theme bundle unavailable");
-              const [{ materialTheme: form }, { materialBuilderTheme: recipe }] =
-                await Promise.all([
-                  import("@ourform/themes/material"),
-                  import("@ourform/builder/themes/material"),
-                ]);
+              const [
+                { materialTheme: form },
+                { materialBuilderTheme: recipe },
+              ] = await Promise.all([
+                import("@ourform/themes/material"),
+                import("@ourform/builder/themes/material"),
+              ]);
               return { theme: form, builderTheme: recipe };
             },
           },
@@ -120,8 +122,12 @@ const options = {
         customerReference,
       ],
   idPrefix: "",
-  preload: query.get("preload") === "idle" ? "idle" as const : "none" as const,
-  settingsPreload: query.get("settingsPreload") === "none" ? "none" as const : "idle" as const,
+  preload:
+    query.get("preload") === "idle" ? ("idle" as const) : ("none" as const),
+  settingsPreload:
+    query.get("settingsPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const),
   ...(query.has("assetBase") ? { assetBase: query.get("assetBase")! } : {}),
   ...(query.has("styleNonce") ? { styleNonce: query.get("styleNonce")! } : {}),
   ...(query.has("approved") ? { data: approvedData } : {}),

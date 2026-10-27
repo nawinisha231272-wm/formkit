@@ -41,7 +41,10 @@ export function mountActionMenu(
   const context = ui;
   if (options.more) {
     const selected = options.target();
-    const destinations: { target: import("@ourform/builder-core").DropTarget; label: string }[] = [
+    const destinations: {
+      target: import("@ourform/builder-core").DropTarget;
+      label: string;
+    }[] = [
       { target: {}, label: ui.t("of.builder.formRoot") },
       ...options.entries().flatMap((node) =>
         options.slots(node).map((slot) => ({
@@ -53,7 +56,9 @@ export function mountActionMenu(
     const destination = ui.document.createElement("select");
     destination.setAttribute("aria-label", ui.t("of.builder.insertInto"));
     destinations.forEach((item, index) => {
-      const matches = item.target.parentId === selected.parentId && item.target.slot === selected.slot;
+      const matches =
+        item.target.parentId === selected.parentId &&
+        item.target.slot === selected.slot;
       const option = ui.document.createElement("option");
       option.text = item.label;
       option.value = String(index);
@@ -61,10 +66,13 @@ export function mountActionMenu(
       option.selected = matches;
       destination.append(option);
     });
-    destination.onchange = () => options.choose(destinations[Number(destination.value)]!.target);
+    destination.onchange = () =>
+      options.choose(destinations[Number(destination.value)]!.target);
     const layout = ui.document.createElement("select");
     layout.setAttribute("aria-label", ui.t("of.builder.wrapType"));
-    for (const model of ui.engine.listFields().filter((field) => field.kind === "layout")) {
+    for (const model of ui.engine
+      .listFields()
+      .filter((field) => field.kind === "layout")) {
       const option = ui.document.createElement("option");
       option.text = ui.t(model.builder?.title ?? model.title);
       option.value = model.type;
@@ -73,24 +81,41 @@ export function mountActionMenu(
     host.append(
       destination,
       layout,
-      options.actionButton(context, ui.t("of.builder.wrap"), () => options.wrap(layout.value)),
+      options.actionButton(context, ui.t("of.builder.wrap"), () =>
+        options.wrap(layout.value),
+      ),
     );
   }
   const primary = ["edit", "move", "duplicate", "delete"];
-  const actions = (options.more
-    ? ["copy", "paste", "json", "cut", "wrap", "unwrap", "collapse"]
-    : [...primary, "copy", "paste", "json", "cut", "wrap", "unwrap", "collapse"]
-  ).filter((action) =>
-    ![...primary, "copy", "paste", "json"].includes(action) ||
-    !options.enabled ||
-    options.enabled.includes(action),
+  const actions = (
+    options.more
+      ? ["copy", "paste", "json", "cut", "wrap", "unwrap", "collapse"]
+      : [
+          ...primary,
+          "copy",
+          "paste",
+          "json",
+          "cut",
+          "wrap",
+          "unwrap",
+          "collapse",
+        ]
+  ).filter(
+    (action) =>
+      ![...primary, "copy", "paste", "json"].includes(action) ||
+      !options.enabled ||
+      options.enabled.includes(action),
   );
   const buttons = actions.map((action, index) => {
     const translated = options.label(action);
-    const button = options.actionButton(context, translated === `ofb.${action}` ? labels[action]! : translated, () => {
-      options.close();
-      options.execute(action);
-    });
+    const button = options.actionButton(
+      context,
+      translated === `ofb.${action}` ? labels[action]! : translated,
+      () => {
+        options.close();
+        options.execute(action);
+      },
+    );
     if (!options.more) button.setAttribute("role", "menuitem");
     button.tabIndex = index === 0 ? 0 : -1;
     options.disableAction(button, options.reason(action));
@@ -100,7 +125,9 @@ export function mountActionMenu(
   host.addEventListener(
     "keydown",
     (event) => {
-      const index = buttons.indexOf(ui.document.activeElement as HTMLButtonElement);
+      const index = buttons.indexOf(
+        ui.document.activeElement as HTMLButtonElement,
+      );
       const target =
         event.key === "Home"
           ? 0

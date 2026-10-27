@@ -21,6 +21,7 @@ export function fieldErrors(
   session: FormSession,
   entry: CompiledNode,
   t: typeof defaultMessage,
+  label?: string,
 ): string[] {
   return session.getFieldState(entry.node.id).errors.map((error) =>
     t(
@@ -29,7 +30,7 @@ export function fieldErrors(
         : error.messageKey,
       {
         ...error.params,
-        label: entry.node.label ?? entry.node.key ?? entry.node.id,
+        label: label ?? entry.node.label ?? entry.node.key ?? entry.node.id,
       },
     ),
   );
@@ -66,8 +67,12 @@ export function shellVNode(
   const id = `${prefix}${entry.node.id}`;
   const cl = (part: Parameters<ResolvedTheme["classFor"]>[1]) =>
     theme.classFor(variant, part);
+  const translatedLabel = entry.node.labelKey
+    ? t(entry.node.labelKey)
+    : undefined;
   const label =
     presentation.cellLabel ??
+    (translatedLabel !== entry.node.labelKey ? translatedLabel : undefined) ??
     entry.node.label ??
     entry.node.key ??
     entry.node.id;
@@ -112,7 +117,7 @@ export function shellVNode(
     return h(
       "div",
       rootProps,
-      entry.node.label ? h("h3", null, entry.node.label) : null,
+      entry.node.label || entry.node.labelKey ? h("h3", null, label) : null,
     );
   if (!view?.portable) throw new Error(`No portable view: ${entry.node.type}`);
   const config = resolveConfig(
@@ -120,7 +125,7 @@ export function shellVNode(
     entry.node.properties ?? {},
   );
   if (!config.ok) throw new Error("Compiled config is invalid.");
-  const errors = fieldErrors(session, entry, t);
+  const errors = fieldErrors(session, entry, t, label);
   const described = [
     entry.node.description ? `${id}_description` : "",
     presentation.help ? `${id}_help` : "",

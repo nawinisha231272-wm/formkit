@@ -124,8 +124,10 @@ export function componentTitle(
   ui: Pick<UI, "engine" | "t">,
   node: import("@ourform/schema").ComponentNode,
 ): string {
+  const translated = node.labelKey ? ui.t(node.labelKey) : undefined;
   const model = ui.engine.getField(node.type);
   return (
+    (translated !== node.labelKey ? translated : undefined) ||
     node.label?.trim() ||
     ui.t(model?.builder?.title ?? model?.title ?? node.type)
   );

@@ -133,6 +133,10 @@
         "label": {
           "type": "string"
         },
+        "labelKey": {
+          "type": "string",
+          "minLength": 1
+        },
         "description": {
           "type": "string"
         },

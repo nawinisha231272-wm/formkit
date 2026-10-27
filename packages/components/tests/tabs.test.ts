@@ -113,8 +113,8 @@ test("slot captions are literal unless labelKey opts into translation with an En
   expect(translated).toContain(">of.required</button>");
   expect(translated).toContain(">Translated second</button>");
   expect(translated).not.toContain("Wrongly translated literal");
-  expect(renderToString(session, { views, themes: [baseTheme], t: (key) => key })).toContain(
-    ">English second</button>",
-  );
+  expect(
+    renderToString(session, { views, themes: [baseTheme], t: (key) => key }),
+  ).toContain(">English second</button>");
   session.dispose();
 });

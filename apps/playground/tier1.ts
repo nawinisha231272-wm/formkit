@@ -112,7 +112,13 @@ const common = {
   readOnly: query.has("readonly"),
   data: query.has("readonly") ? goodData : undefined,
   onSubmit: submitted,
-  themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
+  themes: [
+    baseTheme,
+    bootstrap4Theme,
+    bootstrap5Theme,
+    tailwindTheme,
+    materialTheme,
+  ],
 };
 const adapter = query.get("host") ?? "dom";
 document.querySelector("#host-name")!.textContent =
@@ -123,7 +129,10 @@ if (adapter === "react") {
   unmount = () => root.unmount();
 } else if (adapter === "angular") {
   const app = await createApplication({
-    providers: [provideZonelessChangeDetection(), provideOurForm({ themes: common.themes })],
+    providers: [
+      provideZonelessChangeDetection(),
+      provideOurForm({ themes: common.themes }),
+    ],
   });
   const ref = createComponent(OurFormComponent, {
     hostElement: host,

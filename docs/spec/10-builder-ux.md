@@ -194,6 +194,12 @@ sequences; no duplicate descendant operations; locked/illegal targets refused wi
 Update only changed visual states, retain count/size budgets, run full pinned verify. The owner approved the plan with the amendments in ADR-0018 and M09b-plus.md. Reusable sections/templates, tablet width tooling, preview test data, guided
 pre-save fixes and persistent version history/diff/restore remain backlog after M10a, not this proposal.
 
+Implementation detail: literal inline labels use one `UpdateProperty` command and Shift+F2 is the
+keyboard path. A non-empty `labelKey` routes to generated Settings. Quick-add is a lazy feature entry;
+its frame appears immediately with `aria-busy`, failure offers Retry, and external assets use
+`features/quick-add.js`. Search is computed before loading from `canDrop(type, exactTarget)` and cannot
+offer a component rejected by that slot.
+
 ## M09b live-review announcements — owner amendment, 2026-10-22
 
 Plain visible notices expire after five seconds. Action toasts, including delete's Undo, remain eight

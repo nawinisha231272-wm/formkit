@@ -61,12 +61,10 @@ export function createBuilderController(
   shell.dataset.ofbInstance = instance;
   const style = element(document, "style");
   style.textContent =
-    primitiveStyle +
-    builderStyle +
-    pointerStyle +
-    workbenchStyle;
+    primitiveStyle + builderStyle + pointerStyle + workbenchStyle;
   const appearanceStyle = element(document, "style");
-  if (options.styleNonce) style.nonce = appearanceStyle.nonce = options.styleNonce;
+  if (options.styleNonce)
+    style.nonce = appearanceStyle.nonce = options.styleNonce;
   let dynamicStyleId = 0;
   const _ofbStyle: UI["_ofbStyle"] = (target, ...declarations) => {
     let rule = (target as HTMLElement & { _ofbRule?: CSSStyleDeclaration })
@@ -80,7 +78,7 @@ export function createBuilderController(
       (target as HTMLElement & { _ofbRule?: CSSStyleDeclaration })._ofbRule =
         rule;
     }
-    for (let index = 0; index < declarations.length;)
+    for (let index = 0; index < declarations.length; )
       rule.setProperty(declarations[index++]!, declarations[index++]!);
   };
   const status = element(document, "div", "", "of-builder-status of-sr-only");
@@ -95,7 +93,10 @@ export function createBuilderController(
   )
     registeredThemes.push(configuredTheme);
   const registeredBuilderThemes = [...(options.builderThemes ?? [])];
-  const lazyThemes = new Map<string, NonNullable<BuilderOptions["lazyThemes"]>[number]>();
+  const lazyThemes = new Map<
+    string,
+    NonNullable<BuilderOptions["lazyThemes"]>[number]
+  >();
   for (const registration of options.lazyThemes ?? []) {
     if (
       lazyThemes.has(registration.name) ||
@@ -406,12 +407,7 @@ export function createBuilderController(
     }
   appearance.value = typeof theme === "string" ? theme : theme.name;
   appearanceLabel.append(appearance);
-  const appearanceStatus = element(
-    document,
-    "span",
-    "",
-    "ofb-feature-status",
-  );
+  const appearanceStatus = element(document, "span", "", "ofb-feature-status");
   appearanceStatus.setAttribute("role", "status");
   appearanceStatus.hidden = true;
   appearanceLabel.append(appearanceStatus);
@@ -467,21 +463,29 @@ export function createBuilderController(
   let lastPatch: readonly JsonPatchOp[] = [];
   let jsonView: { update(): void; focus(): void } | undefined;
   const window = document.defaultView!;
-  const features = createFeatureLoader(options, document.baseURI, events.signal, {
-    schedule(callback) {
-      if (window.requestIdleCallback) {
-        const id = window.requestIdleCallback(callback);
-        return () => window.cancelIdleCallback(id);
-      }
-      const id = window.setTimeout(callback, 200);
-      return () => window.clearTimeout(id);
+  const features = createFeatureLoader(
+    options,
+    document.baseURI,
+    events.signal,
+    {
+      schedule(callback) {
+        if (window.requestIdleCallback) {
+          const id = window.requestIdleCallback(callback);
+          return () => window.cancelIdleCallback(id);
+        }
+        const id = window.setTimeout(callback, 200);
+        return () => window.clearTimeout(id);
+      },
     },
-  });
+  );
   const jsonOutlet = featureOutlet(jsonPanel, ui, features);
   const showJson = () => {
     if (jsonView) return;
     jsonOutlet.open("json", ({ mountJsonPanel }) => {
-      jsonView = mountJsonPanel(jsonPanel, ui, prefix, load, () => lastPatch, { element, button });
+      jsonView = mountJsonPanel(jsonPanel, ui, prefix, load, () => lastPatch, {
+        element,
+        button,
+      });
     });
   };
   bottom.append(previewPanel, jsonPanel);
@@ -495,7 +499,6 @@ export function createBuilderController(
       ? `${t("ofb.undo")} ${t(`ofb.history.${last.type}`, { label: core.commandLabel(last).label })}`
       : t("ofb.undo");
     redo.setAttribute("aria-disabled", String(!state.history.future.length));
-    const lock = state.selection ? core.lockLevel(state.selection) : undefined;
   };
   const canvas = new Canvas(
     shell,
@@ -503,6 +506,7 @@ export function createBuilderController(
     palette,
     outline,
     ui,
+    features,
     updateButtons,
   );
   const settings = new SettingsLoader({
@@ -806,8 +810,7 @@ export function createBuilderController(
         appearance.disabled = false;
         appearanceLabel.removeAttribute("aria-busy");
         appearanceStatus.hidden = false;
-        const reason =
-          cause instanceof Error ? cause.message : String(cause);
+        const reason = cause instanceof Error ? cause.message : String(cause);
         appearanceStatus.replaceChildren(
           t("ofb.featureFailed", { feature: registration.label ?? name }),
           element(document, "small", reason),

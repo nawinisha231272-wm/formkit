@@ -143,8 +143,12 @@ recordBuilderEvents();
 const query = new URLSearchParams(location.search),
   mount = document.getElementById("mount")!;
 const loading = {
-  preload: query.get("preload") === "idle" ? "idle" as const : "none" as const,
-  settingsPreload: query.get("settingsPreload") === "none" ? "none" as const : "idle" as const,
+  preload:
+    query.get("preload") === "idle" ? ("idle" as const) : ("none" as const),
+  settingsPreload:
+    query.get("settingsPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const),
   ...(query.has("assetBase") ? { assetBase: query.get("assetBase")! } : {}),
   ...(query.has("styleNonce") ? { styleNonce: query.get("styleNonce")! } : {}),
 };
@@ -156,8 +160,19 @@ if (query.has("element")) {
   ) as OurFormBuilderElement;
   if (query.has("shadow")) builder.setAttribute("shadow", "");
   Object.assign(builder, loading);
-  builder.themes = [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme];
-  builder.builderThemes = [bootstrap4BuilderTheme, bootstrap5BuilderTheme, tailwindBuilderTheme, materialBuilderTheme];
+  builder.themes = [
+    baseTheme,
+    bootstrap4Theme,
+    bootstrap5Theme,
+    tailwindTheme,
+    materialTheme,
+  ];
+  builder.builderThemes = [
+    bootstrap4BuilderTheme,
+    bootstrap5BuilderTheme,
+    tailwindBuilderTheme,
+    materialBuilderTheme,
+  ];
   builder.schema = definition;
   builder.fields = [field];
   builder.addEventListener("of-ready", () => {
@@ -185,8 +200,19 @@ if (query.has("element")) {
       schema: definition,
       data,
       fields: [field],
-      themes: [baseTheme, bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
-      builderThemes: [bootstrap4BuilderTheme, bootstrap5BuilderTheme, tailwindBuilderTheme, materialBuilderTheme],
+      themes: [
+        baseTheme,
+        bootstrap4Theme,
+        bootstrap5Theme,
+        tailwindTheme,
+        materialTheme,
+      ],
+      builderThemes: [
+        bootstrap4BuilderTheme,
+        bootstrap5BuilderTheme,
+        tailwindBuilderTheme,
+        materialBuilderTheme,
+      ],
       onSchemaChange: (change) => {
         definition = change.definition;
         window.builderChanges.push(change);
