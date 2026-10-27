@@ -178,15 +178,15 @@ successful host acknowledgement. Remove the contradictory “Form ready to save�
 **Approved with owner amendments.** Start with ADR-0018’s loading split, then deliver the shortcuts and polish after M09b screenshot approval and before
 M09c. See `docs/milestones/M09b-plus.md`. Keep changes small and use the existing command/lock/slot contracts:
 
-1. Inline label editing: double-click or a keyboard action edits the canvas label; Enter commits one
-   label command, Escape cancels. Existing data keys never change silently. Respect `all` locks.
+1. Inline label editing: double-click or a keyboard action edits the canvas label; Enter or blur commits one
+   caption command, Escape cancels; empty trimmed captions are refused visibly. Existing data keys never change silently. Respect `all` locks.
 2. Hover/focus “+” between siblings opens the searchable mini palette at that precise slot/index.
    Add and initial modal settings retain M09b's atomic Save/Cancel behavior and keyboard alternative.
 3. Ctrl/Cmd+K command bar searches three explicit groups: Add component, Jump to component, Actions.
    Reuse registered palette/action metadata; report disabled actions and preserve focus on Escape.
 4. Multi-select with Shift/Cmd/Ctrl click and keyboard range/toggle alternatives. Move, Delete, Wrap
-   and Required apply as atomic bounded-history commands. Nested selections normalize to highest
-   selected ancestors; mixed-scope/conflicting/locked operations refuse atomically with a reason.
+   and Required apply as atomic bounded-history commands. Structural commands normalize nested selections; property edits use the exact selection.
+   Mixed-scope/conflicting/locked operations refuse atomically with a reason (ADR-0021).
 
 Acceptance proposal: all four flows work by mouse and keyboard, with axe in every builder theme;
 no focus/state loss on theme changes; atomic exact undo/redo, including randomized selection/move

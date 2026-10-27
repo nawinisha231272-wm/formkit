@@ -73,6 +73,14 @@ Command search remains unshipped. Its numeric lazy-chunk budget still requires a
 and owner approval; multi-select follows it in the approved milestone order. Full pinned milestone
 verification and owner delivery review remain pending.
 
+## M09b+ — Owner acceptance of ADR-0021 — 2026-10-27
+
+The owner accepted ADR-0021 with amendments covering structural-only normalization, anchor/primary
+behavior, selection restoration on undo/redo, atomic multi-copy/paste, whole-selection command-bar
+actions, declared caption editing, accessibility, named locked-member recovery and deterministic
+500-selection bulk work counts. Quick-add has a 3,750-byte consumer closure ceiling enforced for
+both entry and Retry. Combined command-bar/multi-select and bulk-editor measurements remain pending.
+
 ## M09b+ — Owner decision on command-bar budget — 2026-10-27
 
 The owner approved a 4,500-byte command closure with lazy indexing. The 29,000 builder-owned and

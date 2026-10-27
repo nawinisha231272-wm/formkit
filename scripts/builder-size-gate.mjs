@@ -12,6 +12,7 @@ const limits = {
   map: 10_000,
   logicJsonMap: 28_000,
   settings: 8_000,
+  quickAdd: 3_750,
   logicJsonMapSettings: 36_000,
 };
 
@@ -162,6 +163,12 @@ const checks = [
     limits.logicJsonMap,
   ],
   ["Settings", ownedReport.features.settings.brotli, limits.settings],
+  ["Quick-add", ownedReport.features["quick-add"].brotli, limits.quickAdd],
+  [
+    "Quick-add retry",
+    ownedReport.features["quick-add-retry"].brotli,
+    limits.quickAdd,
+  ],
   [
     "Logic/JSON/map/Settings union",
     ownedReport.logicJsonMapSettings.brotli,

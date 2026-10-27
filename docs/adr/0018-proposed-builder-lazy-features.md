@@ -28,7 +28,8 @@ continue to follow the architecture; headless packages acquire no browser or fea
 | Dependency map                                                          | 10 kB                                                                       | First request to open the dependency map                                       |
 
 Command bar and History/diff must also have independent CI size budgets before their implementation
-ships. Their numeric ceilings require a separate proposal; they do not inherit an unbounded allowance
+ships. The command-bar ceiling is now approved below; History/diff still requires a separate proposal.
+They do not inherit an unbounded allowance
 or silently consume the existing 28 kB Logic/JSON/map allowance. The core target is **≤29 kB** after
 the split, including approximately 1 kB headroom for M09b+.
 
@@ -157,3 +158,13 @@ On first Ctrl/Cmd+K the accessible frame appears immediately. Indexing the 500-f
 advisory ≤50 ms and has a deterministic index-work count gate; typing is never blocked by results.
 Reopening uses the cached index, rebuilt only on schema changes. History/diff remains unbudgeted
 and unshipped.
+
+## Owner amendment — quick-add budget, 2026-10-27
+
+| Consumer-built lazy closure         | Brotli ceiling |
+| ----------------------------------- | -------------: |
+| Quick-add (including Retry closure) |    3,750 bytes |
+| Command bar (lazy indexing)         |    4,500 bytes |
+
+Every future lazy chunk requires an owner-approved ceiling before shipping. Quick-add measured
+3,403 bytes including shared chunks; the size gate enforces its main and Retry closures.

@@ -56,8 +56,8 @@ Vite/Angular acceptance, cold-route measurement or evidence that the 26 kB targe
 ## Accepted budget accounting — owner decision 2026-10-23
 
 ADR-0018 fixes core builder at **26 kB**, Logic at **10 kB**, JSON at **8 kB**, dependency map at
-**10 kB**, and the existing deferred union at **28 kB**. Command bar/History need additional measured,
-owner-approved individual and aggregate allowances; none is granted by this ADR. No kit loader or
+**10 kB**, and the existing deferred union at **28 kB**. Command bar and History need measured, owner-approved individual allowances. The owner later
+approved the command-bar ceiling below; History remains unbudgeted. No kit loader or
 validator may be charged to these entries; ADR-0019 keeps them optional and separately budgeted.
 
 The **≤29 kB** ceiling applies to **builder-owned initial code and styles after a consumer
@@ -139,3 +139,13 @@ On first Ctrl/Cmd+K the accessible frame appears immediately. Indexing the 500-f
 advisory ≤50 ms and has a deterministic index-work count gate; typing is never blocked by results.
 Reopening uses the cached index, rebuilt only on schema changes. History/diff remains unbudgeted
 and unshipped.
+
+## Owner amendment — quick-add budget, 2026-10-27
+
+| Consumer-built lazy closure         | Brotli ceiling |
+| ----------------------------------- | -------------: |
+| Quick-add (including Retry closure) |    3,750 bytes |
+| Command bar (lazy indexing)         |    4,500 bytes |
+
+Every future lazy chunk requires an owner-approved ceiling before shipping. Quick-add measured
+3,403 bytes including shared chunks; the size gate enforces its main and Retry closures.
