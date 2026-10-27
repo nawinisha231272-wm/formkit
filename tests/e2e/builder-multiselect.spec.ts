@@ -47,3 +47,34 @@ test("first command activation opens its frame before download and searches when
     page.locator('#canvas [data-field-id="fullName"]'),
   ).toBeFocused();
 });
+
+test("command-bar bulk delete is one undo step and restores the selection set", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?approved&settingsPreload=none");
+  const outline = page.locator(".of-builder-outline");
+  const email = outline.locator('[role=treeitem][data-drag-id="email"]');
+  await email.focus();
+  await page.keyboard.press("Shift+ArrowDown");
+  await page.keyboard.press("Control+k");
+  const commands = page.getByRole("dialog", { name: "Commands", exact: true });
+  await commands
+    .getByRole("searchbox", { name: "Search commands" })
+    .fill("Delete");
+  await commands
+    .getByRole("button", { name: "Delete 2 components", exact: true })
+    .click();
+  await expect(outline.locator('[data-drag-id="email"]')).toHaveCount(0);
+  expect(
+    await page.evaluate(
+      () => window.miniBuilder.builder.getState().history.past.length,
+    ),
+  ).toBe(1);
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await expect(
+    outline.locator('[role=treeitem][data-drag-id="email"]'),
+  ).toHaveAttribute("aria-selected", "true");
+  await expect(
+    outline.locator('[role=treeitem][data-drag-id="customerType"]'),
+  ).toHaveAttribute("aria-selected", "true");
+});

@@ -5,6 +5,9 @@ import {
   PasteComponent,
   UpdateProperty,
   WrapInLayout,
+  AtomicCommand,
+  RemoveComponent,
+  DuplicateComponent,
 } from "@ourform/builder-core";
 import type { DropTarget } from "@ourform/builder-core";
 import type {
@@ -1255,10 +1258,12 @@ export class Canvas {
     );
     const close = () => {
       local.abort();
+      this.#selectionFocus = true;
       frame.close();
       frame.element.remove();
       this.#commands = undefined;
       origin?.focus();
+      this.#selectionFocus = false;
     };
     this.#commands = close;
     ui.signal.addEventListener("abort", close, { once: true });
@@ -1287,10 +1292,7 @@ export class Canvas {
               this._ofbFocusSelected();
             },
             action: (action, ids) => {
-              if (ids.length !== 1) {
-                ui.announce(ui.t("ofb.singleAction"));
-                return;
-              }
+              if (ids.length > 1 && action !== "edit") return this.bulk(action);
               const node = this._ofbEntries().find(
                 ({ node }) => node.id === ids[0],
               )?.node;
@@ -1308,6 +1310,83 @@ export class Canvas {
         });
     };
     load();
+  }
+  bulk(action: "delete" | "duplicate" | "required", value = true) {
+    const ui = this._ofbUi;
+    const entries = this._ofbEntries();
+    const ids =
+      action === "required"
+        ? [...this.selectionSet.members]
+        : this.selectionSet.structural(
+            entries.map(({ node, parent }) => ({
+              id: node.id,
+              ...(parent ? { parent: parent.id } : {}),
+            })),
+          );
+    if (!ids.length) return;
+    if (
+      action === "required" &&
+      ids.some(
+        (id) =>
+          !ui.builder
+            .propertyPanel(id)
+            .groups.some((group) =>
+              group.properties.some(
+                (property) => property.key === "validation.required",
+              ),
+            ),
+      )
+    ) {
+      ui.announce(ui.t("ofb.unsupportedBulk"));
+      return;
+    }
+    const blocked = ids.filter((id) => {
+      const level = ui.builder.lockLevel(id);
+      return level === "all" || (action === "delete" && level === "structure");
+    });
+    if (blocked.length) {
+      ui.announce(
+        ui.t("ofb.lockedBulk", {
+          labels: blocked
+            .map((id) =>
+              componentTitle(
+                ui,
+                entries.find(({ node }) => node.id === id)!.node,
+              ),
+            )
+            .join(", "),
+        }),
+        {
+          label: ui.t("ofb.deselectLocked"),
+          run: () => {
+            for (const id of blocked)
+              if (this.selectionSet.members.includes(id))
+                this.selectionSet.toggle(
+                  id,
+                  this._ofbLocation(id)?.parent?.id ?? null,
+                );
+            ui.builder.select(this.selectionSet.primary);
+            this._ofbUpdateTargets();
+          },
+        },
+      );
+      return;
+    }
+    const ordered = action === "delete" ? [...ids].reverse() : ids;
+    const command = new AtomicCommand(
+      ui.t("ofb.bulkAction", {
+        action: ui.t(`ofb.${action}`),
+        count: ids.length,
+      }),
+      ordered.map((id) =>
+        action === "delete"
+          ? new RemoveComponent(id)
+          : action === "duplicate"
+            ? new DuplicateComponent(id)
+            : new UpdateProperty(id, "validation.required", value),
+      ),
+    );
+    ui.dispatch(command);
   }
   labelPointerDown = (event: PointerEvent) => {
     if (event.button !== 0) return;

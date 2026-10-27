@@ -294,18 +294,48 @@ export function createBuilderController(
     }
     return diagnostics;
   };
+  type SelectionSnapshot = ReturnType<Canvas["selectionSet"]["snapshot"]>;
+  const selectionHistory = new WeakMap<
+    Command,
+    { before: SelectionSnapshot; after: SelectionSnapshot }
+  >();
   for (const direction of ["undo", "redo"] as const) {
     const execute = core[direction].bind(core);
     core[direction] = () => {
       const command = core
         .getState()
         .history[direction === "undo" ? "past" : "future"].at(-1);
-      return complete(command, execute(), direction);
+      const result = execute();
+      const snapshot =
+        command &&
+        selectionHistory.get(command)?.[
+          direction === "undo" ? "before" : "after"
+        ];
+      if (
+        snapshot &&
+        !result.some((diagnostic) => diagnostic.severity === "error")
+      ) {
+        canvas.selectionSet.restore(snapshot);
+        core.select(snapshot.primary);
+        canvas._ofbUpdateTargets();
+      }
+      return complete(command, result, direction);
     };
   }
   const executeCommand = core.dispatch.bind(core);
-  core.dispatch = (command, options) =>
-    complete(command, executeCommand(command, options));
+  core.dispatch = (command, options) => {
+    const before = canvas.selectionSet.snapshot();
+    const result = executeCommand(command, options);
+    if (
+      !result.some((diagnostic) => diagnostic.severity === "error") &&
+      core.getState().history.past.at(-1) === command
+    )
+      selectionHistory.set(command, {
+        before,
+        after: canvas.selectionSet.snapshot(),
+      });
+    return complete(command, result);
+  };
   const dispatch: UI["dispatch"] = (command, dispatchOptions) => {
     if (destroyed) return [];
     if (

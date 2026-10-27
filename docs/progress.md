@@ -83,6 +83,18 @@ Command search remains unshipped. Its numeric lazy-chunk budget still requires a
 and owner approval; multi-select follows it in the approved milestone order. Full pinned milestone
 verification and owner delivery review remain pending.
 
+## M09b+ — Atomic bulk checkpoint
+
+Added the ADR-0021 AtomicCommand boundary and wired command-bar multi-delete/duplicate plus the
+Required mutation path through it. Locked members are named with a Deselect locked components
+action. Selection snapshots are restored with undo/redo without schema properties or extra history.
+Unit evidence: 7 focused tests including atomic publication, exact schema undo/redo, child failure
+and host-lock refusal. Browser evidence: multi-delete restores both selected members as one history
+step in Chromium, Firefox and WebKit (3/3). Local development caught frozen-child index reversal,
+atomic dangling-reference handling and modal focus restoration collapsing the selection; each
+was corrected in product code. Bulk editor, remaining commands, performance/size measurements,
+polish and full milestone acceptance remain pending.
+
 ## M09b+ — Combined prototype in progress
 
 The selection draft is now wired to the immediate canvas/outline presentation and Shift+arrow
