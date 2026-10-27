@@ -63,6 +63,13 @@ Its activation stub counts toward the 29,000-byte builder-owned initial gate; th
 excluded from initial closure only until requested. Quick-add and any bulk-edit dialog are lazy by
 default and report both initial and full-closure deltas under ADR-0018/0020.
 
+The 2026-10-27 probe recommends lazy indexing and a 4,500-byte command-bar closure ceiling. It
+measured 4,218 bytes for that closure, but its immediate activation frame raised builder-owned
+initial to 29,044 bytes. No implementation may ship until the owner approves the separate command
+budget and at least 45 bytes of normal compaction brings initial back within 29,000. The fixed full
+initial measurement was 63,753 / 64,613. See the command-bar measurement report for the rejected
+initial-index alternative and shared-chunk accounting.
+
 ## Verification
 
 Unit tests cover normalization, deterministic atomic replay, refusal rollback, locks, property

@@ -73,6 +73,25 @@ Command search remains unshipped. Its numeric lazy-chunk budget still requires a
 and owner approval; multi-select follows it in the approved milestone order. Full pinned milestone
 verification and owner delivery review remain pending.
 
+## M09b+ — Command-bar measurement proposal — 2026-10-27
+
+Production code remains unchanged from checkpoint `c9457cd`. A temporary consumer-build probe measured
+two complete Ctrl/Cmd+K designs, then was removed. Building palette/jump/action items in initial code
+measured **29,102** builder-owned initial, **63,830** full initial and a **3,512** command closure;
+it exceeds the fixed builder gate by 102 bytes. Moving indexing into the lazy command module measured
+**29,044** builder-owned initial, **63,753** full initial, **4,218** for the command closure and
+**13,299** across all emitted deferred entries; it exceeds the builder gate by 44 bytes while the
+primary full-closure gate retains 860 bytes of headroom.
+
+Proposal for owner decision: use lazy indexing, approve a **4,500-byte command-bar closure ceiling**,
+and require at least 45 bytes of normal initial-code compaction before shipping. A safer implementation
+target is 28,800 initial or lower so the later multi-select core is not left with zero headroom. Keep
+the 29,000 and 64,613 ceilings unchanged. The alternative is initial indexing with a 3,750-byte
+command ceiling and at least 103 bytes of compaction; it leaves less room for M09b+ and is not
+recommended. Exact files and accounting are in
+`docs/reviews/m09b-plus-command-bar-measurement.md`. Work stops here for the required numeric-budget
+and trade-off decision; History/diff remains separately unresolved and unshipped.
+
 ## M09b+ — Opt-in themes and Settings split implemented — 2026-10-26
 
 Implemented the accepted option-B split: the root builder owns Neutral chrome; form themes and
