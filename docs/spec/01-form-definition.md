@@ -22,7 +22,8 @@ export interface ComponentNode {
   id: string; // stable, builder-generated, unique in the form
   type: string; // registered type; namespaced for plugins: 'acme.employeeLookup'
   key?: string; // required when the model produces a value
-  label?: string;
+  label?: string; // literal text and English fallback
+  labelKey?: string; // explicit opt-in host translation key; non-empty when present
   description?: string;
   placeholder?: string;
   tooltip?: string; // native hover title; description is visible help
@@ -62,6 +63,11 @@ export interface ValidationRules {
 ```
 
 `Expr` is defined in `03-expressions.md`.
+
+Captions are literal by default. When `labelKey` is present, renderers ask the host translator for
+that key and use `label` as the fallback when the translator returns the key unchanged. The resolved
+caption also supplies validation-message parameters. Builders expose both fields; inline editing a
+translated caption opens generated Settings so it never overwrites the message contract.
 
 ## Identity and data rules
 

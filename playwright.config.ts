@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 import { platform, arch } from "node:os";
 export default defineConfig({
   // Bound concurrent real framework hosts without changing deadlines or assertions.
-  workers: process.env.CI ? 1 : 2,
+  workers: 1,
   reporter: "list",
   snapshotPathTemplate: `{testDir}/__screenshots__/${platform()}-${arch()}/{testFilePath}/{projectName}/{arg}{ext}`,
   testDir: "./tests/e2e",
@@ -28,6 +28,8 @@ export default defineConfig({
       "react-example",
       "angular-example",
       "angular21-example",
+      "script-tag-example",
+      "angular-cli-example",
     ].map((name, index) => ({
       command: `pnpm --filter @ourform/${name} dev`,
       url: `http://127.0.0.1:${4181 + index}`,

@@ -1,0 +1,47 @@
+{
+  "name": "@ourform/themes",
+  "version": "0.0.1",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./base": {
+      "types": "./dist/base.d.ts",
+      "import": "./dist/base.js"
+    },
+    "./bootstrap4": {
+      "types": "./dist/bootstrap4.d.ts",
+      "import": "./dist/bootstrap4.js"
+    },
+    "./bootstrap5": {
+      "types": "./dist/bootstrap5.d.ts",
+      "import": "./dist/bootstrap5.js"
+    },
+    "./tailwind": {
+      "types": "./dist/tailwind.d.ts",
+      "import": "./dist/tailwind.js"
+    },
+    "./material": {
+      "types": "./dist/material.d.ts",
+      "import": "./dist/material.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/base.ts src/bootstrap4.ts src/bootstrap5.ts src/tailwind.ts src/material.ts --format esm --dts --clean --sourcemap",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ourform/sdk": "workspace:*",
+    "@ourform/theme-base": "workspace:*",
+    "@ourform/theme-bootstrap4": "workspace:*",
+    "@ourform/theme-bootstrap5": "workspace:*",
+    "@ourform/theme-material": "workspace:*",
+    "@ourform/theme-tailwind": "workspace:*"
+  }
+}

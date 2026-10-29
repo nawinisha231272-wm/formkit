@@ -26,9 +26,6 @@ export const workbenchStyle = `
 .of-builder .of-builder-canvas{background:var(--ofb-surface);border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-panel);box-shadow:var(--ofb-shadow-1);padding:32px;min-block-size:400px}
 .of-builder .of-builder-inspector{border-inline-start:1px solid var(--ofb-border);grid-column:auto}
 .of-builder .of-builder-outline{margin:0;max-block-size:55vh}
-.of-builder .of-builder-toolbar{margin-block-start:20px;gap:6px;align-items:center}
-.of-builder .of-builder-toolbar button{font-size:var(--ofb-font-size-small)}
-.of-builder .of-builder-toolbar label{font-size:var(--ofb-font-size-small);inline-size:100%}
 .of-builder .of-builder-bottom{display:block;margin:0;padding:24px;min-block-size:calc(100vh - 100px)}
 .of-builder .of-builder-bottom>.of-builder-panel{max-inline-size:960px;margin:auto;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-panel);padding:24px}
 .of-builder .ofb-data-panel{max-inline-size:960px;margin:auto;padding:24px;border:1px solid var(--ofb-border);background:var(--ofb-surface);border-radius:var(--ofb-radius-panel)}
@@ -45,9 +42,6 @@ export const workbenchStyle = `
 .of-builder .of-builder-inspector>[data-ofb-primitive="Tabs"]{gap:0;overflow:visible;margin-block-end:18px}
 .of-builder .of-builder-inspector>[data-ofb-primitive="Tabs"]>button{padding:12px 7px;font-size:var(--ofb-font-size-small)}
 .of-builder .ofb-sidebar-panel{min-block-size:180px}
-.of-builder .ofb-sidebar-history{margin:0;padding-inline-start:20px;color:var(--ofb-text-muted);line-height:2}
-.of-builder .ofb-sidebar-issues{display:grid;gap:8px}
-.of-builder .ofb-sidebar-issues button{white-space:normal;text-align:start}
 .of-builder .ofb-component-info{margin-block-start:24px;border-block-start:1px solid var(--ofb-border);padding-block-start:16px}
 .of-builder .ofb-component-info h3{margin:0 0 4px;font-size:var(--ofb-font-size)}
 .of-builder .ofb-component-info small{display:block;color:var(--ofb-text-muted);font-size:var(--ofb-font-size-small)}
@@ -61,11 +55,10 @@ export const workbenchStyle = `
 .of-builder .ofb-header-menu>summary{display:flex;align-items:center;justify-content:center;list-style:none;cursor:pointer;min-block-size:var(--ofb-control-height);inline-size:var(--ofb-control-height);border:1px solid var(--ofb-border);border-radius:var(--ofb-radius)}
 .of-builder .ofb-header-preferences{position:absolute;inset-block-start:100%;inset-inline-end:0;z-index:50;inline-size:300px;padding:16px;display:grid;gap:12px;border:1px solid var(--ofb-border);border-radius:var(--ofb-radius-panel);background:var(--ofb-surface);box-shadow:var(--ofb-shadow-2)}
 .of-builder .ofb-header-preferences label{display:grid;gap:4px}
-.of-builder .ofb-header-preferences .of-builder-toolbar{margin:0}
 @media(min-width:1280px){
 .of-builder .ofb-header{flex-wrap:nowrap;gap:8px;padding:12px}
 .of-builder .ofb-breadcrumb{min-inline-size:0;gap:6px;flex:1}
-.of-builder .ofb-breadcrumb strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-inline-size:130px}
+.of-builder .ofb-breadcrumb strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-inline-size:0}
 .of-builder .ofb-mode-tabs{margin-inline-start:0;flex-shrink:0}
 .of-builder .ofb-mode-tabs>button{padding-inline:8px}
 .of-builder .ofb-header>label{flex-shrink:0;gap:4px}

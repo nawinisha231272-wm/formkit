@@ -8,6 +8,7 @@ import {
 } from "@ourform/components";
 import { getEditorProperties } from "@ourform/builder-core";
 import { renderToString } from "@ourform/renderer-dom";
+import { baseTheme } from "@ourform/themes/base";
 import {
   defineField,
   stringValue,
@@ -260,7 +261,7 @@ test("SSR uses the same portable representation in Node without browser globals"
     data: { name: "<input>", age: 0, accept: true },
   });
   const views = new Map(controls.map((c) => [c.model.type, c.views]));
-  const markup = renderToString(s, { views });
+  const markup = renderToString(s, { views, themes: [baseTheme] });
   expect(markup).toContain("&lt;Name&gt;");
   expect(markup).toContain('value="&lt;input&gt;"');
   expect(markup).toContain('checked="true"');

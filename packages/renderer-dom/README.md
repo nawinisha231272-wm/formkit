@@ -2,7 +2,7 @@
 
 ```ts
 import { mount } from "@ourform/renderer-dom";
-import { tailwindTheme } from "@ourform/theme-tailwind";
+import { tailwindTheme } from "@ourform/themes/tailwind";
 const view = mount(root, session, {
   engine,
   views: new Map([
@@ -21,8 +21,8 @@ const result = await view.submit(); // failed submissions focus a linked error s
 view.unmount(); // destroy() alias; session lifetime remains host-owned
 ```
 
-Explicit registries are per mount; engine models stay headless. The base theme ships as the
-renderer default; other names must be registered in `themes`. `Theme` objects also work directly.
+Explicit registries are per mount; engine models stay headless. The renderer imports no theme and
+hosts must register every named theme in `themes`. `Theme` objects also work directly.
 `appTheme`, `formTheme`, `componentThemes` apply token/class/mode overrides in that order.
 Custom CSS must scope its selectors with `.of-root`; it is trusted host code. No theme makes network calls.
 `themeMode` is light/dark/high-contrast. Use `dir=rtl` on the root for RTL.
@@ -44,8 +44,8 @@ then pack, then portable once per field, or throws no-view with type and adapter
 and imperative submission results. Native SSR is not supplied by these client adapters; portable SSR remains.
 createFormHost(fields, engine?) builds isolated engine/view maps. Portable/native views can share a type
 when they share its model; conflicting models or duplicate views throw. createFormController(root, options)
-owns compile/session/mount/subscriptions/disposal for adapters. It installs default theme presets; fields
-must be provided explicitly (the adapters supply built-ins). syncData writes changed compiled leaf paths.
+owns compile/session/mount/subscriptions/disposal for adapters. Themes and fields must be provided
+explicitly (the adapters supply built-in fields). syncData writes changed compiled leaf paths.
 
 M05 includes Bootstrap 4 and 5 in host/legacy preset defaults; low-level mount can register bootstrap4Theme explicitly. The bootstrap alias remains Bootstrap 5. Optional node.ariaLabel overrides accessible naming while retaining the visible label; placeholder is forwarded to controls.
 
@@ -88,9 +88,9 @@ Field authors forward state/ARIA and can call setValue directly; no manual DOM r
 
 M09 adds `mode: 'design'` to RenderOptions: every authoring slot and hidden field is shown with inert
 portable controls and native placeholders. Runtime Tabs retains every panel/control while switching;
-focus(id) reveals ancestor panels. `defaultThemes` is a frozen array containing Bootstrap4/5/Tailwind
-(the Base fallback is built in), shared by the form host and builder. `@ourform/builder` mounts a design
-view and editable preview on one session, avoiding duplicate processor/provider runs.
+focus(id) reveals ancestor panels. `defaultThemes` is a deprecated frozen empty compatibility export;
+hosts opt into `@ourform/themes/<name>`. `@ourform/builder` mounts a design view and editable preview
+on one session, avoiding duplicate processor/provider runs.
 
 M09a (ADR-0015): Columns uses `columns: [{width,components}]` (integer widths 1..12 totaling 12), with
 positional column_0/column_1 slots and no redundant child.slot. Legacy flat Columns/layout.width inputs
@@ -113,3 +113,12 @@ the actual schema read-only/disabled appearance; design mode does not fake a rea
 Schema prefix/suffix feed the existing FieldPresentation adornments (explicit host presentation wins).
 Tooltip is a native hover title; Description remains the visible explanatory alternative. Static
 readOnly/disabled are rendered from core FieldState and retain the same protected-write semantics.
+
+Single field errors render as plain text while several errors use a semantic list. Both `errors` and
+`error` theme parts are preserved. Bootstrap 4/5 place descriptions/help below controls using theme
+CSS ordering; switching themes preserves the shell DOM and focused control identity.
+
+`view.setThemes(themes, selectedTheme?)` replaces the per-instance registry in place. The optional
+second argument selects a theme in the same atomic update (otherwise the active theme stays selected).
+Resolve before updating: unknown names throw an Error with `code: "unknown-theme"`; the old view and
+registry remain active. Values, touched/errors, control identity, focus and caret survive valid changes.

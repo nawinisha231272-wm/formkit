@@ -1,0 +1,855 @@
+{
+  "provenance": "Unmodified actual PNGs from 201 passing checks in the pinned Linux image. Failed timed-out test excluded. Pending full comparison and owner approval.",
+  "images": [
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-4-high-contrast-with-real-framework-CSS-chromium/bootstrap4-host-css-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-host-css-high-contrast.png",
+      "sha256": "5a64b28a645eb7223a6bd8f8444c7e39e492da1d500f5e407ad68bbcf46d156c"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-d5b03-rial-conformance-and-visual-chromium/sdk-extensions-material-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-material.png",
+      "sha256": "55cda9b0eb41291085602c5d41fa44483a4c576c32fd5f26e72c3413412f140c"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-ligh-2b62b--context-focus-and-teardown-chromium/builder-element-light-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-base.png",
+      "sha256": "7dba51b113a7b8c69a84292d957952c7711e800df32deb5c759dc59017b993d1"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-tailwind-keyboar-dfdec-veal-and-visual-conformance-chromium/tabs-tailwind-contact-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-tailwind-contact.png",
+      "sha256": "82cad3a418430b2c88425d4cb1cde58e3c42c48e1a21421f086a9d3cbcf8dd38"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-tailwind-keyboar-dfdec-veal-and-visual-conformance-chromium/tabs-tailwind-profile-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-tailwind-profile.png",
+      "sha256": "52fbff3ad09ccac4f510bb57190987fb4ac790d216e81366615c81a637ef0af9"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--6a3a8-al-key-captions-and-editors-webkit/nullable-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/webkit/nullable-bootstrap4.png",
+      "sha256": "68333fcf9809f869370e49c6556f3fa0975b8b2a09dbf56bf4347385f96a65eb"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-read-onl-1fde2-t-checkbox-and-Rating-edits-chromium/bootstrap4-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-readonly.png",
+      "sha256": "0f5fd6be9859dda6db3b2761c82a276a9f94859906400b2a6ac6fa5170e21c1c"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-base-keyboard-re-08174-veal-and-visual-conformance-firefox/tabs-base-contact-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-base-contact.png",
+      "sha256": "edd1122f03d62b02651de656fba1c734d7df1bc702d75e5e31c726be976a514e"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-base-keyboard-re-08174-veal-and-visual-conformance-firefox/tabs-base-profile-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-base-profile.png",
+      "sha256": "70c59e112137e5e28727737ae9994df862f8a37c95f4048eee08febccb0842f7"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-shad-140ce--context-focus-and-teardown-chromium/builder-element-shadow-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap5.png",
+      "sha256": "390ce064f9a60b8fa74e4758e46a67f221378af3ef8bfbee81cf5e7d1408f70f"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-9af5c-rap4-conformance-and-visual-webkit/sdk-extensions-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-bootstrap4.png",
+      "sha256": "d06fd80467175237514ea52f260eea6108c67bfbe270a1839d304d43663220c2"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-9af5c-rap4-conformance-and-visual-webkit/sdk-native-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-native-bootstrap4.png",
+      "sha256": "a5746caccc15619f79c5b9f676126e44052190aa84c437e6854562ed4634615d"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-dark-con-e170d--states-and-visual-snapshot-firefox/bootstrap4-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-dark.png",
+      "sha256": "9d28c913dd479c80f207d44c4e0700d08a879a29f3b62232705e0d13aecb32fc"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-dark-con-e170d--states-and-visual-snapshot-chromium/bootstrap4-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-dark.png",
+      "sha256": "55d7394f4faee79eaba4867cb8e27487230f68ce4ae67ff984a480874fe6b015"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-preset-wo-3f555-trap-5-stylesheet-installed-firefox/bootstrap5-host-css-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-host-css.png",
+      "sha256": "67aaf8e34b33ad02de1297a24f50601909c2b1399c6e7c8a0b4ed2cbc5216018"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-light-conformance-states-and-visual-snapshot-chromium/tailwind-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/tailwind-light.png",
+      "sha256": "0830cfd9a4652ccc89cdce777734fffa17b8e2d8212823a157752a0e435b6f90"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-0764f-rap5-conformance-and-visual-chromium/sdk-extensions-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-bootstrap5.png",
+      "sha256": "d8956cfaa1544dce19e93423949155d1dbb500ca1a29db7e878659f275b24abc"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-0764f-rap5-conformance-and-visual-chromium/sdk-native-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-native-bootstrap5.png",
+      "sha256": "b4a067c8a3fcd38819cd65e15ffd27908f514ef3e49f5d9048220df79d18c5e5"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-base-keyboard-re-08174-veal-and-visual-conformance-webkit/tabs-base-contact-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-base-contact.png",
+      "sha256": "4b74954ba410627a93c19331951434fc9a393a3d5ca84d464ac3af7f0882bfa8"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-base-keyboard-re-08174-veal-and-visual-conformance-webkit/tabs-base-profile-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-base-profile.png",
+      "sha256": "064963bd7991306699b72676d21cb84f9d9da2222a1987be3307a00c05e455ef"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-bootstrap5-keybo-00d2d-veal-and-visual-conformance-chromium/tabs-bootstrap5-contact-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-bootstrap5-contact.png",
+      "sha256": "3d238b390ac84cdecd0c36e4fd598ab1bf19e85473639a7c51eebf24baa6826b"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-bootstrap5-keybo-00d2d-veal-and-visual-conformance-chromium/tabs-bootstrap5-profile-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-bootstrap5-profile.png",
+      "sha256": "9f1397944c1cafae42ff072357a1ee109e06f8616d5eb1d08840892ad7f5d688"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-high-contrast--aafe2--states-and-visual-snapshot-webkit/base-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/base-high-contrast.png",
+      "sha256": "d5b09f75fb40796d6ff4053fc795dcc1f2a581fc20c69a4e04ad1e4f80922ffb"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-dark-conformance-states-and-visual-snapshot-firefox/tailwind-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/tailwind-dark.png",
+      "sha256": "3125b7f92b87843dde0e0faa5f3900c324cc11184d32251f1b2f8a48c67ddce9"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-bootst-a91f4-roperty-editors-and-visuals-webkit/authoring-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/webkit/authoring-bootstrap5.png",
+      "sha256": "3ea722771326dfabe96a33aa94cd2650326cd386e9dc30f5eb973438171864b2"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-base-S-8d351-roperty-editors-and-visuals-webkit/authoring-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/webkit/authoring-base.png",
+      "sha256": "37f9c2cf99597f2cc58d51bde00fdbf0f33883be4ecaea55d001100151a8b162"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-read-only-prev-09844-t-checkbox-and-Rating-edits-chromium/base-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/base-readonly.png",
+      "sha256": "043b00bd6f7606b61a0be667c8e4f9c3c4442609dccd67deef7bf4c0578f8f6b"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-ligh-402a0-otstrap4-visual-conformance-chromium/builder-element-light-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap4.png",
+      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-ea11f-base-conformance-and-visual-firefox/sdk-native-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-native-base.png",
+      "sha256": "f4c06a120e80207793476cb043ea26e03125ecfefb03f9f91aa90c7cf8097737"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-ea11f-base-conformance-and-visual-firefox/sdk-extensions-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-base.png",
+      "sha256": "f666814092e0c1d380a875a7bc4851074bd45e4922a471b1410cb66a2fc4d766"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-React-builder-bootstrap4-visual-conformance-chromium/builder-React-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-bootstrap4.png",
+      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-DOM-builder--5c814--context-focus-and-teardown-chromium/builder-DOM-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap5.png",
+      "sha256": "390ce064f9a60b8fa74e4758e46a67f221378af3ef8bfbee81cf5e7d1408f70f"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-tailwi-8b071-roperty-editors-and-visuals-chromium/authoring-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/chromium/authoring-tailwind.png",
+      "sha256": "7d39a3895b4bf1d3e8776380ea48ad2917c35e077658c6c0ae9d6ba416f64ee0"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--6a3a8-al-key-captions-and-editors-firefox/nullable-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/firefox/nullable-bootstrap4.png",
+      "sha256": "4b370e44956805cc5f8a20929e63e9bbe88e21e274dde1a2a4bcc30c436a22c5"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-shad-a70a0-otstrap4-visual-conformance-chromium/builder-element-shadow-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap4.png",
+      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-read-onl-54693-t-checkbox-and-Rating-edits-chromium/bootstrap5-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-readonly.png",
+      "sha256": "d953f873a21ed4ae4bea55aab5829eadd664b8b0218f11a1a7a4c017763bb580"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-9af5c-rap4-conformance-and-visual-firefox/sdk-extensions-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-bootstrap4.png",
+      "sha256": "03001d6bc17ac0fd0ce8cae8d7a90720477f0fdf86d3fad919fcda9498275038"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-9af5c-rap4-conformance-and-visual-firefox/sdk-native-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-native-bootstrap4.png",
+      "sha256": "b240085e53d80fe42fa69bb31c83ba829da1b4a5deb34abcf74e9a0221fe0d56"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-read-onl-54693-t-checkbox-and-Rating-edits-firefox/bootstrap5-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-readonly.png",
+      "sha256": "5dac892be8dbbe40c2269351938b02f06a965e72c696b9b08e38e71272276df0"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-light-conformance-states-and-visual-snapshot-webkit/base-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/base-light.png",
+      "sha256": "63c9af451387c3f570b038b6360acf1423e1bee7937177daa92e93cf810abe3f"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-0764f-rap5-conformance-and-visual-webkit/sdk-extensions-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-bootstrap5.png",
+      "sha256": "1c41c87b1429dd7a67b5ae2dfaa8c70086b23c2347c3e818ae7bd5e9d7236306"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-0764f-rap5-conformance-and-visual-webkit/sdk-native-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-native-bootstrap5.png",
+      "sha256": "eb5d438f4147e9ffd0c73b9def4f57580f406c70a2d65d41645dff5755ff069c"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-tailwi-8b071-roperty-editors-and-visuals-webkit/authoring-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/webkit/authoring-tailwind.png",
+      "sha256": "a62846d657ade303d8ddc4705946ea76cf005d883ce4f7b22da6e692f9247e51"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-DOM-builder-bootstrap4-visual-conformance-chromium/builder-DOM-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap4.png",
+      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-read-onl-1fde2-t-checkbox-and-Rating-edits-firefox/bootstrap4-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-readonly.png",
+      "sha256": "5d8cbac03a1362fd5ea7975b59fa82a364675c95ba1ea53edee4d9d386cd7e87"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--6a3a8-al-key-captions-and-editors-chromium/nullable-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/chromium/nullable-bootstrap4.png",
+      "sha256": "fd4480342035d44bc32a5c352c1ce458aeff5fd430a5631465e542657eb62276"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-shad-c4628-otstrap5-visual-conformance-chromium/builder-element-shadow-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap5.png",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-high-contrast--aafe2--states-and-visual-snapshot-chromium/base-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/base-high-contrast.png",
+      "sha256": "69693111b302c3d36df4ba6cf20de5e02952e58c3023e17bc5b9c8ae53c4da67"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-React-builder-base-visual-conformance-chromium/builder-React-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-base.png",
+      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-light-co-2b05a--states-and-visual-snapshot-firefox/bootstrap5-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-light.png",
+      "sha256": "c2034419ee9c81e5e4c541ae3c5cfd42d2920485ebecb5586ebd05dc93dd7d66"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-4-high-contrast-with-real-framework-CSS-webkit/bootstrap4-host-css-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-host-css-high-contrast.png",
+      "sha256": "f0771d4355423ab4692a3b2ba10ccf9ac7542d0fc0a31f614b6273440f1f4765"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-4-dark-with-real-framework-CSS-chromium/bootstrap4-host-css-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-host-css-dark.png",
+      "sha256": "e90556e89927daecb7398f79c9b15e1b065c9ec1cb56e0291312090eb46306ac"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-read-only--a39f4-t-checkbox-and-Rating-edits-chromium/tailwind-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/tailwind-readonly.png",
+      "sha256": "4ac9cf1cd691f1f9e104da2f350c02fd45c67e7e15522028dbe2b25a587cd4d3"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-shad-01fe8--context-focus-and-teardown-chromium/builder-element-shadow-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-tailwind.png",
+      "sha256": "b4ae3dc7a559c59ca4be785315e0e18b02220b1a58ec99b405ff737a93f5a783"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-22-b-879f9-otstrap5-visual-conformance-chromium/builder-Angular-22-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap5.png",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-dark-con-3a21e--states-and-visual-snapshot-firefox/bootstrap5-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-dark.png",
+      "sha256": "4f051018e940e35084b5d238766081924566c2067d4a6a43f617dca10c582469"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-dark-conformance-states-and-visual-snapshot-webkit/tailwind-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/tailwind-dark.png",
+      "sha256": "ffddad1a156d22adedb76009955ce9e3960c23d2aa289bf68605971c7e20a229"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-21-b-ef335-otstrap5-visual-conformance-chromium/builder-Angular-21-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap5.png",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-22-builder-tailwind-visual-conformance-chromium/builder-Angular-22-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-tailwind.png",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-4-light-with-real-framework-CSS-chromium/bootstrap4-host-css-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-host-css-light.png",
+      "sha256": "29859efea5c61b8348290349c24ee24f5ea714628e34ac2a9bb594b8de637544"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-high-con-4dcf9--states-and-visual-snapshot-webkit/bootstrap5-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap5-high-contrast.png",
+      "sha256": "7681a2dfa364588066bc89f4c51e9507db63991c0a78e09c61303afc0968a347"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-ligh-5e7d0--context-focus-and-teardown-chromium/builder-element-light-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-tailwind.png",
+      "sha256": "b4ae3dc7a559c59ca4be785315e0e18b02220b1a58ec99b405ff737a93f5a783"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-dark-con-e170d--states-and-visual-snapshot-webkit/bootstrap4-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-dark.png",
+      "sha256": "536788cd4330009e636f8ba5909bcbbfb083c37c1b2662fb008b2b11cdecb725"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-shad-9f8fe--context-focus-and-teardown-chromium/builder-element-shadow-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-base.png",
+      "sha256": "7dba51b113a7b8c69a84292d957952c7711e800df32deb5c759dc59017b993d1"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-ea11f-base-conformance-and-visual-webkit/sdk-native-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-native-base.png",
+      "sha256": "61834dc85813dd762722a51c3b50a4ca15bb4335e02fff5c906de04c8c756e24"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-ea11f-base-conformance-and-visual-webkit/sdk-extensions-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-base.png",
+      "sha256": "c8f9ae5d08b95b6fcd99b9e35fce4a988e247908e9f60ea6434b9860fd804eb6"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-DOM-builder-bootstrap5-visual-conformance-chromium/builder-DOM-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap5.png",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-read-onl-1fde2-t-checkbox-and-Rating-edits-webkit/bootstrap4-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-readonly.png",
+      "sha256": "959eb2a18395b039f9814001d7eb5be08bd28af12938cf4cff33e3a293dd6f14"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--4af76-al-key-captions-and-editors-webkit/nullable-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/webkit/nullable-tailwind.png",
+      "sha256": "8f33c9b6539a91f70d2a9fd2a6bb543b6d94d9d60355a1c195b2c527a8219c79"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-React-builder-tailwind-visual-conformance-chromium/builder-React-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-tailwind.png",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-high-con-4dcf9--states-and-visual-snapshot-chromium/bootstrap5-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-high-contrast.png",
+      "sha256": "342b79fa2a87fe73116097ea2b479c5cb898653324deb847e39f9db8cb1c7712"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-DOM-builder-tailwind-visual-conformance-chromium/builder-DOM-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-tailwind.png",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-high-contr-5954c--states-and-visual-snapshot-firefox/tailwind-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/tailwind-high-contrast.png",
+      "sha256": "fe330b54a57162ae11741e0f294f7d7b3547974b288b7dbd32d8d50c6dc2427a"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-React-builder-bootstrap5-visual-conformance-chromium/builder-React-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-bootstrap5.png",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-high-con-cc729--states-and-visual-snapshot-firefox/bootstrap4-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-high-contrast.png",
+      "sha256": "53ca88a1774099564834f8008fde1cb71f13baee3bbe90e77afe17582c7e51f3"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-light-conformance-states-and-visual-snapshot-firefox/base-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/base-light.png",
+      "sha256": "e2c420bba3dd2a2828ea2450c56aa6124c7b04355e05a685f27a282ef9c729c7"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-4-high-contrast-with-real-framework-CSS-firefox/bootstrap4-host-css-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-host-css-high-contrast.png",
+      "sha256": "eeff39a8e45616167ab3868c6d47e6ff5f62ee11d512ab75f7f45589d70c4a11"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--8844b-al-key-captions-and-editors-webkit/nullable-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/webkit/nullable-base.png",
+      "sha256": "813b7a5ae078a79484ff195b626d53b510daa298e44db6a306774a0192cd67aa"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-21-builder-base-visual-conformance-chromium/builder-Angular-21-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-base.png",
+      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-light-co-2b05a--states-and-visual-snapshot-chromium/bootstrap5-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-light.png",
+      "sha256": "e58684cee9a55bef7c56db6872818562b71d4023954de79e679147276a6a1428"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-tailwi-8b071-roperty-editors-and-visuals-firefox/authoring-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/firefox/authoring-tailwind.png",
+      "sha256": "2110477fb46c4019e036673b66334438000e37053d1669eb27f2b41ead93818d"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-ligh-99162-tailwind-visual-conformance-chromium/builder-element-light-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-tailwind.png",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-read-only-prev-09844-t-checkbox-and-Rating-edits-webkit/base-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/base-readonly.png",
+      "sha256": "996c83614ac2269820bceb80de81be3e2b4571db2fd85afdaf72d65226318100"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--5203b-al-key-captions-and-editors-webkit/nullable-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/webkit/nullable-bootstrap5.png",
+      "sha256": "68333fcf9809f869370e49c6556f3fa0975b8b2a09dbf56bf4347385f96a65eb"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-ligh-8a349--context-focus-and-teardown-chromium/builder-element-light-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap4.png",
+      "sha256": "dc95f74fb068b64251ad73f6f48e579c98f44697b1648523dd76628696848d51"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-high-contr-5954c--states-and-visual-snapshot-webkit/tailwind-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/tailwind-high-contrast.png",
+      "sha256": "84e720c4b9324937ba1e8ef1a1d0052cb97062b323bba505f8f9ef289a154928"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-shadow-builder-base-visual-conformance-chromium/builder-element-shadow-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-base.png",
+      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-read-onl-54693-t-checkbox-and-Rating-edits-webkit/bootstrap5-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap5-readonly.png",
+      "sha256": "e3e674966b085b3185cab2df925aa79553dfb052b5f2e67fbd6a81b8f0e7c3a8"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-dark-conformance-states-and-visual-snapshot-chromium/tailwind-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/tailwind-dark.png",
+      "sha256": "6126df386b4bb25daad0ce49878ffd0dd544816b5c718881345afa62662fa9d8"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-bootst-35c05-roperty-editors-and-visuals-webkit/authoring-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/webkit/authoring-bootstrap4.png",
+      "sha256": "af7772097614eebbef202634a635c7c1344ce928eae1555721493dfca2739743"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-light-co-2b05a--states-and-visual-snapshot-webkit/bootstrap5-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap5-light.png",
+      "sha256": "7096f76cfcfe435840c07c76a67c670cbc79e024dc7a082901b939992770754e"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-DOM-builder--941ac--context-focus-and-teardown-chromium/builder-DOM-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap4.png",
+      "sha256": "dc95f74fb068b64251ad73f6f48e579c98f44697b1648523dd76628696848d51"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-108ba-wind-conformance-and-visual-firefox/sdk-native-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-native-tailwind.png",
+      "sha256": "d495c01675fc127a46f1d5e5cae0803d874f50f5efb2aa3ddfeba784998e903a"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-108ba-wind-conformance-and-visual-firefox/sdk-extensions-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-tailwind.png",
+      "sha256": "152f229aecb456cec6c224f0e44738a4d26965af07e65e69915e91eec7bc5e93"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--4af76-al-key-captions-and-editors-chromium/nullable-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/chromium/nullable-tailwind.png",
+      "sha256": "16e3ccf688c4444598e7d6632522dd70d4442c6a303e511d250d1d0abd10324e"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-high-con-cc729--states-and-visual-snapshot-chromium/bootstrap4-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-high-contrast.png",
+      "sha256": "c1b291cda0032a1796b8b4d81f7bf58b991c90e1f7e397f3d3b363ff35d0b5a4"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-high-contr-5954c--states-and-visual-snapshot-chromium/tailwind-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/tailwind-high-contrast.png",
+      "sha256": "c503aa23ff23cbb51f3a2cefa04a9acb6bdd136b29a3df95b7f7525076b3dc89"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-read-only--a39f4-t-checkbox-and-Rating-edits-firefox/tailwind-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/tailwind-readonly.png",
+      "sha256": "7ac9cb90677d4c82979dcef0ddf28f350de152c1eb1484fdfd18814dadbbdf56"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-DOM-builder--bd085--context-focus-and-teardown-chromium/builder-DOM-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-tailwind.png",
+      "sha256": "b4ae3dc7a559c59ca4be785315e0e18b02220b1a58ec99b405ff737a93f5a783"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--5203b-al-key-captions-and-editors-firefox/nullable-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/firefox/nullable-bootstrap5.png",
+      "sha256": "4b370e44956805cc5f8a20929e63e9bbe88e21e274dde1a2a4bcc30c436a22c5"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-preset-wo-3f555-trap-5-stylesheet-installed-webkit/bootstrap5-host-css-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap5-host-css.png",
+      "sha256": "8aaa501b35abbf1a1bbc340d03dbc41f841eb1c733160282e8f6af8d977d8d60"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-dark-con-3a21e--states-and-visual-snapshot-chromium/bootstrap5-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-dark.png",
+      "sha256": "9c69d4c8c074ffa74a09fefd4f2783f75970398ba8c8ae25975552cc2f2fe351"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-bootst-35c05-roperty-editors-and-visuals-firefox/authoring-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/firefox/authoring-bootstrap4.png",
+      "sha256": "c06b6fb0c8abf962ff109e10209f3603b771045c03406bda13e33ee58782427f"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-tailwind-keyboar-dfdec-veal-and-visual-conformance-firefox/tabs-tailwind-contact-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-tailwind-contact.png",
+      "sha256": "e24d59807b333f43d96870e76713675931a12611cc06403dff85c962a2f0cc4f"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-tailwind-keyboar-dfdec-veal-and-visual-conformance-firefox/tabs-tailwind-profile-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-tailwind-profile.png",
+      "sha256": "3868607a8a2ab45585f0c8cb598ff476ea9b2543f2e1e762a2e7837a22fd17ef"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-light-builder-base-visual-conformance-chromium/builder-element-light-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-base.png",
+      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-base-S-8d351-roperty-editors-and-visuals-chromium/authoring-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/chromium/authoring-base.png",
+      "sha256": "17b8ec492e40e1b0fda00ec8d840f8c081c478055eb7731616e8ed81a1015b30"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-light-co-e84c5--states-and-visual-snapshot-webkit/bootstrap4-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-light.png",
+      "sha256": "af6c65cc7b59f6169e92227f73823436c9a68ff2457e7110f188d649ff172863"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-high-contrast--aafe2--states-and-visual-snapshot-firefox/base-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/base-high-contrast.png",
+      "sha256": "f249117d4f646f2128ceaf7b297ca58e93b0a7e1cf6dd3b5ef01d95d053df9fd"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-high-con-cc729--states-and-visual-snapshot-webkit/bootstrap4-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-high-contrast.png",
+      "sha256": "4bec623d2ee9b4bc8f8d628647df42e8269128cca6486d35e56b99bcfdfcd46e"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-light-co-e84c5--states-and-visual-snapshot-chromium/bootstrap4-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-light.png",
+      "sha256": "7a6072ea0340a1893b29b5d7130cea07df7b8bcd5e74c62fade88343ee13e02f"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-React-builde-13888--context-focus-and-teardown-chromium/builder-React-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-bootstrap4.png",
+      "sha256": "dc95f74fb068b64251ad73f6f48e579c98f44697b1648523dd76628696848d51"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-22-b-3fa14--context-focus-and-teardown-chromium/builder-Angular-22-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap4.png",
+      "sha256": "dc95f74fb068b64251ad73f6f48e579c98f44697b1648523dd76628696848d51"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-ligh-6ad00-otstrap5-visual-conformance-chromium/builder-element-light-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap5.png",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-preset-wo-3f555-trap-5-stylesheet-installed-chromium/bootstrap5-host-css-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-host-css.png",
+      "sha256": "399a3a3470a2a8cd3c4f464baf7b5fbd91718fc100af2402695f9363fee9ebdb"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-ligh-24935--context-focus-and-teardown-chromium/builder-element-light-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap5.png",
+      "sha256": "390ce064f9a60b8fa74e4758e46a67f221378af3ef8bfbee81cf5e7d1408f70f"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--8844b-al-key-captions-and-editors-chromium/nullable-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/chromium/nullable-base.png",
+      "sha256": "bda2748aee38ccd92eccd668e15257f7a82469ae7ea9c30db7154a7027665865"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-React-builde-af354--context-focus-and-teardown-chromium/builder-React-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-bootstrap5.png",
+      "sha256": "390ce064f9a60b8fa74e4758e46a67f221378af3ef8bfbee81cf5e7d1408f70f"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-bootst-35c05-roperty-editors-and-visuals-chromium/authoring-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/chromium/authoring-bootstrap4.png",
+      "sha256": "d8848900c27f53f38ab483e5ca1a0eb12fe1018d616782cf5368e1511f119ca3"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-ea11f-base-conformance-and-visual-chromium/sdk-native-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-native-base.png",
+      "sha256": "03b41d3b0c59ce599e2926bc3061fe33cf2ad085cb56181b66be06a4aef94420"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-ea11f-base-conformance-and-visual-chromium/sdk-extensions-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-base.png",
+      "sha256": "7c3d708b5b9191710626547c29d7dd37ec0a9444109a039f2ba4d2a8760a0689"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-108ba-wind-conformance-and-visual-webkit/sdk-native-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-native-tailwind.png",
+      "sha256": "9aebdf35d3423282f9b62b1e53cb2e15169a1f6dea194d2555472e48632772d6"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-108ba-wind-conformance-and-visual-webkit/sdk-extensions-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-tailwind.png",
+      "sha256": "3ea566ebffad66c1c8f023a7e9d30c33dbbc3f0e4090fa7932056ef8249080c6"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap5-high-con-4dcf9--states-and-visual-snapshot-firefox/bootstrap5-high-contrast-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-high-contrast.png",
+      "sha256": "5131d3ec439b14af28b47824835709f263b3cff0c467cf5c8ceb1c3b856cc7b5"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--8844b-al-key-captions-and-editors-firefox/nullable-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/firefox/nullable-base.png",
+      "sha256": "be1b8085a655112b17ea3a8a4a32f45a638cb7b48366d3fbd76fc1b81614f92f"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-light-conformance-states-and-visual-snapshot-chromium/base-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/base-light.png",
+      "sha256": "ee2f058fa794bd27ca4770b44d7d6a6546a239548c7413a770787b6f25020ca4"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-4-light-with-real-framework-CSS-firefox/bootstrap4-host-css-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-host-css-light.png",
+      "sha256": "bbc958b3e02691eff37b141a3ebc9f08cc731afbd1cc6d374a6e21c52918b018"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-4-light-with-real-framework-CSS-webkit/bootstrap4-host-css-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-host-css-light.png",
+      "sha256": "8c5601fc5e248090e32cfb23fbbd41a46c856d0be0e5be41994bde4333033da3"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-bootstrap5-keybo-00d2d-veal-and-visual-conformance-firefox/tabs-bootstrap5-contact-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-bootstrap5-contact.png",
+      "sha256": "d6cee0eb57e3fdf740ac9f81dd9810f4af2bad4a9ca64b308ead7731d0c69bf8"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-bootstrap5-keybo-00d2d-veal-and-visual-conformance-firefox/tabs-bootstrap5-profile-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-bootstrap5-profile.png",
+      "sha256": "56cdddc200ffaa594f65e936f92e1c41685beea062c9b5e98e57c11bb7b456a6"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-bootstrap4-keybo-eb956-veal-and-visual-conformance-chromium/tabs-bootstrap4-profile-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-bootstrap4-profile.png",
+      "sha256": "eaf7e856adec1c5049f3c4bddd13f98e119800d94411cb41b07a823409758b8d"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-bootstrap4-keybo-eb956-veal-and-visual-conformance-chromium/tabs-bootstrap4-contact-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-bootstrap4-contact.png",
+      "sha256": "f2477f758fbe78ec42e84f30f2a09b17930d07b4414550f436a485a2d457c865"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-22-b-ecdd8-otstrap4-visual-conformance-chromium/builder-Angular-22-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap4.png",
+      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-dark-conformance-states-and-visual-snapshot-firefox/base-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/base-dark.png",
+      "sha256": "ab8d0e089d84e80b4b33972959f7b6f5b46c707b1d5fdaacc69166550d46e2a5"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-base-S-8d351-roperty-editors-and-visuals-firefox/authoring-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/firefox/authoring-base.png",
+      "sha256": "dcd8ff1ad7ba37ba9ce1ce0a5b296070de913b6b38f2b7f83feb5f56f819286b"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-4-dark-with-real-framework-CSS-firefox/bootstrap4-host-css-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-host-css-dark.png",
+      "sha256": "769433380868ab68261360b0eabeb0d5f34b1a92e7fbadaf7e073fb207abbab2"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-21-builder-tailwind-visual-conformance-chromium/builder-Angular-21-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-tailwind.png",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-bootst-a91f4-roperty-editors-and-visuals-chromium/authoring-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/chromium/authoring-bootstrap5.png",
+      "sha256": "56c4cbd32c3e81da853450f2a35b1e46766ba06ddc839cffe05ac8ce1e5c1608"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-9af5c-rap4-conformance-and-visual-chromium/sdk-extensions-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-bootstrap4.png",
+      "sha256": "6329a7bfd955290929eaf75c2bd069d9921a28c9b328f35cb62384b77694ea9f"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-9af5c-rap4-conformance-and-visual-chromium/sdk-native-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-native-bootstrap4.png",
+      "sha256": "18c688495793d8facbcd09d94da1db9bfd9285d0bd2ab2c2b5c9101594d63eec"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-0764f-rap5-conformance-and-visual-firefox/sdk-extensions-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-bootstrap5.png",
+      "sha256": "d700e3c406c10288c4209aac2b8abf66c2aec89df896d93571ddd9a1a7788d21"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-0764f-rap5-conformance-and-visual-firefox/sdk-native-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-native-bootstrap5.png",
+      "sha256": "a2c3d7f66a007142fc29a02edd0af9b5d7c0af02b6163ad2b4ee58c10038aa51"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-shad-165f8-tailwind-visual-conformance-chromium/builder-element-shadow-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-tailwind.png",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "source": "visual-results/test-results/authoring-authoring-bootst-a91f4-roperty-editors-and-visuals-firefox/authoring-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/firefox/authoring-bootstrap5.png",
+      "sha256": "6fccaff690e5803f4d816a8d34a07954309e92e18412d7c601d582edb0203d75"
+    },
+    {
+      "source": "visual-results/test-results/themes-Bootstrap-4-dark-with-real-framework-CSS-webkit/bootstrap4-host-css-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-host-css-dark.png",
+      "sha256": "13b752629ea950ba4865ceb74cf77f17480c48dca83b97218e3edef517808821"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-element-shad-880a9--context-focus-and-teardown-chromium/builder-element-shadow-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap4.png",
+      "sha256": "dc95f74fb068b64251ad73f6f48e579c98f44697b1648523dd76628696848d51"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-read-only-prev-09844-t-checkbox-and-Rating-edits-firefox/base-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/base-readonly.png",
+      "sha256": "006ea763489371772e7bee8c0b8630b3d42e107f46c600b13fd5dc7d26b9a8ea"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-React-builde-c603d--context-focus-and-teardown-chromium/builder-React-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-tailwind.png",
+      "sha256": "b4ae3dc7a559c59ca4be785315e0e18b02220b1a58ec99b405ff737a93f5a783"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-DOM-builder-base-visual-conformance-chromium/builder-DOM-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-base.png",
+      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-light-conformance-states-and-visual-snapshot-webkit/tailwind-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/tailwind-light.png",
+      "sha256": "c153857507b3046584f36d558c62515451725a05efc8ba7aa1b3ff95e7458a72"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-base-keyboard-re-08174-veal-and-visual-conformance-chromium/tabs-base-contact-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-base-contact.png",
+      "sha256": "ba5c1002eac6f56f47a5b9ff7575648b646a637c928535c1e3f41110536c3a63"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-base-keyboard-re-08174-veal-and-visual-conformance-chromium/tabs-base-profile-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-base-profile.png",
+      "sha256": "3dbd43d6af246707875d4c0b0e222202ccf2c869e233d339487a927eae50de35"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-dark-conformance-states-and-visual-snapshot-chromium/base-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/base-dark.png",
+      "sha256": "8cc3aa2335baef42929da4f7b6099f09f6e35dc769396c565102f91515bcec49"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-React-builde-c2380--context-focus-and-teardown-chromium/builder-React-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-base.png",
+      "sha256": "7dba51b113a7b8c69a84292d957952c7711e800df32deb5c759dc59017b993d1"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--4af76-al-key-captions-and-editors-firefox/nullable-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/firefox/nullable-tailwind.png",
+      "sha256": "66e08c0b6de464a895a7060a660bd4c48e94ee42d931867764e2cd6fdcd7e445"
+    },
+    {
+      "source": "visual-results/test-results/themes-bootstrap4-light-co-e84c5--states-and-visual-snapshot-firefox/bootstrap4-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-light.png",
+      "sha256": "a108f6d514ab9f5362aaf8fdc111f3e6a6e7517fb5bdfd72e46f922fca89fcd3"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-22-builder-base-visual-conformance-chromium/builder-Angular-22-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-base.png",
+      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712"
+    },
+    {
+      "source": "visual-results/test-results/nullable-boolean-nullable--5203b-al-key-captions-and-editors-chromium/nullable-bootstrap5-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/chromium/nullable-bootstrap5.png",
+      "sha256": "fd4480342035d44bc32a5c352c1ce458aeff5fd430a5631465e542657eb62276"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-d5b03-rial-conformance-and-visual-webkit/sdk-extensions-material-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-material.png",
+      "sha256": "6efe5357d21ffdd4ef2751812bda3d5874d48e501d9acfcd0df344c45cf350e4"
+    },
+    {
+      "source": "visual-results/test-results/themes-base-dark-conformance-states-and-visual-snapshot-webkit/base-dark-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/base-dark.png",
+      "sha256": "acb94804b4e75fe0a9428621e9e0edfb423af3f6df851bc513be48743c7fe3fd"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-bootstrap4-keybo-eb956-veal-and-visual-conformance-firefox/tabs-bootstrap4-profile-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-bootstrap4-profile.png",
+      "sha256": "028eb89f8951efb2b676c2367163d62dc88cb13d339a4fc9b480d5b9aaac52b8"
+    },
+    {
+      "source": "visual-results/test-results/tabs-Tabs-bootstrap4-keybo-eb956-veal-and-visual-conformance-firefox/tabs-bootstrap4-contact-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-bootstrap4-contact.png",
+      "sha256": "d48788572a95fd804931b3508ee5476f2a73bba4c4f98a33abf02cd3a4093156"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-22-b-19871--context-focus-and-teardown-chromium/builder-Angular-22-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-base.png",
+      "sha256": "7dba51b113a7b8c69a84292d957952c7711e800df32deb5c759dc59017b993d1"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-read-only--a39f4-t-checkbox-and-Rating-edits-webkit/tailwind-readonly-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/tailwind-readonly.png",
+      "sha256": "0574402ec79e49efc3cee8aa6ed27dd6957ab8335e33b739bd36c8f5518144d8"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-108ba-wind-conformance-and-visual-chromium/sdk-native-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-native-tailwind.png",
+      "sha256": "6640bb0c1557ada43fa7975fc9a70fdf74cd29f9f13be9f3e825d0902ae44e2b"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-108ba-wind-conformance-and-visual-chromium/sdk-extensions-tailwind-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-tailwind.png",
+      "sha256": "fd70acf0140c122a6adb56e11acbc7c25f15b57367a4a8b24adf86b318a692fb"
+    },
+    {
+      "source": "visual-results/test-results/themes-tailwind-light-conformance-states-and-visual-snapshot-firefox/tailwind-light-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/tailwind-light.png",
+      "sha256": "729e2e66a8a97cd7560705455705e13a8e7b29849533e62b42464e41bb20016e"
+    },
+    {
+      "source": "visual-results/test-results/sdk-extensions-SDK-composi-d5b03-rial-conformance-and-visual-firefox/sdk-extensions-material-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-material.png",
+      "sha256": "09ff02e17559e2d28ddcc57691bc8546120d47586f9a16cd8daf0ee60038a34b"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-DOM-builder--16b7f--context-focus-and-teardown-chromium/builder-DOM-base-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-base.png",
+      "sha256": "7dba51b113a7b8c69a84292d957952c7711e800df32deb5c759dc59017b993d1"
+    },
+    {
+      "source": "visual-results/test-results/builder-hosts-Angular-21-b-859b5-otstrap4-visual-conformance-chromium/builder-Angular-21-bootstrap4-actual.png",
+      "baseline": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap4.png",
+      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f"
+    }
+  ]
+}

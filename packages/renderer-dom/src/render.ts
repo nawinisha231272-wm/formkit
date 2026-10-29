@@ -1,11 +1,7 @@
-import { bootstrap4Theme } from "@ourform/theme-bootstrap4";
 import { resolveView, nativeSlot } from "./native";
 import type { NativeHost } from "./native";
 export { resolveView } from "./native";
 export type { NativeHost, NativeUnit } from "./native";
-import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
-import { tailwindTheme } from "@ourform/theme-tailwind";
-import { materialTheme } from "@ourform/theme-material";
 import type { Engine, FormSession, CompiledNode } from "@ourform/core";
 import {
   defaultMessage,
@@ -33,6 +29,8 @@ export type AppearanceTheme =
   | "tailwind"
   | "material";
 export interface RenderOptions extends ThemeOptions {
+  /** Nonce from the host CSP for renderer-owned theme styles. */
+  styleNonce?: string;
   mode?: "edit" | "design";
   /** Design canvases may show one interactive tab; default preserves all-slot authoring. */
   designTabs?: "active" | "all";
@@ -52,6 +50,7 @@ export interface RenderOptions extends ThemeOptions {
 }
 export interface FormView {
   setTheme(theme: Theme | string): void;
+  setThemes(themes: ThemeOptions["themes"], theme?: Theme | string): void;
   setMode(mode: ThemeMode): void;
   focus(componentId: string): void;
   submit(): ReturnType<FormSession["submit"]>;
@@ -82,6 +81,7 @@ function mountForm(
     ((key: string, params?: Record<string, unknown>) =>
       session.localize(key, params, defaultMessage));
   let theme = options.theme ?? "base";
+  let themes = options.themes;
   let mode = options.themeMode ?? "light";
   let destroyed = false;
   let submitted = false;
@@ -99,6 +99,9 @@ function mountForm(
     }
   >();
   const style = document.createElement("style");
+  const dynamicStyle = document.createElement("style");
+  if (options.styleNonce) style.nonce = options.styleNonce;
+  if (options.styleNonce) dynamicStyle.nonce = options.styleNonce;
   const summary = document.createElement("div");
   summary.className = "of-summary";
   summary.tabIndex = -1;
@@ -117,8 +120,32 @@ function mountForm(
   ].map((key) => [key, root.getAttribute(key)] as const);
   root.classList.add("of-root");
   root.setAttribute("data-of-instance", instance);
-  root.replaceChildren(style, summary);
-  const themeOptions = () => ({ ...options, themeMode: mode });
+  root.replaceChildren(style, dynamicStyle, summary);
+  let dynamicStyleId = 0;
+  const dynamicRules = new Map<
+    string,
+    { className: string; rule: CSSStyleDeclaration }
+  >();
+  const styleClass = (key: string, declarations: string): string => {
+    let current = dynamicRules.get(key);
+    if (!current) {
+      const className = `${instance}-style-${dynamicStyleId++}`;
+      const sheet = dynamicStyle.sheet!;
+      const index = sheet.insertRule(`.${className}{}`);
+      current = {
+        className,
+        rule: (sheet.cssRules[index] as CSSStyleRule).style,
+      };
+      dynamicRules.set(key, current);
+    }
+    current.rule.cssText = declarations;
+    return current.className;
+  };
+  const themeOptions = () => ({
+    ...options,
+    themes: themes ?? [],
+    themeMode: mode,
+  });
   const applyTheme = (): void => {
     const resolved = resolveTheme(theme, themeOptions());
     root.setAttribute("data-of-theme", resolved.name);
@@ -204,6 +231,7 @@ function mountForm(
               actions(id),
               blur(id),
               interaction(entry),
+              styleClass,
             ),
           );
           field.native?.update();
@@ -396,6 +424,7 @@ function mountForm(
           actions(entry.node.id),
           blur(entry.node.id),
           interaction(entry),
+          styleClass,
         ),
       );
       fields.set(entry.node.id, field);
@@ -448,6 +477,12 @@ function mountForm(
       theme = next;
       refresh();
     },
+    setThemes(next, selected = theme) {
+      resolveTheme(selected, { ...themeOptions(), themes: next ?? [] });
+      themes = next;
+      theme = selected;
+      refresh();
+    },
     setMode(next) {
       mode = next;
       refresh();
@@ -464,12 +499,12 @@ export function renderForm(
   root: HTMLElement,
   session: FormSession,
   views: Views,
-  theme: AppearanceTheme = "base",
+  theme: Theme,
 ): FormView {
   return mountForm(root, session, {
     views,
     theme,
-    themes: [bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme],
+    themes: [theme],
     idPrefix: "",
   });
 }
@@ -477,6 +512,15 @@ export function renderToString(
   session: FormSession,
   options: RenderOptions,
 ): string {
+  // Report a missing required portable control before resolving appearance.
+  // Opt-in themes must not obscure the established no-view diagnostic.
+  for (const entry of session.form.nodes)
+    if (
+      entry.model.value &&
+      !options.views.get(entry.node.type)?.portable &&
+      !options.views.get(entry.node.type)?.layout
+    )
+      throw new Error(`No portable view: ${entry.node.type}`);
   const instance = options.idPrefix ?? "of-ssr";
   if (!/^[a-zA-Z0-9_-]+$/.test(instance))
     throw new Error(

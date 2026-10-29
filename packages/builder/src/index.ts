@@ -16,6 +16,7 @@ export type {
   PaletteOptions,
   EditorOptions,
   ToolbarAction,
+  LazyThemeRegistration,
 } from "./types";
 export type { ChromeOptions } from "./theme";
 export type { BuilderIcons, BuilderIcon, BuilderIconName } from "./icons";

@@ -17,7 +17,12 @@ export interface FieldDefinition<
   model: ComponentModel<V> & {
     properties: P;
     kind: "field";
-    builder: { title: string; group: string; icon?: string };
+    builder: {
+      title: string;
+      group: string;
+      icon?: string;
+      caption?: string | false;
+    };
   };
   properties: P;
   shell: ShellVariant;
@@ -31,6 +36,7 @@ export function defineField<
   title: string;
   group?: string;
   icon?: string;
+  caption?: string | false;
   value: ValueAdapter<V>;
   validators?: readonly string[];
   properties?: P;
@@ -53,6 +59,7 @@ export function defineField<
     title: spec.title,
     group: spec.group ?? "Fields",
     ...(spec.icon ? { icon: spec.icon } : {}),
+    ...(spec.caption !== undefined ? { caption: spec.caption } : {}),
   });
   const model = Object.freeze({
     type: spec.type,

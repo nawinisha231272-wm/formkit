@@ -16,6 +16,7 @@ export function layoutVNode(
   prefix: string,
   interaction: LayoutInteraction,
   t: (key: string) => string,
+  styleClass?: (key: string, declarations: string) => string,
 ): VNode {
   const id = `${prefix}${entry.node.id}`;
   const slots = resolveSlots(entry.model, entry.node);
@@ -26,6 +27,12 @@ export function layoutVNode(
       : translated;
   };
   const design = interaction.mode === "design";
+  const translatedLabel = entry.node.labelKey
+    ? t(entry.node.labelKey)
+    : undefined;
+  const nodeLabel =
+    (translatedLabel !== entry.node.labelKey ? translatedLabel : undefined) ??
+    entry.node.label;
   const activeDesign = design && interaction.designTabs === "active";
   const tabs = !!layout.tabs && (!design || activeDesign);
   const active = slots.some((slot) => slot.name === interaction.activeSlot)
@@ -39,19 +46,19 @@ export function layoutVNode(
       ...root,
       id,
       class: `${root.class} of-layout of-${entry.node.type}${layout.columns ? " of-columns" : ""}`,
-      ...(entry.node.label && layout.tag !== "fieldset"
+      ...(nodeLabel && layout.tag !== "fieldset"
         ? { "aria-labelledby": `${id}_label` }
         : {}),
-      ...(entry.node.label && layout.tag === "div" ? { role: "group" } : {}),
+      ...(nodeLabel && layout.tag === "div" ? { role: "group" } : {}),
       ...(entry.node.description
         ? { "aria-describedby": `${id}_description` }
         : {}),
     },
-    entry.node.label
+    nodeLabel
       ? h(
           layout.tag === "fieldset" ? "legend" : "h3",
           { key: "heading", id: `${id}_label`, class: "of-layout-title" },
-          entry.node.label,
+          nodeLabel,
         )
       : null,
     entry.node.description
@@ -72,7 +79,7 @@ export function layoutVNode(
             key: "tablist",
             role: "tablist",
             class: "of-tablist",
-            "aria-label": entry.node.label ?? entry.model.title,
+            "aria-label": nodeLabel ?? entry.model.title,
           },
           slots.map((slot, index) =>
             h(
@@ -122,9 +129,16 @@ export function layoutVNode(
               "data-of-slot-owner": entry.node.id,
               class: entry.node.columns ? "of-column" : "of-slot",
               ...(entry.node.columns
-                ? {
-                    style: `--of-column-span:${entry.node.columns[slots.indexOf(slot)]!.width}`,
-                  }
+                ? styleClass
+                  ? {
+                      class: `of-column ${styleClass(
+                        `${entry.node.id}-${slot.name}`,
+                        `--of-column-span:${entry.node.columns[slots.indexOf(slot)]!.width}`,
+                      )}`,
+                    }
+                  : {
+                      style: `--of-column-span:${entry.node.columns[slots.indexOf(slot)]!.width}`,
+                    }
                 : {}),
               ...(tabs
                 ? {

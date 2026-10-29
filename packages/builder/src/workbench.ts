@@ -1,10 +1,11 @@
-import { toSubmissionSchema } from "@ourform/schema";
 import { builderIssues } from "./issues";
 import { icon } from "./icons";
 import { actionButton, chip, tabs } from "./primitives";
 import { element } from "./types";
 import type { UI } from "./types";
 import type { FormController } from "@ourform/renderer-dom";
+import type { FeatureLoader } from "./feature-loader";
+import { featureOutlet } from "./feature-outlet";
 
 type Mode = "build" | "data" | "preview" | "json";
 interface WorkbenchContext {
@@ -15,24 +16,21 @@ interface WorkbenchContext {
   bottom: HTMLElement;
   previewPanel: HTMLElement;
   jsonPanel: HTMLElement;
+  modeChanged(mode: Mode): void;
   appearance: HTMLElement;
   modes: HTMLElement;
-  legacy: HTMLElement;
   look(): string;
   setLook(value: string): void;
   showIssues(): void;
   undo: HTMLButtonElement;
   redo: HTMLButtonElement;
   preview(): FormController | undefined;
+  features: FeatureLoader;
 }
 /** Header and mode panels share the existing controller; switching never remounts a form. */
 export function workbench(context: WorkbenchContext) {
   const { ui, shell, grid, bottom, previewPanel, jsonPanel } = context;
-  const primitiveContext = {
-    document: ui.document,
-    signal: ui.signal,
-    ...(ui.icons ? { icons: ui.icons } : {}),
-  };
+  const primitiveContext = ui;
   const header = element(ui.document, "header", "", "ofb-header");
   const brand = element(ui.document, "div", "", "ofb-brand");
   const mark = element(ui.document, "span", "O", "ofb-brand-mark");
@@ -119,7 +117,7 @@ export function workbench(context: WorkbenchContext) {
   }
   look.onchange = () => context.setLook(look.value);
   lookLabel.append(look);
-  preferences.append(lookLabel, context.modes, context.legacy);
+  preferences.append(lookLabel, context.appearance, context.modes);
   more.append(menuToggle, preferences);
   more.addEventListener(
     "keydown",
@@ -146,13 +144,9 @@ export function workbench(context: WorkbenchContext) {
     "",
     "ofb-data-panel of-builder-chrome",
   );
-  const dataHeading = element(ui.document, "h2", ui.t("ofb.submissionSchema"));
-  const schema = element(ui.document, "pre", "", "of-builder-json");
-  schema.tabIndex = 0;
-  const sampleHeading = element(ui.document, "h2", ui.t("ofb.sampleData"));
-  const sample = element(ui.document, "pre", "", "of-builder-json");
-  sample.tabIndex = 0;
-  dataPanel.append(dataHeading, schema, sampleHeading, sample);
+  dataPanel.tabIndex = -1;
+  const dataOutlet = featureOutlet(dataPanel, ui, context.features);
+  let dataView: { update(): void } | undefined;
   const switchMode = (value: Mode) => {
     active = value;
     shell.dataset.ofbView = value;
@@ -163,7 +157,14 @@ export function workbench(context: WorkbenchContext) {
     dataPanel.hidden = value !== "data";
     modeTabs.set(value);
     content.setAttribute("aria-labelledby", `${contentId}-${value}`);
-    if (value === "data") refreshData();
+    if (value === "data") {
+      if (dataView) dataView.update();
+      else
+        dataOutlet.open("data", ({ mountData }) => {
+          dataView = mountData(dataPanel, ui, context.preview);
+        });
+    } else dataOutlet.cancel();
+    context.modeChanged(value);
   };
   const modeTabs = tabs(
     primitiveContext,
@@ -190,13 +191,7 @@ export function workbench(context: WorkbenchContext) {
   const content = element(ui.document, "div", "", "ofb-workspace");
   content.id = contentId;
   content.setAttribute("role", "tabpanel");
-  const preview = actionButton(
-    primitiveContext,
-    ui.t("ofb.preview"),
-    () => switchMode("preview"),
-    { icon: "preview" },
-  );
-  actions.append(context.undo, context.redo, issues, preview, save);
+  actions.append(context.undo, context.redo, issues, save);
   header.append(
     brand,
     breadcrumb,
@@ -212,15 +207,6 @@ export function workbench(context: WorkbenchContext) {
   content.append(pane);
   shell.prepend(header);
   shell.append(content);
-  function refreshData() {
-    const controller = context.preview();
-    schema.textContent = controller
-      ? JSON.stringify(toSubmissionSchema(controller.session.form), null, 2)
-      : "";
-    sample.textContent = controller
-      ? JSON.stringify(controller.session.getData(), null, 2)
-      : "";
-  }
   let checkedDefinition:
     | ReturnType<UI["builder"]["getState"]>["definition"]
     | undefined;
@@ -239,6 +225,7 @@ export function workbench(context: WorkbenchContext) {
     const definition = ui.builder.getState().definition;
     title.textContent =
       definition.title ?? definition.id ?? ui.t("ofb.untitled");
+    title.title = title.textContent;
     if (changed) status.textContent = ui.t("ofb.unsaved");
     if (checkedDefinition !== definition) {
       checkedDefinition = definition;
@@ -248,7 +235,7 @@ export function workbench(context: WorkbenchContext) {
     issues.setAttribute("aria-label", ui.t("ofb.issues", { count }));
     issues.replaceChildren(ui.t("ofb.issues", { count }));
     content.setAttribute("aria-labelledby", `${contentId}-${active}`);
-    if (active === "data") refreshData();
+    if (active === "data") dataView?.update();
   }
   switchMode("build");
   update();
@@ -261,7 +248,6 @@ export function workbench(context: WorkbenchContext) {
         b.dataset.tab === "logic" ||
         (media.matches && b.dataset.tab !== "preview");
     actions.hidden = media.matches;
-    context.legacy.hidden = media.matches;
     shell.toggleAttribute("data-ofb-readonly", media.matches);
   };
   media.addEventListener("change", mobile, { signal: ui.signal });

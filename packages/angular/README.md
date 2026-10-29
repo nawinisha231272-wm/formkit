@@ -5,10 +5,11 @@ Angular linker handles production AOT. Angular, RxJS and forms are peers; tslib 
 The examples deliberately load Angular's JIT compiler for their plain Vite bootstrap; the library does not.
 
 ```ts
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
 bootstrapApplication(App, {
   providers: [
     provideZonelessChangeDetection(),
-    provideOurForm({ engine }),
+    provideOurForm({ engine, themes: [bootstrap5Theme] }),
     provideFormField("employee", EmployeeLookupComponent),
   ],
 });
@@ -26,7 +27,7 @@ bootstrapApplication(App, {
 ```
 
 Import OurFormComponent into the host standalone component. Inputs include schema/data/defaultData/theme/
-themeMode/readOnly/engine/fields. Outputs: ready (FormController), dataChange (data), changed (StatePatch),
+themes/themeMode/readOnly/engine/fields. Outputs: ready (FormController), dataChange (data), changed (StatePatch),
 submitted (SubmitResult). submit/validate/reset/focusField delegate to the controller. Its readiness is backed
 by a signal; the wrapper uses OnPush and works without zone.js.
 
@@ -72,3 +73,16 @@ component refs, listeners and controller. Angular22 and21 are tested via each ex
 M09b adds a `chrome` input to `OurFormBuilderComponent`. Changes restyle the current builder in place
 with `setChrome`; the native component bridge retains the owner's Angular injector. Other builder
 options are available through the imperative controller/factory documented in @ourform/builder.
+
+Form hosts accept an optional `themes` registry (`HostOptions["themes"]`) and a `theme` name.
+Import descriptors explicitly from `@ourform/themes/<name>`; registry changes update the mounted
+view in place, preserving the session, values, touched/errors, focused control and caret. A simultaneous
+registry and selected-theme change is resolved atomically. Unknown names throw with
+`code: "unknown-theme"`, without selecting another theme. Registries are per form instance.
+
+### Per-feature builder preload
+
+The builder host exposes independent `settingsPreload`, `planningPreload` and `dataPreload`
+options (`'idle'` by default, `'none'` to load only on activation). `preload` controls only
+Logic/JSON and defaults to `'none'`. Set all four to `'none'` for a no-background-import host.
+Angular uses inputs, React uses props, and the builder custom element uses properties.

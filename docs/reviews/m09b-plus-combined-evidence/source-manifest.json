@@ -1,0 +1,230 @@
+{
+  "head": "53765f74507617022da415ce54e10611b5ce0974",
+  "state": "uncommitted, unpushed; size STOP; no full verification or current CI pass",
+  "files": [
+    {
+      "file": ".changeset/m09b-plus-ci-repairs.md",
+      "sha256": "ca4b96fd1dde4caf1fed9309a47a34e18152ceee1287a57da0f3b8227cbea20c"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "sha256": "d910519120f1d78e825e7a8a98b6ef7170d17ccf577ae35086f909e33cc2156f"
+    },
+    {
+      "file": ".github/workflows/nightly-performance.yml",
+      "sha256": "2d2e87706f3c2419505046c44a9c4c1ab51b6272aa5664aa07a0376a2a8d0d90"
+    },
+    {
+      "file": ".github/workflows/performance.yml",
+      "sha256": "2c2ca4700fb4f9897f92910a0a71c89b3bd78b0bbffc3b5d3c6439f845ab7465"
+    },
+    {
+      "file": "apps/docs/component-author-guide.md",
+      "sha256": "87d306b7cae056c81eabbc70c6ba24b260a3bb21541ada2a7757816effdc8de2"
+    },
+    {
+      "file": "apps/playground/authoring.ts",
+      "sha256": "3c0e26cc7ce25595eed2c17c87cb2ffa7d00ce78dac87c45af9e6b9e3208c419"
+    },
+    {
+      "file": "apps/react-example/src/builder.ts",
+      "sha256": "53d2358ed9095a8bab3798b7e8dab4470bb111359e85df81b613f7533313bf36"
+    },
+    {
+      "file": "docs/adr/0018-proposed-builder-lazy-features.md",
+      "sha256": "565722ad1d0b2598dbf152f851a5ce5bb4142036e03f45dd0e4cda8a6fb28e79"
+    },
+    {
+      "file": "docs/adr/0020-builder-consumer-entry-boundaries.md",
+      "sha256": "1d8b9e9d9da5cb7f68b519e58d3f7bf5da92c590618b43e899117d80e03a9d98"
+    },
+    {
+      "file": "docs/performance/builder-authoring-counts.json",
+      "sha256": "45892c0bb4903446408bfd1825a525050d000656afb0da073fb1e0fcfca6be94"
+    },
+    {
+      "file": "docs/progress.md",
+      "sha256": "2656af019aa5d620e188e1b9be13f0ba487d9d0013d3d8cd3600130f3608a201"
+    },
+    {
+      "file": "docs/reviews/m09b-plus-combined-prototype-measurement.md",
+      "sha256": "1909bf5332b342d4f510dcd5decb8383d12937c3c2a11e8c82c99fd91ff0747d"
+    },
+    {
+      "file": "packages/builder/src/builder.ts",
+      "sha256": "385716e28abd277a14f289be20712d1467c3468e054b17db66d3a49c02cd8cbb"
+    },
+    {
+      "file": "packages/builder/src/bulk-commands.ts",
+      "sha256": "ac1d197e572adbc44ccfde7616487a9d1076b01f25c49c62e93627f0b99a69e0"
+    },
+    {
+      "file": "packages/builder/src/canvas.ts",
+      "sha256": "fc5550682889c11d6c66f9b25ba185aba08f25fadba66f563b2303dbf0488de1"
+    },
+    {
+      "file": "packages/builder/src/component-actions.ts",
+      "sha256": "2271c2ddadaf0e653930ddba2a77f3be9b30147f619ba907a858c3e61b38e65f"
+    },
+    {
+      "file": "packages/builder/src/entry-index.ts",
+      "sha256": "106501d6f8c51ba4b2ff28182fa927842d0a6f4515d9973ffe459e61b1a54643"
+    },
+    {
+      "file": "packages/builder/src/feature-loader.ts",
+      "sha256": "a168c0cc63cc73281a5e5ff8aef5176a1382f3aa27cd688a08ed4ee2924f7fe1"
+    },
+    {
+      "file": "packages/builder/src/features/bulk-editor-retry.ts",
+      "sha256": "177b1f383255fb6ae11a57af7cd0f205ee02326286f73a644f7bd5e1f4f55db2"
+    },
+    {
+      "file": "packages/builder/src/features/bulk-editor.ts",
+      "sha256": "911cef24b2304539ce7edcf2b335e22944b9eddb68c4eba51a0f6f3fd1861732"
+    },
+    {
+      "file": "packages/builder/src/features/commands-retry.ts",
+      "sha256": "35498b45536d9a5392010524599049fe0b7284900df86674742bb93395c47a23"
+    },
+    {
+      "file": "packages/builder/src/features/commands.ts",
+      "sha256": "a9913bce6886730226d9cfe0ce2ad07cae14d9674ce6cb7d2690f9c872856cd2"
+    },
+    {
+      "file": "packages/builder/src/features/secondary-tools.ts",
+      "sha256": "bee50083e73394d99d4d0146f9297dc93977479257459a718553356214528baa"
+    },
+    {
+      "file": "packages/builder/src/messages.ts",
+      "sha256": "475af35ae7aa3eddac73b5329da7e4ce27ad3d037a9a922d15fc7a5eb9909b0b"
+    },
+    {
+      "file": "packages/builder/src/pointer-style.ts",
+      "sha256": "705d3e579e8476f9059694a8599fff1c1da874b7eb70e94223d3668e9b72137c"
+    },
+    {
+      "file": "packages/builder/src/pointer.ts",
+      "sha256": "8a5a1861f2e32aea2c5f2ec30d9f60ca73b934fbefd2e7e383bf75636d1ccbb0"
+    },
+    {
+      "file": "packages/builder/src/selection-set.ts",
+      "sha256": "64c967596149ce1ff2c6e93adbd2be92587f9502174b4a72d110cc917e356646"
+    },
+    {
+      "file": "packages/builder/src/settings-messages.ts",
+      "sha256": "67f1976a8a2daf8a04ed7141a77a883976de806983f060b70f6fb0de5d222926"
+    },
+    {
+      "file": "packages/builder/src/settings.ts",
+      "sha256": "6bf11889cb164b2bfd10fd112764ec84e0d39d7d37fe6048c734b1445eb1ddb8"
+    },
+    {
+      "file": "packages/builder/src/types.ts",
+      "sha256": "ad31bfd5f776ab26138a89bd79a06330f3a8c7c55b78da4a14d14072b6caae73"
+    },
+    {
+      "file": "packages/builder/tests/bulk-commands.test.ts",
+      "sha256": "6739470bd31ffeebd29c9d6e9de1f1943e15b5aa87b7848d45bf7fe5522764df"
+    },
+    {
+      "file": "packages/builder/tests/bulk-properties.test.ts",
+      "sha256": "978773739ab79025f5decb7bcaee8b878747450e1379368cefd6d5b2b9804ce7"
+    },
+    {
+      "file": "packages/builder/tests/bulk-work-counts.test.ts",
+      "sha256": "365b3773b8e971fcc700333c66347670457ce557051cbe64a61079aa2809156f"
+    },
+    {
+      "file": "packages/builder/tests/feature-loader.test.ts",
+      "sha256": "9f51197cef6bb5104fb8f06cbf6c9dc72ca988522e0de667fed7299eb726eeed"
+    },
+    {
+      "file": "packages/builder/tests/selection-set.test.ts",
+      "sha256": "2b8c01728c04386230924ae02b5d4860a4298639111718d10dc8772bb96cbf7d"
+    },
+    {
+      "file": "packages/builder/tests/standalone-layout-css.test.ts",
+      "sha256": "0618c9fb51d8e1a090c72dea60c6aa42b8f659f5884b0cb4f8e89a56986e973e"
+    },
+    {
+      "file": "packages/builder/tsup.config.ts",
+      "sha256": "97b196af832704089c369d1b23e5e33c6c052a4ddce81e663e95724ab6e83225"
+    },
+    {
+      "file": "packages/cli/src/browser-template.ts",
+      "sha256": "1b43a38f0bbff565185d2ba9eb3bd2230dca403a9622a8991a1b89f40817737d"
+    },
+    {
+      "file": "packages/cli/src/index.ts",
+      "sha256": "5c014d194cddfbe2fb0a50b12cb0de1f50021c6cf03558589ab90c31a08da344"
+    },
+    {
+      "file": "packages/cli/tests/scaffolds.test.ts",
+      "sha256": "02e5bad912bdb50e3411de486ae0d1936ac0e8e40099dc47b062a3ed5441a130"
+    },
+    {
+      "file": "packages/renderer-dom/src/render.ts",
+      "sha256": "507e8ab875ed9104289246b7e52eec645a25dd3f7023c5bd9d1488659beef356"
+    },
+    {
+      "file": "packages/theme-bootstrap4/src/index.ts",
+      "sha256": "17aca8c7c76cee637570c15ef9dc2d213f1802a6bb4411c6d2bdb4ccbf81f414"
+    },
+    {
+      "file": "packages/theme-bootstrap5/src/index.ts",
+      "sha256": "75bccbc89f371bf84e5c26281ae429cb1104c4ae2678f2a3b9f1564d51e11091"
+    },
+    {
+      "file": "packages/theme-tailwind/src/index.ts",
+      "sha256": "1fd176d5033da4cd8ae3aee4125875fa5e26c19e26bd31516cc9f457f9bd65fe"
+    },
+    {
+      "file": "scripts/build-script-tag-example.mjs",
+      "sha256": "6f7269a0331e9aa0035da56580640124f3d7e3f52a9f60f9abb3ff399572c571"
+    },
+    {
+      "file": "scripts/builder-size-gate.mjs",
+      "sha256": "53cc4cdb601b33946ed05f8306306d9d54f49feba716f660e293408da528a583"
+    },
+    {
+      "file": "scripts/pack-sdk-kit.mjs",
+      "sha256": "f21f9c489fe0d2f6251341e6999c7fa2d7da7c0e57c9713765a3bb289cc99fa7"
+    },
+    {
+      "file": "scripts/work-count-baseline.d.mts",
+      "sha256": "c5921b32b782c5664cf364e5facde3f3b6cfc74984beb3bb43610d7ecf3867b6"
+    },
+    {
+      "file": "scripts/work-count-baseline.mjs",
+      "sha256": "32207ced20aa448bd68806f64fea9dc7264dd51727da2a92f4aed0bc7263d2be"
+    },
+    {
+      "file": "tests/authoring-count-baseline.test.ts",
+      "sha256": "108fd1075e0e16ee4a1d837da8125de92349fb475017c002e71152dfb50236f8"
+    },
+    {
+      "file": "tests/builder-benchmarks/authoring.spec.ts",
+      "sha256": "14a47492d367c876795bf4a0c929df551a34364faa95c80cab571d57ba704da8"
+    },
+    {
+      "file": "tests/e2e/builder-actions.spec.ts",
+      "sha256": "76f4ed56f8322a75368e6b7d8bb372ef67712037865f137387a559eee19620db"
+    },
+    {
+      "file": "tests/e2e/builder-bulk-actions.spec.ts",
+      "sha256": "91af5baaf653de280d22fcf94e14f9be0cff65b32781ca597c828de7f06c3d45"
+    },
+    {
+      "file": "tests/e2e/builder-bulk-editor.spec.ts",
+      "sha256": "44f161f59fffa4d82dc691e0df53fb9d7d84e096884a22c2f7820fef1e2f8f03"
+    },
+    {
+      "file": "tests/e2e/builder-multiselect.spec.ts",
+      "sha256": "061d05aa7f55e7e7fdf8884f6f44096dbfc7d98a390d1f68dea72278bcae4a98"
+    },
+    {
+      "file": "tests/e2e/builder-quick-add-geometry.spec.ts",
+      "sha256": "3ec0e05a472082e857379731d97fdfaf7fa3bb5c0677fceddbede33c90b9f2a4"
+    }
+  ]
+}

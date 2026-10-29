@@ -1,0 +1,1 @@
+export { mountData } from "./data";

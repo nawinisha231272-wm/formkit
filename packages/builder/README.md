@@ -85,12 +85,52 @@ fields explicitly; framework wrappers include the built-ins for you. For example
 ```ts
 import { createBuilder } from "@ourform/builder";
 import { builtinComponents } from "@ourform/components";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5";
 const builder = createBuilder(document.querySelector("#builder")!, definition, {
   fields: [...builtinComponents, customerReference],
-  theme: "material",
+  themes: [bootstrap5Theme],
+  builderThemes: [bootstrap5BuilderTheme],
+  theme: "bootstrap5",
   chrome: { theme: "match-form", density: "comfortable" },
 });
 ```
+
+`@ourform/builder` ships Neutral chrome and imports no form theme. Register only the form themes and
+matching builder recipes the instance needs. The picker lists only registered eager/lazy themes. A
+custom recipe from `defineBuilderTheme` uses the same `builderThemes` registry. Material extends Base,
+so its convenience entry supplies both form descriptors:
+
+```ts
+import { materialThemes } from "@ourform/themes/material";
+import { materialBuilderTheme } from "@ourform/builder/themes/material";
+
+const builder = createBuilder(root, definition, {
+  themes: materialThemes,
+  builderThemes: [materialBuilderTheme],
+  theme: "material",
+  lazyThemes: [
+    {
+      name: "bootstrap5",
+      label: "Bootstrap 5",
+      load: async () => ({
+        theme: (await import("@ourform/themes/bootstrap5")).bootstrap5Theme,
+        builderTheme: (await import("@ourform/builder/themes/bootstrap5"))
+          .bootstrap5BuilderTheme,
+      }),
+    },
+  ],
+});
+```
+
+Lazy loaders are host-owned, local/offline imports. Selection opens an accessible loading state;
+failure preserves theme/focus and offers Retry. Destroy ignores late results. Theme registration is
+instance-local, makes no network request itself, and never changes form JSON. Existing
+`@ourform/theme-*` packages remain compatibility entry points during migration.
+
+Generated script distribution provides `ourform-builder.<theme>.min.js` for each theme and
+`ourform-builder.all-themes.min.js` for demos. Supply `assetBase` when deferred chunks live somewhere
+other than the entry script directory. All chunks work with local/offline hosting and strict CSP.
 
 ## M09b host lock contract
 
@@ -121,8 +161,15 @@ in the outline reveals its tab. Component actions share toolbar, context-menu an
 
 Use `palette: {groups: ["basic", "layout", "acme"], hidden: ["password"], order: {acme: 0}}` to filter
 registered builder entries. Default Fields/Layouts metadata maps to Basic/Layout; object scopes appear
-under Data. Empty-slot buttons open a searchable mini palette with six frequently used types from this
-editing session. Modal additions from either palette remain private until Save.
+under Data. Empty-slot and hover/focus **+** buttons lazy-load a searchable mini palette with six
+frequently used types from this editing session. Each button retains its exact parent, slot and
+insertion index, and the menu lists only registered components accepted there. Modal additions from
+either palette remain private until Save. Failure keeps selection/schema/history intact and exposes
+Retry; `assetBase` self-hosting uses `features/quick-add.js` under the Settings offline/CSP contract.
+
+Double-click a canvas caption or press Shift+F2 on its component to edit a literal label in place.
+Enter commits one UpdateProperty history step, Escape cancels, and the data key stays unchanged. If
+the component has `labelKey`, the action opens generated Settings so translated text is not replaced.
 
 Host options also support `toolbar.actions` (the shared toolbar/context action allowlist),
 `editor.tabs.hide` (case-insensitive group names), `editor.properties[type].hide` (metadata property
@@ -166,7 +213,8 @@ Header **Theme** selects the form theme. **More → Builder look** chooses Match
 persists it in browser-profile storage. `preferenceKey` (default `ourform.builder.look`) lets hosts
 namespace the preference per authenticated user. An explicit `chrome.theme` takes precedence at
 creation, including pinned/custom themes. Storage denial leaves the active instance usable. The
-More menu also contains Appearance, Insert into and Layout to wrap in for keyboard workflows.
+header More menu also contains Appearance. Insert into and Layout to wrap in are in the selected
+component’s More menu and keyboard workflows.
 
 Selection follows focused outline/canvas components, including End/Up then Duplicate or Wrap.
 Conditional/Disabled when and Calculated value use searchable sentence rows and a synchronized
@@ -176,8 +224,8 @@ enforced. The header shows the type icon and location. Empty labels use register
 
 New Select additions have editable Option 1/Option 2; existing runtime defaults remain empty. Issues
 flags empty Select/Radio options without rejecting a deliberate wire definition. Palette order favors
-common fields, and no unregistered future component is shown. M09b+ is an approved plan in spec 10,
-pending M09b screenshot approval before implementation.
+common fields, and no unregistered future component is shown. M09b is approved; M09b+ implementation
+and evidence are tracked in spec 10 and its milestone report.
 
 Undo/Redo use `aria-disabled` instead of native disabling so exhausting history does not discard
 keyboard focus. Disabled activation is a no-op. Ctrl/Cmd+Z announces an empty history from the
@@ -185,8 +233,12 @@ focused header button. Body-level undo/redo is enabled only when this is the sol
 multiple instances scope shortcuts to their own roots. F6/Shift+F6 cycle header, palette, selected
 canvas/outline regions and a visible toast action. Alt/Option+Z is not a builder shortcut.
 
-The build uses pinned development-only Terser through tsup. The current 30 kB compressed package
-ceiling remains enforced; ADR-0018's 26 kB target applies to the later M09b+ split.
+The build uses pinned development-only Terser through tsup. Consumer-build gates are builder UI initial (excludes builder-core) ≤31,600, builder-core marginal
+consumer contribution ≤7,300 and full minimal initial closure ≤67,400 Brotli bytes. The standalone
+builder package ceiling is aligned at 31,600. Generated Settings is a
+separate ≤8,000-byte lazy chunk and idle-preloads after first render unless
+`settingsPreload: "none"`. `preload: "idle"` independently preloads Logic and JSON. See ADR-0018 and
+ADR-0020 for entry ownership and aggregate budgets.
 
 ### Command feedback and narrow columns
 
@@ -201,3 +253,48 @@ remain in More; shortcuts are unchanged. Tag layout reserves the complete label 
 suffix, with one outside-edge placement rule for selection and hover. At desktop creation the builder
 always opens Build; view mode is not persisted. Below 768px it opens read-only Preview. Builder look
 storage does not control this initial view.
+
+## Declared builder caption
+
+`ComponentModel.builder.caption` identifies the displayed inline-edit property and defaults to
+`label` when omitted; `false` opts out. `defineField` and `defineLayout` accept `caption` with
+the same meaning. Panel and Fieldset continue to use `node.label` for their heading and legend.
+Inline editing is available only when the caption is visibly rendered. Enter or blur commits one
+trimmed update, Escape cancels, and an empty caption is refused with a visible reason. A `labelKey`
+opens Settings; editing never changes the data key.
+
+## Command search and multi-selection
+
+Ctrl/Cmd+K opens the command frame immediately; search and its schema index load on first use.
+Search Add component, Jump to component or Actions. The 500-field index is cached until the schema
+changes; results do not block typing. Escape restores focus. Failed loading shows a reason and Retry.
+
+Cmd/Ctrl+click toggles members on the canvas or outline. Shift+click and Shift+Up/Down extend the
+range through visible expanded outline rows. The outline is a multiselect tree, canvas selection
+mirrors it, and changes are announced. Structural actions normalize a selected ancestor/descendant
+to the ancestor; property changes use the exact selection. Undo/redo restore both schema and the
+before/after selection without an extra history entry.
+
+Copy/Cut/Paste, Duplicate, Delete, Move and Wrap act on the whole ordered selection as one undo step.
+Paste rechecks every slot, lock, id and key; a refused member refuses the complete operation.
+Clipboard access is synchronous in its user gesture. Delete and Required remain immediate.
+A cross-scope move is refused atomically. Lock refusals name blockers and offer Deselect locked
+components. Actions supporting one component are disabled with a reason for multiple selection.
+
+Edit selected components opens a lazy, generated bulk editor with only shared visible properties.
+Mixed values are identified without replacing them until edited. Save applies all supported edits as
+one command; Cancel discards the draft. Unsupported members or locks refuse the whole change.
+Bulk-editor/Retry closure is limited to 4,700 bytes; command search to 4,500, quick-add to 3,750.
+
+### Bulk planning and Data loading
+
+Bulk Move/Wrap/Duplicate/Paste preparation and the Data inspector body are separate lazy features.
+`planningPreload: "idle"` and `dataPreload: "idle"` are the defaults; set either to `"none"` to
+load only on activation. Together with `settingsPreload: "none"` and `preload: "none"`, they make
+no idle feature requests. Idle imports never mount panels or mutate schema/history. Bulk Delete,
+Required, selection, Shift+arrows, clipboard access and pointer dragging remain immediate.
+A cold bulk action opens an accessible busy dialog; Escape/close cancels without mutation. Failure
+shows its reason and Retry; a changed schema refuses pending preparation. Data mode shares the
+loading/error/Retry contract. Leaving the mode or destroying the builder cancels late mounting.
+Self-host `features/bulk-plan{,-retry}.js` and `features/data{,-retry}.js` with the other emitted assets
+under `assetBase`; they work with offline local assets and strict CSP without executable form JSON.

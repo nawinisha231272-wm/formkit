@@ -24,7 +24,8 @@
     "@ourform/react": "workspace:*",
     "@ourform/angular": "workspace:*",
     "@ourform/builder": "workspace:*",
-    "@ourform/theme-material": "workspace:*"
+    "@ourform/theme-material": "workspace:*",
+    "@ourform/themes": "workspace:*"
   },
   "devDependencies": {
     "@ourform/testing": "workspace:*",

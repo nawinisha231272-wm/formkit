@@ -12,7 +12,9 @@ deviations from spec, open questions.
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
 - **M03–M08 complete** — local and Linux evidence is recorded below. **M08 accepted by the owner under the amended author criterion** — SDK 0.x freeze accepted; closure PR #6 merged on first-run green CI. Human guide usability is required in M11; the owner approved the 24 new Yes/No screenshots. M09 is authorized after the separate plan-amendment PR.
-- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11); M09b implementation PR #13 merged on first-attempt green [Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39785290329); owner review fixes and screenshot approval remain open. M09c and M10a/M10b are not started.
+- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11). **M09b approved and merged**: the owner approved PR #15 screenshots at `79e69f688b1779696449465fbe34869460018cd0`; merge `0b3b452c46096e852248ca11872f9697888c621e` on 2026-10-23. M09c, M09d and M10a/M10b are not started.
+- Planned order: **M09b+ → M09c → M09d → M10a → M10b → M11 → M12**. The owner approved M09d's
+  plan with six amendments (ADR-0019 accepted). M09b+ is authorized next; stop at its owner gate.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
@@ -20,7 +22,477 @@ deviations from spec, open questions.
 
 ## Open questions
 
+Resolved M09b+ size STOP (owner decision 2026-10-28): additional lazy bulk planning and Data bodies
+are approved. Their first completed boundary measurement is UI/core/full **31,069 / 7,196 / 66,818**.
+The one-time reset enforces **31,600 / 7,300 / 67,400**, standalone builder **31,600**. New lazy
+ceilings are planning **1,750**, Data **300**; both default to idle preload with independent opt-outs.
+No further byte-hunting probes; polish must fit. Future milestones propose their own allowances for
+owner approval before implementation. M09b+ remains open until full verification/CI and owner review.
+
 No open questions from the pre-M08 housekeeping review. The two decisions are recorded below.
+
+Historical M09b+ sizing order (superseded by the 2026-10-28 reset above): finish the combined command-bar/multi-select prototype,
+including the lazy bulk editor and 500-field work-count/timing probes, then measure all three gates
+against **28,857 / 6,675 / 63,623**. Only then compact toward the measured gaps, discarding variants
+that grow bytes. Headless selection may move into builder-core only within **7,050**. The owner
+pre-approved one final UI increase to the measured value rounded up to 50, at most **29,500**, only
+while full initial stays at most **64,613**. New lazy ceilings use measured bytes plus 10%, rounded up
+to 50 and at most **5,000**. The measured bulk-editor ceiling is 4,700 under rule 4; no initial ceiling has changed, and no unmeasured chunk ships.
+All reports retain UI/core/full accounting and list code moved on both sides. Protected immediate
+behaviors remain initial; History/diff remains unshipped. Final pinned verify must pass before any push.
+
+M09d's plan/ADR-0019 is accepted with the owner amendments below. The separate optional kit-entry
+budget needs a measured numeric ceiling and owner approval before M09d ships, following ADR-0018's
+consumer-build accounting. No automatic budget increase or unbounded kit allowance is authorized.
+
+Historical M09b+ accounting decision, before the 2026-10-28 reset: builder UI initial (excludes builder-core) code/styles
+≤29 kB after consumer build, including Neutral chrome and selected builder recipes; shared runtime stays under existing budgets and is fully reported;
+full initial transitive closure ≤64,613 Brotli bytes, no growth. ADR-0020 is accepted. The command-bar closure budget is approved at 4,500 bytes with lazy indexing; History/diff still needs a
+measured budget and owner approval before shipping.
+
+Resolved implementation question (2026-10-25): the owner approved generated Settings UI/styles as
+a lazy entry, with frame/focus/loading/error, commands, locks, schema/draft/Add semantics and
+validation initial; PointerDrag stays initial. Settings defaults to idle preload through a separate
+policy, with host opt-out. ADR-0018/0020 record the exact failure/Retry/Add-with-defaults contract.
+
+Resolved measured boundary decision (2026-10-26): adopt explicit opt-in themes and option B. The
+probe measured Bootstrap 5 at 27,937 builder-owned / 61,189 full-initial Brotli bytes with Settings
+lazy and context menu/More/Issues/clipboard initial. Neutral-only was 26,549 / 58,987; Bootstrap 5
+with both Settings and secondary tools lazy was rejected because the context menu would not be
+immediate. The previous all-theme snapshot was 26,049 / 61,622. The owner raised builder-owned from
+26,000 to 29,000 for the approximately 1.4 kB accounting move plus about 1 kB M09b+ headroom; the
+64,613 full-closure no-growth gate and all deferred budgets remain unchanged. Implement no
+secondary-tools chunk.
+
+## M09b+ — Final local verification and owner review candidate — 2026-10-29
+
+Full pinned verify **PASS (exit 0)**: 339 unit tests, **1,485 browser checks**, 17 package budgets,
+all consumer/lazy gates and five runtime count fixtures. Final UI/core/full: **31,379 / 7,209 /
+67,317**, against fixed **31,600 / 7,300 / 67,400** ceilings. New lazy bodies: bulk editor
+4,640/4,700, planning 1,547/1,750, Data 269/300.
+Owned deferred union **38,966** includes Retry copies; per-feature/aggregate gates pass.
+500-field browser indexing **13.800 ms** advisory, 500 visits/cached reopen;
+Delete/Move/Required each 500 child commands, one publication and one history entry.
+
+Linux pinned-image generation and comparison pass; native baselines compare in the full verify.
+Screenshots: 295 changed, 38 new, 109 byte-identical; owner approval pending.
+See [delivery report](reviews/m09b-plus-size-reset.md), [review page](reviews/m09b-plus-owner-review.html)
+and [milestone checklist](milestones/M09b-plus.md) for exact tests, all measurements, failed-run history
+and source/image fingerprints. Protected immediate behavior remains initial. The separate Actions
+housekeeping commit pins Node-24 action runtimes; the app toolchain remains Node 22.22.3/pnpm 10.10.0.
+
+Current-head first-attempt CI is checked after pushing PR #16; prior failed CI is retained, never
+re-run for green. No merge. M09b+ remains at its owner delivery gate; M09c/M09d are not started.
+
+## M09b+ — Owner-approved lazy bodies and ceiling reset — 2026-10-28
+
+Plan: (1) lazy bulk Move/Wrap/Duplicate/Paste preparation and Data body, default idle policies and
+shared accessible loading/error/Retry/focus/cancellation; (2) record the one-time measured reset;
+(3) prove immediate clipboard/Delete/Required and schema/selection/history preservation in all three
+browsers; (4) owner polish and affected platform screenshots; (5) full pinned verify before every
+push, separate Actions housekeeping commit, final first-attempt PR CI, no merge. Risks: cold action
+cancellation, schema changes while planning and narrow budget headroom. No new byte-hunting probes.
+
+Implemented the approved boundaries. First measurement before remaining polish: UI **31,069**,
+core contribution **7,196**, full initial **66,818**. Compared with the previous retained build,
+UI −882, core +23 (marginal compression, original core source unchanged), full −810. Reset ceilings:
+UI/standalone **31,600** (`ceil((31069+500)/100)*100`), core **7,300**, full **67,400**
+(`ceil((66818+500)/100)*100`), all below owner maxima. Bulk planner/Retry is 1,547 each → **1,750**;
+Data/Retry 269 each → **300**, under rule 4. Prior lazy/aggregate budgets are unchanged.
+Deferred union is **36,532** with the two new bodies; the owner explicitly accepted independent-entry
+union growth 15,399 → 32,900. Rejected probes and failed runs remain preserved in the combined report.
+
+Protected initial code remains: clipboard handlers/buffer/system reads/writes, Delete key, bulk
+Delete/Required, selection and Shift+arrows, immediate command-bar frame, context menu and PointerDrag.
+A planning dialog snapshots schema, refuses stale preparation and applies one command only after
+success; Cancel/destroy never applies late work. Data navigation cancels pending mounts. New preload
+options are documented in the README/spec/changeset and ADR amendments. The existing Settings-only
+preload browser fixture now explicitly opts out of planning/Data, retaining its exact Settings/no-mount/
+no-history assertions. A new test covers the owner-approved three-feature idle default. No old
+expected values or correctness thresholds are relaxed. An initially misnamed destroy handle in the
+new test was corrected to the existing `nestedBuilder` controller; its failure is retained.
+
+Owner polish implemented for verification: dialog caption plus distinct type chip; content-fit live
+preview; inline Show/Disabled-when conjunction sentence; header full-name title and available-space
+truncation; bracketed-box Fieldset icon; Bootstrap 4/5 descriptions below controls; single errors use
+plain text and several a list. Preview duplication, settings-only header menu, conditional chips and
+outside-content hover labels are retained. Fresh browser/size/screenshot/full-verify results follow;
+no passing result, new commit/push or CI status is inferred from implementation alone.
+
+## M09b+ — Retained compaction and size STOP — earlier 2026-10-28 checkpoint
+
+Historical result: the owner resolved this STOP with the lazy-body and ceiling-reset decision above.
+
+Independent builds of the already-lazy entries, private callback/member compaction, shared document-order
+indexing and static CSS minification reduce the complete combined prototype to **31,951 UI / 7,173
+builder-core / 67,628 full initial**. The three enforced gates still fail; no increase or new deferral
+is applied. Builder-core source is restored unchanged after measured, rejected placement/refactor
+probes. Full accounting and all intermediate measurements are in the combined report linked above.
+
+Command-bar closure now passes at **2,880 / 4,500**; bulk editor is **3,895 / 4,700** (Retry 3,882).
+Settings is 7,325 / 8,000; Logic/JSON/map/Settings is 8,070 / 36,000. Independent entry helpers cost
+more deferred bytes: union **32,900**, previously 15,399, counting shared files once and including Retry
+copies. This trade-off is explicit, with no extra initial behavior deferred.
+
+The final compacted build passes **114/114** existing/new loading, authoring, multi-selection and
+bulk cases across Chromium/Firefox/WebKit, including all five themes' bulk-editor axe checks.
+Another **15/15** all-theme geometry cases prove quick-add no longer intercepts caption double-clicks;
+the marker is placed in the start gutter, and the failing earlier six-case log is preserved.
+No pixel baseline or assertion threshold changes. The size STOP above is now the owner decision;
+polish, screenshots, final full verify, commits/push and first-attempt current-head PR CI remain open.
+M09c/M09d are not started. No claim of milestone completion or passing current CI is made.
+
+Final local checks: pinned lint and complete typecheck pass. An initial complete unit run alongside
+typecheck times out three checks (335/338 pass); the unchanged isolated command then passes **338/338
+in 53 files**, including the packed-scaffold proofs, with core 91.11% / validation 99.25% line coverage.
+The failed log is retained; no deadline, retry policy or expectation changes. The standalone builder
+package also exceeds its unchanged 30,000-byte limit at **30,305** (other 16 package budgets pass).
+This reinforces the size STOP; no full verification or current-head CI success is claimed.
+
+## M09b+ — Combined prototype and rejected size probes — earlier 2026-10-28 checkpoint
+
+Ordered atomic bulk Move/Wrap/Duplicate/Paste, captured Cut sources, synchronous multi-Copy, exact
+Required/property edits, selection undo/redo, cancellable bulk Delete and the generated lazy bulk
+editor are wired to canvas/outline shortcuts and command search. Search Retry uses a distinct entry.
+The combined all-three-browser suite passes **66/66**, including five-theme editor axe, named lock
+recovery and exact ancestor/descendant property edits. Full pinned unit/coverage passes **337 tests
+in 52 files**: all three reported push-CI unit failures are fixed without changing their expectations;
+the three packed scaffold installs and generated full verification proofs pass. Pinned lint, test-project
+typecheck and diff checks also pass. The additional count
+baseline safeguard and existing CI policy tests pass **7/7**. This is local evidence, not green CI.
+
+Earlier complete prototype, before the retained compaction above: **32,899 / 29,000 UI initial**, **7,243 / 7,050 builder-core**,
+**68,480 / 64,613 full initial**. Gaps are 3,899 / 193 / 3,867 bytes. Every tested growing compaction
+variant was discarded. Moving SelectionSet into headless core measured 32,763 / 7,495 / 68,475 and
+was rejected: core exceeds its fixed ceiling. Both that temporary export and source were removed.
+The pre-approved 29,500 fallback cannot apply while full initial is over budget. No extra behavior
+was deferred and no initial ceiling increased. Gap-directed compaction remains required.
+
+The lazy bulk editor is 4,266 bytes; Retry 4,252. Rule 4 sets and enforces its ceiling at **4,700**
+(measured +10%, rounded up to 50). Command search is 4,504 against unchanged 4,500 and remains
+unshipped. All deferred closures' union is 15,399 bytes, with shared chunks counted once. Exact
+measurement methods, rejected variants, moved-code accounting and verification are in
+[the combined report](reviews/m09b-plus-combined-prototype-measurement.md).
+
+500-field deterministic checks record 500 index visits and, per bulk Delete/Move/Required, 500 child
+applications, one publication and one history step. Baseline increases/missing metrics/workload
+changes are refused against the base SHA. An isolated Chromium index measurement is **13.8 ms**
+(advisory ≤50 ms), with cached reopening. Timing remains outside verify; exact counts run in unit
+verification. No screenshot baseline changed in this checkpoint. Full pinned verify, a separate
+Actions housekeeping commit, any push and PR CI remain pending; do not ship or merge over budget.
+
+## M09b+ — Push-CI repair checkpoint — 2026-10-27
+
+Priority is the three reported push-CI failures before further feature implementation. The opt-in
+appearance change resolved themes before validating SSR controls; restore the established
+`No portable view` diagnostic first without importing an implicit theme. SDK expectations are unchanged.
+The packed author kit omitted the aggregate themes package: include it and builder, register all preview
+themes explicitly in generated harnesses, and check every exported target and emitted distribution file
+inside the tarballs. The existing three-scaffold install/frozen-offline-install/verify proof is retained.
+Inline-label font weight now uses `--ofb-font-weight-bold`; existing theme expectations are unchanged.
+
+The pinned full run passed lint/build/typecheck and **325 unit tests (48 files)**, then exposed further
+prototype regressions in browser checks. The interrupted failing log remains at
+`/tmp/ourform-ci-fixes-verify.log`; it is not a successful verification. Repairs retain canvas selection
+ARIA through valid tree/treeitem semantics, explicit themes in the authoring demo, host-specified toolbar
+actions, a single Wrap control, and keyboard context-menu semantics. Focused Chromium checks pass
+**51/51** (appearance/axe, actions, options, Unwrap and multi-selection); the hover-open case passes
+separately. Full final verification remains required; nothing is pushed while it fails.
+
+One test locator was wrong for its context-menu and keyboard routes: `builder-actions.spec.ts` looked
+for a button although these routes expose menuitems. It now selects the route's correct accessible role;
+all schema, one-history-step, Undo and Redo assertions remain byte-for-byte unchanged. The toolbar route
+continues targeting its visible Wrap button. No expected values or thresholds changed.
+
+Further repair evidence: the final targeted matrix passes **60/60** across Chromium, Firefox and
+WebKit, including all five half-column label geometries, React native-host correctness and React
+visual conformance. Missing layout/tab CSS in standalone Bootstrap 4/5 and Tailwind descriptors was
+previously masked by implicit Base installation; restoring it also restores real half-width columns.
+No new Base registration is required by these themes. The React example now keeps registry arrays
+stable so schema echoes preserve its builder instance/history. CSP dynamic declarations regain inline
+specificity and reattach their unique class after renderer/class refreshes; normal toolbars retain
+eight actions and compact ones retain five. Quick-add markers no longer change field flow/height.
+The interrupted complete run remains **not green**, and its failures are retained at
+`/tmp/ourform-ci-fixes-final-verify.log`; snapshots and final size/count stages remain pending.
+
+Separate housekeeping change: pin checkout/setup-node/upload/download and pnpm setup to verified
+Node-24-action commit SHAs. The application toolchain remains Node 22.22.3 / pnpm 10.10.0. Keep this in
+its own commit and require complete pinned `pnpm verify` before every push, including housekeeping.
+
+## M09b+ — Inline labels and precise quick-add checkpoint — 2026-10-27
+
+Implemented the first two authoring features after the loading split. Literal labels edit in place
+by double-click or Shift+F2 as one `UpdateProperty` command; Escape cancels and keys remain stable.
+An explicit `labelKey` opens generated Settings and renders through the normal translation catalog
+with the literal label as fallback. Hover/focus insertion markers load a searchable quick-add menu,
+filter registered components through `canDrop`, and preserve the exact parent/slot/index. Loading,
+failure/Retry and focus/selection preservation use the shared lazy-feature contract.
+
+Browser evidence PASS: `builder-loading.spec.ts` plus `builder-authoring-shortcuts.spec.ts` pass
+**42/42** in Chromium, Firefox and WebKit. The Firefox selection-chrome double-click path also passes
+**9/9** repeated checks across all three engines. Focused schema/renderer/feature-loader tests pass
+**25/25**. The final consumer gate is **28,767 / 29,000** builder UI initial (excludes builder-core) and
+**63,487 / 64,613** full initial. This checkpoint adds 1,283 and 2,438 Brotli bytes respectively
+over the loading-split baseline. The quick-add closure is 3,403 bytes including a 2,901-byte shared
+initial primitive chunk; its feature-specific loaded cost is 502 bytes (602 including the distinct
+Retry entry). All emitted deferred entries total 12,019 bytes. Exact files, commands and budget
+results are in `docs/reviews/m09b-plus-authoring-checkpoint.md`.
+
+Pinned `pnpm lint`, all **45/45** package typecheck tasks plus the test TypeScript project, and
+`git diff --check` pass on the checkpoint files.
+
+Command search remains unshipped. Its numeric lazy-chunk budget still requires a measured proposal
+and owner approval; multi-select follows it in the approved milestone order. Full pinned milestone
+verification and owner delivery review remain pending.
+
+## M09b+ — Lazy bulk-editor prototype
+
+Generated bulk settings reuse the existing property editor renderer, with the intersection of visible
+compatible metadata, mixed-value indicators and host-hidden property rules. Property selection remains
+exact, including ancestors/descendants; key locks disable the shared key control. Save publishes one
+AtomicCommand; Cancel/Escape discard the draft and preserve selection/history. The immediate frame,
+loading feedback and Retry remain initial; the editor and shared generated controls load on demand.
+Settings translations are shared with its existing lazy editor. The command index cache is now keyed
+by the stable builder instance while modal listeners use their activation's abort signal.
+
+Focused evidence: builder typecheck and 39 unit assertions pass (SDK, theme tokens, feature loading
+and metadata intersection). The initial bulk/multi-select matrix passes **18/18** across Chromium,
+Firefox and WebKit (shared-property Save/Undo, exact Cancel, immediate slow loading, selection and command
+activation). Expanded all-theme axe/Retry acceptance and the new chunk's measured ceiling remain in progress;
+remaining bulk commands, combined sizing/counts, owner polish/screenshots and full verification remain
+open. No chunk or over-budget build is shipped by this prototype checkpoint.
+
+## M09b+ — Atomic bulk checkpoint
+
+Added the ADR-0021 AtomicCommand boundary and wired command-bar multi-delete/duplicate plus the
+Required mutation path through it. Locked members are named with a Deselect locked components
+action. Selection snapshots are restored with undo/redo without schema properties or extra history.
+Unit evidence: 7 focused tests including atomic publication, exact schema undo/redo, child failure
+and host-lock refusal. Browser evidence: multi-delete restores both selected members as one history
+step in Chromium, Firefox and WebKit (3/3). Local development caught frozen-child index reversal,
+atomic dangling-reference handling and modal focus restoration collapsing the selection; each
+was corrected in product code. Bulk editor, remaining commands, performance/size measurements,
+polish and full milestone acceptance remain pending.
+
+## M09b+ — Combined prototype in progress
+
+The selection draft is now wired to the immediate canvas/outline presentation and Shift+arrow
+range navigation. The command bar opens its initial dialog frame before lazy download; a lazy
+instance-keyed index caches by immutable schema identity, yields every 50 nodes and preserves
+frozen child arrays. Its 500-field unit workload visits exactly 500 nodes; reopening returns the
+same promise and a changed schema rebuilds. Focused evidence: 5 unit tests and 6 browser checks
+across Chromium, Firefox and WebKit. Bulk actions/editor, selection history restoration, remaining
+keyboard/modifier acceptance and full measurement are still in progress; this is a prototype
+checkpoint, not milestone delivery or size acceptance. No compaction or placement change is applied.
+
+## M09b+ — Layout caption decision — 2026-10-27
+
+Owner resolved the layout-caption question: Panel and Fieldset continue using `node.label`, with no
+wire migration. Optional builder caption metadata defaults to `label` and supports `false`; only
+visibly rendered captions offer inline editing. The owner corrected the earlier title/legend wording.
+
+Implementation evidence: `builder-authoring-shortcuts.spec.ts` passes 15/15 in Chromium, Firefox
+and WebKit, including Panel, Fieldset, explicitly declared SDK card, headingless Columns, blur,
+empty and Escape. `packages/sdk/tests/layout.test.ts` passes 4/4; lint and all 45 typecheck tasks
+pass. The first fixture run failed because the demo was not registered and Save replaced the error
+toast; the fixture now enables demos and clicks the palette search field. A subsequent broad run
+overlapped typecheck's clean rebuild and encountered unavailable package outputs; the sequential
+final browser run passed. No old blur-cancel assertion was changed. Consumer size is 28,857 / 29,000
+builder UI initial (excludes builder-core) and 63,623 / 64,613 full initial, deltas +90 and +136 Brotli bytes from
+`c9457cd`. Full milestone verification and combined multi-selection measurement remain pending.
+
+## M09b+ — Owner acceptance of ADR-0021 — 2026-10-27
+
+The owner accepted ADR-0021 with amendments covering structural-only normalization, anchor/primary
+behavior, selection restoration on undo/redo, atomic multi-copy/paste, whole-selection command-bar
+actions, declared caption editing, accessibility, named locked-member recovery and deterministic
+500-selection bulk work counts. Quick-add has a 3,750-byte consumer closure ceiling enforced for
+both entry and Retry. Combined command-bar/multi-select and bulk-editor measurements remain pending.
+
+## M09b+ — Owner decision on command-bar budget — 2026-10-27
+
+The owner approved a 4,500-byte command closure with lazy indexing. The 29,000 builder-owned and
+64,613 full-initial ceilings remain fixed; target 28,800 builder-owned. Before shipping the command
+bar or multi-select, measure both together, including the initial selection model, keyboard handling,
+rendering and announcements; report the separate lazy bulk-editor size and propose its ceiling. If
+the combined initial exceeds 29,000, present measured compaction or shared headless selection options.
+First activation displays an immediate accessible frame; 500-field indexing has an advisory 50 ms
+target and deterministic work-count gate. Indexing must not block typing; cache until schema changes.
+No protected initial behavior moves and no additional feature is deferred without owner approval.
+History/diff remains unbudgeted and unshipped.
+
+## M09b+ — Command-bar measurement proposal — 2026-10-27
+
+Production code remains unchanged from checkpoint `c9457cd`. A temporary consumer-build probe measured
+two complete Ctrl/Cmd+K designs, then was removed. Building palette/jump/action items in initial code
+measured **29,102** builder UI initial (excludes builder-core), **63,830** full initial and a **3,512** command closure;
+it exceeds the fixed builder gate by 102 bytes. Moving indexing into the lazy command module measured
+**29,044** builder UI initial (excludes builder-core), **63,753** full initial, **4,218** for the command closure and
+**13,299** across all emitted deferred entries; it exceeds the builder gate by 44 bytes while the
+primary full-closure gate retains 860 bytes of headroom.
+
+Proposal for owner decision: use lazy indexing, approve a **4,500-byte command-bar closure ceiling**,
+and require at least 45 bytes of normal initial-code compaction before shipping. A safer implementation
+target is 28,800 initial or lower so the later multi-select core is not left with zero headroom. Keep
+the 29,000 and 64,613 ceilings unchanged. The alternative is initial indexing with a 3,750-byte
+command ceiling and at least 103 bytes of compaction; it leaves less room for M09b+ and is not
+recommended. Exact files and accounting are in
+`docs/reviews/m09b-plus-command-bar-measurement.md`. Work stops here for the required numeric-budget
+and trade-off decision; History/diff remains separately unresolved and unshipped.
+
+## M09b+ — Opt-in themes and Settings split implemented — 2026-10-26
+
+Implemented the accepted option-B split: the root builder owns Neutral chrome; form themes and
+matching recipes are explicit per-instance subpath registrations; host-owned extra themes may load
+on selection with accessible progress/Retry/focus preservation. Material registers Base. Generated
+Settings is a separate lazy entry, idle-preloaded by default with a `none` opt-out. PointerDrag,
+context/More, Issues and all clipboard behavior remain initial; no secondary-tools chunk ships.
+Compatibility theme entries remain and form JSON is unchanged.
+
+Canonical production-consumer measurements PASS: **27,484 / 29,000** builder UI initial (excludes builder-core),
+**61,049 / 64,613** full minimal initial, **7,391 / 8,000** Settings, **745 / 28,000**
+Logic/JSON/map, and **8,136 / 36,000** including Settings. All currently emitted deferred entries
+total 8,524 Brotli bytes. Vite vanilla/React, Angular CLI and every per-theme/all-theme script-tag
+closure are recorded in `docs/reviews/m09b-plus-loading-split.md` and its JSON manifest. Focused
+loading coverage passes **51 tests** across Chromium, Firefox and WebKit, including strict CSP,
+offline/custom assetBase, Settings slow/fail/retry/Add-with-defaults/cancel and lazy-theme failure/
+retry. Full milestone verification remains pending while M09b+ authoring features are built.
+
+## M09b+ — Selection and command contract — 2026-10-26
+
+ADR-0021 records the owner-approved selection semantics before shortcut implementation: primary
+focus selection plus an instance-local ordered set, ancestor normalization, Shift range/Cmd-Ctrl
+toggle, exact atomic refusal for locks and cross-scope operations, shared builder-core command paths,
+and byte-identical bounded undo. Inline labels preserve keys and defer translation-key labels to
+Settings. Precise quick-add uses exact slot/index filtering. The lazy command bar reuses palette,
+jump and action metadata and remains unshipped until its measured numeric chunk ceiling is approved.
+
+## M09b+ — Accepted loading split implementation plan — 2026-10-23
+
+Continue on `m09b-plus-authoring` / PR #16. The owner accepted ADR-0020 and authorized the split.
+Update both ADR budget tables first; then extract JSON/history/feature boundaries, add the per-instance
+loader with static imports plus CDN assetBase and none/idle policies, and thread options through hosts.
+Add consumer production-build/no-growth accounting and browser lifecycle/CSP/offline checks; measure
+History/command-search budgets before shipping. Preserve compact settings expressions and all existing
+commands/state. Logic/map UI remains M09c, persistent history remains deferred. Run focused checks as
+modules move, then pinned full verify and targeted baseline comparison. Risks: async focus/draft
+preservation, consumer shared-chunk accounting and strict-CSP asset ownership. No new ceiling is raised.
+
+## M09b+ — Step 0 and split ADR ready for review — 2026-10-23
+
+Branch `m09b-plus-authoring`, from approved/merged PR #15. Product source is unchanged. The carried-over
+step 0 passes **69 focused checks** in Chromium, Firefox and WebKit, including the new exact Unwrap
+feedback/undo/redo regression. Existing round-4/5 assertions are unchanged. Evidence, commands,
+before-size probe, screenshots and the zero-change baseline manifest are in
+[the review report](reviews/m09b-plus-split-plan.md). All 404 PNGs remain byte-identical to merged
+main (202 per platform); no pixel/count/size threshold, deadline or retry changed.
+Pinned `pnpm lint`, `tsc --noEmit -p tsconfig.tests.json` and ESLint of the new regression test pass. Local checks
+resolve all 24 links/anchors in the changed documentation. No product implementation is changed.
+
+The first local run passed the 66 existing cases but failed three copies of the new test's incorrect
+expected label/Copy message. Corrected that new fixture expectation, retaining exact text assertions;
+the complete final 69-test run passes. Both logs are retained in the report. This was local test
+development, not a rerun of GitHub CI. Full M09b+ verify and feature acceptance are not claimed.
+
+Proposed ADR-0020 records module ownership, consumer/load evidence, fixed budgets, host lifecycle,
+offline/CSP acceptance and the size-accounting question above. Per the owner's latest instruction,
+report when this split ADR is ready and stop for review before implementation. Selection/command
+contract ADR and deterministic replay/keyboard tests follow the split before new commands are coded.
+Keep one milestone branch/PR, with the plan first; M09c/M09d remain behind their owner gates.
+
+## Owner decisions — M09b closure and M09b+ start — 2026-10-23
+
+Owner explicitly approved all M09b PR #15 screenshots at full head
+`79e69f688b1779696449465fbe34869460018cd0`. Immediately before merging, GitHub still reported that
+head, mergeable/clean, and both correctness runs completed successfully with **run_attempt 1**:
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39952512034) and
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/39952507392).
+Every current-head check was green; advisory timings remained separate from correctness.
+Merged [PR #15](https://github.com/nawinisha231272-wm/formkit/pull/15) without rerunning CI,
+guarding the merge request with the exact approved SHA. Confirmed merge commit
+`0b3b452c46096e852248ca11872f9697888c621e`, timestamp `2026-10-23T20:25:30Z`.
+Full native verification and the baseline manifest remain in the round-5 evidence below.
+
+Next branch/PR: `m09b-plus-authoring`, one PR for this milestone. First audit the carried-over
+round-5 tag/announcement/Build/heading-visible screenshot checks, adding Unwrap coverage if needed;
+then implement ADR-0018 loading split with consumer-build accounting → record selection/command
+contracts ADR and replay/keyboard tests → inline labels → exact slot quick-add → shared command bar
+→ atomic multi-select/bulk actions → owner polish, targeted baselines and full pinned verification.
+Open the milestone PR with the plan/ADR before implementation; do not merge before exact-head
+first-attempt green CI and explicit owner approval. Command-bar/History numeric budgets require a
+measured proposal before shipping. Risks: asynchronous focus/lifecycle preservation, shared-chunk
+accounting, consumer/CSP/offline loaders, bulk lock/scope atomicity and unchanged correctness gates.
+Future M09c/M09d instructions are a roadmap, not permission to skip the intervening owner gates.
+
+The initial owner-decisions attachment ended mid-sentence in M09d's kit author guide item. The
+owner supplied the complete ending: start kit releases at 1.0.0, retain the three acceptance demos
+and fresh author evidence, and stop for owner delivery review. These are recorded in the M09d plan.
+The owner explicitly requested a report when the M09b+ split ADR is ready, or earlier if blocked.
+
+## M09d — Owner plan amendments — 2026-10-23
+
+Docs-only scope on `m09d-extension-plan`: update milestone/specs/ADR, check cross-document consistency,
+then report this amendment diff for sign-off. No source, export, package, schema artifact or baseline
+changes; M09d starts only after M09c and PR #15 approval is separate.
+
+ADR-0019 is **accepted with owner amendments**, retaining the eight-edge bound and JSON hard limits:
+
+1. Standard trusted `ourform.builtins`, stable id and version matching core, supplies all shipped
+   built-in fields/layouts explicitly. The acceptance kit no longer needs an app-written wrapper.
+2. Kits may declare complete string/number/boolean/select/options/json property metadata. The
+   acceptance US-phone preset adds `properties.reportColumn`, a data-only string with generated
+   editing and expression/host access, without implicit control/validation behavior.
+3. Locks still accumulate without unlock. Hides are presentation: explicit host rules can reveal
+   inherited/kit hides; kit-to-kit reveals require a dependency. Spec 07 defines false-valued hide
+   maps alongside compatible hide-only arrays and the planned reveal/lock regression matrix.
+4. Builder save emits caret kit requirements (`1.0.0` → `^1.0.0`). Kit author documentation must
+   require a major bump for canonical-value, validation or composite-structure changes. Compatible
+   patch/minor upgrades and incompatible majors get explicit future acceptance checks.
+5. Loader/meta-schema validation moves to an opt-in `@ourform/core/kits` entry, with no kit code or
+   schema cost in no-kit apps. Add a separate measured/approved size budget; preserve the ≤29 kB
+   builder UI initial (excludes builder-core), existing route/aggregate ceilings and shared-chunk accounting.
+6. Plan `ourform create-kit`, `ourform kit validate <file>` with engine-identical diagnostics/JSON
+   Pointers, and published schema autocomplete. Future Save as reusable component writes this preset
+   format; its UI/gallery/storage remain deferred after M10a.
+
+Amendment validation: **PASS** — pinned Node 22.22.3/pnpm 10.10.0 Prettier check of all 11 Markdown
+files, all 12 relative links/anchors, parsed JSON fixture with `ourform.builtins`/`reportColumn`,
+accepted ADR status, six-amendment consistency, unchecked future acceptance, milestone order/dependencies
+and `git diff --check`. Pre-M09d spec sections and the 19-line Currency sketch remain unchanged.
+No runtime verification or M09d implementation acceptance is claimed by this planning edit.
+
+## M09d — Extension and configuration plan — 2026-10-23
+
+Docs-only planning branch `m09d-extension-plan`, based on the verified M09b review head `79e69f6`.
+Keep PR #15 and its reviewed code unchanged. No implementation, API export, package dependency,
+meta-schema artifact or baseline changed in that initial draft; ADR-0019 was **proposed** at that
+point. The owner-amendment entry above supersedes its status, hide precedence and saved-version rule.
+
+Planned delivery: immutable `extendField`/`extendLayout` and typed value-replacement guard → explicit
+per-host `overrideView` → bounded/versioned JSON kit schema and shared headless lowering → form kit
+requirements and diagnostics → generated inherited editors and centrally enforced policies → docs,
+five-theme/Node-browser/conformance/axe verification → fresh guide-only Codex author evidence.
+M10a/M10b now depend on M09d; M10b additionally retains M10a. M09c explicitly follows M09b+.
+
+The plan defines property/validator/default/view merges, maximum ancestry, plugin/version compatibility,
+runtime versus authoring defaults, host-lock precedence, unknown/conflicting/cyclic inputs and
+transactional failures. It includes a JSON-only US-phone/Address example using trusted named
+registrations, palette hides and a locked property. No executable JSON or implicit fetching is allowed.
+Core cannot import SDK; shared headless lowering and explicit host view assembly preserve the layers.
+
+Risks for owner review: limits must reject hostile storage without partial installation; field and
+layout reuse must retain canonical adapter/slot semantics; editor policy cannot bypass host locks;
+versioned kit provenance must remain reproducible in Node/browser without breaking plugin-only forms;
+additional builder metadata must stay within ADR-0018's consumer-build budgets. Currency <25 lines,
+JSON kit parity, React Select without JSON edits and the fresh author exercise are **future acceptance
+checks**, not completed work. M11's separate human usability pass remains required.
+
+Planning validation: **PASS** — pinned Node 22.22.3/pnpm 10.10.0 `pnpm exec prettier --check`
+on all 11 changed Markdown files; `git diff --check`; local Python checks for all 12 relative
+links/anchors, parseable kit JSON/required fixture features, proposed ADR status, unchecked acceptance
+and milestone order/dependencies. The illustrative Currency sketch is 19 meaningful lines including
+imports, not an implemented or conformance-tested field. Changes are confined to docs. Runtime
+`pnpm verify` was not run for this documentation-only task; no M09d implementation or gate has run.
 
 ## M09b owner review fixes — 2026-10-22
 
@@ -2130,3 +2602,46 @@ phone views unchanged. All 32 original trial artifacts retain their hashes.
 The review server is restarted at `http://127.0.0.1:4173/builder.html?approved` and left running.
 See `docs/reviews/m09b-live-review-round5.md` for all six states on both platforms. M09b remains open
 until owner approval and first-attempt green final-head PR CI; do not merge, start M09b+ or M09c yet.
+
+## Owner decision — builder-core consumer accounting
+
+Keep the established builder UI boundary, now named **builder UI initial (excludes builder-core)**,
+and the full initial closure boundary. Report builder-core separately as the marginal Brotli difference
+between the full consumer build and the otherwise identical build with `@ourform/builder-core`
+externalized; static shared output is counted once in each closure. Compression and chunk changes
+mean this is a marginal contribution, not a sum of independently compressed source files. At the
+the baseline measures **6,675 bytes**. The owner confirmed the **7,050-byte** ceiling (105%,
+rounded up to 50), and the third gate is enforced. Every combined-feature
+report must show all three measurements and moved-code attribution. Headless selection may move to
+builder-core only within the confirmed ceiling; full closure remains at most 64,613 bytes. Compact
+first, then measure headless placement, then propose at most a one-time 29,500 UI ceiling if needed.
+
+## M09b+ approved form-host registry completion — 2026-10-29
+
+Owner approved optional `OurFormElement.themes` and necessary additive host options for the
+accepted opt-in theme migration. Plan: add atomic `FormView.setThemes(registry, selectedTheme?)`,
+update Element/React/Angular registries in place, test light/shadow/reconnect and state/focus/error
+preservation, then finish the example migration and final pinned verification. Unknown names
+report `unknown-theme` without fallback. The previous complete native run failed 169 browser
+cases (1,286 passed); its evidence remains retained. No failed verification was pushed.
+
+M09b+ registry/keyboard checkpoint: all 15 form-registry cases passed across Chromium/Firefox/WebKit;
+all 24 unchanged keyboard-task/paste/wrapper and new quick-add focus/cancellation regressions now pass
+(`final-keyboard-regressions.log.gz`). Current consumer UI/core/full **31,359 / 7,287 / 67,341**,
+under the fixed **31,600 / 7,300 / 67,400** ceilings. Full pinned verification and screenshot
+comparison are still pending on this final source; no commit/push or CI approval is claimed.
+
+M09b+ final-head CI 80b4dfa: first-attempt PR/push Verify failed only the new wall-clock capture
+waits for Loading Settings (3/2 failures; 1,482/1,483 browser passes; all 339 units pass). Advisory
+timings passed. Both CI logs are preserved in the delivery evidence. The two capture setups now
+install/advance Playwright time before their unchanged assertions; exact toast-expiry regressions
+already passed in every CI browser. Full pinned verification is pending again before any push;
+no workflow rerun, no runtime/timing/threshold/baseline change, no merge.
+
+M09b+ capture-clock correction: new full pinned verify **PASS**, 339 unit/1,485 browser checks,
+36 size gates, five runtime counts and exact 500-field authoring counts. Pinned Linux compares
+all six corrected capture/browser cases against unchanged images. All 442 baseline hashes and
+runtime packages/apps/scripts match 80b4dfa; byte delta **0/0/0** (UI/core/full: 31,379/7,209/67,317).
+Latest isolated index 15.300 ms/500 visits/cached; bulk counts 500/1/1 each.
+The failed 80b4dfa first attempts remain recorded; the correction's new first CI attempt must
+pass before delivery. Do not rerun failed workflows or merge; owner review remains pending.

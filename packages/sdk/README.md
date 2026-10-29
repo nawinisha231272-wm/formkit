@@ -155,3 +155,9 @@ Inheritance is resolved per builder instance. Invalid names, token escapes, URLs
 names are programmer errors. Descriptors never contain selectors, executable code, form data or DOM.
 Theme packages export typed descriptors without importing the helper at runtime. Neutral is supplied
 by theme-base; form and builder themes are independent. See spec 10 and ADR-0016.
+
+## Builder caption metadata
+
+`defineField` and `defineLayout` accept `caption`, a builder property path defaulting to `label`.
+Use `caption: false` to opt out. Inline editing is available only for a visibly rendered caption.
+Panel and Fieldset use `node.label`; translation-key labels open Settings.

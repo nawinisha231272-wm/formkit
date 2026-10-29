@@ -13,7 +13,8 @@
     "@ourform/core": "workspace:*",
     "@ourform/renderer-dom": "workspace:*",
     "@ourform/element": "workspace:*",
-    "@ourform/builder": "workspace:*"
+    "@ourform/builder": "workspace:*",
+    "@ourform/themes": "workspace:*"
   },
   "devDependencies": {}
 }

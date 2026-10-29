@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "fields": 500,
+  "indexNodeVisits": 500,
+  "bulk": {
+    "delete": { "childCommands": 500, "publications": 1, "historyEntries": 1 },
+    "move": { "childCommands": 500, "publications": 1, "historyEntries": 1 },
+    "required": { "childCommands": 500, "publications": 1, "historyEntries": 1 }
+  }
+}

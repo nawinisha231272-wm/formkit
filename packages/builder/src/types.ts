@@ -11,6 +11,7 @@ import type { Diagnostic, FormDefinition } from "@ourform/schema";
 import type { FormController, HostOptions } from "@ourform/renderer-dom";
 import { resolveSlots } from "@ourform/sdk";
 import type { Theme, ThemeMode, BuilderTheme } from "@ourform/sdk";
+import type { FeatureOptions } from "./feature-loader";
 import type { ChromeOptions } from "./theme";
 import type { BuilderIcons } from "./icons";
 import { actionButton } from "./primitives";
@@ -38,13 +39,23 @@ export interface SchemaChange {
   readonly definition: FormDefinition;
   readonly patch: readonly JsonPatchOp[];
 }
+export interface LazyThemeRegistration {
+  /** Stable form-theme name shown in the instance theme picker. */
+  name: string;
+  /** Optional already-localized picker label. */
+  label?: string;
+  /** Host-owned offline-capable loader; form JSON never contains this function. */
+  load(): Promise<{ theme: Theme; builderTheme?: BuilderTheme }>;
+}
 export interface BuilderOptions
   extends Omit<HostOptions, "onChange" | "readOnly" | "mode">,
-    LockOptions {
+    LockOptions,
+    FeatureOptions {
   chrome?: ChromeOptions;
   /** Browser-profile preference namespace; hosts may supply an authenticated user-specific key. */
   preferenceKey?: string;
   builderThemes?: readonly BuilderTheme[];
+  lazyThemes?: readonly LazyThemeRegistration[];
   palette?: PaletteOptions;
   toolbar?: { actions?: readonly ToolbarAction[] };
   editor?: EditorOptions;
@@ -68,6 +79,7 @@ export interface BuilderController {
   destroy(): void;
 }
 export interface UI {
+  editor?: EditorOptions;
   document: Document;
   signal: AbortSignal;
   engine: Engine;
@@ -75,6 +87,7 @@ export interface UI {
   t(key: string, params?: Record<string, unknown>): string;
   dispatch(command: Command, options?: DispatchOptions): Diagnostic[];
   announce(message: string, action?: { label: string; run(): void }): void;
+  _ofbStyle(element: HTMLElement, ...declarations: string[]): void;
   liveProperties?: boolean;
   propertyIssue?: (key: string, message: string | undefined) => void;
   form?: () => CompiledForm | undefined;
@@ -112,8 +125,10 @@ export function componentTitle(
   ui: Pick<UI, "engine" | "t">,
   node: import("@ourform/schema").ComponentNode,
 ): string {
+  const translated = node.labelKey ? ui.t(node.labelKey) : undefined;
   const model = ui.engine.getField(node.type);
   return (
+    (translated !== node.labelKey ? translated : undefined) ||
     node.label?.trim() ||
     ui.t(model?.builder?.title ?? model?.title ?? node.type)
   );

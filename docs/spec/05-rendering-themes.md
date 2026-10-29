@@ -1,6 +1,7 @@
 # 05 — Rendering and themes
 
-Status: normative. Packages: `@ourform/renderer-dom`, `@ourform/theme-*`.
+Status: normative. Packages: `@ourform/renderer-dom`, `@ourform/themes`, compatibility
+`@ourform/theme-*` entries.
 
 ## Renderer
 
@@ -33,6 +34,7 @@ export interface FieldPresentation {
 }
 export interface FormView {
   setTheme(theme: Theme | string): void;
+  setThemes(themes: readonly Theme[] | undefined, theme?: Theme | string): void;
   setMode(mode: "light" | "dark" | "high-contrast"): void;
   focus(componentId: string): void;
   submit(): ReturnType<FormSession["submit"]>;
@@ -123,6 +125,22 @@ export interface Theme {
 - Every theme passes the theme conformance suite: all states, validation, disabled, read-only,
   focus, hover, multi-value, nested grid, wizard, RTL, dark and high-contrast.
 
+### M09b+ opt-in theme entries (ADR-0018/0020)
+
+The renderer and `@ourform/builder` import no form theme by default. Hosts register only the themes
+used by an instance from `@ourform/themes/base`, `/bootstrap4`, `/bootstrap5`, `/tailwind` or
+`/material`. Material declares/loads Base because it extends Base. Existing `@ourform/theme-*`
+packages remain compatibility re-exports during migration; all entries share the same descriptors
+and conformance tests. Missing names and duplicate registrations fail clearly.
+
+Theme selection belongs to host configuration and never changes form JSON. Builder recipes are
+separate opt-in entries at `@ourform/builder/themes/<name>`; Neutral chrome is the only recipe in the
+root builder entry. Registries are per renderer/builder instance. A host may declare an additional
+theme through an offline-capable lazy loader; only registered eager/lazy names appear in the picker.
+Loading preserves schema, history, selection and focus, exposes accessible progress/retry, respects
+strict CSP and configurable `assetBase`, and ignores late completion after destroy. Script-tag
+distribution is generated from these sources as one bundle per theme plus an all-theme demo bundle.
+
 ## M02 renderer selection
 
 ADR-0002 selects VNodes with a small keyed DOM patcher. Each mounted field updates from FieldState,
@@ -164,6 +182,11 @@ controlAttributes. Low-level mount requires explicit preset registration; host c
 renderForm wrapper include Bootstrap 4/5 and Tailwind. Actual framework stylesheet compatibility is
 tested with 4.6.2 and 5.3.8 independently; loading both global framework stylesheets together is not covered.
 
+M09b+: `ComponentNode.label` remains literal text and the English fallback. An explicit non-empty
+`labelKey` opts the visible shell/layout caption into host translation. Returning the key unchanged
+selects the literal fallback. Required/error messages receive the same resolved caption, so their
+visible name cannot disagree with the field label.
+
 M06 renders portable non-value views alongside layout containers, supplies portable actions and emits
 composed bubbling of-action events with {name,componentId,data}, plus optional onAction callbacks. Async
 validation forwards pending to aria-busy, a field description and the existing single live region.
@@ -193,8 +216,8 @@ RenderOptions.mode `edit | design` defaults edit. Design exposes every slot/hidd
 controls and native placeholders; its live region is off. Slot wrappers are resolved from headless
 metadata, without recognizing container types. LayoutView.tabs requests APG tablist/tab/tabpanel
 semantics; inactive child roots stay mounted. Focus(id) activates ancestor tabs, including error focus.
-Theme/tab changes retain child identity/session state. Shared defaultThemes supplies preset themes to
-form and builder hosts. `@ourform/builder` shares one session between design and preview; schema edits
+Theme/tab changes retain child identity/session state. Hosts explicitly register form descriptors and builder recipes per instance
+(ADR-0018/0020); the shared defaultThemes compatibility list contains no implicit registrations. `@ourform/builder` shares one session between design and preview; schema edits
 recreate transient state and preserve surviving field IDs' answers. Removed response values are not
 undo history. Generated chrome controls preserve identity/focus on appearance changes.
 
@@ -224,3 +247,18 @@ M09b owner review: schema prefix/suffix populate existing FieldPresentation ador
 host supplies explicit presentation overrides. tooltip is a native title; description remains visible
 help. Material read-only controls use a filled surface and solid borders. Other theme rules and
 existing shell/label/error/control identity are unchanged (ADR-0017).
+
+### Owner M09b+ presentation amendment (2026-10-28)
+
+A single field error is plain text; several errors use list semantics. Retain the `errors` container
+and per-message `error` theme hooks, ids and `aria-describedby`. Bootstrap 4/5 visually place help
+and descriptions below controls through theme CSS ordering, keeping shared shell DOM ordering and
+focused-control identity stable across theme switches. Other themes retain their presentation.
+
+### Approved dynamic host registries — 2026-10-29
+
+`setThemes(registry, selectedTheme?)` validates the new registry/selection before updating the
+mounted view in place. With no selectedTheme, retain the active selection. Preserve session, values,
+touched/errors, control identity, focus and caret. Unknown names produce an Error with
+`code: "unknown-theme"`, no fallback, and preserve the previous registry/view. Registry entries
+remain explicit, per-instance host configuration; form JSON is unchanged.

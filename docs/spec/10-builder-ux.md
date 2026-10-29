@@ -33,6 +33,13 @@ Modal (default) or right-side drawer (editor.mode: 'drawer').
 
 - Every shipped theme package exports two things: the form theme (spec 05) and a builderTheme: --ofb-\* token values (font family, accent, accent-contrast, surface, surface-raised, border, text, text-muted, danger, success, logic, focus-ring, radius, control height, shadow-1/2) plus optional recipes for primitives (e.g. Material: pill buttons, underline tabs, outlined inputs; Bootstrap 4/5: square-ish buttons, bordered nav tabs).
 - Builder themes shipped: Neutral (default chrome from the approved mockups), Bootstrap 4, Bootstrap 5, Tailwind, Material. Each has light and dark token sets and works in both densities.
+- The root `@ourform/builder` entry ships Neutral only. Form themes are explicit
+  `@ourform/themes/<name>` registrations and matching chrome recipes are explicit
+  `@ourform/builder/themes/<name>` registrations. The picker lists only eager/lazy themes registered
+  on that builder instance. Lazy selection uses the shared accessible loading/retry/focus contract,
+  configurable `assetBase`, strict CSP and offline host-owned imports. Material also registers Base.
+  Per-theme script bundles and an all-theme playground bundle are generated from the same sources;
+  form JSON is unchanged.
 - chrome.theme: 'match-form' (default) makes the chrome follow the canvas theme chosen in the header; any named builder theme can be pinned instead. Host apps can register their own with defineBuilderTheme({ name, extends, tokens, recipes }).
 - Switching theme restyles chrome and canvas in place: no rebuild, selection, open dialog, focus, undo history and drag state are preserved.
 - Builder-specific signal colours keep their meaning in every theme: selection/drop = accent, refusal/delete = danger, logic badges = logic colour (orange family), conditional visibility = info.
@@ -44,6 +51,10 @@ Modal (default) or right-side drawer (editor.mode: 'drawer').
 ```ts
 createBuilder(el, definition, {
   theme: "bootstrap5",
+  themes: [bootstrap5Theme],
+  builderThemes: [bootstrap5BuilderTheme],
+  lazyThemes: [{ name: "material", load: loadMaterialTheme }],
+  settingsPreload: "idle", // default; "none" is the host opt-out
   chrome: {
     theme:
       "match-form" |
@@ -167,21 +178,27 @@ successful host acknowledgement. Remove the contradictory “Form ready to save�
 **Approved with owner amendments.** Start with ADR-0018’s loading split, then deliver the shortcuts and polish after M09b screenshot approval and before
 M09c. See `docs/milestones/M09b-plus.md`. Keep changes small and use the existing command/lock/slot contracts:
 
-1. Inline label editing: double-click or a keyboard action edits the canvas label; Enter commits one
-   label command, Escape cancels. Existing data keys never change silently. Respect `all` locks.
+1. Inline label editing: double-click or a keyboard action edits the canvas label; Enter or blur commits one
+   caption command, Escape cancels; empty trimmed captions are refused visibly. Existing data keys never change silently. Respect `all` locks.
 2. Hover/focus “+” between siblings opens the searchable mini palette at that precise slot/index.
    Add and initial modal settings retain M09b's atomic Save/Cancel behavior and keyboard alternative.
 3. Ctrl/Cmd+K command bar searches three explicit groups: Add component, Jump to component, Actions.
    Reuse registered palette/action metadata; report disabled actions and preserve focus on Escape.
 4. Multi-select with Shift/Cmd/Ctrl click and keyboard range/toggle alternatives. Move, Delete, Wrap
-   and Required apply as atomic bounded-history commands. Nested selections normalize to highest
-   selected ancestors; mixed-scope/conflicting/locked operations refuse atomically with a reason.
+   and Required apply as atomic bounded-history commands. Structural commands normalize nested selections; property edits use the exact selection.
+   Mixed-scope/conflicting/locked operations refuse atomically with a reason (ADR-0021).
 
 Acceptance proposal: all four flows work by mouse and keyboard, with axe in every builder theme;
 no focus/state loss on theme changes; atomic exact undo/redo, including randomized selection/move
 sequences; no duplicate descendant operations; locked/illegal targets refused with no partial mutation.
 Update only changed visual states, retain count/size budgets, run full pinned verify. The owner approved the plan with the amendments in ADR-0018 and M09b-plus.md. Reusable sections/templates, tablet width tooling, preview test data, guided
 pre-save fixes and persistent version history/diff/restore remain backlog after M10a, not this proposal.
+
+Implementation detail: literal inline labels use one `UpdateProperty` command and Shift+F2 is the
+keyboard path. A non-empty `labelKey` routes to generated Settings. Quick-add is a lazy feature entry;
+its frame appears immediately with `aria-busy`, failure offers Retry, and external assets use
+`features/quick-add.js`. Search is computed before loading from `canDrop(type, exactTarget)` and cannot
+offer a component rejected by that slot.
 
 ## M09b live-review announcements — owner amendment, 2026-10-22
 

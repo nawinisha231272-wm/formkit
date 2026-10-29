@@ -11,6 +11,7 @@ import {
   UpdateProperty,
 } from "@ourform/builder-core";
 import { validateSubmission } from "@ourform/validation";
+import { baseTheme } from "@ourform/themes/base";
 
 export interface RenderComponentOptions
   extends Pick<HostOptions, "adapter" | "nativeHost" | "readOnly" | "engine"> {
@@ -46,8 +47,8 @@ export function renderComponent(
       components: [node],
     },
     fields: [definition, ...(options.fields ?? [])],
-    ...(options.theme === undefined ? {} : { theme: options.theme }),
-    ...(options.themes ? { themes: [...options.themes] } : {}),
+    theme: options.theme ?? baseTheme,
+    themes: options.themes ? [...options.themes] : [baseTheme],
     ...(options.data === undefined ? {} : { data: options.data }),
     ...(options.adapter ? { adapter: options.adapter } : {}),
     ...(options.nativeHost ? { nativeHost: options.nativeHost } : {}),

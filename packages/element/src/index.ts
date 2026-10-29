@@ -97,6 +97,14 @@ export function renderBuilder(
   });
 }
 export interface OurFormBuilderElement extends HTMLElement {
+  assetBase: BuilderOptions["assetBase"];
+  preload: BuilderOptions["preload"];
+  settingsPreload: BuilderOptions["settingsPreload"];
+  planningPreload: BuilderOptions["planningPreload"];
+  dataPreload: BuilderOptions["dataPreload"];
+  styleNonce: BuilderOptions["styleNonce"];
+  themes: NonNullable<BuilderOptions["themes"]>;
+  builderThemes: NonNullable<BuilderOptions["builderThemes"]>;
   schema: unknown;
   theme: BuilderOptions["theme"];
   chrome: BuilderOptions["chrome"];
@@ -120,8 +128,19 @@ export function defineOurFormBuilderElement(
     #schema: unknown = empty();
     #theme: BuilderOptions["theme"] = "base";
     #chrome: BuilderOptions["chrome"];
+    #loading: Pick<
+      BuilderOptions,
+      | "assetBase"
+      | "preload"
+      | "settingsPreload"
+      | "planningPreload"
+      | "dataPreload"
+      | "styleNonce"
+    > = {};
     #engine: BuilderOptions["engine"];
     #fields: NonNullable<BuilderOptions["fields"]> = [];
+    #themes: NonNullable<BuilderOptions["themes"]> = [];
+    #builderThemes: NonNullable<BuilderOptions["builderThemes"]> = [];
     #controller: BuilderController | undefined;
     #mount: HTMLElement | undefined;
     #reflecting = false;
@@ -170,6 +189,65 @@ export function defineOurFormBuilderElement(
       this.#controller?.setChrome(value ?? {});
       this.#chrome = value;
     }
+    get assetBase() {
+      return this.#loading.assetBase;
+    }
+    set assetBase(value: BuilderOptions["assetBase"]) {
+      this.setLoading("assetBase", value);
+    }
+    get preload() {
+      return this.#loading.preload;
+    }
+    set preload(value: BuilderOptions["preload"]) {
+      this.setLoading("preload", value);
+    }
+    get settingsPreload() {
+      return this.#loading.settingsPreload;
+    }
+    set settingsPreload(value: BuilderOptions["settingsPreload"]) {
+      this.setLoading("settingsPreload", value);
+    }
+    get planningPreload() {
+      return this.#loading.planningPreload;
+    }
+    set planningPreload(value: BuilderOptions["planningPreload"]) {
+      this.setLoading("planningPreload", value);
+    }
+    get dataPreload() {
+      return this.#loading.dataPreload;
+    }
+    set dataPreload(value: BuilderOptions["dataPreload"]) {
+      this.setLoading("dataPreload", value);
+    }
+    get styleNonce() {
+      return this.#loading.styleNonce;
+    }
+    set styleNonce(value: BuilderOptions["styleNonce"]) {
+      this.setLoading("styleNonce", value);
+    }
+    private setLoading<
+      K extends keyof Pick<
+        BuilderOptions,
+        | "assetBase"
+        | "preload"
+        | "settingsPreload"
+        | "planningPreload"
+        | "dataPreload"
+        | "styleNonce"
+      >,
+    >(key: K, value: BuilderOptions[K]) {
+      if (this.#loading[key] === value) return;
+      const previous = this.#loading;
+      this.#loading = { ...previous };
+      if (value === undefined) delete this.#loading[key];
+      else Object.assign(this.#loading, { [key]: value });
+      try {
+        this.rebuild();
+      } catch (cause) {
+        this.#loading = previous;
+        throw cause;
+      }
+    }
     get engine() {
       return this.#engine;
     }
@@ -195,6 +273,20 @@ export function defineOurFormBuilderElement(
         this.#fields = previous;
         throw cause;
       }
+    }
+    get themes() {
+      return this.#themes;
+    }
+    set themes(value: NonNullable<BuilderOptions["themes"]>) {
+      this.#themes = value;
+      this.rebuild();
+    }
+    get builderThemes() {
+      return this.#builderThemes;
+    }
+    set builderThemes(value: NonNullable<BuilderOptions["builderThemes"]>) {
+      this.#builderThemes = value;
+      this.rebuild();
     }
     attributeChangedCallback(
       name: string,
@@ -254,9 +346,12 @@ export function defineOurFormBuilderElement(
         ).append(this.#mount);
       }
       this.#controller = renderBuilder(this.#mount, {
+        ...this.#loading,
         schema: this.#schema,
         engine,
         fields: this.#fields,
+        themes: this.#themes,
+        builderThemes: this.#builderThemes,
         ...(this.#theme ? { theme: this.#theme } : {}),
         ...(this.#chrome ? { chrome: this.#chrome } : {}),
         onSchemaChange: ({ definition }) => {
@@ -279,6 +374,7 @@ export interface OurFormElement extends HTMLElement {
   schema: unknown;
   data: unknown;
   theme: HostOptions["theme"];
+  themes: HostOptions["themes"];
   engine: HostOptions["engine"];
   readOnly: boolean;
   fields: NonNullable<HostOptions["fields"]>;
@@ -318,6 +414,9 @@ export function defineOurFormElement(
       this.dispatchEvent(
         new CustomEvent("of-error", {
           detail: {
+            ...(error instanceof Error && "code" in error
+              ? { code: error.code }
+              : {}),
             message:
               error instanceof Error ? error.message : "Invalid form attribute",
           },
@@ -330,6 +429,7 @@ export function defineOurFormElement(
     #schema: unknown;
     #data: unknown = {};
     #theme: HostOptions["theme"] = "base";
+    #themes: HostOptions["themes"];
     #engine: HostOptions["engine"];
     #readOnly = false;
     #fields: NonNullable<HostOptions["fields"]> = [];
@@ -371,6 +471,13 @@ export function defineOurFormElement(
       } finally {
         this.#reflecting = false;
       }
+    }
+    get themes() {
+      return this.#themes;
+    }
+    set themes(value: HostOptions["themes"]) {
+      this.#controller?.view.setThemes(value);
+      this.#themes = value;
     }
     get engine() {
       return this.#engine;
@@ -439,6 +546,7 @@ export function defineOurFormElement(
         schema: this.#schema,
         data: this.#data,
         fields: this.#fields,
+        ...(this.#themes ? { themes: this.#themes } : {}),
         readOnly: this.#readOnly,
         ...(this.#engine ? { engine: this.#engine } : {}),
         ...(this.#theme ? { theme: this.#theme } : {}),

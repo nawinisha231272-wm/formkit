@@ -76,3 +76,7 @@ immutable and mutate only command-owned draft copies.
 Optional ComponentNode presentation fields `tooltip`, `prefix`, `suffix` are strings; `disabled` and
 `readOnly` are static boolean flags. Flags inherit through containers; disabled combines with
 disabledWhen, and host read-only cannot be weakened by a node. See spec 01 and ADR-0017.
+
+`label` is literal text and the English fallback. Optional non-empty `labelKey` explicitly opts a
+component caption into host translation; renderers fall back to `label` when a translator returns the
+key unchanged. Generated builder Settings exposes both fields.

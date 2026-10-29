@@ -1,10 +1,15 @@
+import { indexEntries } from "./entry-index";
 import { componentChildren, childSlot } from "@ourform/schema";
 import {
   AddComponent,
   MoveComponent,
   PasteComponent,
+  UpdateProperty,
+  WrapInLayout,
+  AtomicCommand,
+  RemoveComponent,
 } from "@ourform/builder-core";
-import type { DropTarget } from "@ourform/builder-core";
+import type { DropTarget, Command } from "@ourform/builder-core";
 import type {
   ComponentNode,
   Diagnostic,
@@ -18,21 +23,34 @@ import { ComponentActions } from "./component-actions";
 import { icon, componentIcon } from "./icons";
 import { paletteGroups } from "./palette";
 import { describeExpression, controlledFields } from "./signals";
-import { chip, labelledInput, placeSelection } from "./primitives";
+import { chip, placeSelection, dialog, actionButton, tabs } from "./primitives";
+import type { FeatureLoader, FeatureModules } from "./feature-loader";
+import { SelectionSet } from "./selection-set";
 type Entry = { node: ComponentNode; parent?: ComponentNode };
 const attribute = (element: HTMLElement, name: string, value: string) => {
   if (element.getAttribute(name) !== value) element.setAttribute(name, value);
 };
 export class Canvas {
-  target: DropTarget = {};
-  cutId: string | undefined;
-  clipboard: ComponentNode | undefined;
-  readonly actions: ComponentActions;
+  #commands: (() => void) | undefined;
+  #pendingSelection:
+    | {
+        command: Command;
+        selected(): readonly string[];
+        before?: ReturnType<SelectionSet["snapshot"]>;
+      }
+    | undefined;
+  #cutIds: readonly string[] = [];
+  readonly _ofbSelectionSet = new SelectionSet();
+  #selectionFocus = false;
+  _ofbTarget: DropTarget = {};
+  _ofbCutId: string | undefined;
+  _ofbClipboard: ComponentNode | ComponentNode[] | undefined;
+  readonly _ofbActions: ComponentActions;
   #toolbars = new Map<string, HTMLElement>();
   #mini: HTMLElement | undefined;
   #uses = new Map<string, number>();
   #unsubscribe: () => void;
-  readonly pointer: PointerDrag;
+  readonly _ofbPointer: PointerDrag;
   #targets = new Map<HTMLElement, DropTarget>();
   #items = new Map<string, HTMLElement>();
   #slotItems = new Map<string, HTMLElement>();
@@ -45,24 +63,57 @@ export class Canvas {
   #collapsedSlots = new Set<string>();
   #visible: Entry[] = [];
   #selectedLocation = "";
-  #choices: DropTarget[] = [];
   #typeAhead = "";
   #lastKey = 0;
+  #labelPointer:
+    | { id: string; at: number; clientX: number; clientY: number }
+    | undefined;
   constructor(
-    readonly root: HTMLElement,
-    readonly host: HTMLElement,
-    readonly palette: HTMLElement,
-    readonly outline: HTMLElement,
-    readonly picker: HTMLSelectElement,
-    readonly ui: UI,
-    readonly onLocalChange: () => void,
+    readonly _ofbRoot: HTMLElement,
+    readonly _ofbHost: HTMLElement,
+    readonly _ofbPalette: HTMLElement,
+    readonly _ofbOutline: HTMLElement,
+    readonly _ofbUi: UI,
+    readonly _ofbFeatures: FeatureLoader,
+    readonly _ofbOnLocalChange: () => void,
   ) {
-    root.addEventListener("click", this.click);
-    root.addEventListener("keydown", this.keydown);
-    root.addEventListener("focusin", this.followFocus);
-    picker.addEventListener("change", this.pick);
+    const root = _ofbRoot,
+      host = _ofbHost,
+      palette = _ofbPalette,
+      outline = _ofbOutline,
+      ui = _ofbUi;
+    root.addEventListener("click", this._ofbClick);
+    root.addEventListener("dblclick", this._ofbDoubleClick);
+    root.addEventListener("pointerdown", this._ofbLabelPointerDown, {
+      capture: true,
+      signal: ui.signal,
+    });
+    root.addEventListener("keydown", this._ofbKeydown);
+    root.addEventListener("focusin", this._ofbFollowFocus);
+    root.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (!(event.shiftKey || event.ctrlKey || event.metaKey)) return;
+        const target = (event.target as Element).closest<HTMLElement>(
+          "[data-field-id],[data-drag-id]",
+        );
+        if (
+          !target ||
+          (event.target as Element).closest(
+            "button,input,textarea,select,dialog,.ofb-settings",
+          )
+        )
+          return;
+        const id = target.dataset.fieldId ?? target.dataset.dragId;
+        if (!id) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        this._ofbSelectMany(id, event.shiftKey ? "range" : "toggle");
+      },
+      { capture: true, signal: ui.signal },
+    );
     const position = () => {
-      if (this.pointer.active || ui.signal.aborted) return;
+      if (this._ofbPointer._ofbActive || ui.signal.aborted) return;
       const port =
         host.closest<HTMLElement>('[data-builder-part="canvas-panel"]') ?? host;
       const selected = ui.builder.getState().selection;
@@ -70,15 +121,15 @@ export class Canvas {
         "[data-field-id]:hover:not(:has([data-field-id]:hover))",
       );
       if (selected && this.#roots.has(selected))
-        placeSelection(this.#roots.get(selected)!, port);
-      if (hovered) placeSelection(hovered, port);
+        placeSelection(this.#roots.get(selected)!, port, this._ofbUi);
+      if (hovered) placeSelection(hovered, port, this._ofbUi);
     };
-    this.position = () => requestAnimationFrame(position);
+    this._ofbPosition = () => requestAnimationFrame(position);
     ui.document.fonts.addEventListener("loadingdone", position, {
       signal: ui.signal,
     });
     for (const event of ["pointerover", "focusin"])
-      root.addEventListener(event, this.position, { signal: ui.signal });
+      root.addEventListener(event, this._ofbPosition, { signal: ui.signal });
     root.addEventListener("scroll", position, {
       capture: true,
       signal: ui.signal,
@@ -117,58 +168,112 @@ export class Canvas {
       "pointerdown",
       (event) => {
         if (this.#mini && !this.#mini.contains(event.target as Node))
-          this.closeMini();
+          this._ofbCloseMini();
       },
       { signal: ui.signal },
     );
-    this.host.setAttribute("role", "application");
-    this.host.setAttribute("aria-label", ui.t("ofb.canvas"));
-    this.pointer = new PointerDrag({
+    this._ofbHost.setAttribute("role", "application");
+    this._ofbHost.setAttribute("aria-label", ui.t("ofb.canvas"));
+    this._ofbPointer = new PointerDrag({
       root,
       host,
       palette,
       outline,
       scroll: host.parentElement!,
       ui,
-      entries: () => this.entries(),
-      slots: (node) => this.slots(node),
-      caption: (slot) => this.caption(slot),
-      children: (parent, slot) => this.children(parent, slot),
-      location: (id) => this.location(id),
+      entries: () => this._ofbEntries(),
+      slots: (node) => this._ofbSlots(node),
+      caption: (slot) => this._ofbCaption(slot),
+      selectSource: (id) => {
+        if (this._ofbSelectionSet._ofbMembers.includes(id))
+          this._ofbSelectionSet._ofbPrimary = id;
+        ui.builder.select(id);
+      },
+      children: (parent, slot) => this._ofbChildren(parent, slot),
+      location: (id) => this._ofbLocation(id),
       expand: (id) => {
         this.#collapsed.delete(id);
-        this.refresh(true);
+        this._ofbRefresh(true);
       },
       commit: (source, target) => {
+        if (
+          source.id &&
+          this._ofbSelectionSet._ofbMembers.length > 1 &&
+          this._ofbSelectionSet._ofbMembers.includes(source.id)
+        ) {
+          this._ofbBulk("move", true, target);
+          return;
+        }
         if (source.id)
           ui.dispatch(
             new MoveComponent(source.id, { ...target, renameConflicts: true }),
           );
-        else this.add(source.type, target);
+        else this._ofbAdd(source.type, target);
       },
     });
-    this.actions = new ComponentActions({
+    this._ofbActions = new ComponentActions({
       root,
       ui,
       ...(ui.icons ? { icons: ui.icons } : {}),
-      copy: (id) => this.copy(id),
-      cut: (id) => this.cut(id),
-      paste: () => this.paste(),
+      count: () => this._ofbSelectionSet._ofbMembers.length,
+      restoreFocus: (anchor) => {
+        this.#selectionFocus = true;
+        anchor?.focus();
+        this.#selectionFocus = false;
+      },
+      batch: (action, node) => {
+        if (
+          this._ofbSelectionSet._ofbMembers.length < 2 ||
+          !this._ofbSelectionSet._ofbMembers.includes(node.id)
+        )
+          return false;
+        if (action === "move") {
+          this._ofbPointer._ofbKeyboard(
+            this._ofbSelectionSet._ofbPrimary ?? node.id,
+          );
+          return true;
+        }
+        if (
+          action === "delete" ||
+          action === "duplicate" ||
+          action === "copy" ||
+          action === "cut" ||
+          action === "edit" ||
+          action === "wrap"
+        ) {
+          this._ofbBulk(action);
+          return true;
+        }
+        return false;
+      },
+      copy: (id) => this._ofbCopy(id),
+      cut: (id) => this._ofbCut(id),
+      paste: () => this._ofbPaste(),
       move: (node) =>
-        this.pointer.start(
+        this._ofbPointer._ofbStart(
           {
             id: node.id,
             type: node.type,
-            label: componentTitle(this.ui, node),
+            label: componentTitle(this._ofbUi, node),
           },
           true,
         ),
       collapse: (id) => {
         if (!this.#collapsed.delete(id)) this.#collapsed.add(id);
-        this.decorate(true);
-        this.drawOutline();
-        this.updateTargets();
+        this._ofbDecorate(true);
+        this._ofbDrawOutline();
+        this._ofbUpdateTargets();
       },
+      entries: () => this._ofbEntries().map(({ node }) => node),
+      slots: (node) => this._ofbSlots(node),
+      caption: (slot) => this._ofbCaption(slot),
+      target: () => this._ofbTarget,
+      choose: (target) => this._ofbChoose(target),
+      wrap: (id, type) =>
+        this._ofbSelectionSet._ofbMembers.length > 1 &&
+        this._ofbSelectionSet._ofbMembers.includes(id)
+          ? this._ofbBulk("wrap", true, {}, undefined, type)
+          : ui.dispatch(new WrapInLayout(id, type)),
     });
     root.addEventListener(
       "contextmenu",
@@ -177,19 +282,19 @@ export class Canvas {
         const slotRow = target.closest<HTMLElement>(
           '[role="treeitem"][data-builder-slot]',
         );
-        if (slotRow && this.outline.contains(slotRow)) {
+        if (slotRow && this._ofbOutline.contains(slotRow)) {
           event.preventDefault();
-          this.selectTreeRow(slotRow);
+          this._ofbSelectTreeRow(slotRow);
           return;
         }
         const id =
           target.closest<HTMLElement>("[data-field-id],[data-drag-id]")?.dataset
             .fieldId ??
           target.closest<HTMLElement>("[data-drag-id]")?.dataset.dragId;
-        const node = this.entries().find((e) => e.node.id === id)?.node;
+        const node = this._ofbEntries().find((e) => e.node.id === id)?.node;
         if (!node || target.closest("dialog,.ofb-settings")) return;
         event.preventDefault();
-        this.actions.openMenu(
+        this._ofbActions._ofbOpenMenu(
           node,
           target.closest<HTMLElement>("[data-field-id],[data-drag-id]") ??
             undefined,
@@ -198,141 +303,206 @@ export class Canvas {
       { signal: ui.signal },
     );
   }
-  closeMini() {
+  _ofbCloseMini() {
     this.#mini?.remove();
     this.#mini = undefined;
   }
-  openMini(origin: HTMLElement, target: DropTarget) {
-    this.closeMini();
-    const { ui } = this;
+  _ofbEditLabel(id: string, origin?: HTMLElement) {
+    const entry = this._ofbEntries().find(({ node }) => node.id === id);
+    if (!entry) return;
+    if (this._ofbUi.builder.lockLevel(id) === "all") {
+      this._ofbUi.announce(this._ofbUi.t("ofb.lock.edit"));
+      return;
+    }
+    const property =
+      this._ofbUi.engine.getField(entry.node.type)?.builder?.caption ?? "label";
+    const root = this.#roots.get(id);
+    const caption =
+      origin ??
+      root?.querySelector<HTMLElement>(
+        ":scope > .of-label,:scope > .of-layout-title,:scope > legend.of-label",
+      );
+    if (
+      property === false ||
+      !caption ||
+      !caption.isConnected ||
+      !caption.getClientRects().length
+    ) {
+      this._ofbUi.announce(this._ofbUi.t("ofb.noCaption"));
+      return;
+    }
+    if (caption.dataset.ofbEditingLabel === "true") return;
+    if (property === "label" && entry.node.labelKey?.trim()) {
+      this._ofbUi.edit?.(id);
+      return;
+    }
+    caption.dataset.ofbEditingLabel = "true";
+    caption.hidden = true;
+    const input = element(this._ofbUi.document, "input");
+    input.className = "ofb-inline-label";
+    const value = property
+      .split(".")
+      .reduce<unknown>(
+        (value, key) =>
+          value && typeof value === "object"
+            ? (value as Record<string, unknown>)[key]
+            : undefined,
+        entry.node,
+      );
+    input.value =
+      typeof value === "string"
+        ? value
+        : componentTitle(this._ofbUi, entry.node);
+    input.setAttribute("aria-label", this._ofbUi.t("ofb.editLabel"));
+    caption.after(input);
+    let finished = false;
+    const close = (commit: boolean, restoreFocus = true) => {
+      if (finished) return;
+      finished = true;
+      const value = input.value.trim();
+      input.remove();
+      caption.hidden = false;
+      delete caption.dataset.ofbEditingLabel;
+      if (commit) {
+        if (!value) {
+          this._ofbUi.announce(this._ofbUi.t("ofb.labelRequired"));
+          caption.focus();
+          return;
+        }
+        this._ofbUi.dispatch(new UpdateProperty(id, property, value));
+      }
+      if (restoreFocus) this.#roots.get(id)?.focus();
+    };
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        close(true);
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        close(false);
+      }
+    });
+    input.addEventListener("blur", () => close(true, false), { once: true });
+    input.focus();
+    input.select();
+  }
+  _ofbOpenMini(origin: HTMLElement, target: DropTarget) {
+    this._ofbCloseMini();
+    const ui = this._ofbUi;
     const popup = element(ui.document, "section", "", "ofb-mini-palette");
     popup.setAttribute("role", "dialog");
     popup.setAttribute("aria-label", ui.t("ofb.add"));
-    const context = { document: ui.document, signal: ui.signal };
-    const search = labelledInput(context, ui.t("ofb.search"), "search");
-    const input = search.input as HTMLInputElement;
-    const items = element(ui.document, "div");
+    popup.setAttribute("aria-busy", "true");
+    popup.append(
+      element(
+        ui.document,
+        "p",
+        ui.t("ofb.featureLoading", { feature: ui.t("ofb.add") }),
+      ),
+    );
+    ui.announce(ui.t("ofb.featureLoading", { feature: ui.t("ofb.add") }));
     const source = paletteGroups(ui)
       .flatMap((group) => group.components)
-      .sort(
-        (a, b) => (this.#uses.get(b.type) ?? 0) - (this.#uses.get(a.type) ?? 0),
-      );
-    const draw = () => {
-      items.replaceChildren();
-      const query = input.value.trim().toLowerCase();
-      const results = query
-        ? source.filter((item) =>
-            `${ui.t(item.title)} ${item.type}`.toLowerCase().includes(query),
-          )
-        : source.slice(0, 6);
-      for (const item of results) {
-        const add = button(
-          ui,
-          ui.t("ofb.addType", { title: ui.t(item.title) }),
-          () => {
-            this.closeMini();
-            this.ui.add!(item.type, target, origin);
-          },
-        );
-        items.append(add);
-      }
-      if (!results.length)
-        items.append(element(ui.document, "p", ui.t("ofb.noMatches")));
-    };
-    input.addEventListener("input", draw, { signal: ui.signal });
-    popup.addEventListener(
-      "keydown",
-      (event) => {
-        if (event.key === "Escape") {
-          event.preventDefault();
-          event.stopPropagation();
-          this.closeMini();
-          origin.focus();
-        }
-      },
-      { signal: ui.signal },
-    );
-    popup.append(search.wrapper, items);
+      .filter(
+        (item) =>
+          !ui.builder
+            .canDrop(item.type, target)
+            .some((diagnostic) => diagnostic.severity === "error"),
+      )
+      .map((item) => ({
+        ...item,
+        uses: this.#uses.get(item.type) ?? 0,
+      }));
     const rect = origin.getBoundingClientRect(),
-      root = this.root.getBoundingClientRect();
-    popup.style.insetInlineStart = `${Math.max(0, Math.min(rect.left - root.left, root.width - 300))}px`;
-    popup.style.insetBlockStart = `${rect.bottom - root.top + this.root.scrollTop}px`;
-    this.root.append(popup);
+      root = this._ofbRoot.getBoundingClientRect();
+    this._ofbRoot.append(popup);
+    ui._ofbStyle(
+      popup,
+      "inset-inline-start",
+      `${Math.max(0, Math.min(rect.left - root.left, root.width - 300))}px`,
+      "inset-block-start",
+      `${rect.bottom - root.top + this._ofbRoot.scrollTop}px`,
+    );
     this.#mini = popup;
-    draw();
-    input.focus();
+    origin.focus();
+    const load = () => {
+      popup.setAttribute("aria-busy", "true");
+      void this._ofbFeatures
+        .load("quickAdd")
+        .then(({ mountQuickAdd }) => {
+          if (this.#mini !== popup || ui.signal.aborted) return;
+          mountQuickAdd(popup, ui, {
+            items: source,
+            add: (type) => this._ofbUi.add!(type, target, origin),
+            close: () => this._ofbCloseMini(),
+            origin,
+          });
+        })
+        .catch((cause: unknown) => {
+          if (this.#mini !== popup || ui.signal.aborted) return;
+          popup.removeAttribute("aria-busy");
+          popup.replaceChildren(
+            element(
+              ui.document,
+              "p",
+              ui.t("ofb.featureFailed", { feature: ui.t("ofb.add") }),
+            ),
+            button(ui, ui.t("ofb.retry"), load),
+          );
+          ui.announce(cause instanceof Error ? cause.message : String(cause));
+        });
+    };
+    load();
   }
-  children(parent: ComponentNode | undefined, slot?: string): ComponentNode[] {
-    const first = parent ? this.slots(parent)[0]?.name : "children";
+  _ofbChildren(
+    parent: ComponentNode | undefined,
+    slot?: string,
+  ): ComponentNode[] {
+    const first = parent ? this._ofbSlots(parent)[0]?.name : "children";
     return (
       parent
         ? componentChildren(parent)
-        : this.ui.builder.getState().definition.components
+        : this._ofbUi.builder.getState().definition.components
     ).filter(
       (node) =>
         ((parent ? childSlot(parent, node) : node.slot) ?? first) ===
         (slot ?? first),
     );
   }
-  add(type: string, target: DropTarget): Diagnostic[] {
-    return this.ui.add!(type, target, this.pointer.origin);
+  _ofbAdd(type: string, target: DropTarget): Diagnostic[] {
+    return this._ofbUi.add!(type, target, this._ofbPointer._ofbOrigin);
   }
-  entries(): Entry[] {
-    const result: Entry[] = [];
-    function walk(nodes: ComponentNode[], parent?: ComponentNode) {
-      for (const node of nodes) {
-        result.push({ node, ...(parent ? { parent } : {}) });
-        walk(componentChildren(node), node);
-      }
-    }
-    walk(this.ui.builder.getState().definition.components);
-    return result;
+  _ofbEntries() {
+    return indexEntries(
+      this._ofbUi.builder.getState().definition,
+      this._ofbUi.engine,
+    );
   }
-  slots(node: ComponentNode) {
-    const model = this.ui.engine.getField(node.type)!;
+  _ofbSlots(node: ComponentNode) {
+    const model = this._ofbUi.engine.getField(node.type)!;
     return model.kind === "composite" ? [] : resolveSlots(model, node);
   }
-  caption(slot: ReturnType<Canvas["slots"]>[number]): string {
-    const translated = slot.labelKey ? this.ui.t(slot.labelKey) : undefined;
+  _ofbCaption(slot: ReturnType<Canvas["_ofbSlots"]>[number]): string {
+    const translated = slot.labelKey ? this._ofbUi.t(slot.labelKey) : undefined;
     return translated === undefined || translated === slot.labelKey
       ? slot.label
       : translated;
   }
-  location(id: string) {
-    const entry = this.entries().find((e) => e.node.id === id);
-    if (!entry) return undefined;
-    const first = entry.parent ? this.slots(entry.parent)[0]?.name : "children";
-    const slot =
-      (entry.parent ? childSlot(entry.parent, entry.node) : entry.node.slot) ??
-      first;
-    const siblings = (
-      entry.parent
-        ? componentChildren(entry.parent)
-        : this.ui.builder.getState().definition.components
-    ).filter(
-      (n) =>
-        ((entry.parent ? childSlot(entry.parent, n) : n.slot) ?? first) ===
-        slot,
-    );
-    return {
-      ...entry,
-      slot,
-      index: siblings.findIndex((n) => n.id === id),
-      siblings,
-    };
+  _ofbLocation(id: string) {
+    return this._ofbEntries().find((entry) => entry.node.id === id);
   }
-  choose(target: DropTarget): Diagnostic[] {
+  _ofbChoose(target: DropTarget): Diagnostic[] {
     const parent =
       target.parentId === undefined
         ? undefined
-        : this.entries().find((e) => e.node.id === target.parentId)?.node;
-    const slots = parent ? this.slots(parent) : [];
+        : this._ofbEntries().find((e) => e.node.id === target.parentId)?.node;
+    const slots = parent ? this._ofbSlots(parent) : [];
     const name = target.slot ?? slots[0]?.name;
     const count = parent
       ? componentChildren(parent).filter(
           (n) => (childSlot(parent, n) ?? slots[0]?.name) === name,
         ).length
-      : this.ui.builder.getState().definition.components.length;
+      : this._ofbUi.builder.getState().definition.components.length;
     if (
       (target.parentId !== undefined &&
         (!parent || !slots.some((s) => s.name === name))) ||
@@ -346,32 +516,43 @@ export class Canvas {
         {
           severity: "error",
           code: "invalid-slot",
-          message: this.ui.t("of.builder.invalidDestination"),
+          message: this._ofbUi.t("of.builder.invalidDestination"),
         },
       ];
-      this.ui.announce(diagnostics[0]!.message);
+      this._ofbUi.announce(diagnostics[0]!.message);
       return diagnostics;
     }
-    this.target = { ...target, ...(parent && name ? { slot: name } : {}) };
+    this._ofbTarget = { ...target, ...(parent && name ? { slot: name } : {}) };
     this.#slotSelection =
       parent && name
         ? JSON.stringify({ parentId: parent.id, slot: name })
         : undefined;
-    this.updateTargets();
-    this.drawPicker();
-    this.ui.announce(
-      this.ui.t("of.builder.targetSelected", {
+    this._ofbUpdateTargets();
+    this._ofbUi.announce(
+      this._ofbUi.t("of.builder.targetSelected", {
         label: parent
-          ? `${componentTitle(this.ui, parent)} / ${this.caption(slots.find((s) => s.name === name)!)}`
-          : this.ui.t("of.builder.formRoot"),
+          ? `${componentTitle(this._ofbUi, parent)} / ${this._ofbCaption(slots.find((s) => s.name === name)!)}`
+          : this._ofbUi.t("of.builder.formRoot"),
       }),
     );
     return [];
   }
-  position: () => void;
-  refresh(decorate: boolean): void {
-    const selected = this.ui.builder.getState().selection;
-    const location = selected ? this.location(selected) : undefined;
+  _ofbPosition: () => void;
+  _ofbRefresh(decorate: boolean): void {
+    const selected = this._ofbUi.builder.getState().selection;
+    if (selected !== this._ofbSelectionSet._ofbPrimary) {
+      if (selected) this._ofbSelectionSet.select(selected);
+      else
+        this._ofbSelectionSet.restore({
+          members: [],
+          primary: null,
+          anchor: null,
+        });
+    }
+    this._ofbSelectionSet.retain(
+      new Set(this._ofbEntries().map(({ node }) => node.id)),
+    );
+    const location = selected ? this._ofbLocation(selected) : undefined;
     const signature = JSON.stringify(
       location
         ? [selected, location.parent?.id, location.slot, location.index]
@@ -380,10 +561,10 @@ export class Canvas {
     if (signature !== this.#selectedLocation) {
       this.#selectedLocation = signature;
       this.#slotSelection = undefined;
-      if (!location) this.target = {};
+      if (!location) this._ofbTarget = {};
       if (location) {
-        const own = this.slots(location.node);
-        this.target = own.length
+        const own = this._ofbSlots(location.node);
+        this._ofbTarget = own.length
           ? { parentId: location.node.id, slot: own[0]!.name }
           : {
               ...(location.parent
@@ -396,27 +577,31 @@ export class Canvas {
             };
       }
     }
-    if (this.cutId && !this.entries().some((e) => e.node.id === this.cutId))
-      this.cutId = undefined;
     if (
-      this.target.parentId &&
-      !this.entries().some(
+      this._ofbCutId &&
+      !this._ofbEntries().some((e) => e.node.id === this._ofbCutId)
+    )
+      this._ofbCutId = undefined;
+    if (
+      this._ofbTarget.parentId &&
+      !this._ofbEntries().some(
         (e) =>
-          e.node.id === this.target.parentId &&
-          this.slots(e.node).some(
-            (s) => s.name === (this.target.slot ?? this.slots(e.node)[0]?.name),
+          e.node.id === this._ofbTarget.parentId &&
+          this._ofbSlots(e.node).some(
+            (s) =>
+              s.name ===
+              (this._ofbTarget.slot ?? this._ofbSlots(e.node)[0]?.name),
           ),
       )
     )
-      this.target = {};
-    if (decorate) this.decorate();
-    this.drawOutline();
-    this.drawPicker();
-    this.updateTargets();
-    this.onLocalChange();
-    this.position();
+      this._ofbTarget = {};
+    if (decorate) this._ofbDecorate();
+    this._ofbDrawOutline();
+    this._ofbUpdateTargets();
+    this._ofbOnLocalChange();
+    this._ofbPosition();
   }
-  decorate(reuse = false): void {
+  _ofbDecorate(reuse = false): void {
     const savedHandles = reuse
       ? new Map(this.#handles)
       : new Map<string, HTMLElement>();
@@ -432,7 +617,7 @@ export class Canvas {
       ? new Map(this.#toolbars)
       : new Map<string, HTMLElement>();
     this.#toolbars.clear();
-    this.host
+    this._ofbHost
       .querySelectorAll(
         ".of-builder-handle,.of-builder-drop,.ofb-component-toolbar,.ofb-canvas-lock,.ofb-signal-row",
       )
@@ -440,28 +625,64 @@ export class Canvas {
     this.#handles.clear();
     this.#targets.clear();
     const roots = new Map<string, HTMLElement>();
-    this.host
+    this._ofbHost
       .querySelectorAll<HTMLElement>("[data-field-id]")
       .forEach((root) => roots.set(root.dataset.fieldId!, root));
     this.#roots = roots;
-    const wire = this.entries();
+    let tree = this._ofbHost.querySelector<HTMLElement>(
+      ":scope > .ofb-canvas-tree",
+    );
+    if (!tree) {
+      tree = element(this._ofbUi.document, "div", "", "ofb-canvas-tree");
+      tree.setAttribute("role", "tree");
+      tree.setAttribute("aria-label", this._ofbUi.t("ofb.canvas"));
+      tree.setAttribute("aria-multiselectable", "true");
+      this._ofbHost.append(tree);
+    }
+    const wire = this._ofbEntries();
     for (const { node } of wire) {
       const root = roots.get(node.id);
       if (!root) continue;
+      if (!root.parentElement?.closest("[data-field-id]")) tree.append(root);
+      else if (
+        !["tree", "group"].includes(
+          root.parentElement?.getAttribute("role") ?? "",
+        )
+      ) {
+        const branch = element(
+          this._ofbUi.document,
+          "div",
+          "",
+          "ofb-canvas-tree",
+        );
+        branch.setAttribute("role", "tree");
+        branch.setAttribute("aria-label", this._ofbUi.t("ofb.canvas"));
+        branch.setAttribute("aria-multiselectable", "true");
+        root.before(branch);
+        branch.append(root);
+      }
+      root.setAttribute("role", "treeitem");
+      root.removeAttribute("aria-labelledby");
+      root.setAttribute(
+        "aria-label",
+        this._ofbUi.t("of.builder.selectType", {
+          label: componentTitle(this._ofbUi, node),
+        }),
+      );
       const handle =
         (savedHandles.get(node.id) as HTMLButtonElement | undefined) ??
         button(
-          this.ui,
-          this.ui.t("of.builder.selectType", {
-            label: componentTitle(this.ui, node),
+          this._ofbUi,
+          this._ofbUi.t("of.builder.selectType", {
+            label: componentTitle(this._ofbUi, node),
           }),
           () => {},
         );
-      handle.textContent = componentTitle(this.ui, node);
+      handle.textContent = componentTitle(this._ofbUi, node);
       if (node.key)
         handle.append(
           element(
-            this.ui.document,
+            this._ofbUi.document,
             "span",
             ` · ${node.key}`,
             "ofb-selection-key",
@@ -472,41 +693,50 @@ export class Canvas {
       handle.dataset.id = node.id;
       handle.classList.add("ofb-selection-label");
       handle.title = handle.textContent;
-      handle.setAttribute("aria-label", handle.textContent);
+      handle.setAttribute(
+        "aria-label",
+        this._ofbUi.t("of.builder.selectType", { label: handle.textContent }),
+      );
       root.prepend(handle);
-      const toolbar = savedToolbars.get(node.id) ?? this.actions.toolbar(node);
+      const toolbar =
+        savedToolbars.get(node.id) ?? this._ofbActions._ofbToolbar(node);
       root.prepend(toolbar);
       this.#toolbars.set(node.id, toolbar);
-      root.dataset.ofbLocked = this.ui.builder.lockLevel(node.id) ?? "";
+      root.dataset.ofbLocked = this._ofbUi.builder.lockLevel(node.id) ?? "";
       if (root.dataset.ofbLocked) {
-        const lock = element(this.ui.document, "span", "", "ofb-canvas-lock");
+        const lock = element(
+          this._ofbUi.document,
+          "span",
+          "",
+          "ofb-canvas-lock",
+        );
         lock.setAttribute("role", "img");
-        lock.setAttribute("aria-label", this.ui.t("ofb.lock"));
-        lock.title = this.ui.t("ofb.lock");
-        lock.append(icon(this.ui.document, "lock", this.ui.icons));
+        lock.setAttribute("aria-label", this._ofbUi.t("ofb.lock"));
+        lock.title = this._ofbUi.t("ofb.lock");
+        lock.append(icon(this._ofbUi.document, "lock", this._ofbUi.icons));
         root.append(lock);
       }
       this.#handles.set(node.id, handle);
-      const form = this.ui.form?.();
+      const form = this._ofbUi.form?.();
       if (form) {
-        const row = element(this.ui.document, "div", "", "ofb-signal-row");
-        const context = { document: this.ui.document, signal: this.ui.signal };
+        const row = element(this._ofbUi.document, "div", "", "ofb-signal-row");
+        const context = this._ofbUi;
         const count = form.byId[node.id]?.model.value
           ? controlledFields(form, node.id)
           : 0;
         if (count)
           row.append(
-            chip(context, this.ui.t("ofb.controls", { count }), "logic"),
+            chip(context, this._ofbUi.t("ofb.controls", { count }), "logic"),
           );
         if (node.visibleWhen !== undefined && node.visibleWhen !== true)
           row.append(
             chip(
               context,
-              this.ui.t("ofb.shownWhen", {
+              this._ofbUi.t("ofb.shownWhen", {
                 condition: describeExpression(
                   node.visibleWhen,
                   form,
-                  this.ui.t,
+                  this._ofbUi.t,
                 ),
               }),
               "info",
@@ -514,25 +744,18 @@ export class Canvas {
           );
         if (row.childNodes.length) root.append(row);
       }
-      root.dataset.dragId = node.id;
+      // The separate outline tree owns data-drag-id rows; the canvas uses data-field-id.
+      root.removeAttribute("data-drag-id");
       root.dataset.ofCollapsed = String(this.#collapsed.has(node.id));
-      root.tabIndex = this.ui.builder.getState().selection === node.id ? 0 : -1;
+      root.tabIndex =
+        this._ofbUi.builder.getState().selection === node.id ? 0 : -1;
     }
     const indicators = (
       parent: ComponentNode | undefined,
       slot: string | undefined,
       owner: HTMLElement,
     ) => {
-      const first = parent ? this.slots(parent)[0]?.name : "children";
-      const children = (
-        parent
-          ? componentChildren(parent)
-          : this.ui.builder.getState().definition.components
-      ).filter(
-        (n) =>
-          ((parent ? childSlot(parent, n) : n.slot) ?? first) ===
-          (slot ?? first),
-      );
+      const children = this._ofbChildren(parent, slot);
       for (let index = 0; index <= children.length; index++) {
         const target: DropTarget = {
           ...(parent ? { parentId: parent.id, ...(slot ? { slot } : {}) } : {}),
@@ -543,24 +766,36 @@ export class Canvas {
             | HTMLButtonElement
             | undefined) ??
           button(
-            this.ui,
-            this.ui.t("of.builder.insertHere", { index: index + 1 }),
+            this._ofbUi,
+            this._ofbUi.t("of.builder.insertHere", { index: index + 1 }),
             () => {},
           );
-        marker.className = "of-builder-drop";
+        marker.className = "of-builder-drop ofb-quick-add";
         if (!children.length || (!parent && index === children.length)) {
           marker.classList.add("ofb-empty-slot");
-          marker.textContent = this.ui.t("ofb.emptySlot");
-        }
+          marker.textContent = this._ofbUi.t("ofb.emptySlot");
+        } else marker.textContent = "+";
         marker.dataset.dropParent = parent?.id ?? "";
         marker.dataset.dropSlot = slot ?? "";
         marker.dataset.dropIndex = String(index);
+        marker.onpointerdown = (event) => {
+          // Keep a pointer activation from moving focus to the insertion marker.
+          // WebKit otherwise transfers focus to the containing design node when
+          // the target state is refreshed, which changes the user's selection.
+          event.preventDefault();
+          event.stopPropagation();
+        };
+        marker.onclick = (event) => {
+          event.stopPropagation();
+          this._ofbChoose(target);
+          this._ofbOpenMini(marker, target);
+        };
         marker.setAttribute(
           "aria-label",
-          this.ui.t("of.builder.dropLocation", {
+          this._ofbUi.t("of.builder.dropLocation", {
             label: parent
-              ? `${componentTitle(this.ui, parent)} / ${this.caption(this.slots(parent).find((s) => s.name === slot)!)}`
-              : this.ui.t("of.builder.formRoot"),
+              ? `${componentTitle(this._ofbUi, parent)} / ${this._ofbCaption(this._ofbSlots(parent).find((s) => s.name === slot)!)}`
+              : this._ofbUi.t("of.builder.formRoot"),
             index: index + 1,
           }),
         );
@@ -570,11 +805,11 @@ export class Canvas {
         else owner.append(marker);
       }
     };
-    indicators(undefined, undefined, this.host);
+    indicators(undefined, undefined, this._ofbHost);
     for (const { node } of wire) {
       const root = roots.get(node.id);
       if (!root) continue;
-      for (const slot of this.slots(node)) {
+      for (const slot of this._ofbSlots(node)) {
         const owner =
           Array.from(
             root.querySelectorAll<HTMLElement>("[data-of-slot-owner]"),
@@ -587,26 +822,28 @@ export class Canvas {
       }
     }
   }
-  drawOutline(): void {
-    const selected = this.ui.builder.getState().selection;
+  _ofbDrawOutline(): void {
+    const selected = this._ofbUi.builder.getState().selection;
     // A command may select a new/moved component while the old slot still owns focus.
     // Restore the current selection, never an ancestor inferred from the detached slot.
-    const focused = this.outline.contains(this.ui.document.activeElement)
+    const focused = this._ofbOutline.contains(
+      this._ofbUi.document.activeElement,
+    )
       ? selected
       : undefined;
-    let location = selected ? this.location(selected) : undefined;
+    let location = selected ? this._ofbLocation(selected) : undefined;
     while (location?.parent) {
       const parent = location.parent;
       this.#collapsed.delete(parent.id);
       this.#collapsedSlots.delete(
         JSON.stringify({
           parentId: parent.id,
-          slot: location.slot ?? this.slots(parent)[0]?.name,
+          slot: location.slot ?? this._ofbSlots(parent)[0]?.name,
         }),
       );
-      location = this.location(parent.id);
+      location = this._ofbLocation(parent.id);
     }
-    const definition = this.ui.builder.getState().definition;
+    const definition = this._ofbUi.builder.getState().definition;
     const expansion = JSON.stringify([
       [...this.#collapsed].sort(),
       [...this.#collapsedSlots].sort(),
@@ -628,7 +865,7 @@ export class Canvas {
               : -1,
           ),
         );
-        attribute(item, "data-cut", String(id === this.cutId));
+        attribute(item, "data-cut", String(id === this._ofbCutId));
       }
       return;
     }
@@ -637,47 +874,56 @@ export class Canvas {
     this.#items.clear();
     this.#slotItems.clear();
     this.#visible = [];
-    this.outline.replaceChildren();
+    this._ofbOutline.replaceChildren();
     const walk = (
       nodes: ComponentNode[],
       depth: number,
       parent?: ComponentNode,
       visible = true,
     ): HTMLUListElement => {
-      const list = element(this.ui.document, "ul");
+      const list = element(this._ofbUi.document, "ul");
       list.setAttribute("role", depth === 1 ? "tree" : "group");
+      if (depth === 1) list.setAttribute("aria-multiselectable", "true");
       if (depth === 1)
-        list.setAttribute("aria-label", this.ui.t("of.builder.outline"));
+        list.setAttribute("aria-label", this._ofbUi.t("of.builder.outline"));
       nodes.forEach((node, index) => {
-        const li = element(this.ui.document, "li");
+        const li = element(this._ofbUi.document, "li");
         li.setAttribute("role", "treeitem");
         li.setAttribute("aria-level", String(depth));
         li.setAttribute("aria-posinset", String(index + 1));
         li.setAttribute("aria-setsize", String(nodes.length));
         li.setAttribute(
           "aria-selected",
-          String(selected === node.id && !this.#slotSelection),
+          String(
+            this._ofbSelectionSet._ofbMembers.includes(node.id) &&
+              !this.#slotSelection,
+          ),
         );
-        li.setAttribute("aria-label", componentTitle(this.ui, node));
+        li.setAttribute("aria-label", componentTitle(this._ofbUi, node));
         li.tabIndex =
           selected === node.id || (!selected && depth === 1 && index === 0)
             ? 0
             : -1;
         li.dataset.dragId = node.id;
-        li.dataset.cut = String(this.cutId === node.id);
+        li.dataset.cut = String(this._ofbCutId === node.id);
         const text = element(
-          this.ui.document,
+          this._ofbUi.document,
           "span",
           "",
           "of-builder-tree-name",
         );
-        if (componentChildren(node).length || this.slots(node).length > 1) {
-          const caret = element(this.ui.document, "span", "", "ofb-tree-caret");
+        if (componentChildren(node).length || this._ofbSlots(node).length > 1) {
+          const caret = element(
+            this._ofbUi.document,
+            "span",
+            "",
+            "ofb-tree-caret",
+          );
           caret.append(
             icon(
-              this.ui.document,
+              this._ofbUi.document,
               this.#collapsed.has(node.id) ? "collapse" : "expand",
-              this.ui.icons,
+              this._ofbUi.icons,
             ),
           );
           caret.setAttribute("aria-hidden", "true");
@@ -688,28 +934,28 @@ export class Canvas {
             String(!this.#collapsed.has(node.id)),
           );
         }
-        text.append(componentTitle(this.ui, node));
-        if (this.ui.builder.lockLevel(node.id)) {
-          const lock = icon(this.ui.document, "lock", this.ui.icons);
+        text.append(componentTitle(this._ofbUi, node));
+        if (this._ofbUi.builder.lockLevel(node.id)) {
+          const lock = icon(this._ofbUi.document, "lock", this._ofbUi.icons);
           lock.setAttribute("role", "img");
-          lock.setAttribute("aria-label", this.ui.t("ofb.lock"));
+          lock.setAttribute("aria-label", this._ofbUi.t("ofb.lock"));
           text.append(lock);
         }
         li.append(text);
         this.#items.set(node.id, li);
         if (visible)
           this.#visible.push({ node, ...(parent ? { parent } : {}) });
-        const slots = this.slots(node);
+        const slots = this._ofbSlots(node);
         if (slots.length > 1) {
-          const slotList = element(this.ui.document, "ul");
+          const slotList = element(this._ofbUi.document, "ul");
           slotList.setAttribute("role", "group");
           slotList.hidden = this.#collapsed.has(node.id);
           for (const [slotIndex, slot] of slots.entries()) {
-            const row = element(this.ui.document, "li");
+            const row = element(this._ofbUi.document, "li");
             const key = JSON.stringify({ parentId: node.id, slot: slot.name });
             row.dataset.builderSlot = key;
             row.setAttribute("role", "treeitem");
-            row.setAttribute("aria-label", this.caption(slot));
+            row.setAttribute("aria-label", this._ofbCaption(slot));
             row.setAttribute("aria-level", String(depth + 1));
             row.setAttribute("aria-posinset", String(slotIndex + 1));
             row.setAttribute("aria-setsize", String(slots.length));
@@ -719,26 +965,26 @@ export class Canvas {
             );
             row.tabIndex = this.#slotSelection === key ? 0 : -1;
             const name = element(
-              this.ui.document,
+              this._ofbUi.document,
               "span",
               "",
               "of-builder-tree-name ofb-slot-name",
             );
-            const children = this.children(node, slot.name);
+            const children = this._ofbChildren(node, slot.name);
             if (children.length) {
               const closed = this.#collapsedSlots.has(key);
               row.setAttribute("aria-expanded", String(!closed));
               const caret = element(
-                this.ui.document,
+                this._ofbUi.document,
                 "span",
                 "",
                 "ofb-tree-caret",
               );
               caret.append(
                 icon(
-                  this.ui.document,
+                  this._ofbUi.document,
                   closed ? "collapse" : "expand",
-                  this.ui.icons,
+                  this._ofbUi.icons,
                 ),
               );
               caret.dataset.slotToggle = key;
@@ -753,7 +999,7 @@ export class Canvas {
               nested.hidden = closed;
               row.append(nested);
             }
-            name.append(this.caption(slot));
+            name.append(this._ofbCaption(slot));
             row.prepend(name);
             this.#slotItems.set(key, row);
             slotList.append(row);
@@ -773,54 +1019,35 @@ export class Canvas {
       });
       return list;
     };
-    this.outline.append(
-      walk(this.ui.builder.getState().definition.components, 1),
+    this._ofbOutline.append(
+      walk(this._ofbUi.builder.getState().definition.components, 1),
     );
     if (focused) this.#items.get(focused)?.focus();
   }
-  drawPicker(): void {
-    this.picker.replaceChildren();
-    this.#choices = [{}];
-    const labels = [this.ui.t("of.builder.formRoot")];
-    for (const { node } of this.entries())
-      for (const slot of this.slots(node)) {
-        this.#choices.push({ parentId: node.id, slot: slot.name });
-        labels.push(`${componentTitle(this.ui, node)} / ${this.caption(slot)}`);
-      }
-    labels.forEach((label, index) => {
-      const option = element(this.ui.document, "option", label);
-      option.value = String(index);
-      this.picker.append(option);
-    });
-    this.picker.value = String(
-      Math.max(
-        0,
-        this.#choices.findIndex(
-          (target) =>
-            target.parentId === this.target.parentId &&
-            (target.slot ??
-              (target.parentId
-                ? this.slots(
-                    this.entries().find((e) => e.node.id === target.parentId)!
-                      .node,
-                  )[0]?.name
-                : undefined)) === this.target.slot,
+  _ofbUpdateTargets(): void {
+    const selected = this._ofbUi.builder.getState().selection;
+    for (const [button, target] of this.#targets) {
+      attribute(
+        button,
+        "tabindex",
+        String(
+          button.classList.contains("ofb-empty-slot") ||
+            button.closest<HTMLElement>("[data-field-id]")?.dataset.fieldId ===
+              selected
+            ? 0
+            : -1,
         ),
-      ),
-    );
-  }
-  updateTargets(): void {
-    for (const [button, target] of this.#targets)
+      );
       attribute(
         button,
         "aria-pressed",
         String(
-          target.parentId === this.target.parentId &&
-            target.slot === this.target.slot &&
-            target.index === this.target.index,
+          target.parentId === this._ofbTarget.parentId &&
+            target.slot === this._ofbTarget.slot &&
+            target.index === this._ofbTarget.index,
         ),
       );
-    const selected = this.ui.builder.getState().selection;
+    }
     for (const [key, row] of this.#slotItems) {
       attribute(row, "aria-selected", String(key === this.#slotSelection));
       attribute(row, "tabindex", String(key === this.#slotSelection ? 0 : -1));
@@ -829,7 +1056,10 @@ export class Canvas {
       attribute(
         row,
         "aria-selected",
-        String(id === selected && !this.#slotSelection),
+        String(
+          this._ofbSelectionSet._ofbMembers.includes(id) &&
+            !this.#slotSelection,
+        ),
       );
       attribute(
         row,
@@ -846,20 +1076,31 @@ export class Canvas {
       attribute(handle, "aria-pressed", String(id === selected));
       const root = this.#roots.get(id)!;
       attribute(root, "data-of-selected", String(id === selected));
+      attribute(
+        root,
+        "aria-selected",
+        String(this._ofbSelectionSet._ofbMembers.includes(id)),
+      );
+      attribute(
+        root,
+        "data-of-multiselected",
+        String(this._ofbSelectionSet._ofbMembers.includes(id)),
+      );
       attribute(root, "tabindex", String(id === selected ? 0 : -1));
-      const cut = id === this.cutId;
+      const cut = id === this._ofbCutId || this.#cutIds.includes(id);
       if (root.classList.contains("of-builder-cut") !== cut)
         root.classList.toggle("of-builder-cut", cut);
     }
   }
-  focusSelected(outline = false): void {
-    let id = this.ui.builder.getState().selection;
+  _ofbFocusSelected(outline = false): void {
+    this.#selectionFocus = true;
+    let id = this._ofbUi.builder.getState().selection;
     if (!id && this.#visible[0]) {
       id = this.#visible[0].node.id;
-      this.ui.builder.select(id);
+      this._ofbUi.builder.select(id);
     }
     if (id) {
-      this.ui.reveal?.(id);
+      this._ofbUi.reveal?.(id);
       if (outline)
         (this.#slotSelection
           ? this.#slotItems.get(this.#slotSelection)
@@ -868,53 +1109,105 @@ export class Canvas {
       else
         this.#handles.get(id)?.closest<HTMLElement>("[data-field-id]")?.focus();
     } else this.#targets.keys().next().value?.focus();
+    this.#selectionFocus = false;
   }
 
-  copy(id = this.ui.builder.getState().selection ?? undefined): void {
-    const node = this.entries().find((e) => e.node.id === id)?.node;
-    this.clipboard = node
-      ? (JSON.parse(JSON.stringify(node)) as ComponentNode)
+  _ofbCopy(id = this._ofbUi.builder.getState().selection ?? undefined): void {
+    if (
+      this._ofbSelectionSet._ofbMembers.length > 1 &&
+      id &&
+      this._ofbSelectionSet._ofbMembers.includes(id)
+    ) {
+      this._ofbBulk("copy");
+      return;
+    }
+    this.#cutIds = [];
+    const node = this._ofbEntries().find((e) => e.node.id === id)?.node;
+    const serialized = node ? JSON.stringify(node) : undefined;
+    this._ofbClipboard = serialized
+      ? (JSON.parse(serialized) as ComponentNode)
       : undefined;
-    this.cutId = undefined;
-    this.onLocalChange();
-    this.ui.announce(
-      this.ui.t(node ? "ofb.copied" : "ofb.selectFirst", {
-        label: node ? componentTitle(this.ui, node) : "",
+    if (serialized)
+      void this._ofbUi.document.defaultView?.navigator.clipboard
+        ?.writeText(serialized)
+        .catch(() => {});
+    this._ofbCutId = undefined;
+    this._ofbOnLocalChange();
+    this._ofbUi.announce(
+      this._ofbUi.t(node ? "ofb.copied" : "ofb.selectFirst", {
+        label: node ? componentTitle(this._ofbUi, node) : "",
       }),
     );
   }
-  cut(id = this.ui.builder.getState().selection ?? undefined): void {
-    this.cutId = id;
-    this.refresh(false);
-    this.ui.announce(
-      this.ui.t(this.cutId ? "of.builder.cutReady" : "of.builder.selectFirst"),
-    );
-  }
-  paste(): void {
-    if (!this.cutId && !this.clipboard) {
-      this.ui.announce(this.ui.t("ofb.nothingToPaste"));
+  _ofbCut(id = this._ofbUi.builder.getState().selection ?? undefined): void {
+    if (
+      this._ofbSelectionSet._ofbMembers.length > 1 &&
+      id &&
+      this._ofbSelectionSet._ofbMembers.includes(id)
+    ) {
+      this._ofbBulk("cut");
       return;
     }
-    const result = this.ui.dispatch(
-      this.cutId
-        ? new MoveComponent(this.cutId, {
-            ...this.moveTarget(this.cutId, this.target),
+    this.#cutIds = [];
+    this._ofbCutId = id;
+    this._ofbRefresh(false);
+    this._ofbUi.announce(
+      this._ofbUi.t(
+        this._ofbCutId ? "of.builder.cutReady" : "of.builder.selectFirst",
+      ),
+    );
+  }
+  _ofbPaste(): void {
+    if (this.#cutIds.length) {
+      this._ofbBulk("move", true, this._ofbTarget, this.#cutIds);
+      return;
+    }
+    if (Array.isArray(this._ofbClipboard)) {
+      this._ofbBulk("paste");
+      return;
+    }
+    if (!this._ofbCutId && !this._ofbClipboard) {
+      const clipboard = this._ofbUi.document.defaultView?.navigator.clipboard;
+      if (clipboard)
+        void clipboard
+          .readText()
+          .then((text) => {
+            if (this._ofbUi.signal.aborted) return;
+            try {
+              this._ofbClipboard = JSON.parse(text) as
+                | ComponentNode
+                | ComponentNode[];
+              this._ofbPaste();
+            } catch {
+              this._ofbUi.announce(this._ofbUi.t("ofb.nothingToPaste"));
+            }
+          })
+          .catch(() =>
+            this._ofbUi.announce(this._ofbUi.t("ofb.nothingToPaste")),
+          );
+      else this._ofbUi.announce(this._ofbUi.t("ofb.nothingToPaste"));
+      return;
+    }
+    const result = this._ofbUi.dispatch(
+      this._ofbCutId
+        ? new MoveComponent(this._ofbCutId, {
+            ...this._ofbMoveTarget(this._ofbCutId, this._ofbTarget),
             renameConflicts: true,
           })
-        : new PasteComponent(this.clipboard!, this.target),
+        : new PasteComponent(this._ofbClipboard!, this._ofbTarget),
     );
     if (!result.some((d) => d.severity === "error")) {
-      this.cutId = undefined;
-      this.refresh(false);
+      this._ofbCutId = undefined;
+      this._ofbRefresh(false);
     }
   }
-  moveTarget(id: string, target: DropTarget): DropTarget {
-    const from = this.location(id),
+  _ofbMoveTarget(id: string, target: DropTarget): DropTarget {
+    const from = this._ofbLocation(id),
       parent = target.parentId
-        ? this.entries().find((e) => e.node.id === target.parentId)?.node
+        ? this._ofbEntries().find((e) => e.node.id === target.parentId)?.node
         : undefined;
     const slot =
-      target.slot ?? (parent ? this.slots(parent)[0]?.name : "children");
+      target.slot ?? (parent ? this._ofbSlots(parent)[0]?.name : "children");
     return from &&
       from.parent?.id === target.parentId &&
       from.slot === slot &&
@@ -923,48 +1216,52 @@ export class Canvas {
       ? { ...target, index: target.index - 1 }
       : target;
   }
-  pick = () => {
-    const target = this.#choices[Number(this.picker.value)];
-    if (target) this.choose(target);
-  };
-  selectTreeRow(row: HTMLElement): void {
+  _ofbSelectTreeRow(row: HTMLElement): void {
     if (row.dataset.builderSlot) {
       const target = JSON.parse(row.dataset.builderSlot) as DropTarget;
       if (
         target.parentId &&
-        this.ui.builder.lockLevel(target.parentId) === "all"
+        this._ofbUi.builder.lockLevel(target.parentId) === "all"
       ) {
-        this.ui.announce(this.ui.t("ofb.lock.edit"));
+        this._ofbUi.announce(this._ofbUi.t("ofb.lock.edit"));
         return;
       }
-      this.ui.builder.select(target.parentId ?? null);
-      this.choose(target);
+      this._ofbUi.builder.select(target.parentId ?? null);
+      this._ofbChoose(target);
       this.#slotItems.get(row.dataset.builderSlot)?.focus();
     } else if (row.dataset.dragId) {
-      if (this.ui.builder.lockLevel(row.dataset.dragId) === "all") {
+      if (this._ofbUi.builder.lockLevel(row.dataset.dragId) === "all") {
         row.focus();
-        this.ui.announce(this.ui.t("ofb.lock.edit"));
+        this._ofbUi.announce(this._ofbUi.t("ofb.lock.edit"));
         return;
       }
       this.#slotSelection = undefined;
-      this.ui.builder.select(row.dataset.dragId);
-      this.ui.reveal?.(row.dataset.dragId);
+      this._ofbSelectionSet.select(row.dataset.dragId);
+      this._ofbUi.builder.select(row.dataset.dragId);
+      this.#selectionFocus = true;
+      this._ofbUi.reveal?.(row.dataset.dragId);
       this.#items.get(row.dataset.dragId)?.focus();
+      this.#selectionFocus = false;
     }
   }
-  followFocus = (event: FocusEvent) => {
+  _ofbFollowFocus = (event: FocusEvent) => {
+    if (this.#selectionFocus) return;
     const target = event.target as HTMLElement;
     const row = target.closest<HTMLElement>('[role="treeitem"]');
-    if (row && this.outline.contains(row)) this.selectTreeRow(row);
+    if (row && this._ofbOutline.contains(row)) this._ofbSelectTreeRow(row);
     else if (
       target.matches("[data-field-id][tabindex]") &&
-      this.host.contains(target)
+      this._ofbHost.contains(target)
     ) {
       const id = target.dataset.fieldId!;
-      if (this.ui.builder.lockLevel(id) !== "all") this.ui.builder.select(id);
+      if (this._ofbUi.builder.lockLevel(id) !== "all") {
+        this._ofbSelectionSet.select(id);
+        this._ofbUi.builder.select(id);
+      }
     }
   };
-  click = (event: MouseEvent) => {
+  _ofbClick = (event: MouseEvent) => {
+    if (event.shiftKey || event.ctrlKey || event.metaKey) return;
     const target = event.target as Element;
     if (
       target.closest(
@@ -973,72 +1270,488 @@ export class Canvas {
     )
       return;
     const slotToggle = target.closest<HTMLElement>("[data-slot-toggle]");
-    if (slotToggle && this.outline.contains(slotToggle)) {
+    if (slotToggle && this._ofbOutline.contains(slotToggle)) {
       const key = slotToggle.dataset.slotToggle!;
-      this.selectTreeRow(slotToggle.closest<HTMLElement>('[role="treeitem"]')!);
+      this._ofbSelectTreeRow(
+        slotToggle.closest<HTMLElement>('[role="treeitem"]')!,
+      );
       if (!this.#collapsedSlots.delete(key)) this.#collapsedSlots.add(key);
-      this.drawOutline();
+      this._ofbDrawOutline();
       this.#slotItems.get(key)?.focus();
       return;
     }
     const tree = target.closest<HTMLElement>('[role="treeitem"]');
-    if (tree?.dataset.builderSlot && this.outline.contains(tree)) {
-      this.selectTreeRow(tree);
+    if (tree?.dataset.builderSlot && this._ofbOutline.contains(tree)) {
+      this._ofbSelectTreeRow(tree);
       return;
     }
     const marker = target.closest<HTMLElement>(".of-builder-drop");
     if (marker && this.#targets.has(marker)) {
-      this.choose(this.#targets.get(marker)!);
-      if (marker.classList.contains("ofb-empty-slot"))
-        this.openMini(marker, this.#targets.get(marker)!);
+      this._ofbChoose(this.#targets.get(marker)!);
+      if (!this._ofbCutId && !this.#cutIds.length)
+        this._ofbOpenMini(marker, this.#targets.get(marker)!);
       return;
     }
     const add = target.closest<HTMLElement>("[data-type]");
-    if (add && this.palette.contains(add)) {
-      this.add(add.dataset.type!, this.target);
+    if (add && this._ofbPalette.contains(add)) {
+      this._ofbAdd(add.dataset.type!, this._ofbTarget);
       return;
     }
     const toggle = target.closest<HTMLElement>("[data-tree-toggle]");
-    if (toggle && this.outline.contains(toggle)) {
+    if (toggle && this._ofbOutline.contains(toggle)) {
       const id = toggle.dataset.treeToggle!;
       this.#slotSelection = undefined;
       if (!this.#collapsed.delete(id)) this.#collapsed.add(id);
-      this.ui.builder.select(id);
-      this.focusSelected(true);
+      this._ofbUi.builder.select(id);
+      this._ofbFocusSelected(true);
       return;
     }
     const handle = target.closest<HTMLElement>("[data-drag-id]");
     if (
       handle &&
-      (this.host.contains(handle) || this.outline.contains(handle))
+      (this._ofbHost.contains(handle) || this._ofbOutline.contains(handle))
     ) {
-      if (this.ui.builder.lockLevel(handle.dataset.dragId!) === "all") {
-        this.ui.announce(this.ui.t("ofb.lock.edit"));
+      if (this._ofbUi.builder.lockLevel(handle.dataset.dragId!) === "all") {
+        this._ofbUi.announce(this._ofbUi.t("ofb.lock.edit"));
         return;
       }
       this.#slotSelection = undefined;
-      this.ui.builder.select(handle.dataset.dragId!);
-      if (this.outline.contains(handle))
-        this.ui.reveal?.(handle.dataset.dragId!);
+      this._ofbUi.builder.select(handle.dataset.dragId!);
+      if (this._ofbOutline.contains(handle))
+        this._ofbUi.reveal?.(handle.dataset.dragId!);
       return;
     }
     let field = target.closest<HTMLElement>("[data-field-id]");
-    while (field && this.host.contains(field)) {
-      if (this.entries().some((e) => e.node.id === field!.dataset.fieldId)) {
-        if (this.ui.builder.lockLevel(field.dataset.fieldId!) === "all") {
-          this.ui.announce(this.ui.t("ofb.lock.edit"));
+    while (field && this._ofbHost.contains(field)) {
+      if (
+        this._ofbEntries().some((e) => e.node.id === field!.dataset.fieldId)
+      ) {
+        if (this._ofbUi.builder.lockLevel(field.dataset.fieldId!) === "all") {
+          this._ofbUi.announce(this._ofbUi.t("ofb.lock.edit"));
           return;
         }
         this.#slotSelection = undefined;
-        this.ui.builder.select(field.dataset.fieldId!);
+        this._ofbUi.builder.select(field.dataset.fieldId!);
         break;
       }
       field =
         field.parentElement?.closest<HTMLElement>("[data-field-id]") ?? null;
     }
   };
-  keydown = (event: KeyboardEvent) => {
-    if (this.pointer.active || this.root.hasAttribute("data-ofb-readonly"))
+  _ofbSelectMany(id: string, mode: "range" | "toggle") {
+    const removed =
+      mode === "toggle" && this._ofbSelectionSet._ofbMembers.includes(id);
+    const visible = [
+      ...this._ofbOutline.querySelectorAll<HTMLElement>(
+        "[role=treeitem][data-drag-id]",
+      ),
+    ]
+      .filter((row) => !row.closest("[hidden]"))
+      .map((row) => row.dataset.dragId!);
+    if (mode === "range") this._ofbSelectionSet.range(id, visible);
+    else
+      this._ofbSelectionSet.toggle(
+        id,
+        this._ofbLocation(id)?.parent?.id ?? null,
+      );
+    this.#selectionFocus = true;
+    this._ofbUi.builder.select(this._ofbSelectionSet._ofbPrimary);
+    (this.#items.get(id) ?? this.#roots.get(id))?.focus();
+    this.#selectionFocus = false;
+    this._ofbUpdateTargets();
+    this._ofbUi.announce(
+      this._ofbUi.t(removed ? "ofb.deselected" : "ofb.selectionCount", {
+        count: this._ofbSelectionSet._ofbMembers.length,
+        label: componentTitle(this._ofbUi, this._ofbLocation(id)!.node),
+      }),
+    );
+  }
+  _ofbOpenCommands(
+    bulk = false,
+    plan?: (module: FeatureModules["planning"]) => void,
+  ) {
+    if (this.#commands) return;
+    const ui = this._ofbUi;
+    const baseline = ui.builder.getState().definition;
+    const label = ui.t(
+      plan ? "ofb.planning" : bulk ? "ofb.bulk" : "ofb.commands",
+    );
+    const origin = ui.document.activeElement as HTMLElement | null;
+    const local = new AbortController();
+    const frame = dialog({ ...ui, signal: local.signal }, label, () => close());
+    const close = () => {
+      local.abort();
+      this.#selectionFocus = true;
+      frame.close();
+      frame.element.remove();
+      this.#commands = undefined;
+      origin?.focus();
+      this.#selectionFocus = false;
+    };
+    this.#commands = close;
+    ui.signal.addEventListener("abort", close, { once: true });
+    const heading = element(ui.document, "header");
+    const title = element(ui.document, "h2", label);
+    ui._ofbStyle(
+      frame.element,
+      "padding",
+      "20px",
+      "inline-size",
+      "min(760px,90vw)",
+    );
+    ui._ofbStyle(
+      heading,
+      "display",
+      "flex",
+      "align-items",
+      "center",
+      "justify-content",
+      "space-between",
+      "margin-block-end",
+      "16px",
+    );
+    ui._ofbStyle(
+      title,
+      "margin",
+      "0",
+      "font-size",
+      "var(--ofb-font-size-title)",
+    );
+    heading.append(
+      title,
+      actionButton({ ...ui, signal: local.signal }, ui.t("ofb.close"), close, {
+        icon: "close",
+        iconOnly: true,
+      }),
+    );
+    frame.element.append(heading);
+    const host = element(ui.document, "div");
+    frame.element.append(host);
+    this._ofbRoot.append(frame.element);
+    frame.show();
+    host.tabIndex = -1;
+    host.focus();
+    const load = () => {
+      host.setAttribute("aria-busy", "true");
+      host.textContent = ui.t("ofb.featureLoading", {
+        feature: label,
+      });
+      ui.announce(host.textContent);
+      void this._ofbFeatures
+        .load(plan ? "planning" : bulk ? "bulk" : "commands")
+        .then((module) => {
+          if (local.signal.aborted) return;
+          if ("selectionCommand" in module && plan) {
+            close();
+            if (baseline !== ui.builder.getState().definition)
+              ui.announce(ui.t("ofb.planningConflict"));
+            else plan(module);
+            return;
+          }
+          const scoped = { ...ui, signal: local.signal };
+          if ("mountBulkEditor" in module) {
+            host.removeAttribute("aria-busy");
+            module.mountBulkEditor(
+              host,
+              scoped,
+              { actionButton, element, button, tabs },
+              [...this._ofbSelectionSet._ofbMembers],
+              ui.editor,
+              close,
+            );
+            return;
+          }
+          if (!("mountCommands" in module)) return;
+          module.mountCommands(host, scoped, {
+            selection: () => this._ofbSelectionSet._ofbMembers,
+            target: () => this._ofbTarget,
+            jump: (id) => {
+              this._ofbSelectionSet.select(id);
+              ui.builder.select(id);
+              this._ofbFocusSelected();
+            },
+            action: (action, ids) => {
+              if (action === "required") return this._ofbBulk("required");
+              if (action === "move" && ids.length > 1) {
+                this._ofbPointer._ofbKeyboard(
+                  this._ofbSelectionSet._ofbPrimary!,
+                );
+                return;
+              }
+              if (ids.length > 1 && action !== "paste")
+                return this._ofbBulk(action);
+              if (action === "paste") {
+                this._ofbPaste();
+                return;
+              }
+              const node = this._ofbEntries().find(
+                ({ node }) => node.id === ids[0],
+              )?.node;
+              if (node) this._ofbActions._ofbExecute(action, node);
+            },
+            close,
+          });
+        })
+        .catch((cause: unknown) => {
+          if (local.signal.aborted) return;
+          host.removeAttribute("aria-busy");
+          host.textContent =
+            cause instanceof Error ? cause.message : String(cause);
+          host.append(button(ui, ui.t("ofb.retry"), load));
+        });
+    };
+    load();
+  }
+  _ofbAcceptSelection(command: Command, diagnostics: readonly Diagnostic[]) {
+    const pending = this.#pendingSelection;
+    if (!pending || pending.command !== command) return;
+    this.#pendingSelection = undefined;
+    if (diagnostics.some((diagnostic) => diagnostic.severity === "error"))
+      return;
+    const members = [...pending.selected()];
+    const primary =
+      pending.before?.primary && members.includes(pending.before.primary)
+        ? pending.before.primary
+        : (members.at(-1) ?? null);
+    this._ofbSelectionSet.restore({
+      members,
+      primary,
+      anchor:
+        pending.before?.anchor && members.includes(pending.before.anchor)
+          ? pending.before.anchor
+          : primary,
+    });
+    this._ofbUi.builder.select(primary);
+    this._ofbUpdateTargets();
+  }
+  _ofbBulk(
+    action:
+      | "delete"
+      | "duplicate"
+      | "required"
+      | "edit"
+      | "move"
+      | "wrap"
+      | "copy"
+      | "cut"
+      | "paste",
+    value = true,
+    target: DropTarget = this._ofbTarget,
+    override?: readonly string[],
+    layout = "panel",
+  ) {
+    const ui = this._ofbUi;
+    const entries = this._ofbEntries();
+    const ids = override
+      ? [...override]
+      : ["required", "edit"].includes(action)
+        ? [...this._ofbSelectionSet._ofbMembers]
+        : this._ofbSelectionSet.structural(
+            entries.map(({ node, parent }) => ({
+              id: node.id,
+              ...(parent ? { parent: parent.id } : {}),
+            })),
+          );
+    const clipboard = Array.isArray(this._ofbClipboard)
+      ? this._ofbClipboard
+      : [];
+    if (action === "paste" ? !clipboard.length : !ids.length) return;
+    if (
+      action === "required" &&
+      ids.some(
+        (id) =>
+          !ui.builder
+            .propertyPanel(id)
+            .groups.some((group) =>
+              group.properties.some(
+                (property) => property.key === "validation.required",
+              ),
+            ),
+      )
+    ) {
+      ui.announce(ui.t("ofb.unsupportedBulk"));
+      return;
+    }
+    const blocked = (action === "paste" ? [] : ids).filter((id) => {
+      const level = ui.builder.lockLevel(id);
+      return (
+        level === "all" ||
+        (["delete", "cut"].includes(action) && level === "structure")
+      );
+    });
+    if (blocked.length) {
+      ui.announce(
+        ui.t("ofb.lockedBulk", {
+          labels: blocked
+            .map((id) =>
+              componentTitle(
+                ui,
+                entries.find(({ node }) => node.id === id)!.node,
+              ),
+            )
+            .join(", "),
+        }),
+        {
+          label: ui.t("ofb.deselectLocked"),
+          run: () => {
+            for (const id of blocked)
+              if (this._ofbSelectionSet._ofbMembers.includes(id))
+                this._ofbSelectionSet.toggle(
+                  id,
+                  this._ofbLocation(id)?.parent?.id ?? null,
+                );
+            ui.builder.select(this._ofbSelectionSet._ofbPrimary);
+            this._ofbUpdateTargets();
+          },
+        },
+      );
+      return;
+    }
+    if (action === "edit") return this._ofbOpenCommands(true);
+    if (action === "copy" || action === "cut") {
+      this._ofbCutId = undefined;
+      this.#cutIds = action === "cut" ? ids : [];
+      if (action === "copy") {
+        const text = JSON.stringify(
+          ids.map((id) => entries.find((entry) => entry.node.id === id)!.node),
+        );
+        this._ofbClipboard = JSON.parse(text) as ComponentNode[];
+        void ui.document.defaultView?.navigator.clipboard
+          ?.writeText(text)
+          .catch(() => {});
+      }
+      this._ofbRefresh(false);
+      ui.announce(
+        ui.t(action === "copy" ? "ofb.copiedMany" : "of.builder.cutReady", {
+          count: ids.length,
+        }),
+      );
+      return;
+    }
+    const before = this._ofbSelectionSet.snapshot();
+    let selected: () => readonly string[] = () =>
+      action === "required" ? before.members : [];
+    const commit = (commands: readonly Command[]) => {
+      const command = new AtomicCommand(
+        ui.t("ofb.bulkAction", {
+          action: ui.t(`ofb.${action}`),
+          count: action === "paste" ? clipboard.length : ids.length,
+        }),
+        commands,
+      );
+      this.#pendingSelection = {
+        command,
+        selected,
+        ...(["move", "required"].includes(action) ? { before } : {}),
+      };
+      const result = ui.dispatch(command);
+      if (result.some((diagnostic) => diagnostic.severity === "error")) return;
+      if (["move", "paste", "duplicate", "wrap"].includes(action))
+        this._ofbFocusSelected(
+          !!ui.document.activeElement?.closest(".of-builder-outline"),
+        );
+      if (action === "move") {
+        this.#cutIds = [];
+        this._ofbCutId = undefined;
+        this._ofbRefresh(false);
+      }
+    };
+    let commands: readonly Command[];
+    if (action === "delete" || action === "required") {
+      const ordered = action === "delete" ? [...ids].reverse() : ids;
+      commands = ordered.map((id) =>
+        action === "delete"
+          ? new RemoveComponent(id)
+          : new UpdateProperty(id, "validation.required", value),
+      );
+    } else {
+      this._ofbOpenCommands(false, ({ selectionCommand }) => {
+        const operation = selectionCommand(
+          action,
+          ids,
+          target,
+          {
+            scope: ui.t("ofb.crossScopeBulk"),
+            wrap: ui.t("ofb.adjacentBulk"),
+            missing: ui.t("ofb.invalidBulk"),
+          },
+          { layout, clipboard },
+        );
+        selected =
+          action === "move"
+            ? () => override ?? before.members
+            : operation.selected;
+        commit([operation.command]);
+      });
+      return;
+    }
+    commit(commands);
+  }
+  _ofbLabelPointerDown = (event: PointerEvent) => {
+    if (event.button !== 0) return;
+    const target = event.target as Element;
+    const field = target.closest<HTMLElement>("[data-field-id]");
+    const id = field?.dataset.fieldId;
+    const caption = target.closest<HTMLElement>(".of-label,.of-layout-title");
+    const previous = this.#labelPointer;
+    if (
+      id &&
+      previous?.id === id &&
+      event.timeStamp - previous.at < 750 &&
+      Math.hypot(
+        event.clientX - previous.clientX,
+        event.clientY - previous.clientY,
+      ) < 8
+    ) {
+      // Selecting a component exposes its chrome between clicks. In Firefox
+      // that chrome can become the second pointer target, so the browser never
+      // emits `dblclick` on the original label. Detect the same-place pointer
+      // sequence before presentation chrome can consume it.
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.#labelPointer = undefined;
+      this._ofbUi.builder.select(id);
+      this._ofbEditLabel(id, caption ?? undefined);
+      return;
+    }
+    this.#labelPointer =
+      caption && id
+        ? {
+            id,
+            at: event.timeStamp,
+            clientX: event.clientX,
+            clientY: event.clientY,
+          }
+        : undefined;
+    const action = target.closest<HTMLElement>("[data-ofb-action]");
+    if (action) {
+      // Safari otherwise focuses the containing canvas field and collapses the
+      // selection before its toolbar action or drag can consume the whole set.
+      event.preventDefault();
+      action.focus();
+    }
+  };
+  _ofbDoubleClick = (event: MouseEvent) => {
+    const caption = (event.target as Element).closest<HTMLElement>(
+      ".of-label,.of-layout-title",
+    );
+    const root = caption?.closest<HTMLElement>("[data-field-id]");
+    if (!caption || !root || !this._ofbHost.contains(root)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this._ofbUi.builder.select(root.dataset.fieldId!);
+    this._ofbEditLabel(root.dataset.fieldId!, caption);
+  };
+  _ofbKeydown = (event: KeyboardEvent) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      this._ofbOpenCommands();
+      return;
+    }
+    if (
+      this._ofbPointer._ofbActive ||
+      this._ofbRoot.hasAttribute("data-ofb-readonly")
+    )
       return;
     const target = event.target as HTMLElement;
     if (
@@ -1061,15 +1774,29 @@ export class Canvas {
       ["Enter", " "].includes(event.key)
     ) {
       event.preventDefault();
-      this.choose(this.#targets.get(marker)!);
+      this._ofbChoose(this.#targets.get(marker)!);
+      if (!this._ofbCutId && !this.#cutIds.length)
+        this._ofbOpenMini(marker, this.#targets.get(marker)!);
       return;
     }
     const command = event.ctrlKey || event.metaKey;
     const tree = target.closest<HTMLElement>('[role="treeitem"]');
-    if (tree && this.outline.contains(tree) && !event.altKey) {
+    if (tree && this._ofbOutline.contains(tree) && !event.altKey) {
+      if (event.shiftKey && ["ArrowUp", "ArrowDown"].includes(event.key)) {
+        const rows = [
+          ...this._ofbOutline.querySelectorAll<HTMLElement>(
+            "[role=treeitem][data-drag-id]",
+          ),
+        ].filter((row) => !row.closest("[hidden]"));
+        const next =
+          rows[rows.indexOf(tree) + (event.key === "ArrowDown" ? 1 : -1)];
+        event.preventDefault();
+        if (next) this._ofbSelectMany(next.dataset.dragId!, "range");
+        return;
+      }
       if (tree.dataset.builderSlot && ["Enter", " "].includes(event.key)) {
         event.preventDefault();
-        this.selectTreeRow(tree);
+        this._ofbSelectTreeRow(tree);
         return;
       }
       if (
@@ -1086,9 +1813,11 @@ export class Canvas {
         event.preventDefault();
         // Collapse the focused row, even if focus entered it from a selected descendant.
         if (["ArrowLeft", "ArrowRight"].includes(event.key))
-          this.selectTreeRow(tree);
+          this._ofbSelectTreeRow(tree);
         const rows = [
-          ...this.outline.querySelectorAll<HTMLElement>('[role="treeitem"]'),
+          ...this._ofbOutline.querySelectorAll<HTMLElement>(
+            '[role="treeitem"]',
+          ),
         ].filter((row) => !row.closest("[hidden]"));
         const index = rows.indexOf(tree);
         let next: HTMLElement | undefined;
@@ -1101,13 +1830,13 @@ export class Canvas {
             tree.dataset.builderSlot &&
             this.#collapsedSlots.delete(tree.dataset.builderSlot)
           ) {
-            this.drawOutline();
+            this._ofbDrawOutline();
             next = this.#slotItems.get(tree.dataset.builderSlot);
           } else if (
             tree.dataset.dragId &&
             this.#collapsed.delete(tree.dataset.dragId)
           ) {
-            this.drawOutline();
+            this._ofbDrawOutline();
             next = this.#items.get(tree.dataset.dragId);
           } else
             next =
@@ -1120,21 +1849,21 @@ export class Canvas {
             tree.getAttribute("aria-expanded") === "true"
           ) {
             this.#collapsedSlots.add(tree.dataset.builderSlot);
-            this.drawOutline();
+            this._ofbDrawOutline();
             next = this.#slotItems.get(tree.dataset.builderSlot);
           } else if (
             tree.dataset.dragId &&
             tree.getAttribute("aria-expanded") === "true"
           ) {
             this.#collapsed.add(tree.dataset.dragId);
-            this.drawOutline();
+            this._ofbDrawOutline();
             next = this.#items.get(tree.dataset.dragId);
           } else
             next =
               tree.parentElement?.closest<HTMLElement>('[role="treeitem"]') ??
               undefined;
         }
-        if (next) this.selectTreeRow(next);
+        if (next) this._ofbSelectTreeRow(next);
         return;
       }
       if (
@@ -1144,15 +1873,15 @@ export class Canvas {
           (command && ["x", "c", "d"].includes(event.key.toLowerCase())))
       ) {
         event.preventDefault();
-        this.ui.announce(this.ui.t("ofb.slotActions"));
+        this._ofbUi.announce(this._ofbUi.t("ofb.slotActions"));
         return;
       }
     }
     const selected =
       tree?.dataset.dragId ??
       target.closest<HTMLElement>("[data-field-id]")?.dataset.fieldId ??
-      this.ui.builder.getState().selection;
-    const node = this.entries().find((e) => e.node.id === selected)?.node;
+      this._ofbUi.builder.getState().selection;
+    const node = this._ofbEntries().find((e) => e.node.id === selected)?.node;
     if (node) {
       const action =
         command && event.shiftKey && event.key.toLowerCase() === "j"
@@ -1166,41 +1895,47 @@ export class Canvas {
                 : undefined;
       if (action) {
         event.preventDefault();
-        this.actions.execute(action, node, target);
+        if (action === "more") this._ofbActions._ofbOpenMenu(node, target);
+        else this._ofbActions._ofbExecute(action, node, target);
         return;
       }
     }
     if (command && event.key.toLowerCase() === "x") {
       event.preventDefault();
-      this.cut();
+      this._ofbCut();
       return;
     }
     if (command && event.key.toLowerCase() === "v") {
       event.preventDefault();
-      this.paste();
+      this._ofbPaste();
       return;
     }
     if (target instanceof HTMLSelectElement) return;
     if (command && event.key.toLowerCase() === "z") {
       event.preventDefault();
-      if (event.shiftKey) this.ui.builder.redo();
-      else this.ui.builder.undo();
+      if (event.shiftKey) this._ofbUi.builder.redo();
+      else this._ofbUi.builder.undo();
       return;
     }
     if (event.key === "Escape") {
-      this.cutId = undefined;
-      this.refresh(false);
+      this._ofbCloseMini();
+      this._ofbCutId = undefined;
+      this.#cutIds = [];
+      this._ofbRefresh(false);
       return;
     }
-    const id = target.closest<HTMLElement>("[data-drag-id]")?.dataset.dragId;
+    const component = target.closest<HTMLElement>(
+      "[data-drag-id],[data-field-id]",
+    );
+    const id = component?.dataset.dragId ?? component?.dataset.fieldId;
     if (!id) return;
-    const location = this.location(id);
+    const location = this._ofbLocation(id);
     if (!location) return;
-    const inOutline = this.outline.contains(target);
+    const inOutline = this._ofbOutline.contains(target);
     if (event.key === "Delete" || event.key === "Backspace") {
       event.preventDefault();
-      this.actions.execute("delete", location.node);
-      this.focusSelected(inOutline);
+      this._ofbActions._ofbExecute("delete", location.node);
+      this._ofbFocusSelected(inOutline);
       return;
     }
     if (event.altKey && event.key.startsWith("Arrow")) {
@@ -1214,13 +1949,29 @@ export class Canvas {
             }
           : {}),
       };
-      if (event.key === "ArrowUp" || event.key === "ArrowDown")
+      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+        const selected =
+          this._ofbSelectionSet._ofbMembers.length > 1
+            ? this._ofbSelectionSet._ofbMembers
+                .map((id) => this._ofbLocation(id))
+                .filter(
+                  (entry) =>
+                    entry?.parent?.id === location.parent?.id &&
+                    entry?.slot === location.slot,
+                )
+                .map((entry) => entry!.index)
+            : [location.index];
         to = {
           ...membership,
-          index: location.index + (event.key === "ArrowUp" ? -1 : 1),
+          index:
+            this._ofbSelectionSet._ofbMembers.length > 1
+              ? event.key === "ArrowUp"
+                ? Math.max(0, Math.min(...selected) - 1)
+                : Math.min(location.siblings.length, Math.max(...selected) + 2)
+              : location.index + (event.key === "ArrowUp" ? -1 : 1),
         };
-      else if (event.key === "ArrowLeft" && location.parent) {
-        const outer = this.location(location.parent.id)!;
+      } else if (event.key === "ArrowLeft" && location.parent) {
+        const outer = this._ofbLocation(location.parent.id)!;
         to = {
           ...(outer.parent
             ? {
@@ -1234,18 +1985,25 @@ export class Canvas {
         const previous = location.siblings[location.index - 1];
         if (previous) to = { parentId: previous.id };
       }
-      if (to) this.ui.dispatch(new MoveComponent(id, to));
-      else this.ui.announce(this.ui.t("of.builder.noMoveTarget"));
-      this.focusSelected(inOutline);
+      if (to && this._ofbSelectionSet._ofbMembers.length > 1)
+        this._ofbBulk("move", true, to);
+      else if (to) this._ofbUi.dispatch(new MoveComponent(id, to));
+      else this._ofbUi.announce(this._ofbUi.t("of.builder.noMoveTarget"));
+      this._ofbFocusSelected(inOutline);
+      return;
+    }
+    if (event.shiftKey && event.key === "F2") {
+      event.preventDefault();
+      this._ofbEditLabel(id);
       return;
     }
     if (event.key === "Enter" || event.key === "F2") {
       event.preventDefault();
-      if (this.ui.edit) {
-        this.ui.edit(id);
+      if (this._ofbUi.edit) {
+        this._ofbUi.edit(id);
         return;
       }
-      this.root
+      this._ofbRoot
         .querySelector<HTMLElement>(
           '[data-builder-part="properties"] input,[data-builder-part="properties"] textarea,[data-builder-part="properties"] select',
         )
@@ -1260,12 +2018,12 @@ export class Canvas {
     else if (event.key === "Home") next = this.#visible[0]?.node.id;
     else if (event.key === "End") next = this.#visible.at(-1)?.node.id;
     else if (event.key === "ArrowRight") {
-      if (this.#collapsed.delete(id)) this.drawOutline();
+      if (this.#collapsed.delete(id)) this._ofbDrawOutline();
       else next = componentChildren(location.node)[0]?.id;
     } else if (event.key === "ArrowLeft") {
       if (componentChildren(location.node).length && !this.#collapsed.has(id)) {
         this.#collapsed.add(id);
-        this.drawOutline();
+        this._ofbDrawOutline();
       } else next = location.parent?.id;
     } else if (!command && event.key.length === 1 && inOutline) {
       const now = Date.now();
@@ -1279,26 +2037,26 @@ export class Canvas {
         ...this.#visible.slice(0, position + 1),
       ];
       next = ordered.find((e) =>
-        componentTitle(this.ui, e.node)
+        componentTitle(this._ofbUi, e.node)
           .toLowerCase()
           .startsWith(this.#typeAhead),
       )?.node.id;
     } else return;
     event.preventDefault();
     if (next) {
-      this.ui.builder.select(next);
-      this.focusSelected(inOutline);
+      this._ofbUi.builder.select(next);
+      this._ofbFocusSelected(inOutline);
     }
   };
-  destroy(): void {
+  _ofbDestroy(): void {
     this.#unsubscribe();
-    this.closeMini();
-    this.actions.closeMenu();
-    this.pointer.destroy();
-    this.root.removeEventListener("click", this.click);
-    this.root.removeEventListener("keydown", this.keydown);
-    this.root.removeEventListener("focusin", this.followFocus);
-    this.picker.removeEventListener("change", this.pick);
+    this._ofbCloseMini();
+    this._ofbActions._ofbCloseMenu();
+    this._ofbPointer._ofbDestroy();
+    this._ofbRoot.removeEventListener("click", this._ofbClick);
+    this._ofbRoot.removeEventListener("dblclick", this._ofbDoubleClick);
+    this._ofbRoot.removeEventListener("keydown", this._ofbKeydown);
+    this._ofbRoot.removeEventListener("focusin", this._ofbFollowFocus);
     this.#targets.clear();
     this.#handles.clear();
     this.#items.clear();

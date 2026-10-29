@@ -58,7 +58,7 @@ export const materialTheme: Theme = {
   },
   css: `
 .of-root .of-field.of-panel,.of-root .of-field.of-fieldset{--of-material-label-bg:var(--of-material-panel-bg);background:var(--of-material-panel-bg);border-color:var(--of-color-border);border-radius:12px;box-shadow:var(--of-material-elevation);padding:20px}
-.of-root>.of-tabs>.of-layout-title{font-size:26px;line-height:1.3;margin-block-end:18px}
+.of-root>.of-tabs>.of-layout-title,.of-root>[role=tree]>.of-tabs>.of-layout-title{font-size:26px;line-height:1.3;margin-block-end:18px}
 .of-root .of-layout-title{font-size:16px;font-weight:500;line-height:1.5;margin-block-end:18px}
 .of-root [data-of-shell="field"]{position:relative;padding-block-start:8px;gap:6px}
 .of-root [data-of-shell="field"]>.of-label{position:absolute;inset-block-start:0;inset-inline-start:12px;z-index:1;max-inline-size:calc(100% - 28px);padding-inline:4px;background:var(--of-material-label-bg);font-size:12px;font-weight:400;line-height:16px}

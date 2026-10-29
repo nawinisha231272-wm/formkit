@@ -9,6 +9,15 @@ import type { ChangeEvent } from "react";
 import { createRoot } from "react-dom/client";
 import { FormBuilder, registerReactField, useForm } from "@ourform/react";
 import { stringProperty } from "@ourform/sdk";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
+import { bootstrap4BuilderTheme } from "@ourform/builder/themes/bootstrap4";
+import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5";
+import { tailwindBuilderTheme } from "@ourform/builder/themes/tailwind";
+import { materialBuilderTheme } from "@ourform/builder/themes/material";
 import type { FocusTarget } from "@ourform/sdk";
 import { recordBuilderEvents } from "../../shared/builder-types";
 import schema from "../../../fixtures/forms/nested-tabs/customer.json";
@@ -97,6 +106,36 @@ const field = registerReactField("acme.native", NativeText, {
 });
 const fields = [field];
 recordBuilderEvents();
+const query = new URLSearchParams(location.search);
+const loading = {
+  preload:
+    query.get("preload") === "idle" ? ("idle" as const) : ("none" as const),
+  settingsPreload:
+    query.get("settingsPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const),
+  planningPreload:
+    query.get("planningPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const),
+  dataPreload:
+    query.get("dataPreload") === "none" ? ("none" as const) : ("idle" as const),
+  ...(query.has("assetBase") ? { assetBase: query.get("assetBase")! } : {}),
+  ...(query.has("styleNonce") ? { styleNonce: query.get("styleNonce")! } : {}),
+};
+const themes = [
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+];
+const builderThemes = [
+  bootstrap4BuilderTheme,
+  bootstrap5BuilderTheme,
+  tailwindBuilderTheme,
+  materialBuilderTheme,
+];
 function App() {
   const [definition, setDefinition] = useState<unknown>(schema),
     [mounted, setMounted] = useState(true),
@@ -113,9 +152,12 @@ function App() {
       { value: "react-builder-context" },
       mounted
         ? h(FormBuilder, {
+            ...loading,
             schema: definition,
             data,
             fields,
+            themes,
+            builderThemes,
             theme,
             onReady: (controller) => {
               window.builderHost = controller;

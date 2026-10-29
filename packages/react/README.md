@@ -3,6 +3,8 @@
 React 19 is supported. React and react-dom are peers, never bundled.
 
 ```tsx
+import { tailwindTheme } from "@ourform/themes/tailwind";
+const themes = [tailwindTheme];
 const fields = [registerReactField("employee", EmployeeLookup)];
 <OurFormProvider engine={engine} fields={fields}>
   <Form
@@ -10,6 +12,7 @@ const fields = [registerReactField("employee", EmployeeLookup)];
     schema={schema}
     defaultData={initial}
     theme="tailwind"
+    themes={themes}
     onChange={({ data, changedPaths }) => onChange(data, changedPaths)}
     onSubmit={save}
     onReady={(form) => console.log(form.session)}
@@ -69,3 +72,16 @@ M09b: `FormBuilder` accepts the builder's chrome, palette, toolbar, editor and l
 Controlled `chrome` changes call `setChrome` in place, preserving controller, draft and native portals.
 Native `useForm`/`useField` inside settings refer to that preview's isolated controller, with the owner's
 React context retained. Cancel never writes preview answers into the main form.
+
+Form hosts accept an optional `themes` registry (`HostOptions["themes"]`) and a `theme` name.
+Import descriptors explicitly from `@ourform/themes/<name>`; registry changes update the mounted
+view in place, preserving the session, values, touched/errors, focused control and caret. A simultaneous
+registry and selected-theme change is resolved atomically. Unknown names throw with
+`code: "unknown-theme"`, without selecting another theme. Registries are per form instance.
+
+### Per-feature builder preload
+
+The builder host exposes independent `settingsPreload`, `planningPreload` and `dataPreload`
+options (`'idle'` by default, `'none'` to load only on activation). `preload` controls only
+Logic/JSON and defaults to `'none'`. Set all four to `'none'` for a no-background-import host.
+Angular uses inputs, React uses props, and the builder custom element uses properties.

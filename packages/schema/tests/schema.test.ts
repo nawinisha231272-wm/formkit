@@ -36,6 +36,11 @@ test("meta-schema is valid Draft 2020-12 and agrees with structural runtime chec
   const validate = new Ajv2020({ strict: false }).compile(formDefinitionSchema);
   for (const input of [
     form,
+    {
+      ...form,
+      components: [{ ...field, label: "Name", labelKey: "form.name" }],
+    },
+    { ...form, components: [{ ...field, labelKey: "" }] },
     { ...form, display: "invalid" },
     { ...form, components: [{ ...field, slot: "children" }] },
     { ...form, components: [{ ...field, slot: "" }] },

@@ -84,6 +84,7 @@ for (const shadow of [false, true])
           const element = document.createElement(
             tag,
           ) as import("@ourform/element").OurFormElement;
+          element.themes = window.hostThemes;
           if (shadow) element.setAttribute("shadow", "");
           element.readOnly = protection === "readOnly";
           element.schema = {

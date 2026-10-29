@@ -28,9 +28,20 @@ for (const route of ["toolbar", "context", "shortcut"] as const)
         await rating.focus();
         await page.keyboard.press("ControlOrMeta+c");
       }
-      if (route === "toolbar")
-        await rating.getByRole("button", { name: action, exact: true }).click();
-      else if (route === "context") {
+      if (route === "toolbar") {
+        if (["Copy", "Paste", "Edit JSON"].includes(action)) {
+          await rating
+            .getByRole("button", { name: "More", exact: true })
+            .click();
+          await page
+            .locator(".ofb-action-menu")
+            .getByRole("button", { name: action, exact: true })
+            .click();
+        } else
+          await rating
+            .getByRole("button", { name: action, exact: true })
+            .click();
+      } else if (route === "context") {
         await rating.click({ button: "right" });
         if (action !== "More")
           await page
@@ -78,7 +89,11 @@ for (const route of ["toolbar", "context", "shortcut"] as const)
       } else if (action === "More") {
         expect(await history()).toBe(0);
         await page
-          .getByRole("menuitem", { name: "Wrap in layout", exact: true })
+          .locator(".ofb-action-menu")
+          .getByRole(route === "toolbar" ? "button" : "menuitem", {
+            name: "Wrap in layout",
+            exact: true,
+          })
           .click();
         expect(
           await page.evaluate(

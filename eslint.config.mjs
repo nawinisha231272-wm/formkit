@@ -18,7 +18,26 @@ const allowed = {
     "theme-material",
   ],
   "builder-core": ["schema", "core", "sdk"],
-  builder: ["builder-core", "renderer-dom", "sdk", "core", "schema"],
+  builder: [
+    "builder-core",
+    "renderer-dom",
+    "sdk",
+    "core",
+    "schema",
+    "theme-base",
+    "theme-bootstrap4",
+    "theme-bootstrap5",
+    "theme-tailwind",
+    "theme-material",
+  ],
+  themes: [
+    "sdk",
+    "theme-base",
+    "theme-bootstrap4",
+    "theme-bootstrap5",
+    "theme-tailwind",
+    "theme-material",
+  ],
   element: ["renderer-dom", "builder", "sdk", "core", "schema", "components"],
   react: ["renderer-dom", "builder", "sdk", "core", "schema", "components"],
   angular: ["renderer-dom", "builder", "sdk", "core", "schema", "components"],
@@ -43,9 +62,9 @@ export const boundaryRule = {
         const target = path.resolve(path.dirname(filename), source);
         bad = !target.startsWith(path.resolve("packages", current) + path.sep);
       } else if (source.startsWith("@ourform/")) {
-        const target = source.slice(9);
+        const target = source.slice(9).split("/")[0];
         bad =
-          target.includes("/") ||
+          !target ||
           (current !== "testing" &&
             !(
               allowed[current] ?? (current.startsWith("theme-") ? ["sdk"] : [])
