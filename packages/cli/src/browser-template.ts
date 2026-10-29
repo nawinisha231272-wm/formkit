@@ -17,24 +17,25 @@ export function browserFiles(
 <div id="fixture"></div><button id="submit">Submit fixture</button><button id="reset">Reset fixture</button><pre id="result" aria-live="polite"></pre>
 <h2>Mini builder</h2><div id="builder"></div></main><script type="module" src="/preview.ts"></script></body></html>\n`,
     "preview.ts": `import { field${authoredTheme ? ", theme as authoredTheme" : ""} } from "./src/index";
-${authoredTheme ? 'import {bootstrap4Theme} from "@ourform/theme-bootstrap4";\nimport {bootstrap5Theme} from "@ourform/theme-bootstrap5";\nimport {tailwindTheme} from "@ourform/theme-tailwind";\nimport {materialTheme} from "@ourform/theme-material";' : ""}
+import {baseTheme,bootstrap4Theme,bootstrap5Theme,tailwindTheme,materialTheme} from "@ourform/themes";
 import { renderComponent, mountComponentBuilder } from "@ourform/testing";
 import type { RenderComponentOptions } from "@ourform/testing";
 const element = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const host = element("fixture");
 const theme = element<HTMLSelectElement>("theme");
-${authoredTheme ? 'const option = document.createElement("option"); option.value = authoredTheme.name; option.textContent = authoredTheme.name; theme.append(option);\nconst themes = [bootstrap4Theme,bootstrap5Theme,tailwindTheme,materialTheme,authoredTheme];' : ""}
+${authoredTheme ? 'const option = document.createElement("option"); option.value = authoredTheme.name; option.textContent = authoredTheme.name; theme.append(option);' : ""}
+const themes = [baseTheme,bootstrap4Theme,bootstrap5Theme,tailwindTheme,materialTheme${authoredTheme ? ",authoredTheme" : ""}];
 let fixture: ReturnType<typeof renderComponent>;
 let mini: ReturnType<typeof mountComponentBuilder>;
 function render() {
   fixture?.destroy(); mini?.destroy();
   const options = {
-    host, theme: theme.value, ${authoredTheme ? "themes," : ""} readOnly: element<HTMLInputElement>("read-only").checked,
+    host, theme: theme.value, themes, readOnly: element<HTMLInputElement>("read-only").checked,
     node: {label: "Sample", validation: {required: element<HTMLInputElement>("required").checked},
       disabledWhen: element<HTMLInputElement>("disabled").checked ? ["eq", 1, 1] : ["eq", 1, 0]},
   } satisfies RenderComponentOptions;
   fixture = renderComponent(field, options);
-  mini = mountComponentBuilder(field, {host: element("builder"), theme: theme.value${authoredTheme ? ", themes" : ""}});
+  mini = mountComponentBuilder(field, {host: element("builder"), theme: theme.value, themes});
 }
 for (const id of ["theme", "required", "disabled", "read-only"]) element(id).addEventListener("change", render);
 element("submit").addEventListener("click", async () => { element("result").textContent = JSON.stringify(await fixture.submit()); });
@@ -49,7 +50,8 @@ export default defineConfig({test: {include: ["tests/**/*.test.ts"]}});\n`,
     "playwright.config.ts": `import { defineConfig, devices } from "@playwright/test";
 import { platform, arch } from "node:os";
 export default defineConfig({
-  testDir: "./browser", workers: 1, reporter: "list",
+  // Independent theme/browser contexts share one local preview server.
+  testDir: "./browser", workers: 2, reporter: "list",
   snapshotPathTemplate: \`{testDir}/__screenshots__/\${platform()}-\${arch()}/{projectName}/{arg}{ext}\`,
   use: {baseURL: "http://127.0.0.1:4175"},
   projects: [{name: "chromium", use: devices["Desktop Chrome"]}, {name: "firefox", use: devices["Desktop Firefox"]}, {name: "webkit", use: devices["Desktop Safari"]}],

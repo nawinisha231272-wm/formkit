@@ -1,3 +1,4 @@
+import { settingsMessages } from "./settings-messages";
 import {
   createBuilder,
   UpdateComponent,
@@ -13,7 +14,6 @@ import type {
 } from "@ourform/schema";
 import { createFormController } from "@ourform/renderer-dom";
 import type { FormController } from "@ourform/renderer-dom";
-import { defaultMessage } from "@ourform/sdk";
 import type { Theme, ThemeMode } from "@ourform/sdk";
 import type { FeatureLoader } from "./feature-loader";
 import { renderProperties } from "./editors";
@@ -37,39 +37,6 @@ const baseTabs = [
   "Layout",
   "Accessibility",
 ];
-const english: Readonly<Record<string, string>> = {
-  "ofb.writeExpression": "Write as expression",
-  "ofb.complexExpression":
-    "Edit this expression below; simple rule rows cannot represent it.",
-  "ofb.editorTitle": "{type} · {label}",
-  "ofb.key": "Key",
-  "ofb.hasProblem": "{tab} has a problem",
-  "ofb.noProperties": "No settings in this tab.",
-  "ofb.livePreview": "Live preview",
-  "ofb.previewState": "Preview state",
-  "ofb.default": "Default",
-  "ofb.focus": "Focus",
-  "ofb.error": "Error",
-  "ofb.disabled": "Disabled",
-  "ofb.previewHint":
-    "Changes show here instantly and apply to the form when you save.",
-  "ofb.drawerHint":
-    "Changes apply live. Undo groups edits to the same field within 500 ms.",
-  "ofb.saveHint": "Esc cancels · Ctrl+Enter saves · Save is one undo step",
-  "ofb.editorConflict":
-    "This component changed outside the editor. Close and reopen it to continue.",
-};
-function messages(base: UI["t"]): UI["t"] {
-  return (key, params) => {
-    const translated = base(key, params);
-    const template = translated === key ? english[key] : translated;
-    return template
-      ? template.replace(/\{([A-Za-z0-9_]+)\}/g, (match, name: string) =>
-          params?.[name] === undefined ? match : String(params[name]),
-        )
-      : defaultMessage(key, params);
-  };
-}
 export interface SettingsContext {
   host: HTMLElement;
   ui: UI;
@@ -127,7 +94,7 @@ export class Settings {
   ): void {
     this.close();
     const { ui: inherited, options, host } = this.context;
-    const ui: UI = { ...inherited, t: messages(inherited.t) };
+    const ui: UI = { ...inherited, t: settingsMessages(inherited.t) };
     const definition = addition?.definition ?? ui.builder.getState().definition;
     const selectedNode = find(definition.components, id);
     if (!selectedNode) return;
@@ -194,14 +161,7 @@ export class Settings {
     this.#close = close;
     const header = element(ui.document, "header", "", "ofb-settings-header");
     const titleBlock = element(ui.document, "div");
-    const title = element(
-      ui.document,
-      "h2",
-      ui.t("ofb.editorTitle", {
-        type: ui.t(ui.engine.getField(original.type)!.title),
-        label: componentTitle(ui, original),
-      }),
-    );
+    const title = element(ui.document, "h2", componentTitle(ui, original));
     title.id = `ofb-settings-${session}`;
     container.setAttribute("aria-labelledby", title.id);
     const key = element(
@@ -224,7 +184,16 @@ export class Settings {
         ui.icons,
       ),
     );
-    titleBlock.append(title, key, location);
+    const caption = element(ui.document, "div", "", "ofb-settings-caption");
+    const typeChip = element(
+      ui.document,
+      "span",
+      ui.t(ui.engine.getField(original.type)!.title),
+      "ofb-chip",
+    );
+    typeChip.dataset.ofbPrimitive = "Chip";
+    caption.append(title, typeChip);
+    titleBlock.append(caption, key, location);
     header.append(
       titleBlock,
       actionButton(context, ui.t("ofb.close"), close, {

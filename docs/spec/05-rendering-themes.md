@@ -34,6 +34,7 @@ export interface FieldPresentation {
 }
 export interface FormView {
   setTheme(theme: Theme | string): void;
+  setThemes(themes: readonly Theme[] | undefined, theme?: Theme | string): void;
   setMode(mode: "light" | "dark" | "high-contrast"): void;
   focus(componentId: string): void;
   submit(): ReturnType<FormSession["submit"]>;
@@ -215,8 +216,8 @@ RenderOptions.mode `edit | design` defaults edit. Design exposes every slot/hidd
 controls and native placeholders; its live region is off. Slot wrappers are resolved from headless
 metadata, without recognizing container types. LayoutView.tabs requests APG tablist/tab/tabpanel
 semantics; inactive child roots stay mounted. Focus(id) activates ancestor tabs, including error focus.
-Theme/tab changes retain child identity/session state. Shared defaultThemes supplies preset themes to
-form and builder hosts. `@ourform/builder` shares one session between design and preview; schema edits
+Theme/tab changes retain child identity/session state. Hosts explicitly register form descriptors and builder recipes per instance
+(ADR-0018/0020); the shared defaultThemes compatibility list contains no implicit registrations. `@ourform/builder` shares one session between design and preview; schema edits
 recreate transient state and preserve surviving field IDs' answers. Removed response values are not
 undo history. Generated chrome controls preserve identity/focus on appearance changes.
 
@@ -246,3 +247,18 @@ M09b owner review: schema prefix/suffix populate existing FieldPresentation ador
 host supplies explicit presentation overrides. tooltip is a native title; description remains visible
 help. Material read-only controls use a filled surface and solid borders. Other theme rules and
 existing shell/label/error/control identity are unchanged (ADR-0017).
+
+### Owner M09b+ presentation amendment (2026-10-28)
+
+A single field error is plain text; several errors use list semantics. Retain the `errors` container
+and per-message `error` theme hooks, ids and `aria-describedby`. Bootstrap 4/5 visually place help
+and descriptions below controls through theme CSS ordering, keeping shared shell DOM ordering and
+focused-control identity stable across theme switches. Other themes retain their presentation.
+
+### Approved dynamic host registries — 2026-10-29
+
+`setThemes(registry, selectedTheme?)` validates the new registry/selection before updating the
+mounted view in place. With no selectedTheme, retain the active selection. Preserve session, values,
+touched/errors, control identity, focus and caret. Unknown names produce an Error with
+`code: "unknown-theme"`, no fallback, and preserve the previous registry/view. Registry entries
+remain explicit, per-instance host configuration; form JSON is unchanged.

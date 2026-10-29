@@ -81,15 +81,16 @@ export function mountActionMenu(
     host.append(
       destination,
       layout,
-      options.actionButton(context, ui.t("of.builder.wrap"), () =>
-        options.wrap(layout.value),
-      ),
+      options.actionButton(context, ui.t("of.builder.wrap"), () => {
+        options.close();
+        options.wrap(layout.value);
+      }),
     );
   }
   const primary = ["edit", "move", "duplicate", "delete"];
   const actions = (
     options.more
-      ? ["copy", "paste", "json", "cut", "wrap", "unwrap", "collapse"]
+      ? ["copy", "paste", "json", "cut", "unwrap", "collapse"]
       : [
           ...primary,
           "copy",

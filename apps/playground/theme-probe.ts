@@ -5,6 +5,7 @@ import bootstrap4Css from "bootstrap4/dist/css/bootstrap.min.css?raw";
 import bootstrapCss from "bootstrap/dist/css/bootstrap.min.css?raw";
 import { renderForm } from "@ourform/renderer-dom";
 import { createThemeConformance } from "@ourform/testing";
+import { tailwindTheme } from "@ourform/themes/tailwind";
 import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
 import type { ThemeMode } from "@ourform/sdk";
 const query = new URLSearchParams(location.search);
@@ -33,13 +34,17 @@ const second = () =>
     theme: "tailwind",
     mode: "dark",
   });
-const legacy = () =>
-  renderForm(
+const legacy = () => {
+  const view = renderForm(
     document.querySelector<HTMLElement>("#second")!,
     fixture.session,
     fixture.views,
     bootstrap5Theme,
   );
+  // Explicit per-instance registration keeps the legacy wrapper free of implicit theme imports.
+  view.setThemes([bootstrap5Theme, tailwindTheme]);
+  return view;
+};
 declare global {
   interface Window {
     themeProbe: typeof fixture & {

@@ -11,12 +11,13 @@ visual_suite=${2:-themes}
 case "$visual_mode" in record|check|review) ;; *) echo "Usage: sh scripts/linux-visuals.sh [record|check|review]" >&2; exit 2;; esac
 visual_review=false
 if [ "$visual_mode" = review ]; then
-  if [ "$visual_suite" != owner-review ]; then echo "review requires the owner-review suite" >&2; exit 2; fi
+  if [ "$visual_suite" != owner-review ] && [ "$visual_suite" != m09b-plus ]; then echo "review requires owner-review or m09b-plus" >&2; exit 2; fi
   visual_review=true
   visual_mode=record
 fi
 visual_snapshot_pattern="*.png"
 case "$visual_suite" in
+  m09b-plus) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
   owner-review) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
   material-additions) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
   workbench) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts ;;
@@ -32,7 +33,7 @@ case "$visual_suite" in
 esac
 mkdir -p "$visual_snapshot_dir"
 if [ "$visual_review" = true ]; then
-  echo "Owner-authorized affected-screen update: workbench/review states and Material read-only only; screenshot approval pending."
+  echo "Owner-authorized affected-screen update: $visual_suite; screenshot approval pending."
 elif [ "$visual_mode" = record ] && [ "$visual_suite" = material-additions ]; then
   for material_suite in tabs.spec.ts sdk-extensions.spec.ts builder-hosts.spec.ts; do
     material_dir="tests/e2e/__screenshots__/linux-x64/$material_suite"
@@ -79,7 +80,20 @@ if [ "$OURFORM_VISUAL_SUITE" = builder ]; then visual_file=tests/e2e/builder-hos
 run_visual() {
   local snapshot_args=()
   if [ "$1" = record ]; then snapshot_args=(--update-snapshots=all); fi
-  if [ "$OURFORM_VISUAL_SUITE" = owner-review ]; then
+  if [ "$OURFORM_VISUAL_SUITE" = m09b-plus ]; then
+    # Bound emulated browser/server lifetimes without changing any test or deadline.
+    # Preserve completed recording batches even if a later batch fails; approval stays pending.
+    capture_m09_batch() {
+      npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test "$@" --workers=1 --max-failures=1 "${snapshot_args[@]}" || return $?
+      if [ "${#snapshot_args[@]}" -gt 0 ]; then cp -R tests/e2e/__screenshots__/linux-x64/. /visual-output/; fi
+    }
+    capture_m09_batch tests/e2e/builder-authoring-visual.spec.ts tests/e2e/builder-visual.spec.ts tests/e2e/builder-review-visual.spec.ts tests/e2e/builder-round4.spec.ts --project=chromium || return $?
+    for visual_project in chromium firefox webkit; do
+      capture_m09_batch tests/e2e/builder-hosts.spec.ts --project="$visual_project" --grep "visual conformance" || return $?
+      capture_m09_batch tests/e2e/tabs.spec.ts tests/e2e/sdk-extensions.spec.ts tests/e2e/authoring.spec.ts tests/e2e/nullable-boolean.spec.ts --project="$visual_project" --grep "visual conformance|SDK composites/presets|authoring:|nullable boolean:" || return $?
+      capture_m09_batch tests/e2e/themes.spec.ts --project="$visual_project" --grep "conformance states and visual snapshot|Bootstrap preset works|Bootstrap 4 .* with real|read-only prevents" || return $?
+    done
+  elif [ "$OURFORM_VISUAL_SUITE" = owner-review ]; then
     npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-visual.spec.ts tests/e2e/builder-review-visual.spec.ts tests/e2e/builder-round4.spec.ts --project=chromium --workers=1 --max-failures=1 "${snapshot_args[@]}" || return $?
     # Preserve the old first-attempt CI failure as a Linux WebKit regression, including clipped scroll geometry.
     npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-round4.spec.ts tests/e2e/builder-round5.spec.ts --project=webkit --workers=1 --max-failures=1 || return $?

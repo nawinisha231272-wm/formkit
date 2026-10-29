@@ -41,7 +41,10 @@ export function resolveTheme(
   const visit = (key: string): void => {
     if (seen.has(key)) throw new Error(`Theme inheritance cycle: ${key}`);
     const item = installed.get(key);
-    if (!item) throw new Error(`Unknown theme: ${key}`);
+    if (!item)
+      throw Object.assign(new Error(`Unknown theme: ${key}`), {
+        code: "unknown-theme" as const,
+      });
     seen.add(key);
     if (item.extends) visit(item.extends);
     chain.push(item);

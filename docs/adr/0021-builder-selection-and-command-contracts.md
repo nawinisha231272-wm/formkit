@@ -2,6 +2,11 @@
 
 Status: accepted by the owner on 2026-10-27 with the amendments below.
 
+Size note: the original measurement checkpoints below retain their historical limits. The owner's
+2026-10-28 ADR-0018/0020 amendment supersedes them with UI 31,600 / builder-core 7,300 / full 67,400;
+bulk preparation and Data bodies are lazy with default idle preload. Selection, immediate command
+frame, clipboard, context menu, bulk Delete/Required and PointerDrag remain initial.
+
 M09b+ adds inline label editing, precise quick-add, command search and multi-selection. These routes
 must not create parallel mutation logic or weaken the M09 slot, lock, history and patch contracts.
 

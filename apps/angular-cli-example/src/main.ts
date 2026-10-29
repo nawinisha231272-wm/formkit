@@ -23,6 +23,8 @@ const schema = {
       [schema]="schema()"
       [preload]="preload"
       [settingsPreload]="settingsPreload"
+      [planningPreload]="planningPreload"
+      [dataPreload]="dataPreload"
       styleNonce="ourform-angular-cli"
       (schemaChange)="schema.set($event)"
       (ready)="ready($event)"
@@ -34,6 +36,9 @@ class App {
   readonly preload = query.get("preload") === "idle" ? "idle" : "none";
   readonly settingsPreload =
     query.get("settingsPreload") === "none" ? "none" : "idle";
+  readonly planningPreload =
+    query.get("planningPreload") === "none" ? "none" : "idle";
+  readonly dataPreload = query.get("dataPreload") === "none" ? "none" : "idle";
   ready(controller: BuilderController) {
     Object.assign(window, { angularCliBuilder: controller });
   }

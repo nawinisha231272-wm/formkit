@@ -340,3 +340,16 @@ the same meaning. Panel and Fieldset continue to use `node.label` for their head
 Inline editing is available only when the caption is visibly rendered. Enter or blur commits one
 trimmed update, Escape cancels, and an empty caption is refused with a visible reason. A `labelKey`
 opens Settings; editing never changes the data key.
+
+### M09b+ owner amendment: bulk planning and Data loading (2026-10-28)
+
+ADR-0018/0020 authorize separate lazy bodies for bulk Move/Wrap/Duplicate/Paste preparation and the
+Data inspector. `planningPreload` and `dataPreload` accept `none | idle`, default `idle`, independently
+of Settings and Logic/JSON policies. Frames, focus/loading/error reason/Retry and cancellation remain
+initial. Cancellation/destroy applies no deferred mutation; schema changes during planning refuse
+with a diagnostic announcement and no history. Bulk Delete/Required, clipboard handlers/buffer/system
+access, selection/Shift-arrows, Cmd/Ctrl+K activation, context menu and PointerDrag stay initial.
+Use the fixed self-hosted assets under `assetBase`; all three browsers must cover cold/failed/retried,
+CSP/local offline and lifecycle cases. Preload imports without mounting or changing schema/history.
+Consumer gates are UI 31,600, builder-core 7,300, full 67,400; standalone builder 31,600. New lazy
+ceilings: planning 1,750 and Data 300 (Retry included per closure); prior lazy ceilings stay unchanged.

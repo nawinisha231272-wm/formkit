@@ -25,7 +25,7 @@ describe("instance selection model", () => {
     const selection = new SelectionSet();
     selection.select("a");
     selection.toggle("a", "parent");
-    expect(selection.primary).toBe("parent");
+    expect(selection._ofbPrimary).toBe("parent");
     selection.select("b");
     selection.toggle("c", null);
     selection.retain(new Set(["b"]));
@@ -47,6 +47,6 @@ describe("instance selection model", () => {
         { id: "sibling" },
       ]),
     ).toEqual(["parent", "sibling"]);
-    expect(selection.members).toEqual(["child", "parent", "sibling"]);
+    expect(selection._ofbMembers).toEqual(["child", "parent", "sibling"]);
   });
 });

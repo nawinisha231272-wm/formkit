@@ -58,7 +58,7 @@ export const workbenchStyle = `
 @media(min-width:1280px){
 .of-builder .ofb-header{flex-wrap:nowrap;gap:8px;padding:12px}
 .of-builder .ofb-breadcrumb{min-inline-size:0;gap:6px;flex:1}
-.of-builder .ofb-breadcrumb strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-inline-size:130px}
+.of-builder .ofb-breadcrumb strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-inline-size:0}
 .of-builder .ofb-mode-tabs{margin-inline-start:0;flex-shrink:0}
 .of-builder .ofb-mode-tabs>button{padding-inline:8px}
 .of-builder .ofb-header>label{flex-shrink:0;gap:4px}

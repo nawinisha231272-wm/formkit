@@ -90,7 +90,10 @@ for (const route of ["toolbar", "context", "shortcut"] as const)
         expect(await history()).toBe(0);
         await page
           .locator(".ofb-action-menu")
-          .getByRole("button", { name: "Wrap in layout", exact: true })
+          .getByRole(route === "toolbar" ? "button" : "menuitem", {
+            name: "Wrap in layout",
+            exact: true,
+          })
           .click();
         expect(
           await page.evaluate(

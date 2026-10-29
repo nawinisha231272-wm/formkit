@@ -35,7 +35,10 @@ export function createCommandIndex() {
     },
   };
 }
-const indexes = new WeakMap<UI, ReturnType<typeof createCommandIndex>>();
+const indexes = new WeakMap<
+  UI["builder"],
+  ReturnType<typeof createCommandIndex>
+>();
 export function mountCommands(
   host: HTMLElement,
   ui: UI,
@@ -44,7 +47,15 @@ export function mountCommands(
     target(): DropTarget;
     jump(id: string): void;
     action(
-      action: "edit" | "duplicate" | "delete",
+      action:
+        | "edit"
+        | "move"
+        | "duplicate"
+        | "copy"
+        | "paste"
+        | "wrap"
+        | "delete"
+        | "required",
       ids: readonly string[],
     ): void;
     close(): void;
@@ -55,9 +66,22 @@ export function mountCommands(
   const search = labelledInput(ui, ui.t("ofb.commandSearch"), "search");
   const input = search.input as HTMLInputElement;
   const results = element(ui.document, "div");
+  ui._ofbStyle(host, "display", "grid", "gap", "12px");
+  ui._ofbStyle(search.wrapper, "display", "grid", "gap", "6px");
+  ui._ofbStyle(
+    results,
+    "display",
+    "grid",
+    "gap",
+    "6px",
+    "max-block-size",
+    "55vh",
+    "overflow",
+    "auto",
+  );
   host.append(search.wrapper, results);
-  const index = indexes.get(ui) ?? createCommandIndex();
-  indexes.set(ui, index);
+  const index = indexes.get(ui.builder) ?? createCommandIndex();
+  indexes.set(ui.builder, index);
   let nodes: readonly ComponentNode[] = [];
   let generation = 0;
   const draw = () => {
@@ -112,7 +136,18 @@ export function mountCommands(
     const ids = options.selection();
     append(
       "ofb.commandActions",
-      (["edit", "duplicate", "delete"] as const).map((action) => ({
+      (
+        [
+          "edit",
+          "move",
+          "duplicate",
+          "copy",
+          "paste",
+          "wrap",
+          "delete",
+          "required",
+        ] as const
+      ).map((action) => ({
         label:
           ids.length > 1
             ? ui.t("ofb.bulkAction", {
@@ -120,9 +155,7 @@ export function mountCommands(
                 count: ids.length,
               })
             : ui.t(`ofb.${action}`),
-        ...(ids.length === 0 || (action === "edit" && ids.length > 1)
-          ? { reason: ui.t("ofb.singleAction") }
-          : {}),
+        ...(ids.length === 0 ? { reason: ui.t("ofb.singleAction") } : {}),
         run: () => options.action(action, ids),
       })),
     );

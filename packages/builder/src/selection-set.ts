@@ -1,61 +1,63 @@
 /** Instance-local author selection; schema and command history remain independent. */
 export class SelectionSet {
-  members: string[] = [];
-  primary: string | null = null;
-  anchor: string | null = null;
+  _ofbMembers: string[] = [];
+  _ofbPrimary: string | null = null;
+  _ofbAnchor: string | null = null;
 
   select(id: string) {
-    this.members = [id];
-    this.primary = this.anchor = id;
+    this._ofbMembers = [id];
+    this._ofbPrimary = this._ofbAnchor = id;
   }
 
   toggle(id: string, fallback: string | null) {
-    const index = this.members.indexOf(id);
+    const index = this._ofbMembers.indexOf(id);
     if (index < 0) {
-      this.members.push(id);
-      this.primary = id;
+      this._ofbMembers.push(id);
+      this._ofbPrimary = id;
     } else {
-      this.members.splice(index, 1);
-      if (this.primary === id) this.primary = this.members.at(-1) ?? fallback;
+      this._ofbMembers.splice(index, 1);
+      if (this._ofbPrimary === id)
+        this._ofbPrimary = this._ofbMembers.at(-1) ?? fallback;
     }
-    this.anchor = id;
+    this._ofbAnchor = id;
   }
 
   range(id: string, visible: readonly string[]) {
-    const start = visible.indexOf(this.anchor ?? id);
+    const start = visible.indexOf(this._ofbAnchor ?? id);
     const end = visible.indexOf(id);
     if (start < 0 || end < 0) return;
-    this.members = visible.slice(
+    this._ofbMembers = visible.slice(
       Math.min(start, end),
       Math.max(start, end) + 1,
     );
-    this.primary = id;
+    this._ofbPrimary = id;
   }
 
   snapshot() {
     return {
-      members: [...this.members],
-      primary: this.primary,
-      anchor: this.anchor,
+      members: [...this._ofbMembers],
+      primary: this._ofbPrimary,
+      anchor: this._ofbAnchor,
     };
   }
 
   restore(snapshot: ReturnType<SelectionSet["snapshot"]>) {
-    this.members = [...snapshot.members];
-    this.primary = snapshot.primary;
-    this.anchor = snapshot.anchor;
+    this._ofbMembers = [...snapshot.members];
+    this._ofbPrimary = snapshot.primary;
+    this._ofbAnchor = snapshot.anchor;
   }
 
   retain(existing: ReadonlySet<string>) {
-    this.members = this.members.filter((id) => existing.has(id));
-    if (this.primary && !existing.has(this.primary))
-      this.primary = this.members.at(-1) ?? null;
-    if (this.anchor && !existing.has(this.anchor)) this.anchor = this.primary;
+    this._ofbMembers = this._ofbMembers.filter((id) => existing.has(id));
+    if (this._ofbPrimary && !existing.has(this._ofbPrimary))
+      this._ofbPrimary = this._ofbMembers.at(-1) ?? null;
+    if (this._ofbAnchor && !existing.has(this._ofbAnchor))
+      this._ofbAnchor = this._ofbPrimary;
   }
 
   /** Structural operations omit descendants of selected ancestors in document order. */
   structural(order: readonly { id: string; parent?: string }[]) {
-    const selected = new Set(this.members);
+    const selected = new Set(this._ofbMembers);
     const parents = new Map(order.map((entry) => [entry.id, entry.parent]));
     return order
       .filter(({ id }) => {

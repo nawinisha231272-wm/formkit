@@ -115,25 +115,74 @@ function expression(
       list.append(element(ui.document, "p", ui.t("ofb.complexExpression")));
       return;
     }
-    if (!calculate)
-      list.append(
-        picker(
-          ui,
-          ui.t("of.builder.join"),
-          [
-            { value: "and", label: ui.t("of.builder.all") },
-            { value: "or", label: ui.t("of.builder.any") },
-          ],
-          join,
-          (value) => {
-            join = value;
-            publishRows();
-          },
-          element,
-        ).element,
+    if (!calculate) {
+      const joinPicker = picker(
+        ui,
+        ui.t("of.builder.join"),
+        [
+          { value: "and", label: ui.t("of.builder.all") },
+          { value: "or", label: ui.t("of.builder.any") },
+        ],
+        join,
+        (value) => {
+          join = value;
+          publishRows();
+        },
+        element,
+      ).element;
+      joinPicker.firstChild?.remove();
+      const sentence = element(
+        ui.document,
+        "div",
+        "",
+        "ofb-condition-sentence",
       );
+      ui._ofbStyle(
+        sentence,
+        "display",
+        "flex",
+        "align-items",
+        "center",
+        "gap",
+        "8px",
+        "flex-wrap",
+        "wrap",
+      );
+      ui._ofbStyle(joinPicker, "inline-size", "100px");
+      sentence.append(
+        element(
+          ui.document,
+          "span",
+          ui.t(
+            property.key === "disabledWhen"
+              ? "ofb.disabledWhen"
+              : "ofb.showWhen",
+          ),
+        ),
+        joinPicker,
+        element(ui.document, "span", ui.t("ofb.theseMatch")),
+      );
+      list.append(sentence);
+    }
     data.forEach((row, index) => {
       const sentence = element(ui.document, "fieldset", "", "ofb-rule-row");
+      ui._ofbStyle(
+        sentence,
+        "display",
+        "grid",
+        "grid-template-columns",
+        "minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) auto",
+        "align-items",
+        "end",
+        "gap",
+        "8px",
+        "border",
+        "1px solid var(--ofb-border)",
+        "padding",
+        "12px",
+        "border-radius",
+        "var(--ofb-radius)",
+      );
       sentence.append(
         element(
           ui.document,

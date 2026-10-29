@@ -28,6 +28,11 @@ export function featureOutlet(
     mount: (module: FeatureModules[K]) => void,
   ) {
     const request = ++generation;
+    const restore = !!feedback?.contains(ui.document.activeElement);
+    if (restore) {
+      host.tabIndex = -1;
+      host.focus();
+    }
     clear();
     host.setAttribute("aria-busy", "true");
     feedback = element(
@@ -36,20 +41,27 @@ export function featureOutlet(
       ui.t("ofb.featureLoading", { feature: ui.t(`ofb.${name}`) }),
     );
     host.append(feedback);
+    ui.announce(feedback.textContent ?? "");
     void loader
       .load(name)
       .then((module) => {
         if (request !== generation || ui.signal.aborted) return;
         clear();
         mount(module);
+        if (restore && ui.document.activeElement === host)
+          host
+            .querySelector<HTMLElement>(
+              "textarea,input,select,button,[tabindex='0']",
+            )
+            ?.focus();
       })
-      .catch(() => {
+      .catch((cause: unknown) => {
         if (request !== generation || ui.signal.aborted) return;
         clear();
         feedback = element(
           ui.document,
           "div",
-          ui.t("ofb.featureFailed", { feature: ui.t(`ofb.${name}`) }),
+          `${ui.t("ofb.featureFailed", { feature: ui.t(`ofb.${name}`) })} ${cause instanceof Error ? cause.message : String(cause)}`,
         );
         feedback.append(button(ui, ui.t("ofb.retry"), () => open(name, mount)));
         host.append(feedback);

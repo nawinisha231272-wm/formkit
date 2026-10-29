@@ -6,7 +6,10 @@ export interface FeatureModules {
   logic: typeof import("./features/logic");
   map: typeof import("./features/map");
   commands: typeof import("./features/commands");
+  bulk: Pick<typeof import("./features/bulk-editor"), "mountBulkEditor">;
   quickAdd: typeof import("./features/quick-add");
+  planning: typeof import("./features/bulk-plan");
+  data: typeof import("./features/data");
 }
 export type FeatureName = keyof FeatureModules;
 export interface FeatureOptions {
@@ -16,6 +19,10 @@ export interface FeatureOptions {
   preload?: "none" | "idle";
   /** Fetch generated Settings after first render. Default: idle. */
   settingsPreload?: "none" | "idle";
+  /** Fetch bulk Move/Wrap/Duplicate/Paste planning after first render. Default: idle. */
+  planningPreload?: "none" | "idle";
+  /** Fetch the Data inspector body after first render. Default: idle. */
+  dataPreload?: "none" | "idle";
 }
 type Imports = {
   [K in FeatureName]: (attempt: number) => Promise<FeatureModules[K]>;
@@ -27,11 +34,24 @@ const imports: Imports = {
   history: () => import("./features/history"),
   logic: () => import("./features/logic"),
   map: () => import("./features/map"),
-  commands: () => import("./features/commands"),
+  commands: (attempt) =>
+    attempt === 0
+      ? import("./features/commands")
+      : import("./features/commands-retry"),
+  bulk: (attempt) =>
+    attempt === 0
+      ? import("./features/bulk-editor")
+      : import("./features/bulk-editor-retry"),
   quickAdd: (attempt) =>
     attempt === 0
       ? import("./features/quick-add")
       : import("./features/quick-add-retry"),
+  planning: (attempt) =>
+    attempt === 0
+      ? import("./features/bulk-plan")
+      : import("./features/bulk-plan-retry"),
+  data: (attempt) =>
+    attempt === 0 ? import("./features/data") : import("./features/data-retry"),
 };
 export interface IdleScheduler {
   schedule(callback: () => void): () => void;
@@ -45,7 +65,12 @@ export function createFeatureLoader(
   importURL: (url: string) => Promise<unknown> = (url) =>
     import(/* @vite-ignore */ url),
 ) {
-  for (const key of ["preload", "settingsPreload"] as const)
+  for (const key of [
+    "preload",
+    "settingsPreload",
+    "planningPreload",
+    "dataPreload",
+  ] as const)
     if (options[key] !== undefined && !["none", "idle"].includes(options[key]))
       throw new Error(`Builder ${key} must be none or idle.`);
   let base: URL | undefined;
@@ -70,7 +95,14 @@ export function createFeatureLoader(
       .then(() => {
         signal.throwIfAborted();
         if (!base) return factories[name](attempt);
-        const fileName = name === "quickAdd" ? "quick-add" : name;
+        const fileName =
+          name === "planning"
+            ? "bulk-plan"
+            : name === "quickAdd"
+              ? "quick-add"
+              : name === "bulk"
+                ? "bulk-editor"
+                : name;
         const url = new URL(`features/${fileName}.js`, base);
         if (attempt > 0) url.searchParams.set("retry", String(attempt));
         return importURL(url.href).then(
@@ -89,12 +121,19 @@ export function createFeatureLoader(
     pending.set(name, request);
     return request;
   }
-  if (options.preload === "idle" || options.settingsPreload !== "none") {
+  if (
+    options.preload === "idle" ||
+    options.settingsPreload !== "none" ||
+    options.planningPreload !== "none" ||
+    options.dataPreload !== "none"
+  ) {
     const cancel = idle.schedule(() => {
       if (!signal.aborted) {
         // A preload failure must not poison a later explicit activation/retry.
         const names: FeatureName[] = [];
         if (options.settingsPreload !== "none") names.push("settings");
+        if (options.planningPreload !== "none") names.push("planning");
+        if (options.dataPreload !== "none") names.push("data");
         if (options.preload === "idle") names.push("logic", "json");
         for (const name of names) void load(name).catch(() => {});
       }

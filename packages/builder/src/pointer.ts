@@ -49,6 +49,7 @@ export interface PointerContext {
     | undefined;
   expand(id: string): void;
   commit(source: Source, target: DropTarget, label: string): void;
+  selectSource?(id: string): void;
 }
 /** Geometry is read at pickup and invalidation, never by the pointer-move handler. */
 export class PointerDrag {
@@ -91,9 +92,9 @@ export class PointerDrag {
       root.append(node);
     }
     const signal = this.#events.signal;
-    root.addEventListener("pointerdown", this.down, { signal });
-    root.addEventListener("pointermove", this.move, { signal });
-    root.addEventListener("pointerup", this.up, { signal });
+    root.addEventListener("pointerdown", this._ofbDown, { signal });
+    root.addEventListener("pointermove", this._ofbMove, { signal });
+    root.addEventListener("pointerup", this._ofbUp, { signal });
     root.addEventListener("pointercancel", () => this._ofbCancel(), { signal });
     root.addEventListener(
       "lostpointercapture",
@@ -113,15 +114,18 @@ export class PointerDrag {
       },
       { capture: true, signal },
     );
-    root.addEventListener("keydown", this.keydown, { capture: true, signal });
-    ui.document.addEventListener("scroll", this.invalidate, {
+    root.addEventListener("keydown", this._ofbKeydown, {
       capture: true,
       signal,
     });
-    ui.document.defaultView!.addEventListener("resize", this.invalidate, {
+    ui.document.addEventListener("scroll", this._ofbInvalidate, {
+      capture: true,
       signal,
     });
-    this.#observer = new ResizeObserver(this.invalidate);
+    ui.document.defaultView!.addEventListener("resize", this._ofbInvalidate, {
+      signal,
+    });
+    this.#observer = new ResizeObserver(this._ofbInvalidate);
     this.#observer.observe(_ofbContext.host);
     this.#observer.observe(_ofbContext.root);
   }
@@ -129,6 +133,7 @@ export class PointerDrag {
     return this.#active !== undefined;
   }
   #source(target: Element): Source | undefined {
+    if (target.closest(".of-builder-drop")) return;
     const { palette, outline, host } = this._ofbContext;
     if (target.closest<HTMLElement>('[role="treeitem"]')?.dataset.builderSlot)
       return;
@@ -155,7 +160,7 @@ export class PointerDrag {
         }
       : undefined;
   }
-  down = (event: PointerEvent) => {
+  _ofbDown = (event: PointerEvent) => {
     if (event.button !== 0 || this.#active || this.#pending) return;
     this.#suppressClick = false;
     this._ofbOrigin = this._ofbContext.ui.document.activeElement as
@@ -187,7 +192,7 @@ export class PointerDrag {
           this._ofbStart(source, false, event.pointerId);
       }, 300);
   };
-  move = (event: PointerEvent) => {
+  _ofbMove = (event: PointerEvent) => {
     const pending = this.#pending;
     if (pending?.pointerId === event.pointerId && !this.#active) {
       if (Math.hypot(event.clientX - pending.x, event.clientY - pending.y) < 4)
@@ -230,7 +235,7 @@ export class PointerDrag {
         this.#scrollFrame = requestAnimationFrame(this.#autoScroll);
     }
   };
-  up = (event: PointerEvent) => {
+  _ofbUp = (event: PointerEvent) => {
     if (!this.#active) {
       this.#clearPending();
       return;
@@ -250,7 +255,11 @@ export class PointerDrag {
       this._ofbContext.ui.announce(this._ofbContext.ui.t("ofb.lock.move"));
       return;
     }
-    if (source.id) this._ofbContext.ui.builder.select(source.id);
+    if (source.id) {
+      if (this._ofbContext.selectSource)
+        this._ofbContext.selectSource(source.id);
+      else this._ofbContext.ui.builder.select(source.id);
+    }
     this.#active = {
       source,
       keyboard,
@@ -412,7 +421,7 @@ export class PointerDrag {
       .filter((target) => target.rect.width && target.rect.height);
     this.#preflightKey = "";
   }
-  invalidate = () => {
+  _ofbInvalidate = () => {
     if (!this.#active || this.#cacheFrame) return;
     this.#cacheFrame = requestAnimationFrame(() => {
       this.#cacheFrame = 0;
@@ -604,7 +613,7 @@ export class PointerDrag {
     this._ofbContext.scroll.scrollTop += this.#velocity;
     this.#scrollFrame = requestAnimationFrame(this.#autoScroll);
   };
-  keydown = (event: KeyboardEvent) => {
+  _ofbKeydown = (event: KeyboardEvent) => {
     if (!this.#active) {
       this._ofbOrigin = undefined;
       if (

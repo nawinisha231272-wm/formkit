@@ -229,6 +229,16 @@ export function shellVNode(
       presentation.suffix,
     ),
   );
+  const description = h(
+    "small",
+    {
+      key: "description",
+      id: `${id}_description`,
+      class: cl("description"),
+      hidden: !entry.node.description,
+    },
+    entry.node.description,
+  );
   return h(
     variant === "group" ? "fieldset" : "div",
     {
@@ -242,16 +252,7 @@ export function shellVNode(
         : {}),
     },
     variant !== "inline" ? labelNode : null,
-    h(
-      "small",
-      {
-        key: "description",
-        id: `${id}_description`,
-        class: cl("description"),
-        hidden: !entry.node.description,
-      },
-      entry.node.description,
-    ),
+    description,
     controlWrapper,
     h(
       "small",
@@ -275,14 +276,19 @@ export function shellVNode(
       presentation.help,
     ),
     h(
-      "ul",
+      errors.length === 1 ? "p" : "ul",
       {
         key: "errors",
         id: `${id}_error`,
-        class: cl("errors"),
+        class:
+          errors.length === 1 ? `${cl("errors")} ${cl("error")}` : cl("errors"),
         hidden: !errors.length,
       },
-      errors.map((error, i) => h("li", { key: i, class: cl("error") }, error)),
+      errors.length === 1
+        ? errors[0]
+        : errors.map((error, i) =>
+            h("li", { key: i, class: cl("error") }, error),
+          ),
     ),
   );
 }

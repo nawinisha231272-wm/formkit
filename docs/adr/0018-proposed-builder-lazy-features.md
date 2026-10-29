@@ -1,6 +1,9 @@
 # ADR-0018 — Builder feature loading and size budgets
 
-Status: accepted by the owner with amendments on 2026-10-22. Implement at the start of M09b+, after M09b approval.
+Current enforcement: the owner-approved 2026-10-28 reset below supersedes earlier size tables:
+**UI 31,600 / builder-core 7,300 / full initial 67,400 / standalone builder 31,600 bytes.**
+Earlier measurements, ceilings and rejected probes remain historical evidence.
+Status: accepted by the owner, including the explicit 2026-10-28 size reset and lazy-body amendments. Implementation is M09b+; earlier decisions remain recorded below.
 
 The M09b builder is close to its unchanged 30 kB compressed budget (last focused measurement:
 29.92 kB). Additional Logic functionality should not increase the initial builder payload. M09b
@@ -182,3 +185,64 @@ rounded up to 50), and the third gate is enforced. Every combined-feature
 report must show all three measurements and moved-code attribution. Headless selection may move to
 builder-core only within the confirmed ceiling; full closure remains at most 64,613 bytes. Compact
 first, then measure headless placement, then propose at most a one-time 29,500 UI ceiling if needed.
+
+## Owner work-mode amendment — 2026-10-27
+
+Complete the combined command-bar/multi-select/bulk-editor prototype and work-count/timing probes before
+compaction. Measure UI, builder-core and full initial against 28,857 / 6,675 / 63,623 bytes. Compact
+first and discard growing variants, then allow headless selection placement only within the enforced
+7,050-byte core contribution. If still needed, the owner pre-approved one final UI ceiling equal to the
+measured value rounded up to 50, at most 29,500, while full initial remains at most 64,613. Record the
+actual amendment only after measurement; the current UI ceiling remains 29,000 until then.
+
+New lazy chunk ceilings are pre-approved by formula: measured closure plus 10%, rounded up to 50,
+at most 5,000 bytes. This does not change existing command-bar, quick-add, Settings or aggregate
+ceilings. Each new ceiling is recorded and enforced before shipping. Immediate command frame, selection
+highlighting/Shift arrows, clipboard, context menu and PointerDrag stay initial. History/diff remains
+unbudgeted and unshipped. Every push requires a passing full pinned verify; do not merge this milestone.
+
+## M09b+ bulk-editor measurement — 2026-10-28
+
+Under the owner's pre-approved work-mode rule 4, the new bulk editor's consumer-built closure
+measures **4,266 Brotli bytes** (Retry 4,252). Its enforced ceiling is **4,700 bytes**:
+`ceil(4266 × 1.10 / 50) × 50`. Shared generated editor and message chunks count once per closure;
+this is not its entry file in isolation. The command bar retains its 4,500-byte ceiling. UI initial
+remains 29,000, builder-core 7,050, and full initial 64,613. The combined prototype exceeds the
+initial gates and remains unshipped; no one-time UI increase is applied while the full gate fails.
+See [combined prototype measurement](../reviews/m09b-plus-combined-prototype-measurement.md).
+
+## Owner size reset and two additional lazy bodies — 2026-10-28
+
+The owner explicitly approved lazy bulk Move/Wrap/Duplicate/Paste planning and the Data inspector
+body, with separate `planningPreload` and `dataPreload` policies, both defaulting to `idle` (`none`
+opts out). Their accessible activation frame, focus, reason/Retry and cancellation remain initial.
+Bulk Delete/Required, Delete key, clipboard handlers/buffer/system access, selection, Shift arrows,
+Ctrl/Cmd+K frame, context menu and PointerDrag remain initial. Pending planning snapshots the source
+schema; intervening schema changes refuse the operation without history. Cancel/destroy never applies
+late mutations. Preloading imports bodies only; it never mounts or mutates them.
+
+The completed boundary measurement uses the same consumer method and accounting as every earlier
+report. Before: UI **31,951**, builder-core **7,173**, full initial **67,628**. After: **31,069 /
+7,196 / 66,818**. UI drops 882, core marginal contribution rises 23 (no core source changes), full
+drops 810. The owner authorized one ceiling reset using measured +500, rounded up to 100, subject
+to UI 32,000/full 68,500 maxima; all measurements are within those maxima:
+
+| Enforced consumer gate                     |               Measured | New ceiling | Previous ceiling |
+| ------------------------------------------ | ---------------------: | ----------: | ---------------: |
+| Builder UI initial (excludes builder-core) |                 31,069 |  **31,600** |           29,000 |
+| Builder-core marginal initial contribution |                  7,196 |   **7,300** |            7,050 |
+| Full initial closure                       |                 66,818 |  **67,400** |           64,613 |
+| Standalone builder package                 | reported by size-limit |  **31,600** |           30,000 |
+| Bulk planning / Retry closure              |             1,547 each |   **1,750** |              new |
+| Data inspector / Retry closure             |               269 each |     **300** |              new |
+
+New lazy ceilings follow rule 4: measured +10%, rounded up to 50, at most 5,000. All earlier lazy
+and aggregate ceilings stay unchanged. Independent-entry duplication (deferred union 15,399 →
+32,900) is explicitly accepted by the owner; the two additional approved bodies bring the union to
+**36,532**, counting each shared output once. The complete measurement and every rejected probe
+remain in `docs/reviews/m09b-plus-combined-evidence/`; the failed attempts are not overwritten.
+
+No more byte-hunting probes for the rest of M09b+. Remaining polish must fit these ceilings; new
+bodies are lazy by default. No History/diff ships. From M09c onward, each milestone must propose
+initial/lazy allowances for explicit owner approval before implementation. This reset is not an
+open-ended future budget increase and does not authorize correctness-test changes.

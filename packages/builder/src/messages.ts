@@ -13,7 +13,6 @@ const english: Readonly<Record<string, string>> = {
   "ofb.selectedHelp":
     "Enter to edit · Space to pick up · Shift+F10 for actions",
   "ofb.componentCaption": "{type} · key {key}",
-  "ofb.required": "Required",
   "ofb.visible": "Visible",
   "ofb.always": "Always",
   "ofb.path": "Data path",
@@ -60,9 +59,17 @@ const english: Readonly<Record<string, string>> = {
   "ofb.history": "History",
   "ofb.selected": "Selected component",
   "ofb.selectionCount": "{count} selected",
+  "ofb.deselected": "Deselected {label}",
   "ofb.did.AtomicCommand": "{label}",
   "ofb.history.AtomicCommand": "{label}",
   "ofb.commands": "Commands",
+  "ofb.bulk": "Edit selected components",
+  "ofb.planning": "Preparing selected components",
+  "ofb.planningConflict":
+    "The form changed while preparing this action. Please try again.",
+  "ofb.mixedValues": "Mixed values",
+  "ofb.noSharedProperties":
+    "These components have no shared editable properties.",
   "ofb.commandSearch": "Search commands",
   "ofb.commandAdd": "Add component",
   "ofb.commandJump": "Jump to component",
@@ -101,6 +108,17 @@ const english: Readonly<Record<string, string>> = {
   "ofb.lock.move": "Locked by your app: can't move",
   "ofb.selectFirst": "Select a component first.",
   "ofb.nothingToPaste": "Copy or cut a component first.",
+  "ofb.copiedMany": "Copied {count} components. Choose a slot and paste.",
+  "ofb.crossScopeBulk":
+    "Move refused: all selected components must stay in the same data scope.",
+  "ofb.adjacentBulk":
+    "Wrap refused: select adjacent components in the same slot.",
+  "ofb.invalidBulk":
+    "The selection or clipboard contains an invalid component.",
+  "ofb.copy": "Copy",
+  "ofb.cut": "Cut",
+  "ofb.paste": "Paste",
+  "ofb.wrap": "Wrap in layout",
   "ofb.copied": "Copied {label}. Choose a slot and paste.",
   "ofb.deleteCancelled": "Deletion cancelled by your app.",
   "ofb.pickedUp": "Picked up {label}. Use arrow keys to move, Space to drop.",

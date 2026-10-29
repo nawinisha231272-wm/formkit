@@ -3,8 +3,13 @@
 Status: **approved with owner amendments; starts after M09b approval**. Depends on M09b screenshot approval.
 Prerequisite satisfied: PR #15 approved at `79e69f6`, merged as `0b3b452` on 2026-10-23 after
 first-attempt green PR/push Verify. Work is on `m09b-plus-authoring`; ADR-0020 is accepted with
-the owner's opt-in-theme/option-B amendment. Proceed with the split: builder-owned ≤29 kB and full
-initial transitive closure ≤64,613 Brotli bytes, with existing runtime/lazy budgets unchanged.
+the owner's opt-in-theme/option-B amendment and 2026-10-28 lazy-body/size reset. Current enforced
+consumer gates: builder UI initial (excludes builder-core) **31,600**, builder-core marginal
+contribution **7,300**, full initial closure **67,400** Brotli bytes; standalone builder **31,600**.
+The one-time reset is fixed from the approved first boundary measurement, not recomputed after polish.
+Existing per-feature/aggregate lazy limits remain; new bulk-plan **1,750** and Data **300** limits
+cover their independent Retry entries. Both bodies default to idle preload. No further byte-hunting
+probes are authorized. No protected immediate behavior moves; History/diff remains unshipped.
 Order: M09b → M09b+ → M09c → M09d → M10a → M10b. M09d is an accepted plan (ADR-0019),
 with implementation starting only after M09c. No M09c root logic is included here.
 
@@ -14,8 +19,7 @@ use builder-core commands, slot validation and host locks. Before implementation
 and command contracts in an ADR and add deterministic replay/keyboard coverage. Existing keys remain
 stable when a label is edited. Respect cancellation and private modal additions.
 
-Delivery starts with ADR-0018 split (builder-owned initial ≤29 kB; full initial closure ≤64,613
-bytes), then inline label editing → precise quick-add → shared action search → multi-select.
+Delivery starts with the ADR-0018 split (current gates above; earlier 29,000/64,613 limits are historical), then inline label editing → precise quick-add → shared action search → multi-select.
 Verify every action by pointer and keyboard, all five themes, axe, focus/appearance preservation,
 atomic rollback/refusal, bounded history and exact undo/redo. Full pinned verify, changed-state images
 and owner review are required. Owner amendments below are part of acceptance.
@@ -60,3 +64,26 @@ The combined feature checkpoint adds 1,283 / 2,438 Brotli bytes over the accepte
 the quick-add loaded closure is 3,403 bytes including 2,901 bytes already shared with initial code.
 See `../reviews/m09b-plus-authoring-checkpoint.md`. Command search, multi-select, full pinned verify
 and the owner gate remain open.
+
+## Final M09b+ local acceptance — 2026-10-29
+
+| Criterion                                                                                                 | Result              | Reproducible evidence                                                                                                                                                                      |
+| --------------------------------------------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Declared captions, blur/Enter commit, Escape/empty refusal, unchanged keys                                | PASS                | `builder-authoring-shortcuts.spec.ts`: “declared layout captions edit Panel, Fieldset and custom SDK layout”; “inline label blur commits once; empty blur and Escape retain the old value” |
+| Exact-slot filtered quick-add, private Add and Retry/focus                                                | PASS                | `builder-authoring-shortcuts.spec.ts`, `builder-loading.spec.ts`, `builder-quick-add-geometry.spec.ts` in all three browsers                                                               |
+| Immediate command frame, lazy cached index and whole-selection actions                                    | PASS                | `builder-multiselect.spec.ts`, `builder-loading.spec.ts`, `builder-bulk-actions.spec.ts`; isolated 500-field index report                                                                  |
+| Selection primary/anchor/ranges, normalized structural vs exact property edits, atomic refusal and replay | PASS                | `selection-set.test.ts`, `bulk-commands.test.ts`, `bulk-properties.test.ts`, `builder-bulk-actions.spec.ts`                                                                                |
+| Generated shared-property bulk editor and five-theme axe                                                  | PASS                | `builder-bulk-editor.spec.ts`, all three browsers; no serious/critical violations                                                                                                          |
+| Approved planning/Data idle/none, cold/failed/Retry/cancel/destroy/CSP/assetBase                          | PASS                | `builder-planning-data.spec.ts`, `feature-loader.test.ts`; unchanged protected immediate actions                                                                                           |
+| Pointer toolbar and selected-block drag preserve selection                                                | PASS                | `builder-planning-data.spec.ts`: both toolbar-primary routes and first-pointer drag, Chromium/Firefox/WebKit                                                                               |
+| Owner polish, fit/placement and theme presentation                                                        | PASS                | `builder-owner-polish.spec.ts`, `builder-authoring-visual.spec.ts`, existing round-4/round-5 tests and changed screenshots                                                                 |
+| Three consumer gates, every lazy/aggregate gate and deterministic counts                                  | PASS                | pinned `pnpm size`, `pnpm benchmark:counts`, `bulk-work-counts.test.ts`                                                                                                                    |
+| Optional form registry updates preserve session/focus; unknown-theme refuses fallback                     | PASS                | `form-theme-registry.spec.ts`: light/shadow/reconnect and React/Angular input updates, all three browsers; `themes.test.ts`                                                                |
+| Full pinned local verify                                                                                  | PASS                | `m09b-plus-combined-evidence/final-pinned-verify.log.gz`, exit 0                                                                                                                           |
+| Remote first-attempt CI                                                                                   | Required after push | PR #16 checks; no reruns to obtain green                                                                                                                                                   |
+| Owner delivery review                                                                                     | PENDING             | `docs/reviews/m09b-plus-owner-review.html`; do not merge                                                                                                                                   |
+
+The original `c9457cd` test asserted Enter commit and Escape cancellation, not blur cancellation.
+`3815932` added explicit blur-commit/empty-refusal and declared-layout-caption tests without changing
+those original assertions. This final change retains all those committed assertions. Prior failures/probes
+and current source/screenshot manifests are preserved. History/diff and M09c/M09d remain unshipped.

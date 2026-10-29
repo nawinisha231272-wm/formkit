@@ -30,6 +30,8 @@ const controller = window.OurFormBuilder.createBuilder(
     assetBase: new URL("/assets/", location.href).href,
     preload: query.get("preload") === "idle" ? "idle" : "none",
     settingsPreload: query.get("settingsPreload") === "none" ? "none" : "idle",
+    planningPreload: query.get("planningPreload") === "none" ? "none" : "idle",
+    dataPreload: query.get("dataPreload") === "none" ? "none" : "idle",
     styleNonce: "ourform-script-tag",
   },
 );

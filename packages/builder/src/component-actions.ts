@@ -16,6 +16,9 @@ type Action = ToolbarAction | "cut" | "wrap" | "unwrap" | "collapse";
 interface Context {
   root: HTMLElement;
   ui: UI;
+  batch(action: Action, node: ComponentNode): boolean;
+  count(): number;
+  restoreFocus(anchor?: HTMLElement): void;
   icons?: BuilderIcons;
   copy(id: string): void;
   cut(id: string): void;
@@ -29,7 +32,16 @@ interface Context {
   choose(target: DropTarget): void;
   wrap(id: string, type: string): void;
 }
-const order: ToolbarAction[] = ["edit", "move", "duplicate", "delete", "more"];
+const order: ToolbarAction[] = [
+  "edit",
+  "move",
+  "duplicate",
+  "copy",
+  "paste",
+  "json",
+  "delete",
+  "more",
+];
 const shortcuts: Partial<Record<Action, string>> = {
   edit: "Enter",
   move: "Space",
@@ -59,6 +71,11 @@ export class ComponentActions {
   _ofbReason(action: Action, id: string): string | undefined {
     const { ui } = this._ofbContext,
       level = ui.builder.lockLevel(id);
+    if (
+      ["json", "unwrap", "collapse"].includes(action) &&
+      this._ofbContext.count() > 1
+    )
+      return ui.t("ofb.singleAction");
     if (action === "json") return;
     if (level === "all")
       return ui.t(action === "move" ? "ofb.lock.move" : "ofb.lock.edit");
@@ -68,6 +85,7 @@ export class ComponentActions {
   }
   _ofbExecute(action: Action, node: ComponentNode, anchor?: HTMLElement) {
     const { ui } = this._ofbContext;
+    if (this._ofbContext.batch(action, node)) return;
     const reason = this._ofbReason(action, node.id);
     if (reason) {
       ui.announce(reason);
@@ -120,9 +138,7 @@ export class ComponentActions {
     toolbar.setAttribute("aria-label", ui.t("ofb.toolbar"));
     toolbar.dataset.componentToolbar = node.id;
     const primitiveContext = ui;
-    for (const action of order.filter(
-      (action) => ui.actions?.includes(action) ?? true,
-    )) {
+    for (const action of ui.actions ?? order) {
       const button = actionButton(
         primitiveContext,
         this._ofbLabel(action),
@@ -153,7 +169,7 @@ export class ComponentActions {
     const { ui, root } = this._ofbContext;
     const close = () => {
       this._ofbCloseMenu();
-      anchor?.focus();
+      this._ofbContext.restoreFocus(anchor);
     };
     const popup = element(ui.document, "div", "", "ofb-action-menu");
     const bounds = (anchor ?? root).getBoundingClientRect(),

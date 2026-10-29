@@ -4,6 +4,17 @@ import nativeSchema from "../../../fixtures/forms/native/host-feedback.json";
 import onboardingSchema from "../../../fixtures/forms/onboarding/customer.json";
 import onboardingData from "../../../fixtures/forms/onboarding/customer.data.json";
 import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
+const themes = (window.hostThemes = [
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+]);
 const query = new URLSearchParams(location.search);
 const schema = query.has("protected")
   ? protectedSchema
@@ -26,7 +37,7 @@ import { employeeFields as fields } from "./employee-fields";
 const output = document.querySelector("#result")!;
 const form = renderForm("#form", {
   schema,
-  themes: [baseTheme],
+  themes,
   theme: baseTheme,
   defaultData: initialData,
   fields,

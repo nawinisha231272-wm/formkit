@@ -113,3 +113,12 @@ the actual schema read-only/disabled appearance; design mode does not fake a rea
 Schema prefix/suffix feed the existing FieldPresentation adornments (explicit host presentation wins).
 Tooltip is a native hover title; Description remains the visible explanatory alternative. Static
 readOnly/disabled are rendered from core FieldState and retain the same protected-write semantics.
+
+Single field errors render as plain text while several errors use a semantic list. Both `errors` and
+`error` theme parts are preserved. Bootstrap 4/5 place descriptions/help below controls using theme
+CSS ordering; switching themes preserves the shell DOM and focused control identity.
+
+`view.setThemes(themes, selectedTheme?)` replaces the per-instance registry in place. The optional
+second argument selects a theme in the same atomic update (otherwise the active theme stays selected).
+Resolve before updating: unknown names throw an Error with `code: "unknown-theme"`; the old view and
+registry remain active. Values, touched/errors, control identity, focus and caret survive valid changes.

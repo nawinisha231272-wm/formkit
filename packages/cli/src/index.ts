@@ -73,6 +73,7 @@ export async function createScaffold(
   const dependencies: Record<string, string> = { "@ourform/sdk": version };
   const devDependencies: Record<string, string> = {
     "@ourform/testing": version,
+    "@ourform/themes": version,
     "@types/node": "22.15.29",
     "@playwright/test": "1.56.1",
     "@axe-core/playwright": "4.10.2",

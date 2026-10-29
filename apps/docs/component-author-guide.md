@@ -51,8 +51,7 @@ without nvm/Corepack/global installs. Commit the generated pnpm-lock.yaml; subse
 `ofrun pnpm install --frozen-lockfile`. The integration suite also proves a frozen/offline reinstall.
 
 `create-theme` and `create-plugin` take the same arguments. A theme includes a preview field; a plugin
-packages its field. The generator refuses an existing target. The local kit provides all thirteen
-unpublished public dependencies. After matching SDK packages are published, install
+packages its field. The generator refuses an existing target. The local kit provides all unpublished public dependencies, including explicit theme entries and builder lazy assets. After matching SDK packages are published, install
 `@ourform/cli@0.0.1` and omit --local-packages. The kit and generated file overrides must remain at
 their chosen paths during development; regenerate a project when relocating its kit.
 

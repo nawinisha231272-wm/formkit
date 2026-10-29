@@ -1,6 +1,7 @@
 import {
   createBuilder,
   AddComponent,
+  AtomicCommand,
   RemoveComponent,
   MoveComponent,
   ReplaceDefinition,
@@ -67,19 +68,24 @@ export function createBuilderController(
     style.nonce = appearanceStyle.nonce = options.styleNonce;
   let dynamicStyleId = 0;
   const _ofbStyle: UI["_ofbStyle"] = (target, ...declarations) => {
-    let rule = (target as HTMLElement & { _ofbRule?: CSSStyleDeclaration })
-      ._ofbRule;
-    if (!rule) {
+    const owner = target as HTMLElement & {
+      _ofbRule?: { name: string; rule: CSSStyleDeclaration };
+    };
+    let cached = owner._ofbRule;
+    if (!cached) {
       const name = instance + dynamicStyleId++;
-      target.classList.add(name);
       const sheet = style.sheet!;
-      const index = sheet.insertRule(`.${name}{}`);
-      rule = (sheet.cssRules[index] as CSSStyleRule).style;
-      (target as HTMLElement & { _ofbRule?: CSSStyleDeclaration })._ofbRule =
-        rule;
+      // CSP-safe replacements for inline declarations must outrank theme selectors.
+      const index = sheet.insertRule(`:is(#${name},.${name}){}`);
+      cached = owner._ofbRule = {
+        name,
+        rule: (sheet.cssRules[index] as CSSStyleRule).style,
+      };
     }
+    // Renderer/class refreshes may remove the marker without replacing the element.
+    target.classList.add(cached.name);
     for (let index = 0; index < declarations.length; )
-      rule.setProperty(declarations[index++]!, declarations[index++]!);
+      cached.rule.setProperty(declarations[index++]!, declarations[index++]!);
   };
   const status = element(document, "div", "", "of-builder-status of-sr-only");
   status.id = `${prefix}diagnostics`;
@@ -150,7 +156,6 @@ export function createBuilderController(
   let announcementTimer: ReturnType<typeof setTimeout> | undefined;
   let remaining = 0,
     started = 0,
-    hovering = false,
     ticking = false;
   const dismiss = () => {
     clearTimeout(announcementTimer);
@@ -158,25 +163,25 @@ export function createBuilderController(
     notice.hidden = true;
   };
   const pause = () => {
+    if (!notice.childElementCount) return;
     clearTimeout(announcementTimer);
     if (ticking) remaining = Math.max(0, remaining - (Date.now() - started));
     ticking = false;
   };
   const resume = () => {
-    if (notice.hidden || hovering || notice.contains(document.activeElement))
+    if (
+      ticking ||
+      notice.hidden ||
+      (notice.childElementCount &&
+        (notice.matches(":hover") || notice.contains(document.activeElement)))
+    )
       return;
     started = Date.now();
     ticking = true;
     announcementTimer = setTimeout(dismiss, remaining);
   };
-  notice.addEventListener("mouseenter", () => {
-    pause();
-    hovering = true;
-  });
-  notice.addEventListener("mouseleave", () => {
-    hovering = false;
-    resume();
-  });
+  notice.addEventListener("mouseenter", pause);
+  notice.addEventListener("mouseleave", resume);
   notice.addEventListener("focusin", pause);
   notice.addEventListener("focusout", () => queueMicrotask(resume));
   shell.addEventListener(
@@ -287,14 +292,19 @@ export function createBuilderController(
       if (diagnostics.length) message += ` · ${diagnosticText(diagnostics)}`;
       announce(
         message,
-        !direction && command instanceof RemoveComponent
+        !direction &&
+          (command instanceof RemoveComponent ||
+            (command instanceof AtomicCommand &&
+              command.commands.some(
+                (child) => child instanceof RemoveComponent,
+              )))
           ? { label: t("ofb.undo"), run: () => core.undo() }
           : undefined,
       );
     }
     return diagnostics;
   };
-  type SelectionSnapshot = ReturnType<Canvas["selectionSet"]["snapshot"]>;
+  type SelectionSnapshot = ReturnType<Canvas["_ofbSelectionSet"]["snapshot"]>;
   const selectionHistory = new WeakMap<
     Command,
     { before: SelectionSnapshot; after: SelectionSnapshot }
@@ -315,7 +325,7 @@ export function createBuilderController(
         snapshot &&
         !result.some((diagnostic) => diagnostic.severity === "error")
       ) {
-        canvas.selectionSet.restore(snapshot);
+        canvas._ofbSelectionSet.restore(snapshot);
         core.select(snapshot.primary);
         canvas._ofbUpdateTargets();
       }
@@ -324,31 +334,42 @@ export function createBuilderController(
   }
   const executeCommand = core.dispatch.bind(core);
   core.dispatch = (command, options) => {
-    const before = canvas.selectionSet.snapshot();
+    const before = canvas._ofbSelectionSet.snapshot();
     const result = executeCommand(command, options);
+    canvas._ofbAcceptSelection(command, result);
     if (
       !result.some((diagnostic) => diagnostic.severity === "error") &&
       core.getState().history.past.at(-1) === command
     )
       selectionHistory.set(command, {
         before,
-        after: canvas.selectionSet.snapshot(),
+        after: canvas._ofbSelectionSet.snapshot(),
       });
     return complete(command, result);
   };
   const dispatch: UI["dispatch"] = (command, dispatchOptions) => {
     if (destroyed) return [];
-    if (
-      command instanceof RemoveComponent &&
-      !root.dispatchEvent(
-        new CustomEvent("of-before-delete", {
-          detail: { componentId: command.componentId },
-          cancelable: true,
-          bubbles: true,
-          composed: true,
-        }),
+    const removals =
+      command instanceof RemoveComponent
+        ? [command]
+        : command instanceof AtomicCommand
+          ? command.commands.filter(
+              (child): child is RemoveComponent =>
+                child instanceof RemoveComponent,
+            )
+          : [];
+    for (const removal of removals) {
+      if (
+        root.dispatchEvent(
+          new CustomEvent("of-before-delete", {
+            detail: { componentId: removal.componentId },
+            cancelable: true,
+            bubbles: true,
+            composed: true,
+          }),
+        )
       )
-    ) {
+        continue;
       const diagnostics: Diagnostic[] = [
         {
           severity: "error",
@@ -372,6 +393,7 @@ export function createBuilderController(
     _ofbStyle,
     dispatch,
     ...(options.icons ? { icons: options.icons } : {}),
+    ...(options.editor ? { editor: options.editor } : {}),
     ...(options.palette ? { palette: options.palette } : {}),
     ...(options.toolbar?.actions ? { actions: options.toolbar.actions } : {}),
   };
@@ -558,7 +580,15 @@ export function createBuilderController(
     design?.focus(id);
     if (origin?.isConnected) origin.focus({ preventScroll: true });
   };
-  ui.edit = (id, json = false) => settings._ofbOpen(id, json);
+  ui.edit = (id, json = false) => {
+    if (
+      canvas._ofbSelectionSet._ofbMembers.length > 1 &&
+      canvas._ofbSelectionSet._ofbMembers.includes(id)
+    ) {
+      if (json) announce(t("ofb.singleAction"));
+      else canvas._ofbBulk("edit");
+    } else settings._ofbOpen(id, json);
+  };
   ui.add = (type, target, origin) => {
     if (
       options.editor?.openOnAdd !== false &&
@@ -582,6 +612,7 @@ export function createBuilderController(
   };
   const side = sidebar({ host: inspector, outline, ui, features });
   const bench = workbench({
+    features,
     root,
     shell,
     ui,

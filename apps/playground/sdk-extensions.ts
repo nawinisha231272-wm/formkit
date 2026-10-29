@@ -154,6 +154,7 @@ document.querySelector("#harness")!.addEventListener("click", () => {
     engine: harnessEngine,
     host: document.querySelector("#test-harness")!,
     theme: "bootstrap4",
+    themes,
     readOnly:
       document.querySelector<HTMLInputElement>("#harness-readonly")!.checked,
     ...(isAddress

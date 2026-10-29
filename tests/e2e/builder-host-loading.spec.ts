@@ -3,6 +3,7 @@ import type {} from "../../apps/shared/builder-types";
 
 const hosts = [
   ["vanilla Vite", "http://127.0.0.1:4181/builder.html", false],
+  ["Web Component", "http://127.0.0.1:4181/builder.html?element", false],
   ["React Vite", "http://127.0.0.1:4182/builder.html", false],
   ["Angular Vite", "http://127.0.0.1:4183/builder.html", false],
   ["self-hosted script tag", "http://127.0.0.1:4185/", false],
@@ -36,7 +37,15 @@ for (const [host, url, opaqueChunks] of hosts)
       if (message.text().includes("Content Security Policy"))
         violations.push(message.text());
     });
-    await page.goto(`${url}?preload=none&settingsPreload=none`);
+    const location = new URL(url);
+    for (const policy of [
+      "preload",
+      "settingsPreload",
+      "planningPreload",
+      "dataPreload",
+    ])
+      location.searchParams.set(policy, "none");
+    await page.goto(location.href);
     await expect(
       page.getByRole("tab", { name: "Build", exact: true }),
     ).toBeVisible();

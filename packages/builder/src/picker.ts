@@ -24,6 +24,44 @@ export function picker(
   list.setAttribute("aria-label", label);
   list.hidden = true;
   input.setAttribute("aria-controls", list.id);
+  const arrow = element(ui.document, "span", "▾");
+  arrow.setAttribute("aria-hidden", "true");
+  ui._ofbStyle(host, "position", "relative", "display", "grid", "gap", "4px");
+  ui._ofbStyle(
+    list,
+    "position",
+    "absolute",
+    "inset-block-start",
+    "100%",
+    "inset-inline",
+    "0",
+    "z-index",
+    "10",
+    "max-block-size",
+    "180px",
+    "overflow",
+    "auto",
+    "border",
+    "1px solid var(--ofb-border)",
+    "border-radius",
+    "var(--ofb-radius)",
+    "background",
+    "var(--ofb-surface)",
+    "box-shadow",
+    "var(--ofb-shadow-1)",
+  );
+  ui._ofbStyle(input, "padding-inline-end", "24px");
+  ui._ofbStyle(
+    arrow,
+    "position",
+    "absolute",
+    "inset-inline-end",
+    "8px",
+    "inset-block-end",
+    "8px",
+    "pointer-events",
+    "none",
+  );
   let value = initial,
     matches = [...choices],
     active = 0;
@@ -54,6 +92,17 @@ export function picker(
       item.id = `${list.id}-${index}`;
       item.setAttribute("role", "option");
       item.setAttribute("aria-selected", String(index === active));
+      ui._ofbStyle(
+        item,
+        "padding",
+        "6px 10px",
+        "cursor",
+        "pointer",
+        "background",
+        index === active ? "var(--ofb-accent)" : "var(--ofb-surface)",
+        "color",
+        index === active ? "var(--ofb-accent-contrast)" : "var(--ofb-text)",
+      );
       item.onpointerdown = (event) => event.preventDefault();
       item.onclick = () => choose(index);
       list.append(item);
@@ -122,6 +171,6 @@ export function picker(
     }
   };
   restore();
-  host.append(input, list);
+  host.append(input, list, arrow);
   return { element: host, input };
 }

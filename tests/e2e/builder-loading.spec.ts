@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import type {} from "../../apps/playground/builder";
 const feature =
-  /\/features\/(settings|json|history|logic|map|commands|quick-add(?:-retry)?)\.js(?:\?|$)/;
+  /\/features\/(settings|json|history|logic|map|commands|quick-add(?:-retry)?|bulk-plan(?:-retry)?|data(?:-retry)?)\.js(?:\?|$)/;
 
 test("default/none requests no lazy code; JSON and History load only on first open", async ({
   page,
@@ -11,7 +11,9 @@ test("default/none requests no lazy code; JSON and History load only on first op
     const match = feature.exec(request.url());
     if (match) requested.push(match[1]!);
   });
-  await page.goto("/builder.html?approved&preload=none&settingsPreload=none");
+  await page.goto(
+    "/builder.html?approved&preload=none&settingsPreload=none&planningPreload=none&dataPreload=none",
+  );
   await expect(page.locator(".of-builder")).toHaveAttribute(
     "data-ofb-view",
     "build",
@@ -41,7 +43,9 @@ test("idle fetches Logic/JSON only without mounting or changing schema/history",
     const match = feature.exec(request.url());
     if (match) requested.push(match[1]!);
   });
-  await page.goto("/builder.html?approved&preload=idle&settingsPreload=none");
+  await page.goto(
+    "/builder.html?approved&preload=idle&settingsPreload=none&planningPreload=none&dataPreload=none",
+  );
   await expect.poll(() => [...requested].sort()).toEqual(["json", "logic"]);
   await expect(page.locator('[data-builder-part="json"]')).toHaveCount(0);
   await expect(page.locator(".of-builder")).toHaveAttribute(
@@ -63,7 +67,9 @@ test("the default idle policy fetches Settings without mounting it", async ({
     const match = feature.exec(request.url());
     if (match) requested.push(match[1]!);
   });
-  await page.goto("/builder.html?approved");
+  await page.goto(
+    "/builder.html?approved&planningPreload=none&dataPreload=none",
+  );
   await expect.poll(() => [...new Set(requested)].sort()).toEqual(["settings"]);
   await expect(page.locator(".ofb-settings")).toHaveCount(0);
   expect(
@@ -88,7 +94,9 @@ test("a late JSON import cannot mount after mode navigation; reopening uses its 
     }
     await route.continue();
   });
-  await page.goto("/builder.html?approved&settingsPreload=none");
+  await page.goto(
+    "/builder.html?approved&settingsPreload=none&planningPreload=none&dataPreload=none",
+  );
   await page.getByRole("tab", { name: "JSON", exact: true }).click();
   await expect.poll(() => seen).toBe(1);
   await page.getByRole("tab", { name: "Build", exact: true }).click();
@@ -123,7 +131,9 @@ test("the first keyboard Copy writes synchronously immediately after load", asyn
       },
     });
   });
-  await page.goto("/builder.html?approved&settingsPreload=none");
+  await page.goto(
+    "/builder.html?approved&settingsPreload=none&planningPreload=none&dataPreload=none",
+  );
   await page.locator('.of-builder-canvas [data-field-id="email"]').focus();
   await page.keyboard.press("ControlOrMeta+c");
   await expect(page.locator(".of-builder-status")).toContainText(
@@ -151,7 +161,9 @@ test("Settings opens its frame immediately and preserves state while the feature
     await new Promise((resolve) => setTimeout(resolve, 700));
     await route.continue();
   });
-  await page.goto("/builder.html?approved&settingsPreload=none");
+  await page.goto(
+    "/builder.html?approved&settingsPreload=none&planningPreload=none&dataPreload=none",
+  );
   const before = await page.evaluate(() => ({
     schema: JSON.stringify(window.miniBuilder.builder.getState().definition),
     history: window.miniBuilder.builder.getState().history.past.length,
@@ -183,7 +195,9 @@ test("failed Settings activation keeps the draft and Retry loads the editor", as
       else await route.continue();
     },
   );
-  await page.goto("/builder.html?approved&settingsPreload=none");
+  await page.goto(
+    "/builder.html?approved&settingsPreload=none&planningPreload=none&dataPreload=none",
+  );
   await page.locator('.of-builder-canvas [data-field-id="email"]').focus();
   await page.keyboard.press("Enter");
   const settings = page.locator(".ofb-settings");
@@ -200,7 +214,9 @@ test("a slow Add keeps its draft private and Cancel restores focus without histo
     await new Promise((resolve) => setTimeout(resolve, 600));
     await route.continue();
   });
-  await page.goto("/builder.html?approved&settingsPreload=none");
+  await page.goto(
+    "/builder.html?approved&settingsPreload=none&planningPreload=none&dataPreload=none",
+  );
   const add = page.getByRole("button", { name: "Add Text", exact: true });
   const origin = page
     .locator('[data-builder-part="inspector"]')
@@ -250,7 +266,9 @@ test("a failed Add can commit defaults as exactly one history step", async ({
   await page.route(/\/features\/settings\.js(?:\?|$)/, (route) =>
     route.abort("failed"),
   );
-  await page.goto("/builder.html?approved&settingsPreload=none");
+  await page.goto(
+    "/builder.html?approved&settingsPreload=none&planningPreload=none&dataPreload=none",
+  );
   const before = await page.evaluate(
     () => window.miniBuilder.builder.getState().history.past.length,
   );
@@ -290,7 +308,9 @@ test("failed quick-add preserves state and Retry opens the exact-slot palette", 
       else await route.continue();
     },
   );
-  await page.goto("/builder.html?approved&settingsPreload=none");
+  await page.goto(
+    "/builder.html?approved&settingsPreload=none&planningPreload=none&dataPreload=none",
+  );
   const before = await page.evaluate(() => ({
     schema: JSON.stringify(window.miniBuilder.builder.getState().definition),
     history: window.miniBuilder.builder.getState().history.past.length,
@@ -356,7 +376,7 @@ test("strict CSP and a custom local assetBase loads Settings offline", async ({
     await route.fulfill({ response });
   });
   await page.goto(
-    "/builder.html?approved&settingsPreload=none&assetBase=/mirror/&styleNonce=builder-test",
+    "/builder.html?approved&settingsPreload=none&planningPreload=none&dataPreload=none&assetBase=/mirror/&styleNonce=builder-test",
   );
   await page.locator('.of-builder-canvas [data-field-id="email"]').focus();
   await page.keyboard.press("Enter");
@@ -379,4 +399,88 @@ test("strict CSP and a custom local assetBase loads Settings offline", async ({
   expect(mirrored).toContain("features/settings.js");
   expect(mirrored).toContain("features/quick-add.js");
   expect(violations).toEqual([]);
+});
+
+for (const activation of ["click", "Space"] as const)
+  test(`Escape cancels quick-add opened by ${activation} before its lazy body loads without replaying focus`, async ({
+    page,
+  }) => {
+    let release!: () => void;
+    const pending = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route(/\/features\/quick-add\.js(?:\?|$)/, async (route) => {
+      await pending;
+      await route.continue();
+    });
+    await page.goto("/builder.html?approved&settingsPreload=none");
+    const marker = page.locator(
+      '#canvas [data-field-id="fullName"] > .ofb-quick-add[data-drop-index="0"]',
+    );
+    const before = await page.evaluate(() =>
+      JSON.stringify(window.nestedBuilder.builder.getState().definition),
+    );
+    await page.locator('#canvas [data-field-id="fullName"]').hover();
+    if (activation === "click") await marker.click();
+    else await marker.press("Space");
+    await expect(
+      page.getByRole("dialog", { name: "Add component", exact: true }),
+    ).toHaveAttribute("aria-busy", "true");
+    await page.keyboard.press("Escape");
+    await expect(
+      page.getByRole("dialog", { name: "Add component", exact: true }),
+    ).toHaveCount(0);
+    await expect(marker).toBeFocused();
+    release();
+    await expect(
+      page
+        .locator(".ofb-mini-palette")
+        .getByRole("searchbox", { name: "Search components" }),
+    ).toHaveCount(0);
+    expect(
+      await page.evaluate(() =>
+        JSON.stringify(window.nestedBuilder.builder.getState().definition),
+      ),
+    ).toBe(before);
+  });
+
+test("quick-add roves with canvas selection and Space activates the marker instead of dragging", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?approved&settingsPreload=none");
+  const field = page.locator('#canvas [data-field-id="fullName"]');
+  const marker = field.locator(':scope > .ofb-quick-add[data-drop-index="0"]');
+  await expect(marker).toHaveAttribute("tabindex", "-1");
+  await field.focus();
+  await expect(marker).toHaveAttribute("tabindex", "0");
+  await expect(
+    page.locator(
+      '#canvas [data-field-id="email"] > .ofb-quick-add[data-drop-index="0"]',
+    ),
+  ).toHaveAttribute("tabindex", "-1");
+  await page.keyboard.press("Tab");
+  await expect(marker).toBeFocused();
+  await page.keyboard.press("Space");
+  const quick = page.getByRole("dialog", {
+    name: "Add component",
+    exact: true,
+  });
+  await expect(
+    quick.getByRole("searchbox", { name: "Search components" }),
+  ).toBeFocused();
+  await expect(page.locator(".of-builder")).not.toHaveAttribute(
+    "data-ofb-dragging",
+    "true",
+  );
+  await page.keyboard.press("Escape");
+  await expect(quick).toHaveCount(0);
+  await expect(marker).toBeFocused();
+  const outline = page.locator(".of-builder-outline");
+  const name = outline.locator('[role="treeitem"][data-drag-id="fullName"]');
+  await name.focus();
+  await expect(name).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await expect(
+    outline.locator('[role="treeitem"][data-drag-id="phone"]'),
+  ).toBeFocused();
 });

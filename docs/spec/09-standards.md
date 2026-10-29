@@ -62,3 +62,13 @@ PR baseline evolution is checked against its immutable main/base SHA: raising ex
 removing an existing fixture fails even if the measurements match the edited JSON. Decreases remain
 allowed only with exact updated expectations and matching measurements in that PR. The initial
 baseline is explicitly seeded because the prior main revision has no count artifact.
+
+### M09b+ one-time owner size reset (2026-10-28)
+
+ADR-0018/0020 record the owner-approved additional planning/Data lazy boundaries and measured
+ceilings: builder UI initial (excludes builder-core) **31,600**, builder-core marginal consumer
+contribution **7,300**, full initial closure **67,400**, standalone builder package **31,600** Brotli
+bytes. New lazy closure ceilings are planning **1,750** and Data **300**, including each Retry closure.
+Existing per-feature/aggregate and correctness gates remain enforced. No further byte-hunting in
+M09b+; remaining polish must fit. From M09c on, each milestone proposes initial/lazy size allowances
+for owner approval before implementation. Historical measurements and failed probes are retained.

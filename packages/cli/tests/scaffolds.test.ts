@@ -1,7 +1,7 @@
 import { test, expect } from "vitest";
 import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join, resolve, relative } from "node:path";
 import { execFileSync } from "node:child_process";
 import { createScaffold, runCli } from "../src/index";
 
@@ -86,7 +86,8 @@ test("all three unedited CLI scaffolds install from packed workspace packages an
   const kit = join(root, "kit");
   const run = (args: string[], cwd = resolve(".")) => {
     try {
-      return execFileSync("pnpm", args, {
+      const started = performance.now();
+      const result = execFileSync("pnpm", args, {
         cwd,
         encoding: "utf8",
         timeout: 120000,
@@ -96,6 +97,14 @@ test("all three unedited CLI scaffolds install from packed workspace packages an
         // pins the test runner and must not disable this documented setup step.
         env: { ...process.env, CI: "true", npm_config_offline: "false" },
       });
+      console.info(
+        JSON.stringify({
+          scaffoldStep: args.join(" "),
+          project: cwd.split(/[\\/]/).at(-1),
+          milliseconds: performance.now() - started,
+        }),
+      );
+      return result;
     } catch (error) {
       if (error instanceof Error && "stdout" in error)
         throw new Error(`${error.message}\n${String(error.stdout)}`);
@@ -104,6 +113,54 @@ test("all three unedited CLI scaffolds install from packed workspace packages an
   };
   try {
     run(["sdk:pack", kit]);
+    for (const archive of await readdir(kit)) {
+      const path = join(kit, archive);
+      const files = new Set(
+        execFileSync("tar", ["-tzf", path], { encoding: "utf8" }).split("\n"),
+      );
+      const manifest = JSON.parse(
+        execFileSync("tar", ["-xOzf", path, "package/package.json"], {
+          encoding: "utf8",
+        }),
+      );
+      const checkExports = (value: unknown): void => {
+        if (typeof value === "string" && value.startsWith("./"))
+          expect(
+            files.has(`package/${value.slice(2)}`),
+            `${archive}: ${value}`,
+          ).toBe(true);
+        else if (value && typeof value === "object")
+          Object.values(value).forEach(checkExports);
+      };
+      checkExports(manifest.exports);
+      const dist = resolve("packages", manifest.name.split("/")[1], "dist");
+      for (const file of await readdir(dist, {
+        recursive: true,
+        withFileTypes: true,
+      }))
+        if (file.isFile()) {
+          const asset = relative(dist, join(file.parentPath, file.name))
+            .split("\\")
+            .join("/");
+          expect(
+            files.has(`package/dist/${asset}`),
+            `${archive}: missing ${asset}`,
+          ).toBe(true);
+        }
+      if (manifest.name === "@ourform/builder")
+        for (const feature of [
+          "settings",
+          "settings-retry",
+          "json",
+          "commands",
+          "quick-add",
+          "quick-add-retry",
+        ])
+          expect(
+            files.has(`package/dist/features/${feature}.js`),
+            `missing lazy ${feature}`,
+          ).toBe(true);
+    }
     for (const kind of ["component", "theme", "plugin"] as const) {
       const directory = join(root, kind);
       // Exercise the built executable users receive, not only the in-process generator.

@@ -232,3 +232,12 @@ test("SSR nested none containers and cell labels retain hierarchy; custom messag
   });
   expect(ownShell).not.toContain("<label");
 });
+
+test("unknown theme resolution carries an unknown-theme diagnostic without fallback", () => {
+  expect(() => resolveTheme("missing", { themes: [baseTheme] })).toThrowError(
+    expect.objectContaining({
+      code: "unknown-theme",
+      message: "Unknown theme: missing",
+    }),
+  );
+});

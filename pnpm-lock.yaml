@@ -295,6 +295,9 @@ importers:
       '@ourform/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
+      '@ourform/themes':
+        specifier: workspace:*
+        version: link:../../packages/themes
 
   apps/playground:
     dependencies:

@@ -248,17 +248,16 @@ export class OurFormComponent implements AfterViewInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.#mounted) return;
     if (
-      ["schema", "engine", "fields", "readOnly", "themes"].some(
-        (key) => changes[key],
-      )
+      ["schema", "engine", "fields", "readOnly"].some((key) => changes[key])
     ) {
       this.rebuild();
       return;
     }
     if (changes["data"] && this.data !== undefined)
       this.controller?.setData(this.data);
-    if (changes["theme"])
-      this.controller?.view.setTheme(
+    if (changes["theme"] || changes["themes"])
+      this.controller?.view.setThemes(
+        this.themes ?? this.#options.themes,
         this.theme ?? this.#options.theme ?? "base",
       );
     if (changes["themeMode"])
@@ -345,6 +344,8 @@ export class OurFormBuilderComponent
   @Input() assetBase: BuilderOptions["assetBase"];
   @Input() preload: BuilderOptions["preload"];
   @Input() settingsPreload: BuilderOptions["settingsPreload"];
+  @Input() planningPreload: BuilderOptions["planningPreload"];
+  @Input() dataPreload: BuilderOptions["dataPreload"];
   @Input() styleNonce: BuilderOptions["styleNonce"];
   @Input() themeMode: BuilderOptions["themeMode"];
   @Input() engine: BuilderOptions["engine"];
@@ -377,6 +378,8 @@ export class OurFormBuilderComponent
         "assetBase",
         "preload",
         "settingsPreload",
+        "planningPreload",
+        "dataPreload",
         "styleNonce",
       ].some((key) => changes[key])
     ) {
@@ -411,6 +414,12 @@ export class OurFormBuilderComponent
         ...(this.preload !== undefined ? { preload: this.preload } : {}),
         ...(this.settingsPreload !== undefined
           ? { settingsPreload: this.settingsPreload }
+          : {}),
+        ...(this.planningPreload !== undefined
+          ? { planningPreload: this.planningPreload }
+          : {}),
+        ...(this.dataPreload !== undefined
+          ? { dataPreload: this.dataPreload }
           : {}),
         ...(this.styleNonce !== undefined
           ? { styleNonce: this.styleNonce }

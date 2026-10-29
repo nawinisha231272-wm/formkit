@@ -161,8 +161,8 @@ export const Form = forwardRef<FormController, FormProps>(
       if (props.data !== undefined) controller.current?.setData(props.data);
     }, [props.data, handle]);
     useLayoutEffect(() => {
-      controller.current?.view.setTheme(props.theme ?? "base");
-    }, [props.theme, handle]);
+      controller.current?.view.setThemes(props.themes, props.theme ?? "base");
+    }, [props.theme, props.themes, handle]);
     useLayoutEffect(() => {
       controller.current?.view.setMode(props.themeMode ?? "light");
     }, [props.themeMode, handle]);
@@ -304,6 +304,8 @@ export const FormBuilder = forwardRef<BuilderController, FormBuilderProps>(
       props.assetBase,
       props.preload,
       props.settingsPreload,
+      props.planningPreload,
+      props.dataPreload,
       props.styleNonce,
       props.themes,
       props.builderThemes,

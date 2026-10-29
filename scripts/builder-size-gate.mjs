@@ -5,15 +5,19 @@ import { resolve } from "node:path";
 const entrySource =
   'import { createBuilder } from "@ourform/builder"; import { bootstrap5Theme } from "@ourform/themes/bootstrap5"; import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5"; globalThis.mountOurFormBuilder = [createBuilder, bootstrap5Theme, bootstrap5BuilderTheme];';
 const limits = {
-  builderUiInitial: 29_000,
-  builderCoreInitial: 7_050,
-  fullInitial: 64_613,
+  builderUiInitial: 31_600,
+  builderCoreInitial: 7_300,
+  fullInitial: 67_400,
   logic: 10_000,
   json: 8_000,
   map: 10_000,
   logicJsonMap: 28_000,
   settings: 8_000,
   quickAdd: 3_750,
+  commands: 4_500,
+  bulkEditor: 4_700,
+  planning: 1_750,
+  data: 300,
   logicJsonMapSettings: 36_000,
 };
 
@@ -114,8 +118,15 @@ function analyze(result) {
       "map",
       "history",
       "commands",
+      "commands-retry",
       "quick-add",
       "quick-add-retry",
+      "bulk-editor",
+      "bulk-editor-retry",
+      "bulk-plan",
+      "bulk-plan-retry",
+      "data",
+      "data-retry",
     ].map((name) => [name, closure([featureRoot(name)])]),
   );
   const deferredRoots = Object.keys(outputs).filter(
@@ -146,7 +157,24 @@ const coreContribution =
   fullReport.initial.brotli - withoutCoreReport.initial.brotli;
 if (coreContribution <= 0)
   throw new Error("Builder-core contribution measurement is non-positive.");
-const proposedCoreLimit = Math.ceil((coreContribution * 1.05) / 50) * 50;
+const initialConsumerFiles = new Set(
+  fullReport.initial.files.map((file) => file.file),
+);
+const incrementalFeatures = Object.fromEntries(
+  Object.entries(fullReport.features).map(([name, feature]) => {
+    const files = feature.files.filter(
+      (file) => !initialConsumerFiles.has(file.file),
+    );
+    return [
+      name,
+      {
+        files,
+        raw: files.reduce((sum, file) => sum + file.raw, 0),
+        brotli: files.reduce((sum, file) => sum + file.brotli, 0),
+      },
+    ];
+  }),
+);
 const report = {
   method: {
     tool: "esbuild 0.25.12 consumer production build + node:zlib Brotli",
@@ -159,11 +187,17 @@ const report = {
   builderUiInitialExcludingBuilderCore: ownedReport,
   builderCore: {
     contribution: coreContribution,
-    proposedCeiling: proposedCoreLimit,
+    ceiling: limits.builderCoreInitial,
     enforced: true,
     withoutCoreInitial: withoutCoreReport.initial,
   },
   fullInitial: fullReport.initial,
+  consumerDeferred: {
+    note: "Full consumer feature closures include runtime dependencies; incremental closures exclude files already in initial. Builder-owned lazy gates retain their established ownership boundary. Every shared output is counted once per closure.",
+    features: fullReport.features,
+    incrementalFeatures,
+    allDeferred: fullReport.allDeferred,
+  },
 };
 console.log(JSON.stringify(report, null, 2));
 
@@ -183,6 +217,22 @@ const checks = [
     limits.logicJsonMap,
   ],
   ["Settings", ownedReport.features.settings.brotli, limits.settings],
+  ["Command bar", ownedReport.features.commands.brotli, limits.commands],
+  [
+    "Command bar retry",
+    ownedReport.features["commands-retry"].brotli,
+    limits.commands,
+  ],
+  [
+    "Bulk editor",
+    ownedReport.features["bulk-editor"].brotli,
+    limits.bulkEditor,
+  ],
+  [
+    "Bulk editor retry",
+    ownedReport.features["bulk-editor-retry"].brotli,
+    limits.bulkEditor,
+  ],
   ["Quick-add", ownedReport.features["quick-add"].brotli, limits.quickAdd],
   [
     "Quick-add retry",
@@ -200,6 +250,13 @@ checks.push([
   coreContribution,
   limits.builderCoreInitial,
 ]);
+for (const [name, limit] of [
+  ["bulk-plan", limits.planning],
+  ["bulk-plan-retry", limits.planning],
+  ["data", limits.data],
+  ["data-retry", limits.data],
+])
+  checks.push([name, ownedReport.features[name].brotli, limit]);
 const failures = checks.filter(([, actual, limit]) => actual > limit);
 if (failures.length) {
   for (const [name, actual, limit] of failures)

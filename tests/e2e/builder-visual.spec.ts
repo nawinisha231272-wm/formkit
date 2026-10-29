@@ -82,6 +82,7 @@ test("approved screen 2: generated modal and actual Bootstrap 5 error-state prev
     ),
   ).toHaveCount(1);
   await page.evaluate(() => document.fonts.ready);
+  await expect(page.locator(".of-builder-toast")).toBeHidden();
   if (info.project.name === "chromium")
     await expect(page).toHaveScreenshot("screen-2-neutral-edit-dialog.png", {
       animations: "disabled",

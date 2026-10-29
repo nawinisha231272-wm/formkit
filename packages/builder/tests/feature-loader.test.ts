@@ -14,6 +14,9 @@ function setup(options: Parameters<typeof createFeatureLoader>[0] = {}) {
     map: { available: false as const },
     commands: { available: false as const },
     quickAdd: { mountQuickAdd: vi.fn() },
+    bulk: { mountBulkEditor: vi.fn() },
+    planning: { selectionCommand: vi.fn() },
+    data: { mountData: vi.fn() },
   };
   const factories = Object.fromEntries(
     Object.entries(modules).map(([name, module]) => [
@@ -49,19 +52,31 @@ function setup(options: Parameters<typeof createFeatureLoader>[0] = {}) {
   };
 }
 describe("builder feature loading", () => {
-  it("settings preloads at idle by default while none can opt out", async () => {
+  it("Settings, bulk planning and Data preload at idle by default while none can opt out", async () => {
     const defaults = setup();
     defaults.idle();
     await Promise.resolve();
     await Promise.resolve();
-    expect(defaults.factories.settings).toHaveBeenCalledTimes(1);
-    for (const name of ["json", "history", "logic", "map", "commands"] as const)
+    for (const name of ["settings", "planning", "data"] as const)
+      expect(defaults.factories[name]).toHaveBeenCalledTimes(1);
+    for (const name of [
+      "json",
+      "history",
+      "logic",
+      "map",
+      "commands",
+      "bulk",
+    ] as const)
       expect(defaults.factories[name]).not.toHaveBeenCalled();
     for (const options of [
       { settingsPreload: "none" as const },
       { preload: "none" as const, settingsPreload: "none" as const },
     ]) {
-      const state = setup(options);
+      const state = setup({
+        ...options,
+        planningPreload: "none",
+        dataPreload: "none",
+      });
       state.idle();
       await Promise.resolve();
       expect(state.schedule).not.toHaveBeenCalled();
@@ -71,17 +86,33 @@ describe("builder feature loading", () => {
     }
   });
   it("idle fetches only Logic and JSON without mounting either, and cancellation stops scheduling", async () => {
-    const state = setup({ preload: "idle", settingsPreload: "none" });
+    const state = setup({
+      preload: "idle",
+      settingsPreload: "none",
+      planningPreload: "none",
+      dataPreload: "none",
+    });
     state.idle();
     await state.loader.load("json");
     await state.loader.load("logic");
     expect(state.factories.json).toHaveBeenCalledTimes(1);
     expect(state.factories.logic).toHaveBeenCalledTimes(1);
-    for (const name of ["settings", "history", "map", "commands"] as const)
+    for (const name of [
+      "settings",
+      "history",
+      "map",
+      "commands",
+      "bulk",
+    ] as const)
       expect(state.factories[name]).not.toHaveBeenCalled();
     expect(state.modules.json.mountJsonPanel).not.toHaveBeenCalled();
     expect(state.modules.json.mountComponentJson).not.toHaveBeenCalled();
-    const cancelled = setup({ preload: "idle", settingsPreload: "none" });
+    const cancelled = setup({
+      preload: "idle",
+      settingsPreload: "none",
+      planningPreload: "none",
+      dataPreload: "none",
+    });
     cancelled.abort.abort();
     cancelled.idle();
     expect(cancelled.cancel).toHaveBeenCalledTimes(1);
@@ -145,6 +176,14 @@ describe("builder feature loading", () => {
       "https://app.example/mirrored/ourform/features/quick-add.js",
     );
     expect(state.factories.quickAdd).not.toHaveBeenCalled();
+  });
+  it("assetBase maps bulk editing to its fixed emitted file", async () => {
+    const state = setup({ assetBase: "/mirrored/ourform" });
+    await state.loader.load("bulk");
+    expect(state.importURL).toHaveBeenCalledExactlyOnceWith(
+      "https://app.example/mirrored/ourform/features/bulk-editor.js",
+    );
+    expect(state.factories.bulk).not.toHaveBeenCalled();
   });
   it("assetBase retries use a fresh URL while retaining the fixed feature path", async () => {
     const state = setup({ assetBase: "/mirrored/ourform" });

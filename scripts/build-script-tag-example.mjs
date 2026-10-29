@@ -20,6 +20,22 @@ const entryPoints = Object.fromEntries([
   ["features/logic", "packages/builder/src/features/logic.ts"],
   ["features/map", "packages/builder/src/features/map.ts"],
   ["features/commands", "packages/builder/src/features/commands.ts"],
+  [
+    "features/commands-retry",
+    "packages/builder/src/features/commands-retry.ts",
+  ],
+  ["features/bulk-editor", "packages/builder/src/features/bulk-editor.ts"],
+  ["features/bulk-plan", "packages/builder/src/features/bulk-plan.ts"],
+  [
+    "features/bulk-plan-retry",
+    "packages/builder/src/features/bulk-plan-retry.ts",
+  ],
+  ["features/data", "packages/builder/src/features/data.ts"],
+  ["features/data-retry", "packages/builder/src/features/data-retry.ts"],
+  [
+    "features/bulk-editor-retry",
+    "packages/builder/src/features/bulk-editor-retry.ts",
+  ],
   ["features/quick-add", "packages/builder/src/features/quick-add.ts"],
   [
     "features/quick-add-retry",

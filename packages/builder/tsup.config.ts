@@ -12,6 +12,13 @@ export default defineConfig({
     "features/logic": "src/features/logic.ts",
     "features/map": "src/features/map.ts",
     "features/commands": "src/features/commands.ts",
+    "features/commands-retry": "src/features/commands-retry.ts",
+    "features/bulk-editor": "src/features/bulk-editor.ts",
+    "features/bulk-editor-retry": "src/features/bulk-editor-retry.ts",
+    "features/bulk-plan": "src/features/bulk-plan.ts",
+    "features/bulk-plan-retry": "src/features/bulk-plan-retry.ts",
+    "features/data": "src/features/data.ts",
+    "features/data-retry": "src/features/data-retry.ts",
     "features/quick-add": "src/features/quick-add.ts",
     "features/quick-add-retry": "src/features/quick-add-retry.ts",
     "themes/base": "src/themes/base.ts",
@@ -33,8 +40,23 @@ export default defineConfig({
   },
   clean: true,
   sourcemap: true,
-  splitting: true,
+  splitting: false,
   esbuildPlugins: [
+    {
+      name: "preserve-lazy-entry-boundaries",
+      setup(build) {
+        build.onResolve({ filter: /^\.\// }, (args) => {
+          if (
+            args.kind !== "dynamic-import" ||
+            !args.importer.endsWith("feature-loader.ts")
+          )
+            return;
+          const path =
+            args.path === "./settings" ? "./features/settings" : args.path;
+          return { path: `${path}.js`, external: true };
+        });
+      },
+    },
     {
       name: "static-builder-css",
       setup(build) {
@@ -42,7 +64,17 @@ export default defineConfig({
           { filter: /(?:^|[/\\])(?:.*-style|style)\.ts$/ },
           async ({ path }) => {
             const source = await readFile(path, "utf8");
-            const match = /^export const (\w+) = `([\s\S]*)`;\s*$/.exec(source);
+            const match = /export const (\w+) = `([\s\S]*)`;/.exec(source);
+            const outside = match
+              ? source.slice(0, match.index) +
+                source.slice(match.index + match[0].length)
+              : source;
+            if (
+              outside
+                .split("\n")
+                .some((line) => line.trim() && !line.trim().startsWith("//"))
+            )
+              return undefined;
             if (!match || match[2]!.includes("${")) return undefined;
             const css = await transform(match[2]!, {
               loader: "css",

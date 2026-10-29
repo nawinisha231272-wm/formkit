@@ -113,7 +113,10 @@ test("drawer applies live and consecutive property edits undo together", async (
     .locator('[data-builder-part="inspector"]')
     .getByRole("button", { name: "Edit settings", exact: true })
     .click();
-  const drawer = page.getByRole("complementary", { name: /Rating/ });
+  const drawer = page.getByRole("complementary", {
+    name: "Customer rating",
+    exact: true,
+  });
   const max = drawer.getByLabel("Number of stars", { exact: true });
   await max.fill("6");
   await max.fill("7");

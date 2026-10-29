@@ -25,6 +25,7 @@ test("owner review: sentence-first Conditional settings with synchronized expres
   );
   await expect(expression.locator("textarea")).toBeHidden();
   await page.evaluate(() => document.fonts.ready);
+  await expect(page.locator(".of-builder-toast")).toBeHidden();
   if (info.project.name === "chromium")
     await expect(page).toHaveScreenshot("review-conditional-sentence.png", {
       animations: "disabled",

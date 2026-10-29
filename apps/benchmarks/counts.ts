@@ -1,6 +1,7 @@
 import { createEngine } from "@ourform/core";
 import { builtinComponents } from "@ourform/components";
 import { mount } from "@ourform/renderer-dom";
+import { baseTheme } from "@ourform/themes/base";
 import type { FormDefinition } from "@ourform/schema";
 import onboarding from "../../fixtures/forms/onboarding/customer.json";
 import onboardingData from "../../fixtures/forms/onboarding/customer.data.json";
@@ -132,7 +133,7 @@ export function measureWorkCounts(
   const beforePatch = session.subscribe(() => {
     patchStart = renders;
   });
-  const view = mount(root, session, { engine, views });
+  const view = mount(root, session, { engine, views, themes: [baseTheme] });
   const afterPatch = session.subscribe(() => {
     patchRenders.push(renders - patchStart);
   });

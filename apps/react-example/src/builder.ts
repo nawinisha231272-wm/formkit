@@ -114,9 +114,28 @@ const loading = {
     query.get("settingsPreload") === "none"
       ? ("none" as const)
       : ("idle" as const),
+  planningPreload:
+    query.get("planningPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const),
+  dataPreload:
+    query.get("dataPreload") === "none" ? ("none" as const) : ("idle" as const),
   ...(query.has("assetBase") ? { assetBase: query.get("assetBase")! } : {}),
   ...(query.has("styleNonce") ? { styleNonce: query.get("styleNonce")! } : {}),
 };
+const themes = [
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+];
+const builderThemes = [
+  bootstrap4BuilderTheme,
+  bootstrap5BuilderTheme,
+  tailwindBuilderTheme,
+  materialBuilderTheme,
+];
 function App() {
   const [definition, setDefinition] = useState<unknown>(schema),
     [mounted, setMounted] = useState(true),
@@ -137,19 +156,8 @@ function App() {
             schema: definition,
             data,
             fields,
-            themes: [
-              baseTheme,
-              bootstrap4Theme,
-              bootstrap5Theme,
-              tailwindTheme,
-              materialTheme,
-            ],
-            builderThemes: [
-              bootstrap4BuilderTheme,
-              bootstrap5BuilderTheme,
-              tailwindBuilderTheme,
-              materialBuilderTheme,
-            ],
+            themes,
+            builderThemes,
             theme,
             onReady: (controller) => {
               window.builderHost = controller;

@@ -1,7 +1,21 @@
 import { createEngine } from "@ourform/core";
 import { nullableBooleanValue } from "@ourform/sdk";
+import {
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+} from "@ourform/themes";
 import { renderComponent, mountComponentBuilder } from "@ourform/testing";
 import { field } from "../docs/examples/yes-no";
+const themes = [
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+];
 const element = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
 let consent: ReturnType<typeof renderComponent>,
@@ -29,6 +43,7 @@ function render() {
     host: element("consent"),
     engine: makeEngine(),
     theme,
+    themes,
     readOnly,
     node: {
       label: "Consent",
@@ -47,11 +62,13 @@ function render() {
   answer = renderComponent(ordinary, {
     host: element("answer"),
     theme,
+    themes,
     node: { label: "Answer", validation: { required: true } },
   });
   mini = mountComponentBuilder(field, {
     host: element("builder"),
     theme,
+    themes,
     engine: makeEngine(),
   });
 }

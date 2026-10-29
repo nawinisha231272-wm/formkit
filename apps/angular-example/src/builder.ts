@@ -96,6 +96,9 @@ class App {
     query.get("settingsPreload") === "none"
       ? ("none" as const)
       : ("idle" as const);
+  readonly planningPreload =
+    query.get("planningPreload") === "none" ? "none" : "idle";
+  readonly dataPreload = query.get("dataPreload") === "none" ? "none" : "idle";
   readonly assetBase = query.get("assetBase") ?? undefined;
   readonly styleNonce = query.get("styleNonce") ?? undefined;
   readonly application = inject(ApplicationRef);
@@ -137,6 +140,8 @@ Component({
         [theme]="theme()"
         [preload]="preload"
         [settingsPreload]="settingsPreload"
+      [planningPreload]="planningPreload"
+      [dataPreload]="dataPreload"
         [assetBase]="assetBase"
         [styleNonce]="styleNonce"
         (schemaChange)="schema.set($event)"

@@ -1,0 +1,2220 @@
+{
+  "approval": "pending owner review",
+  "counts": {
+    "changed": 295,
+    "new": 38,
+    "unchanged": 109
+  },
+  "images": [
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/chromium/authoring-base.png",
+      "status": "changed",
+      "sha256": "afc9c25b8e58a7a6dd2b55c84d22cf07e06b0190c062ba4bd967a108e1fb052a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/chromium/authoring-bootstrap4.png",
+      "status": "changed",
+      "sha256": "abd9040be227ff3017d4d8838a19dd5f58d96d72c832b69b2285bf8cc08e4f10"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/chromium/authoring-bootstrap5.png",
+      "status": "changed",
+      "sha256": "213775740a925f2e5fa22e7c1ed981f6997538d21ef70a0325cefef55817d67e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/chromium/authoring-tailwind.png",
+      "status": "changed",
+      "sha256": "8aed3dad7e5a679e137c36a3fe0f4cdba6a5064b237742a8e4ad858fa08a8668"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/firefox/authoring-base.png",
+      "status": "changed",
+      "sha256": "f0971102f4f398fe75341671596585ba6b04bc100703f7d6c78ca014d559b270"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/firefox/authoring-bootstrap4.png",
+      "status": "changed",
+      "sha256": "930b224fa048b1332caf9ed046e80f1ff51990d3acfa296e96f0e3b39f543ae1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/firefox/authoring-bootstrap5.png",
+      "status": "changed",
+      "sha256": "86b03647aab735a9867f8d2296dd6bb26bf0fb03a017425aaf7c89aab3856755"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/firefox/authoring-tailwind.png",
+      "status": "changed",
+      "sha256": "f5f7f7d1c80818b78cdf4ed0766f7a4322bb7937c251311a0df6ce1d4d7308a2"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/webkit/authoring-base.png",
+      "status": "changed",
+      "sha256": "38ee4f0fc42ab7b660ccb10dbe0c531df1724111d42fd44e5e28d6a56cd23360"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/webkit/authoring-bootstrap4.png",
+      "status": "changed",
+      "sha256": "58f105e7f858e7492fdba097908c0cc87c60b0621549fc9be8d18a4daef9a4b5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/webkit/authoring-bootstrap5.png",
+      "status": "changed",
+      "sha256": "a65c4f93f76edc251b033cbbec1e68eeef4f761acc8582934d03dbdad5ec9d7f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/webkit/authoring-tailwind.png",
+      "status": "changed",
+      "sha256": "f9baabec2758f25186947352aa6fcb6b49677a1d4d8f095a3fca27304c4f315b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-base.png",
+      "status": "new",
+      "sha256": "54b5c85a64580cec4dcbbba7208dbb4149b301140bdaae95dc3f5ca7b7d2e8df"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-bootstrap4.png",
+      "status": "new",
+      "sha256": "1c87cdc22ba46c3ac5f2def55ec7c18b3280229e064aed93bd8167d382add8c9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-bootstrap5.png",
+      "status": "new",
+      "sha256": "ad1279fc9338ced59b3738b8bf7b24c21b009f7817ccf6bd89fe36b55b9f46e0"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-material.png",
+      "status": "new",
+      "sha256": "16e008b8234185b0953edd89894563f6bfcc8184dba5d0378322ada2ae3e319d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-tailwind.png",
+      "status": "new",
+      "sha256": "058a35d88e8d6baeeb8d47dc7898a47c4c7e536b69545183dc639babd2efd018"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-commands-base.png",
+      "status": "new",
+      "sha256": "7b28aaeef251d09ec7de4142370bb945fd300d916bced744ba8e7ec046749c66"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-commands-bootstrap4.png",
+      "status": "new",
+      "sha256": "576873566847ad0a85f4f5f4dc9caf6c0be24a398aa1758d137533aba14e436a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-commands-bootstrap5.png",
+      "status": "new",
+      "sha256": "9bb866bc91287a91158ab7c7409e294d9e2819b4a6239a368fb9dd2d17ddcddd"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-commands-material.png",
+      "status": "new",
+      "sha256": "a804eb4c197d7fad395aa942a83e992680389dfd951728665f2d0cf85a8b1e28"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-commands-tailwind.png",
+      "status": "new",
+      "sha256": "e59bf54581fc8e0fef1d40332e278e2551737497e37658f41d9718955327dfb9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-inline-caption-bootstrap5.png",
+      "status": "new",
+      "sha256": "d7b24345c54ec560d78cae8374725258ca8fcbc951c218caf7d9342b344770a1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-inline-caption-material.png",
+      "status": "new",
+      "sha256": "f78b787f25d9bb4115f8bc702a3a685cfb3e571d27ec8a919a04a6c6ef03ba57"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-quick-add-bootstrap5.png",
+      "status": "new",
+      "sha256": "511280e565d627c34cbf9d318d63175cbc8173d155e923791eb75c9ee23bbe06"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-quick-add-material.png",
+      "status": "new",
+      "sha256": "e00224fae21263edd097152b501976d718864c6a3065cdbd0d13250ace3b5d3e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-selection-base.png",
+      "status": "new",
+      "sha256": "e9a1fbcf61d22f0619d9100b5b3f7283644ebc32df4be65727d137f0bcc5383f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-selection-bootstrap4.png",
+      "status": "new",
+      "sha256": "781faad6141247f2ee9b8fdb89eb607d94bac13d95cba12cc358a10b73ea535d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-selection-bootstrap5.png",
+      "status": "new",
+      "sha256": "f3b92963da6ae56d8466587f690eeb80a3cc42ff7ce70ba9ba82b9f62e3339c3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-selection-material.png",
+      "status": "new",
+      "sha256": "7d8779ac10e9a45cf28e51026d6a8366f5e2a5295bcf6ab29ea07e51cba685b1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-authoring-visual.spec.ts/chromium/plus-selection-tailwind.png",
+      "status": "new",
+      "sha256": "a7a386abf11119e22346daab27824eb70e88b9148ea6d7056d46b21d31813197"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-base.png",
+      "status": "changed",
+      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap4.png",
+      "status": "changed",
+      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap5.png",
+      "status": "changed",
+      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-material.png",
+      "status": "changed",
+      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-tailwind.png",
+      "status": "changed",
+      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-base.png",
+      "status": "changed",
+      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap4.png",
+      "status": "changed",
+      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap5.png",
+      "status": "changed",
+      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-material.png",
+      "status": "changed",
+      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-tailwind.png",
+      "status": "changed",
+      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-base.png",
+      "status": "changed",
+      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap4.png",
+      "status": "changed",
+      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap5.png",
+      "status": "changed",
+      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-material.png",
+      "status": "changed",
+      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-tailwind.png",
+      "status": "changed",
+      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-base.png",
+      "status": "changed",
+      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-bootstrap4.png",
+      "status": "changed",
+      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-bootstrap5.png",
+      "status": "changed",
+      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-material.png",
+      "status": "changed",
+      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-tailwind.png",
+      "status": "changed",
+      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-base.png",
+      "status": "changed",
+      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap4.png",
+      "status": "changed",
+      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap5.png",
+      "status": "changed",
+      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-material.png",
+      "status": "changed",
+      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-tailwind.png",
+      "status": "changed",
+      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-base.png",
+      "status": "changed",
+      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap4.png",
+      "status": "changed",
+      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap5.png",
+      "status": "changed",
+      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-material.png",
+      "status": "changed",
+      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-tailwind.png",
+      "status": "changed",
+      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-review-visual.spec.ts/chromium/review-builder-look-menu.png",
+      "status": "changed",
+      "sha256": "881e151b3f62d36f2a4d91ddbc5c74b4b2c28666076e9b98817565d87612b651"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-review-visual.spec.ts/chromium/review-conditional-sentence.png",
+      "status": "changed",
+      "sha256": "43d69eeba6ac019667a6e98a8a196543990a3597654938cacfd78a3c0b74e5a2"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-review-visual.spec.ts/chromium/review-material-phone-readonly.png",
+      "status": "unchanged",
+      "sha256": "8acac408705802ebc76f8e170e81c01cf6f870c398cd49efc88399afe1e499ab"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-bootstrap5-first-panel-field.png",
+      "status": "changed",
+      "sha256": "f31fd6e3f84498ac10881af542d677aca10c2dc04cdfe7074d9e5bfd20287259"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-bootstrap5-hover-neighbour.png",
+      "status": "changed",
+      "sha256": "0c0c4227418b95d1e6b12a644eb1ef565e8526b7fdfaf43592b5d6aa28d46c59"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-bootstrap5-selected-column.png",
+      "status": "changed",
+      "sha256": "6e11d3e03cd63062862ebc3fb99be076f5b483ae790fba37d0d5bad81edd474f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-material-first-panel-field.png",
+      "status": "changed",
+      "sha256": "c0299530ffdcc0232238cee70d931a34095139ddd1f62edcaad1bf09eacf7ef3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-material-hover-neighbour.png",
+      "status": "changed",
+      "sha256": "6bccda31918dbc04d528592c77ef3ca0611c473a6a6fce326da192ff5802e012"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-material-selected-column.png",
+      "status": "changed",
+      "sha256": "c9639ed50de91b0bf388508e676311ccc4d37849b7eeb4ca5224497cb92801b9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-1-neutral-material-drag.png",
+      "status": "changed",
+      "sha256": "94e891fc398e7755942481f44aa94edbf8fd1a346ce103aae3179a8d1f0d274b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-2-neutral-edit-dialog.png",
+      "status": "changed",
+      "sha256": "5256630eedc7ac9e6bc962129340506e6ef33aa316355951096bf20944bb4959"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-bootstrap4.png",
+      "status": "changed",
+      "sha256": "22cbffcf6758cb90426693045ec2859e19e9ecf18d2e431d0d001485d555a9c5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-bootstrap5.png",
+      "status": "changed",
+      "sha256": "2450191756dea227e286545db773a5bb813de2e4c869d6f9f9439b7b14df3cb9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-dark-compact.png",
+      "status": "changed",
+      "sha256": "7b0d8313d2b09620330a6b76a87abef8a6385d8616371c5500ddff3b35a0b958"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-material.png",
+      "status": "changed",
+      "sha256": "deece0fb1998b69f79b1d031fa2b68e9b49216429547fc28c582dc63b6096fde"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/builder-visual.spec.ts/chromium/screen-5-theme-comparison.png",
+      "status": "changed",
+      "sha256": "4ecff01b354b71817dedfab07349150e760a9881230bd3fa40e891723d0a9f11"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/chromium/nullable-base.png",
+      "status": "changed",
+      "sha256": "8afc33716bec327b06a48081f462bdcc5c044528aeb72b9f09ccf8ac67cb44d0"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/chromium/nullable-bootstrap4.png",
+      "status": "changed",
+      "sha256": "42d2f4185b4ca6ac26e1ac71f6533ce6b85314d2de1b4c0944273e6f51dc756d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/chromium/nullable-bootstrap5.png",
+      "status": "changed",
+      "sha256": "42d2f4185b4ca6ac26e1ac71f6533ce6b85314d2de1b4c0944273e6f51dc756d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/chromium/nullable-tailwind.png",
+      "status": "changed",
+      "sha256": "ecf79ae0e210b988ba5bc99ed29fe6bd0773c581e63ed4dd72f676c6f363d7f6"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/firefox/nullable-base.png",
+      "status": "changed",
+      "sha256": "c92f9824de4b4f16ee07dd42280baf08fd0f91e752dcc0d45bae7261e531607c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/firefox/nullable-bootstrap4.png",
+      "status": "changed",
+      "sha256": "c855d5df0d26fbf57469a07ce44f2488faf89687e06a1584bfb113c900343f3c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/firefox/nullable-bootstrap5.png",
+      "status": "changed",
+      "sha256": "c855d5df0d26fbf57469a07ce44f2488faf89687e06a1584bfb113c900343f3c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/firefox/nullable-tailwind.png",
+      "status": "changed",
+      "sha256": "bee5a40c7bd73b85b5e2b552b30ee8c829b56fc3cd30a3ebecb53c8aa608ad85"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/webkit/nullable-base.png",
+      "status": "changed",
+      "sha256": "3b3f813175f5c5bf8bc445a9531bedf364a05cad56c25a8a297c9c2acfa67421"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/webkit/nullable-bootstrap4.png",
+      "status": "changed",
+      "sha256": "b8e48fb0caf431567cba5caa30e19f84d70730a4bde12417ad2bf5196eefb8ca"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/webkit/nullable-bootstrap5.png",
+      "status": "changed",
+      "sha256": "b8e48fb0caf431567cba5caa30e19f84d70730a4bde12417ad2bf5196eefb8ca"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/nullable-boolean.spec.ts/webkit/nullable-tailwind.png",
+      "status": "changed",
+      "sha256": "d18d36aeea2707afb19cdb85995ee2e312d4ce39d4131be20b870bca272d1ad4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-extensions-base.png",
+      "status": "changed",
+      "sha256": "4d244cf118070f9a95bf49422fa3491d5a818d208ecf96a8c08d61d7d4d35c64"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-extensions-bootstrap4.png",
+      "status": "changed",
+      "sha256": "aca87eb73cb23f5d8177e3e78f4832b3b8ccc7312de7340e30d477e8a1157b11"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-extensions-bootstrap5.png",
+      "status": "changed",
+      "sha256": "99b3940309040ff54c8c3372cfe952d30f5ce0785b70fc2eaace7e10faa0a085"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-extensions-material.png",
+      "status": "changed",
+      "sha256": "9791c8696d372bd153cbcc8b85db6e4d452e26d4ef46d985a549a5ca26620273"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-extensions-tailwind.png",
+      "status": "changed",
+      "sha256": "69c34e038422e85208afd0ca43144e99261dd73b61aa5df8ff101b51ef133446"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-native-base.png",
+      "status": "changed",
+      "sha256": "44369ab51a55e44399b7e6dc957e44c7d445a865e05fe899b4c272f417831953"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-native-bootstrap4.png",
+      "status": "changed",
+      "sha256": "2f706ce59e5e185e28d6b3fb41c4a33fd8ff89a5873ebbbe89ef577612ee4879"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-native-bootstrap5.png",
+      "status": "changed",
+      "sha256": "f8d3d72abb0a1599d94b78cee92ace6bda306a7a9e2c9aaf40139b61ab92ae54"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-native-material.png",
+      "status": "unchanged",
+      "sha256": "ecc2c87e8232a102ae93acee3f1063b923af66d032d407aefa918b06fac37840"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/chromium/sdk-native-tailwind.png",
+      "status": "changed",
+      "sha256": "ad35dfceab7c092e8492561b934b6455812ca75857ef931c706271f912de3954"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-extensions-base.png",
+      "status": "changed",
+      "sha256": "f48605114faaea0ad87e2fd76069e71060303ab37b2db7b0dd139a489fa3bf02"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-extensions-bootstrap4.png",
+      "status": "changed",
+      "sha256": "341b9a2018f95913af863c21e2033c1e65e7a564a0b6c37d2ff84dd891e7356f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-extensions-bootstrap5.png",
+      "status": "changed",
+      "sha256": "ced1d79350cd37fe71f76d7151a741f4243e91f651da284cf292ab3ef394da4b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-extensions-material.png",
+      "status": "changed",
+      "sha256": "54e289c708f7147c13b80e962c674c9d1cb6847c655df699f9d7e6084590e2c7"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-extensions-tailwind.png",
+      "status": "changed",
+      "sha256": "8eaaeb384df631da781f99cd4b655926c942a58cd01f95031e50df6daf3ff50a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-native-base.png",
+      "status": "changed",
+      "sha256": "7be5b579921a6aa54d5723df0cbe91feb6c501bd5f22f0fe967d3430ff872cfc"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-native-bootstrap4.png",
+      "status": "changed",
+      "sha256": "9f8b755f0fff8038ea6056b8acb8f53bec5dfb2e91b8ea64bfe1b2474aba6658"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-native-bootstrap5.png",
+      "status": "changed",
+      "sha256": "41deac1d8a8d2ffd12dbee883254353d3961735bb1b6c60d1a14f83ce88aba86"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-native-material.png",
+      "status": "unchanged",
+      "sha256": "1732e10372643801b84bb5248f2b0967e8e4044bdfe8add7c93629e370f1a98e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/firefox/sdk-native-tailwind.png",
+      "status": "changed",
+      "sha256": "d9581930c1e76bb48f881ec0c95decb65b329c75545c29b0c16b796f442a3cfe"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-extensions-base.png",
+      "status": "changed",
+      "sha256": "f3b28af31bfdcc17dba17e40fd25b052c3161cea6eded5bd06c1e5718bc62aaf"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-extensions-bootstrap4.png",
+      "status": "changed",
+      "sha256": "3a2f527078e0d5e9842e37eeb6aabf074a6d777e3e2c848a73de99cbcf057e2c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-extensions-bootstrap5.png",
+      "status": "changed",
+      "sha256": "8e18dd630459158c748e48c4f377c8cbe530adf31e3606961d792676179a1c12"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-extensions-material.png",
+      "status": "changed",
+      "sha256": "734f7cdcf740e94dc7981141cb28795f1caa137cc6e89092d01e20c096c5a2cd"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-extensions-tailwind.png",
+      "status": "changed",
+      "sha256": "b526cc08cc626492fd3cbc142cc2bd5b22a1e00a566c3c3b055b2bd32fb83340"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-native-base.png",
+      "status": "changed",
+      "sha256": "729cf57b1f791a8f01e3286b85f60d9b1eb4078674254bf60f5c93970db91bda"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-native-bootstrap4.png",
+      "status": "changed",
+      "sha256": "b97b5b52375332c923a2e649eb4e44f85c3001db8dfc19e479826840079a1a73"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-native-bootstrap5.png",
+      "status": "changed",
+      "sha256": "0f14ebe49d87c909edad10e82f02557b411021b2c441cd55e16543cb580977df"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-native-material.png",
+      "status": "unchanged",
+      "sha256": "e036cf5b98e84357a7ac8b4ae6f254a8fc5e86c96d393be09324b2560565dbb6"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/sdk-extensions.spec.ts/webkit/sdk-native-tailwind.png",
+      "status": "changed",
+      "sha256": "031e2d779ddbae9b13d2e16d9834db6fce6d71f8e1206fc5de5331a539c949c3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-base-contact.png",
+      "status": "unchanged",
+      "sha256": "cc238ca8328612aef884dd08aabbe8a30524eb41d9657eb8abb86248febc6ecd"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-base-profile.png",
+      "status": "unchanged",
+      "sha256": "66e6ba52a23014c4da5c2274f9ac19d9f8ddcfbb908f4979488bd50841219b3f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-bootstrap4-contact.png",
+      "status": "unchanged",
+      "sha256": "fb989c2b9031b3e26e8f92ab57d0bc7c87033409bdaf4fba8b8d3ced965e49b5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-bootstrap4-profile.png",
+      "status": "unchanged",
+      "sha256": "7d326985dffebfe4cdbff826d20683d05d42a9ceee2efcab89007ac61559c13d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-bootstrap5-contact.png",
+      "status": "unchanged",
+      "sha256": "70cf09d4015b8fde1f66d35739e94e76b7cae26a259287720ecc7dc52df0465a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-bootstrap5-profile.png",
+      "status": "unchanged",
+      "sha256": "341c9d07a1d3589ea139b97e6d1e604eccd550af12a61e93c050029746c2d55f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-material-contact.png",
+      "status": "unchanged",
+      "sha256": "04e9747b30b1e3403043e6952cb7aed0496012424d20c9ea182161854115a9c9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-material-profile.png",
+      "status": "unchanged",
+      "sha256": "88cf10ba0a39b36377a48ce9583151f72d26733c8277c4f235c7abc93cc9f1c9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-tailwind-contact.png",
+      "status": "unchanged",
+      "sha256": "1f01e341d038fb44b805b79ff113ba53ac330500c7fa607111c132ae31bb8635"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/chromium/tabs-tailwind-profile.png",
+      "status": "unchanged",
+      "sha256": "f5e0edf31ce8b6b98ef500e4ed35fde8426ee18fc6f67a6edcb2b39b974a0961"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-base-contact.png",
+      "status": "unchanged",
+      "sha256": "581c7bbb635237298688a9005d5f3b7756a04c4a8bcb4c5e1cc3b3b110284cec"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-base-profile.png",
+      "status": "unchanged",
+      "sha256": "6d1fd39c981da568d531348cc35b6f0ab3b22f27e4119abedb83b245d2459ddb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-bootstrap4-contact.png",
+      "status": "unchanged",
+      "sha256": "2888949f104d3c93e7ffe7d4931aa53ad1e3c0b169b18097d3783b35e633e369"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-bootstrap4-profile.png",
+      "status": "unchanged",
+      "sha256": "b63bfd318a016f92db598a2985a604c11f212c841c314c6d879cdf4bcf260d2e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-bootstrap5-contact.png",
+      "status": "unchanged",
+      "sha256": "aea6b7ccab8952a510b69f5e5e3d424c14d7f5302f486f695a6574f820454571"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-bootstrap5-profile.png",
+      "status": "unchanged",
+      "sha256": "ceba4931aba09ca76c682caa003b83350a77cc88e18e60e2d3d8cd1ab750f591"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-material-contact.png",
+      "status": "unchanged",
+      "sha256": "de28b03fcb63a886185cf959ed136e9a5cbfa0ba2cdf9c0f1c2f7ac355414127"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-material-profile.png",
+      "status": "unchanged",
+      "sha256": "d007162b47c4d1512ccd8dde25dc3af5fc8e91498c6816b3ea548295d04cbae0"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-tailwind-contact.png",
+      "status": "unchanged",
+      "sha256": "c0eb7dfd837a4c758669f055b28c41273cd57c9c8264e56d087167d4d5c4632e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/firefox/tabs-tailwind-profile.png",
+      "status": "unchanged",
+      "sha256": "fd68487d5a19ace24cf35029e582ff282a20e0794d81dc26e65a9801a0f35e29"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-base-contact.png",
+      "status": "unchanged",
+      "sha256": "7aff8243d5f5cfb5f0f5affc26db79645d8c8be8f5aa8010c4dbd2826473a69d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-base-profile.png",
+      "status": "unchanged",
+      "sha256": "53fd499de39d4bccda349de252dcee2c796640b955678b6dbad2e418bc18d231"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-bootstrap4-contact.png",
+      "status": "unchanged",
+      "sha256": "5ca4f3eeb2856d2f48ae5a71ad979977bb3119daf642ad483a2518d5e097c3b3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-bootstrap4-profile.png",
+      "status": "unchanged",
+      "sha256": "51871eb1224fd3fb711cbb8eebec2a19885d2f46452f9ed3aad3e3d514741866"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-bootstrap5-contact.png",
+      "status": "unchanged",
+      "sha256": "8d5a186448b0d3eeb18d2fd591c1919501cedd6e34b51292b355e903fbaa19bf"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-bootstrap5-profile.png",
+      "status": "unchanged",
+      "sha256": "eca9e4b35c447cbc542a01ae31bc5cd095601a51a849e594cc207277d06ba225"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-material-contact.png",
+      "status": "unchanged",
+      "sha256": "7bdec2418216d172c8be3e72087dda56341217abc6259e467c795750f290bf4e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-material-profile.png",
+      "status": "unchanged",
+      "sha256": "c77253d5132623c61751439543ac75172a85493a545c45283b21a3a9254cec4a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-tailwind-contact.png",
+      "status": "unchanged",
+      "sha256": "82bd92264c3a54abe06ac0e48ea70e8ac98c59ead687cbdfb8bbf3758cdd2f44"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/tabs.spec.ts/webkit/tabs-tailwind-profile.png",
+      "status": "unchanged",
+      "sha256": "12968d5199e2c5e6396d93e56ced84e0afcff3cbf26c587ffc9fdfb6e3769c5d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/base-dark.png",
+      "status": "changed",
+      "sha256": "28759b9a7333f4400113184d708087bdab64b9b39ec6a471512d596fbefa6a3d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/base-high-contrast.png",
+      "status": "changed",
+      "sha256": "178c2077002ba0e4a1c52fd6084fc4d2c76c82231078b3fdb0e37b479d7e379d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/base-light.png",
+      "status": "changed",
+      "sha256": "4eae61e37042fd25d8e9d4dbdf9609f0c48578154adb4508c74d745d0de4c2c9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/base-readonly.png",
+      "status": "changed",
+      "sha256": "b77c0538d2f40b2b923e047b6a102aa68faf71a3d2eb4e17da9295d0e7f6cb92"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap4-dark.png",
+      "status": "changed",
+      "sha256": "d041998c25a4208131f027b121194ae537506a0c03a30b69c46b237fb89152e3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap4-high-contrast.png",
+      "status": "changed",
+      "sha256": "6c9154b41b8e0b85ddc178f598fadb411e1affa12fe46bb15672fc1ed415904a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap4-host-css-dark.png",
+      "status": "changed",
+      "sha256": "22208da57f7f42f0650a7653b0c729705741b3fc78b5b8ee3d49c87f6710f34e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap4-host-css-high-contrast.png",
+      "status": "changed",
+      "sha256": "631bb07d52e6aa3fb71251bff15ea3819f45f40a1e4ac69747edd6109a2c9851"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap4-host-css-light.png",
+      "status": "changed",
+      "sha256": "d340bfc8e0867d0b2884347e3e702464b7c361099f977bb2625cde7a314f4943"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap4-light.png",
+      "status": "changed",
+      "sha256": "b47516295708fdaba73c85bf8dcb08adb2b308107a21f6d34627c6b2ff5d856c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap4-readonly.png",
+      "status": "changed",
+      "sha256": "1763891ad2ab3163eb63f825f37407c868a8884c727a8790a2d3f7126f535f0f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap5-dark.png",
+      "status": "changed",
+      "sha256": "2c3ec4fd70015335bd086d2db065a32bc4603279d5bd19c682dff795750b142f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap5-high-contrast.png",
+      "status": "changed",
+      "sha256": "7ff4b5a155e061ff0fa4791bbfca609f41f78bd097b878c95afa844616c61ddb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap5-host-css.png",
+      "status": "changed",
+      "sha256": "a47ca25acda1dbc7a5fcab9c97365d159f1461285e26cc3b06b86697da7f9273"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap5-light.png",
+      "status": "changed",
+      "sha256": "6819ac59d67f63a872ebc9aa81a8f2199f267d7c616fc892556bde6feb32fb92"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/bootstrap5-readonly.png",
+      "status": "changed",
+      "sha256": "5de877b1ce0852bf7209d141e8176aa786946ac4f2a791b325a02516777b2555"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/material-dark.png",
+      "status": "unchanged",
+      "sha256": "1156f4a351e630664c5034dec0efc19a68a90d9f4ea2d51f334a480b4606b08f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/material-high-contrast.png",
+      "status": "unchanged",
+      "sha256": "b5247982b6597f2c40ec3af132a8c6ebfb361106185ab04dff253c89123e892e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/material-light.png",
+      "status": "unchanged",
+      "sha256": "7673694a5532ef1d8fe9800a03e3fd196bcde40edf1330af07b2344a3a652c0b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/material-readonly.png",
+      "status": "unchanged",
+      "sha256": "edd9ee103fc7460fce2c45943246be5cc628918e252c1bd0e57ede10d9f28365"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/tailwind-dark.png",
+      "status": "changed",
+      "sha256": "0e8c219b3c3b8378cc568907c4636b88bc039e97cc47e4b9f11c479bd6496044"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/tailwind-high-contrast.png",
+      "status": "changed",
+      "sha256": "dd2dc70a0683bcebc8514bd9ef40eb3c04e45c0d7a04aa8479f1c51cd38557f4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/tailwind-light.png",
+      "status": "changed",
+      "sha256": "8ceb5bda7042fc325980bf6bacdadbcf4046b1444cb844ed946efb5675189072"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/chromium/tailwind-readonly.png",
+      "status": "changed",
+      "sha256": "fb4784d77814d6d84994d63ea0bb9b95b15367010a8ac53a9a36c05ad2efee89"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/base-dark.png",
+      "status": "changed",
+      "sha256": "c3a344a3bd458c0e0ab8ccd6ad586b32c4f4cbcde808d66fd4d3df3b9cc563cd"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/base-high-contrast.png",
+      "status": "changed",
+      "sha256": "23a69abf7a2d71dbe9e1349bb9bb4cf4fae280ac22f890df17457c9e035e821c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/base-light.png",
+      "status": "changed",
+      "sha256": "75d5e677060b68daa779b69a4064d52f8dfe91c703a0adcd78ff4a191e23bdb4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/base-readonly.png",
+      "status": "changed",
+      "sha256": "394f64e21e128092b963bc4a0c3b2c60f63201a9f20ce231e6e417b48d355bee"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap4-dark.png",
+      "status": "changed",
+      "sha256": "5ac77602ebd4161fe4b92aba3a2e65782402d37a6ebaf030f88c225b183758b5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap4-high-contrast.png",
+      "status": "changed",
+      "sha256": "a43dcd0c96624c3aee67cfaab3f2d3b66f0c9620fa1c9fbbf3c85b915896d571"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap4-host-css-dark.png",
+      "status": "changed",
+      "sha256": "6d65159120c56d1a9da57c839ca9187f41ff9ea76f63e4c62de6039992aaf534"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap4-host-css-high-contrast.png",
+      "status": "changed",
+      "sha256": "73e3aaadf0f7be9f841342e2ff83851395024f096e3ea07547577179f5a1c256"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap4-host-css-light.png",
+      "status": "changed",
+      "sha256": "5644d4b4adb05fc0327f10feaa0cce75dad6d1e5538dcd3d85a9e26278eba22e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap4-light.png",
+      "status": "changed",
+      "sha256": "e76f99850a813b199c72e78c79ebdd1126ed5999c926f3e84b007960186f7093"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap4-readonly.png",
+      "status": "changed",
+      "sha256": "2f4c9f6356f8eb181d3e2c1722211096ec427de523742a06d9b043ba34ca573a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap5-dark.png",
+      "status": "changed",
+      "sha256": "db2d6940b37ee4a7b23fd3a1c054d30e386686b28a901b3c362566e027cf2f13"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap5-high-contrast.png",
+      "status": "changed",
+      "sha256": "70d7b887c1cb318f07fb6b7933daba33485bf07bff2ebfa1166f6e8f22b7f4b5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap5-host-css.png",
+      "status": "changed",
+      "sha256": "02e20bb1f6f05606ecc0a01370d88fdd1d4a0fcc5c60d2b83391e86a0a34125b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap5-light.png",
+      "status": "changed",
+      "sha256": "720923229ba7fb0c20cc52f399638f8419e44d6e1c54009ec0b2ecf4d6acacf5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/bootstrap5-readonly.png",
+      "status": "changed",
+      "sha256": "0dd18f06379c58d2a4d70981a9b0519d0517d45a7075d68d0b5ba49d5b006e9f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/material-dark.png",
+      "status": "unchanged",
+      "sha256": "074c8aea39b2c1edc6911aa08aeb2f33f7abb856d85cd4b984809f422f8eb90b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/material-high-contrast.png",
+      "status": "unchanged",
+      "sha256": "8bdebc8c85250d129776de58f4f1d947717e7442905257e0b0cb0cd5be5aa978"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/material-light.png",
+      "status": "unchanged",
+      "sha256": "61fb4e0b35d447052a90162f64dbf89f1b92e6a09fe2614997fe3a20e35bc3e0"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/material-readonly.png",
+      "status": "unchanged",
+      "sha256": "27b7bb06bc9bbd5efde419101763956195ad6608f64a27295dbabefcc95e094e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/tailwind-dark.png",
+      "status": "changed",
+      "sha256": "aa1becfc0a0ee3c6470484716832d739eb06d457468e2f440a9c4276adc3d079"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/tailwind-high-contrast.png",
+      "status": "changed",
+      "sha256": "eba382a7f1d27fcd3212f47fdeabd7477f77d067d81290cf78fd82df47c568d1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/tailwind-light.png",
+      "status": "changed",
+      "sha256": "8faddfb65e558c962714090c6a30896e1dbe2de4f23a486574564921be6200a7"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/firefox/tailwind-readonly.png",
+      "status": "changed",
+      "sha256": "3c243f7ccc500d362c3d90ff5765b925c43c041b548aa0e03265c9e751ec384e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/base-dark.png",
+      "status": "changed",
+      "sha256": "a9aa438083234de4ac627e0da90785f40b278e5cb959d2134c94a31c2564b01d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/base-high-contrast.png",
+      "status": "changed",
+      "sha256": "9517ba897c8b8851b453329f34d3e44b5e56e2172aefec53ed3d226a6be14f9c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/base-light.png",
+      "status": "changed",
+      "sha256": "de60a4ccf8d0e67d3174f316aa851546ff3af2e5e371ee58419b5e1725a896d4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/base-readonly.png",
+      "status": "changed",
+      "sha256": "06f0b4ac13862f816823837a149e2c5680185d7d65f6385922b783f4430233f2"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap4-dark.png",
+      "status": "changed",
+      "sha256": "780b03937ea3f78c4f54252e8100cbc78c2efe28c7480febb290b2121a4d1171"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap4-high-contrast.png",
+      "status": "changed",
+      "sha256": "135983cf4a45abe3e95e0dc262ed0fbcdb3251421aa12b800dae584fe10c3361"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap4-host-css-dark.png",
+      "status": "changed",
+      "sha256": "ef26dda62aa00af94db8a1118da5539fa811379c7ab290b325a66b3a8f9a4671"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap4-host-css-high-contrast.png",
+      "status": "changed",
+      "sha256": "b6895f28ea69031ead9b04fc8d1ed09d98b7a9ab5b10f3d868dc32243283806c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap4-host-css-light.png",
+      "status": "changed",
+      "sha256": "efd070c6fb2032e62e81fe5fb83cadc03dce08d25a5641044f034e80f6ea245e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap4-light.png",
+      "status": "changed",
+      "sha256": "680dd8a78c938d1c262e7d5b6d130b26032d5c842467797a93f1e5c1a0047982"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap4-readonly.png",
+      "status": "changed",
+      "sha256": "edde83ff40a601f6061c2c92365fb6c9e0a2ae83a4f64020c1aca8b576da6e87"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap5-dark.png",
+      "status": "changed",
+      "sha256": "a93e4cdd644946af245ff30299b12862733252fceb020edcc881dd9bdad81ae3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap5-high-contrast.png",
+      "status": "changed",
+      "sha256": "8ad6f825c35de6ef34a40f59adea92b7f8cdb7dc2c7033c2a508c9bb8e9a73da"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap5-host-css.png",
+      "status": "changed",
+      "sha256": "9c1f6048f295baa96a92855a35ae8c8425cad484b26d37b5f3ea09246cc4035c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap5-light.png",
+      "status": "changed",
+      "sha256": "d11ae64e12fdf2312257715f2d6ece5efacf4707d60a34d1e62e1137232eea55"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/bootstrap5-readonly.png",
+      "status": "changed",
+      "sha256": "4540c215a910943f67cd251e2016552e0cb181212f343f2f41a482f25c3b2e7b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/material-dark.png",
+      "status": "unchanged",
+      "sha256": "7871dec300fcc135c7de9ccdad43975150b19edd686f65221b0403db32525583"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/material-high-contrast.png",
+      "status": "unchanged",
+      "sha256": "e454e7bbb1dcedfa53f4eccb90dbc325a189060ba9e18452f136ed15774c24c9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/material-light.png",
+      "status": "unchanged",
+      "sha256": "79a951180a45e82371c05b1292a4143bf452bc4b9995a04adb0b1ceb24b3e756"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/material-readonly.png",
+      "status": "unchanged",
+      "sha256": "1aa94abf5f780d93f9282ca45a45bd9035e94c136b2228da39852464e84efecd"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/tailwind-dark.png",
+      "status": "changed",
+      "sha256": "049e54f6f5510f280b55f0775141f9c00c17e8b11e10a9daf0001e5f7950e8bd"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/tailwind-high-contrast.png",
+      "status": "changed",
+      "sha256": "ec69402f5cd9825305fc133afaa495de2fdab9da5f33a80f0ae7056470561dcb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/tailwind-light.png",
+      "status": "changed",
+      "sha256": "11767c519bfab8da323273b4b4d67bd3e9ca3e2446ec4997847df0eb75790bb4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/darwin-arm64/themes.spec.ts/webkit/tailwind-readonly.png",
+      "status": "changed",
+      "sha256": "1d0ac887c9a4fd2ceb0b3ed15053819e4e913c22442d3bf96acbc041344f1c7d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/chromium/authoring-base.png",
+      "status": "changed",
+      "sha256": "17b8ec492e40e1b0fda00ec8d840f8c081c478055eb7731616e8ed81a1015b30"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/chromium/authoring-bootstrap4.png",
+      "status": "changed",
+      "sha256": "d8848900c27f53f38ab483e5ca1a0eb12fe1018d616782cf5368e1511f119ca3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/chromium/authoring-bootstrap5.png",
+      "status": "changed",
+      "sha256": "56c4cbd32c3e81da853450f2a35b1e46766ba06ddc839cffe05ac8ce1e5c1608"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/chromium/authoring-tailwind.png",
+      "status": "changed",
+      "sha256": "7d39a3895b4bf1d3e8776380ea48ad2917c35e077658c6c0ae9d6ba416f64ee0"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/firefox/authoring-base.png",
+      "status": "changed",
+      "sha256": "dcd8ff1ad7ba37ba9ce1ce0a5b296070de913b6b38f2b7f83feb5f56f819286b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/firefox/authoring-bootstrap4.png",
+      "status": "changed",
+      "sha256": "c06b6fb0c8abf962ff109e10209f3603b771045c03406bda13e33ee58782427f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/firefox/authoring-bootstrap5.png",
+      "status": "changed",
+      "sha256": "6fccaff690e5803f4d816a8d34a07954309e92e18412d7c601d582edb0203d75"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/firefox/authoring-tailwind.png",
+      "status": "changed",
+      "sha256": "2110477fb46c4019e036673b66334438000e37053d1669eb27f2b41ead93818d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/webkit/authoring-base.png",
+      "status": "changed",
+      "sha256": "37f9c2cf99597f2cc58d51bde00fdbf0f33883be4ecaea55d001100151a8b162"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/webkit/authoring-bootstrap4.png",
+      "status": "changed",
+      "sha256": "af7772097614eebbef202634a635c7c1344ce928eae1555721493dfca2739743"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/webkit/authoring-bootstrap5.png",
+      "status": "changed",
+      "sha256": "3ea722771326dfabe96a33aa94cd2650326cd386e9dc30f5eb973438171864b2"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/authoring.spec.ts/webkit/authoring-tailwind.png",
+      "status": "changed",
+      "sha256": "a62846d657ade303d8ddc4705946ea76cf005d883ce4f7b22da6e692f9247e51"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-base.png",
+      "status": "new",
+      "sha256": "521badb2d73ab9bb105ee5551eb6c8b7f78addcdc03646ad49716064a4196ca4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-bootstrap4.png",
+      "status": "new",
+      "sha256": "7e5e7595568d0744e578f2edf02be303c7e562292d1611d267895ce89bff6768"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-bootstrap5.png",
+      "status": "new",
+      "sha256": "fe84acc5a8b40ca5306a3876cae028bf3a85efa780845179361aa8f14d578348"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-material.png",
+      "status": "new",
+      "sha256": "3d0543795b16153478708169288665d585dc9a7c5368ef1978ada767b2c00dc3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-bulk-editor-tailwind.png",
+      "status": "new",
+      "sha256": "dcc6cba536bcd823d5823b15dc985898612b96e42e26615897dd157035b6af3a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-commands-base.png",
+      "status": "new",
+      "sha256": "57a9ceb0a1c1ffd91e33c41f235964f8210ee17fd146bccb0e412f418fa156c1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-commands-bootstrap4.png",
+      "status": "new",
+      "sha256": "b89d7da6ec27c57b71dcee8d07f80248f80110640175c9ea484aa4a7d136bdd4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-commands-bootstrap5.png",
+      "status": "new",
+      "sha256": "58a11079476d10bdc6349086f73ce8efab917c06fe0b3d7b59c16557dd198bda"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-commands-material.png",
+      "status": "new",
+      "sha256": "55409c68e1e3c4d1c9c15c2eae5e8cd88e38b81911c74881b3cc161e6ef7940b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-commands-tailwind.png",
+      "status": "new",
+      "sha256": "270bd671964126156474badd5a8f2dbf64877b7756db921559d0ca9dd7da917a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-inline-caption-bootstrap5.png",
+      "status": "new",
+      "sha256": "112e600bb00df6a59578f39a949aa6d7433618b2f4b7a21100abb54e8e609d1b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-inline-caption-material.png",
+      "status": "new",
+      "sha256": "5f5a5ab16b48bebe2217ccf731deb08c8e0eb1ed3c6c7cb4acd6db71ee6aaebb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-quick-add-bootstrap5.png",
+      "status": "new",
+      "sha256": "6d377dd02a2a90eaa37f049a7bc49ac013f5735d9e59b501e386d5d7e606fbca"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-quick-add-material.png",
+      "status": "new",
+      "sha256": "3c33f9abf54e522ca8a4905a759f1c05abc12d91b6b80f76e4baf9b78521f383"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-selection-base.png",
+      "status": "new",
+      "sha256": "88b59cd9601a577b22cba0198fe3bf8c55e19baac10bbcdf14674c8537d3f4a8"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-selection-bootstrap4.png",
+      "status": "new",
+      "sha256": "50213ee131f353ebb816147dc3a4362b406fcee5da11d5f6da51c2d44c4b7b2a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-selection-bootstrap5.png",
+      "status": "new",
+      "sha256": "2e1ea2fb60b707270efdeb88619950533de6e1bca89ca9df946f5e296978550b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-selection-material.png",
+      "status": "new",
+      "sha256": "35fcd2b159be6f2f6e4445b809ccb41f4f9e62b0b429441b01da20cc65a34721"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-authoring-visual.spec.ts/chromium/plus-selection-tailwind.png",
+      "status": "new",
+      "sha256": "d127b30d6754e3a8c36be1bef33bc45b1a913420e8b24d9e9bd0e3d2598ac5ec"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-base.png",
+      "status": "changed",
+      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap4.png",
+      "status": "changed",
+      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap5.png",
+      "status": "changed",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-material.png",
+      "status": "unchanged",
+      "sha256": "695029d32d95a719e8879c27f5fd17b704731a9e336c91f07bf1ac6adc67c71e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-tailwind.png",
+      "status": "changed",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-base.png",
+      "status": "unchanged",
+      "sha256": "7dba51b113a7b8c69a84292d957952c7711e800df32deb5c759dc59017b993d1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap4.png",
+      "status": "changed",
+      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap5.png",
+      "status": "changed",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-material.png",
+      "status": "unchanged",
+      "sha256": "695029d32d95a719e8879c27f5fd17b704731a9e336c91f07bf1ac6adc67c71e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-tailwind.png",
+      "status": "changed",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-base.png",
+      "status": "unchanged",
+      "sha256": "7dba51b113a7b8c69a84292d957952c7711e800df32deb5c759dc59017b993d1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap4.png",
+      "status": "unchanged",
+      "sha256": "dc95f74fb068b64251ad73f6f48e579c98f44697b1648523dd76628696848d51"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap5.png",
+      "status": "changed",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-material.png",
+      "status": "unchanged",
+      "sha256": "695029d32d95a719e8879c27f5fd17b704731a9e336c91f07bf1ac6adc67c71e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-tailwind.png",
+      "status": "unchanged",
+      "sha256": "b4ae3dc7a559c59ca4be785315e0e18b02220b1a58ec99b405ff737a93f5a783"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-base.png",
+      "status": "unchanged",
+      "sha256": "7dba51b113a7b8c69a84292d957952c7711e800df32deb5c759dc59017b993d1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-bootstrap4.png",
+      "status": "unchanged",
+      "sha256": "dc95f74fb068b64251ad73f6f48e579c98f44697b1648523dd76628696848d51"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-bootstrap5.png",
+      "status": "unchanged",
+      "sha256": "390ce064f9a60b8fa74e4758e46a67f221378af3ef8bfbee81cf5e7d1408f70f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-material.png",
+      "status": "unchanged",
+      "sha256": "695029d32d95a719e8879c27f5fd17b704731a9e336c91f07bf1ac6adc67c71e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-React-tailwind.png",
+      "status": "unchanged",
+      "sha256": "b4ae3dc7a559c59ca4be785315e0e18b02220b1a58ec99b405ff737a93f5a783"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-base.png",
+      "status": "changed",
+      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap4.png",
+      "status": "unchanged",
+      "sha256": "dc95f74fb068b64251ad73f6f48e579c98f44697b1648523dd76628696848d51"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap5.png",
+      "status": "unchanged",
+      "sha256": "390ce064f9a60b8fa74e4758e46a67f221378af3ef8bfbee81cf5e7d1408f70f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-material.png",
+      "status": "unchanged",
+      "sha256": "695029d32d95a719e8879c27f5fd17b704731a9e336c91f07bf1ac6adc67c71e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-tailwind.png",
+      "status": "changed",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-base.png",
+      "status": "changed",
+      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap4.png",
+      "status": "unchanged",
+      "sha256": "dc95f74fb068b64251ad73f6f48e579c98f44697b1648523dd76628696848d51"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap5.png",
+      "status": "changed",
+      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-material.png",
+      "status": "unchanged",
+      "sha256": "695029d32d95a719e8879c27f5fd17b704731a9e336c91f07bf1ac6adc67c71e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-tailwind.png",
+      "status": "changed",
+      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-review-visual.spec.ts/chromium/review-builder-look-menu.png",
+      "status": "changed",
+      "sha256": "a6761119d43c21c87b3f7e6bb83165e7acd859431a7c55aaf628a9c0563db862"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-review-visual.spec.ts/chromium/review-conditional-sentence.png",
+      "status": "changed",
+      "sha256": "0d050a09f423bab81b75f2429ef979bf56dc4b7436dbabd9b2b4d6de1dc3a7e1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-review-visual.spec.ts/chromium/review-material-phone-readonly.png",
+      "status": "unchanged",
+      "sha256": "41b733ed9c1263b1247345cc763aac7711ace149dbd09f0673ae7a157a65be1e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-bootstrap5-first-panel-field.png",
+      "status": "changed",
+      "sha256": "15e9ff6394759cdbffcd569905a68dd78124e8fedb05cb54108befd9d5cf0c34"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-bootstrap5-hover-neighbour.png",
+      "status": "changed",
+      "sha256": "777f5bc676227541a45fdb8dd61982d8c0dde9692cabe3327db4eb717fa4544c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-bootstrap5-selected-column.png",
+      "status": "changed",
+      "sha256": "e9cfa9bb68b296579b7cbd98c6028c5c92d790bab7e726d1993c3b6cfb66970a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-material-first-panel-field.png",
+      "status": "changed",
+      "sha256": "cb1090fcb69e28c008e12c6bdfa9c4d1c04f65c539b2f99e690a27caf4b8249b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-material-hover-neighbour.png",
+      "status": "changed",
+      "sha256": "ce14db3997618bc18855fc3c5c1a800f3d0744a8d23637d4319a0ca97bafc46f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-material-selected-column.png",
+      "status": "changed",
+      "sha256": "8eb0bfbde30e617b2b1040b8105eecb55f4740d8f19244a55f841dd0da8cbec7"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-1-neutral-material-drag.png",
+      "status": "changed",
+      "sha256": "ffb9a8147df0b8b35b0421fe0598afe6247b7b7785f51d65a97f58e98fd87b7f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-2-neutral-edit-dialog.png",
+      "status": "changed",
+      "sha256": "6120af58bb61fe6a2513a1194cdd678a59140db4723e4183a1d92863f86471d7"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-bootstrap4.png",
+      "status": "changed",
+      "sha256": "37399ffe03974e9a44d2ad3f326d1df97d18da3172d2d9a8b1fade56a6f03e14"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-bootstrap5.png",
+      "status": "changed",
+      "sha256": "18c2db468c71eb7410bd8202d6f5e977c5f0aff684124332908f18a3b15882da"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-dark-compact.png",
+      "status": "changed",
+      "sha256": "32b49b122ededbc810cba7c04dd913d480fd5a27723245251af779c95f84eb9b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-material.png",
+      "status": "changed",
+      "sha256": "0763e454c09f9873a84d2626fa27da574f93ccdea248caeda5fe60dddff0cda8"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/builder-visual.spec.ts/chromium/screen-5-theme-comparison.png",
+      "status": "changed",
+      "sha256": "66dfa9b29a2eafb1036d02c63f281c547acf593730bba391d5e96b5158e28d89"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/chromium/nullable-base.png",
+      "status": "changed",
+      "sha256": "bda2748aee38ccd92eccd668e15257f7a82469ae7ea9c30db7154a7027665865"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/chromium/nullable-bootstrap4.png",
+      "status": "changed",
+      "sha256": "fd4480342035d44bc32a5c352c1ce458aeff5fd430a5631465e542657eb62276"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/chromium/nullable-bootstrap5.png",
+      "status": "changed",
+      "sha256": "fd4480342035d44bc32a5c352c1ce458aeff5fd430a5631465e542657eb62276"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/chromium/nullable-tailwind.png",
+      "status": "changed",
+      "sha256": "16e3ccf688c4444598e7d6632522dd70d4442c6a303e511d250d1d0abd10324e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/firefox/nullable-base.png",
+      "status": "changed",
+      "sha256": "be1b8085a655112b17ea3a8a4a32f45a638cb7b48366d3fbd76fc1b81614f92f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/firefox/nullable-bootstrap4.png",
+      "status": "changed",
+      "sha256": "4b370e44956805cc5f8a20929e63e9bbe88e21e274dde1a2a4bcc30c436a22c5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/firefox/nullable-bootstrap5.png",
+      "status": "changed",
+      "sha256": "4b370e44956805cc5f8a20929e63e9bbe88e21e274dde1a2a4bcc30c436a22c5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/firefox/nullable-tailwind.png",
+      "status": "changed",
+      "sha256": "66e08c0b6de464a895a7060a660bd4c48e94ee42d931867764e2cd6fdcd7e445"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/webkit/nullable-base.png",
+      "status": "changed",
+      "sha256": "813b7a5ae078a79484ff195b626d53b510daa298e44db6a306774a0192cd67aa"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/webkit/nullable-bootstrap4.png",
+      "status": "changed",
+      "sha256": "68333fcf9809f869370e49c6556f3fa0975b8b2a09dbf56bf4347385f96a65eb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/webkit/nullable-bootstrap5.png",
+      "status": "changed",
+      "sha256": "68333fcf9809f869370e49c6556f3fa0975b8b2a09dbf56bf4347385f96a65eb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/nullable-boolean.spec.ts/webkit/nullable-tailwind.png",
+      "status": "changed",
+      "sha256": "8f33c9b6539a91f70d2a9fd2a6bb543b6d94d9d60355a1c195b2c527a8219c79"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-base.png",
+      "status": "changed",
+      "sha256": "7c3d708b5b9191710626547c29d7dd37ec0a9444109a039f2ba4d2a8760a0689"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-bootstrap4.png",
+      "status": "changed",
+      "sha256": "6329a7bfd955290929eaf75c2bd069d9921a28c9b328f35cb62384b77694ea9f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-bootstrap5.png",
+      "status": "changed",
+      "sha256": "d8956cfaa1544dce19e93423949155d1dbb500ca1a29db7e878659f275b24abc"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-material.png",
+      "status": "changed",
+      "sha256": "55cda9b0eb41291085602c5d41fa44483a4c576c32fd5f26e72c3413412f140c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-extensions-tailwind.png",
+      "status": "changed",
+      "sha256": "fd70acf0140c122a6adb56e11acbc7c25f15b57367a4a8b24adf86b318a692fb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-native-base.png",
+      "status": "changed",
+      "sha256": "03b41d3b0c59ce599e2926bc3061fe33cf2ad085cb56181b66be06a4aef94420"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-native-bootstrap4.png",
+      "status": "changed",
+      "sha256": "18c688495793d8facbcd09d94da1db9bfd9285d0bd2ab2c2b5c9101594d63eec"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-native-bootstrap5.png",
+      "status": "changed",
+      "sha256": "b4a067c8a3fcd38819cd65e15ffd27908f514ef3e49f5d9048220df79d18c5e5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-native-material.png",
+      "status": "unchanged",
+      "sha256": "4a03878169ec78c8a91ae4c2e444dcdb1cb350ff2056c7354378c577ef4f9dc4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/chromium/sdk-native-tailwind.png",
+      "status": "changed",
+      "sha256": "6640bb0c1557ada43fa7975fc9a70fdf74cd29f9f13be9f3e825d0902ae44e2b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-base.png",
+      "status": "changed",
+      "sha256": "f666814092e0c1d380a875a7bc4851074bd45e4922a471b1410cb66a2fc4d766"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-bootstrap4.png",
+      "status": "changed",
+      "sha256": "03001d6bc17ac0fd0ce8cae8d7a90720477f0fdf86d3fad919fcda9498275038"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-bootstrap5.png",
+      "status": "changed",
+      "sha256": "d700e3c406c10288c4209aac2b8abf66c2aec89df896d93571ddd9a1a7788d21"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-material.png",
+      "status": "changed",
+      "sha256": "09ff02e17559e2d28ddcc57691bc8546120d47586f9a16cd8daf0ee60038a34b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-extensions-tailwind.png",
+      "status": "changed",
+      "sha256": "152f229aecb456cec6c224f0e44738a4d26965af07e65e69915e91eec7bc5e93"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-native-base.png",
+      "status": "changed",
+      "sha256": "f4c06a120e80207793476cb043ea26e03125ecfefb03f9f91aa90c7cf8097737"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-native-bootstrap4.png",
+      "status": "changed",
+      "sha256": "b240085e53d80fe42fa69bb31c83ba829da1b4a5deb34abcf74e9a0221fe0d56"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-native-bootstrap5.png",
+      "status": "changed",
+      "sha256": "a2c3d7f66a007142fc29a02edd0af9b5d7c0af02b6163ad2b4ee58c10038aa51"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-native-material.png",
+      "status": "unchanged",
+      "sha256": "eb4dab2e6301a65a0601dcf5f375f4077377b80eaea86e3e164ae114e715c460"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/firefox/sdk-native-tailwind.png",
+      "status": "changed",
+      "sha256": "d495c01675fc127a46f1d5e5cae0803d874f50f5efb2aa3ddfeba784998e903a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-base.png",
+      "status": "changed",
+      "sha256": "c8f9ae5d08b95b6fcd99b9e35fce4a988e247908e9f60ea6434b9860fd804eb6"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-bootstrap4.png",
+      "status": "changed",
+      "sha256": "d06fd80467175237514ea52f260eea6108c67bfbe270a1839d304d43663220c2"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-bootstrap5.png",
+      "status": "changed",
+      "sha256": "1c41c87b1429dd7a67b5ae2dfaa8c70086b23c2347c3e818ae7bd5e9d7236306"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-material.png",
+      "status": "changed",
+      "sha256": "6efe5357d21ffdd4ef2751812bda3d5874d48e501d9acfcd0df344c45cf350e4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-extensions-tailwind.png",
+      "status": "changed",
+      "sha256": "3ea566ebffad66c1c8f023a7e9d30c33dbbc3f0e4090fa7932056ef8249080c6"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-native-base.png",
+      "status": "changed",
+      "sha256": "61834dc85813dd762722a51c3b50a4ca15bb4335e02fff5c906de04c8c756e24"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-native-bootstrap4.png",
+      "status": "changed",
+      "sha256": "a5746caccc15619f79c5b9f676126e44052190aa84c437e6854562ed4634615d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-native-bootstrap5.png",
+      "status": "changed",
+      "sha256": "eb5d438f4147e9ffd0c73b9def4f57580f406c70a2d65d41645dff5755ff069c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-native-material.png",
+      "status": "unchanged",
+      "sha256": "47cc0d7e3ef43ec88cadc3caf30c5b77a65052029e8c4d806206a94d6e0dfdb1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts/webkit/sdk-native-tailwind.png",
+      "status": "changed",
+      "sha256": "9aebdf35d3423282f9b62b1e53cb2e15169a1f6dea194d2555472e48632772d6"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-base-contact.png",
+      "status": "unchanged",
+      "sha256": "ba5c1002eac6f56f47a5b9ff7575648b646a637c928535c1e3f41110536c3a63"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-base-profile.png",
+      "status": "unchanged",
+      "sha256": "3dbd43d6af246707875d4c0b0e222202ccf2c869e233d339487a927eae50de35"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-bootstrap4-contact.png",
+      "status": "unchanged",
+      "sha256": "f2477f758fbe78ec42e84f30f2a09b17930d07b4414550f436a485a2d457c865"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-bootstrap4-profile.png",
+      "status": "unchanged",
+      "sha256": "eaf7e856adec1c5049f3c4bddd13f98e119800d94411cb41b07a823409758b8d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-bootstrap5-contact.png",
+      "status": "unchanged",
+      "sha256": "3d238b390ac84cdecd0c36e4fd598ab1bf19e85473639a7c51eebf24baa6826b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-bootstrap5-profile.png",
+      "status": "unchanged",
+      "sha256": "9f1397944c1cafae42ff072357a1ee109e06f8616d5eb1d08840892ad7f5d688"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-material-contact.png",
+      "status": "unchanged",
+      "sha256": "69873dc46044b869a8e9108cb8e27434b7e616a623b6c44edcd02228b633d6db"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-material-profile.png",
+      "status": "unchanged",
+      "sha256": "8877e0a9e6820eb5fd982b85eae39f93a9e5c81ec18cd76fde5c3172222d93ac"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-tailwind-contact.png",
+      "status": "unchanged",
+      "sha256": "82cad3a418430b2c88425d4cb1cde58e3c42c48e1a21421f086a9d3cbcf8dd38"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/chromium/tabs-tailwind-profile.png",
+      "status": "unchanged",
+      "sha256": "52fbff3ad09ccac4f510bb57190987fb4ac790d216e81366615c81a637ef0af9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-base-contact.png",
+      "status": "unchanged",
+      "sha256": "edd1122f03d62b02651de656fba1c734d7df1bc702d75e5e31c726be976a514e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-base-profile.png",
+      "status": "unchanged",
+      "sha256": "70c59e112137e5e28727737ae9994df862f8a37c95f4048eee08febccb0842f7"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-bootstrap4-contact.png",
+      "status": "unchanged",
+      "sha256": "d48788572a95fd804931b3508ee5476f2a73bba4c4f98a33abf02cd3a4093156"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-bootstrap4-profile.png",
+      "status": "unchanged",
+      "sha256": "028eb89f8951efb2b676c2367163d62dc88cb13d339a4fc9b480d5b9aaac52b8"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-bootstrap5-contact.png",
+      "status": "unchanged",
+      "sha256": "d6cee0eb57e3fdf740ac9f81dd9810f4af2bad4a9ca64b308ead7731d0c69bf8"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-bootstrap5-profile.png",
+      "status": "unchanged",
+      "sha256": "56cdddc200ffaa594f65e936f92e1c41685beea062c9b5e98e57c11bb7b456a6"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-material-contact.png",
+      "status": "unchanged",
+      "sha256": "17959f98824eba03cdd90bc49d325860d5436d17762f01223e9cb199b755bd89"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-material-profile.png",
+      "status": "unchanged",
+      "sha256": "f982ee9423378726d53a6208dc4b1c9c2e6ff1873c78977cc7a338bfc912c851"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-tailwind-contact.png",
+      "status": "unchanged",
+      "sha256": "e24d59807b333f43d96870e76713675931a12611cc06403dff85c962a2f0cc4f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/firefox/tabs-tailwind-profile.png",
+      "status": "unchanged",
+      "sha256": "3868607a8a2ab45585f0c8cb598ff476ea9b2543f2e1e762a2e7837a22fd17ef"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-base-contact.png",
+      "status": "unchanged",
+      "sha256": "4b74954ba410627a93c19331951434fc9a393a3d5ca84d464ac3af7f0882bfa8"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-base-profile.png",
+      "status": "unchanged",
+      "sha256": "064963bd7991306699b72676d21cb84f9d9da2222a1987be3307a00c05e455ef"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-bootstrap4-contact.png",
+      "status": "unchanged",
+      "sha256": "19b5277988be0ac9c832ca3f03a751a5c41ffe8a18b89481d9e0f3faebb4a636"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-bootstrap4-profile.png",
+      "status": "unchanged",
+      "sha256": "5ae106215545be9cf2b0ce5ab93bd5c86c782c86a692e9645fefb1ff85c61067"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-bootstrap5-contact.png",
+      "status": "unchanged",
+      "sha256": "7f926dfb3d5464a2d9d15e257caaaaaac766c7ec437210d9675b98c39c9cdfb0"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-bootstrap5-profile.png",
+      "status": "unchanged",
+      "sha256": "53a7ead6a012c6df8929b61885d82bcf86d426d53ce463a7e0ff17b407707d14"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-material-contact.png",
+      "status": "unchanged",
+      "sha256": "29bdde0a0ca0d59b73ef3cbb961f2b1a7eb11bddc5d6fc1ca177dbbbfdd7820d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-material-profile.png",
+      "status": "unchanged",
+      "sha256": "397014fd729f498e4cc16c1b3fd2c18db463792c7fdbb227cc8903977903d2fb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-tailwind-contact.png",
+      "status": "unchanged",
+      "sha256": "4fbd298f777338fb4e75260a7c7e67dbb3a04167fc450c71ad996988e8af76f4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/tabs.spec.ts/webkit/tabs-tailwind-profile.png",
+      "status": "unchanged",
+      "sha256": "d9f0f4ccdf133d6a3532a96253ff7293217cf9a7559537e989de46bf6a2dfcfa"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/base-dark.png",
+      "status": "changed",
+      "sha256": "8cc3aa2335baef42929da4f7b6099f09f6e35dc769396c565102f91515bcec49"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/base-high-contrast.png",
+      "status": "changed",
+      "sha256": "69693111b302c3d36df4ba6cf20de5e02952e58c3023e17bc5b9c8ae53c4da67"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/base-light.png",
+      "status": "changed",
+      "sha256": "ee2f058fa794bd27ca4770b44d7d6a6546a239548c7413a770787b6f25020ca4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/base-readonly.png",
+      "status": "changed",
+      "sha256": "043b00bd6f7606b61a0be667c8e4f9c3c4442609dccd67deef7bf4c0578f8f6b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-dark.png",
+      "status": "changed",
+      "sha256": "55d7394f4faee79eaba4867cb8e27487230f68ce4ae67ff984a480874fe6b015"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-high-contrast.png",
+      "status": "changed",
+      "sha256": "c1b291cda0032a1796b8b4d81f7bf58b991c90e1f7e397f3d3b363ff35d0b5a4"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-host-css-dark.png",
+      "status": "changed",
+      "sha256": "e90556e89927daecb7398f79c9b15e1b065c9ec1cb56e0291312090eb46306ac"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-host-css-high-contrast.png",
+      "status": "changed",
+      "sha256": "5a64b28a645eb7223a6bd8f8444c7e39e492da1d500f5e407ad68bbcf46d156c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-host-css-light.png",
+      "status": "changed",
+      "sha256": "29859efea5c61b8348290349c24ee24f5ea714628e34ac2a9bb594b8de637544"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-light.png",
+      "status": "changed",
+      "sha256": "7a6072ea0340a1893b29b5d7130cea07df7b8bcd5e74c62fade88343ee13e02f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap4-readonly.png",
+      "status": "changed",
+      "sha256": "0f5fd6be9859dda6db3b2761c82a276a9f94859906400b2a6ac6fa5170e21c1c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-dark.png",
+      "status": "changed",
+      "sha256": "9c69d4c8c074ffa74a09fefd4f2783f75970398ba8c8ae25975552cc2f2fe351"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-high-contrast.png",
+      "status": "changed",
+      "sha256": "342b79fa2a87fe73116097ea2b479c5cb898653324deb847e39f9db8cb1c7712"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-host-css.png",
+      "status": "changed",
+      "sha256": "399a3a3470a2a8cd3c4f464baf7b5fbd91718fc100af2402695f9363fee9ebdb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-light.png",
+      "status": "changed",
+      "sha256": "e58684cee9a55bef7c56db6872818562b71d4023954de79e679147276a6a1428"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/bootstrap5-readonly.png",
+      "status": "changed",
+      "sha256": "d953f873a21ed4ae4bea55aab5829eadd664b8b0218f11a1a7a4c017763bb580"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/material-dark.png",
+      "status": "unchanged",
+      "sha256": "16d480170e203c4c08df41e06275e1a6c4bc2c3e33af662078317d915c5b6849"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/material-high-contrast.png",
+      "status": "unchanged",
+      "sha256": "37b04240217c0b1ecd4c1a9a2c4a7d290b045efde50004ae30742a1fe66f1d81"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/material-light.png",
+      "status": "unchanged",
+      "sha256": "8953aa04230505fb711b9e982c6aff594b3d085ae30f20446372e1f11bd5442c"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/material-readonly.png",
+      "status": "unchanged",
+      "sha256": "836510333ab868f69e3b48d52e6b632ff7cda8ea181f8a5626b4832d9958969f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/tailwind-dark.png",
+      "status": "changed",
+      "sha256": "6126df386b4bb25daad0ce49878ffd0dd544816b5c718881345afa62662fa9d8"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/tailwind-high-contrast.png",
+      "status": "changed",
+      "sha256": "c503aa23ff23cbb51f3a2cefa04a9acb6bdd136b29a3df95b7f7525076b3dc89"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/tailwind-light.png",
+      "status": "changed",
+      "sha256": "0830cfd9a4652ccc89cdce777734fffa17b8e2d8212823a157752a0e435b6f90"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/chromium/tailwind-readonly.png",
+      "status": "changed",
+      "sha256": "4ac9cf1cd691f1f9e104da2f350c02fd45c67e7e15522028dbe2b25a587cd4d3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/base-dark.png",
+      "status": "changed",
+      "sha256": "ab8d0e089d84e80b4b33972959f7b6f5b46c707b1d5fdaacc69166550d46e2a5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/base-high-contrast.png",
+      "status": "changed",
+      "sha256": "f249117d4f646f2128ceaf7b297ca58e93b0a7e1cf6dd3b5ef01d95d053df9fd"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/base-light.png",
+      "status": "changed",
+      "sha256": "e2c420bba3dd2a2828ea2450c56aa6124c7b04355e05a685f27a282ef9c729c7"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/base-readonly.png",
+      "status": "changed",
+      "sha256": "006ea763489371772e7bee8c0b8630b3d42e107f46c600b13fd5dc7d26b9a8ea"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-dark.png",
+      "status": "changed",
+      "sha256": "9d28c913dd479c80f207d44c4e0700d08a879a29f3b62232705e0d13aecb32fc"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-high-contrast.png",
+      "status": "changed",
+      "sha256": "53ca88a1774099564834f8008fde1cb71f13baee3bbe90e77afe17582c7e51f3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-host-css-dark.png",
+      "status": "changed",
+      "sha256": "769433380868ab68261360b0eabeb0d5f34b1a92e7fbadaf7e073fb207abbab2"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-host-css-high-contrast.png",
+      "status": "changed",
+      "sha256": "eeff39a8e45616167ab3868c6d47e6ff5f62ee11d512ab75f7f45589d70c4a11"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-host-css-light.png",
+      "status": "changed",
+      "sha256": "bbc958b3e02691eff37b141a3ebc9f08cc731afbd1cc6d374a6e21c52918b018"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-light.png",
+      "status": "changed",
+      "sha256": "a108f6d514ab9f5362aaf8fdc111f3e6a6e7517fb5bdfd72e46f922fca89fcd3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap4-readonly.png",
+      "status": "changed",
+      "sha256": "5d8cbac03a1362fd5ea7975b59fa82a364675c95ba1ea53edee4d9d386cd7e87"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-dark.png",
+      "status": "changed",
+      "sha256": "4f051018e940e35084b5d238766081924566c2067d4a6a43f617dca10c582469"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-high-contrast.png",
+      "status": "changed",
+      "sha256": "5131d3ec439b14af28b47824835709f263b3cff0c467cf5c8ceb1c3b856cc7b5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-host-css.png",
+      "status": "changed",
+      "sha256": "67aaf8e34b33ad02de1297a24f50601909c2b1399c6e7c8a0b4ed2cbc5216018"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-light.png",
+      "status": "changed",
+      "sha256": "c2034419ee9c81e5e4c541ae3c5cfd42d2920485ebecb5586ebd05dc93dd7d66"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/bootstrap5-readonly.png",
+      "status": "changed",
+      "sha256": "5dac892be8dbbe40c2269351938b02f06a965e72c696b9b08e38e71272276df0"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/material-dark.png",
+      "status": "unchanged",
+      "sha256": "afde3dcfd9ff0a6dad3e84ac213ffe04aeeb873a147e8610d45d0c9809e3ddea"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/material-high-contrast.png",
+      "status": "unchanged",
+      "sha256": "25c3bba43754839d13e850a5e9bce09353601417516a3aff579f056a52986950"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/material-light.png",
+      "status": "unchanged",
+      "sha256": "314a17ff0fc76cba6a08e8446d40f2b9d527679da6ccdb5e0317b87ee2b983dc"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/material-readonly.png",
+      "status": "unchanged",
+      "sha256": "2b56ea775fec12a267fa171ae28f15a60ab6808761f3438025a15f9f7f9890b8"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/tailwind-dark.png",
+      "status": "changed",
+      "sha256": "3125b7f92b87843dde0e0faa5f3900c324cc11184d32251f1b2f8a48c67ddce9"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/tailwind-high-contrast.png",
+      "status": "changed",
+      "sha256": "fe330b54a57162ae11741e0f294f7d7b3547974b288b7dbd32d8d50c6dc2427a"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/tailwind-light.png",
+      "status": "changed",
+      "sha256": "729e2e66a8a97cd7560705455705e13a8e7b29849533e62b42464e41bb20016e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/firefox/tailwind-readonly.png",
+      "status": "changed",
+      "sha256": "7ac9cb90677d4c82979dcef0ddf28f350de152c1eb1484fdfd18814dadbbdf56"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/base-dark.png",
+      "status": "changed",
+      "sha256": "acb94804b4e75fe0a9428621e9e0edfb423af3f6df851bc513be48743c7fe3fd"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/base-high-contrast.png",
+      "status": "changed",
+      "sha256": "d5b09f75fb40796d6ff4053fc795dcc1f2a581fc20c69a4e04ad1e4f80922ffb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/base-light.png",
+      "status": "changed",
+      "sha256": "63c9af451387c3f570b038b6360acf1423e1bee7937177daa92e93cf810abe3f"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/base-readonly.png",
+      "status": "changed",
+      "sha256": "996c83614ac2269820bceb80de81be3e2b4571db2fd85afdaf72d65226318100"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-dark.png",
+      "status": "changed",
+      "sha256": "536788cd4330009e636f8ba5909bcbbfb083c37c1b2662fb008b2b11cdecb725"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-high-contrast.png",
+      "status": "changed",
+      "sha256": "4bec623d2ee9b4bc8f8d628647df42e8269128cca6486d35e56b99bcfdfcd46e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-host-css-dark.png",
+      "status": "changed",
+      "sha256": "920a2ad93af880bce8b32e30d895a7ecb807d669888d2faa0cd51a15736bd9eb"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-host-css-high-contrast.png",
+      "status": "changed",
+      "sha256": "d183f201a062c2b331996849a33d96e25c6e1592b94406d885ba7384bbc3f4b5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-host-css-light.png",
+      "status": "changed",
+      "sha256": "e7f25a14a70a6feae966ecb53132d92008db9a3b58bf599915e48185f826bac3"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-light.png",
+      "status": "changed",
+      "sha256": "af6c65cc7b59f6169e92227f73823436c9a68ff2457e7110f188d649ff172863"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap4-readonly.png",
+      "status": "changed",
+      "sha256": "959eb2a18395b039f9814001d7eb5be08bd28af12938cf4cff33e3a293dd6f14"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap5-dark.png",
+      "status": "changed",
+      "sha256": "6481ecba59926f089ad03f5694a2bee441ac786f0117fd072ddd7dc5c2cdb312"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap5-high-contrast.png",
+      "status": "changed",
+      "sha256": "85a5d073e7cb6206e06cee3ddf0d29fcf0dba66f55193d94d8f63286cd7350c1"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap5-host-css.png",
+      "status": "changed",
+      "sha256": "32f747079135b62aefa53dca7936dd5bb7d1fea37e10e278b4c53df3cb3951ca"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap5-light.png",
+      "status": "changed",
+      "sha256": "7096f76cfcfe435840c07c76a67c670cbc79e024dc7a082901b939992770754e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/bootstrap5-readonly.png",
+      "status": "changed",
+      "sha256": "035be6640eef5881a81409df5921ec045ff056dddf2e8e58860275c89ea66b46"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/material-dark.png",
+      "status": "unchanged",
+      "sha256": "835e936404e9df091ef72473c207c6857ce80544a5b3247116a797ef230dad17"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/material-high-contrast.png",
+      "status": "unchanged",
+      "sha256": "728f828ba2191a5a7785c114fd4310a3ba61009a2c1858bfd7e7e9ff8e8b947d"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/material-light.png",
+      "status": "unchanged",
+      "sha256": "b43f38bf80353adc34fc50201ca250e3dacd8c077a92684fc75cf2e3ffd8dd94"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/material-readonly.png",
+      "status": "unchanged",
+      "sha256": "3a6466d4c89f2736f97995c13fd23d15861c7291877e91c5cb10fd824b1b884e"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/tailwind-dark.png",
+      "status": "changed",
+      "sha256": "4ec6ff6a69af144994f06a0b9a785e3d599750c5c1859f32c2bd89b72c88d47b"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/tailwind-high-contrast.png",
+      "status": "changed",
+      "sha256": "15e7975b803f0265b6c15ce9278bebdc79deef2eb7b0b08b769b13c0054985a5"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/tailwind-light.png",
+      "status": "changed",
+      "sha256": "4f88c39675b400f87be81096e9f8a7475384a9c81c6bdfeea1ea64f621e41cae"
+    },
+    {
+      "file": "tests/e2e/__screenshots__/linux-x64/themes.spec.ts/webkit/tailwind-readonly.png",
+      "status": "changed",
+      "sha256": "b7b30b5fe1dea3c5ec1da2be68c0f371c1f50c93c1415a757df85482a7f75075"
+    }
+  ]
+}

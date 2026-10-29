@@ -7,6 +7,7 @@ import {
   inject,
   provideZonelessChangeDetection,
   VERSION,
+  signal,
 } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
 import type { ControlValueAccessor } from "@angular/forms";
@@ -20,6 +21,17 @@ import nativeSchema from "../../../fixtures/forms/native/host-feedback.json";
 import onboardingSchema from "../../../fixtures/forms/onboarding/customer.json";
 import onboardingData from "../../../fixtures/forms/onboarding/customer.data.json";
 import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
+const themes = [
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+];
 const query = new URLSearchParams(location.search);
 const schema = query.has("protected")
   ? protectedSchema
@@ -142,6 +154,7 @@ Component({ selector: "employee-object", standalone: true, inputs, template })(
   EmployeeObject,
 );
 class App {
+  registeredThemes = signal(themes);
   schema = schema;
   data: unknown = initialData;
   defaultData = initialData;
@@ -154,6 +167,7 @@ class App {
     window.hostDemo = {
       form,
       frameworkVersion: VERSION.full,
+      setThemes: (next) => this.registeredThemes.set([...next]),
       unmount: () => application.destroy(),
     };
   }
@@ -170,14 +184,14 @@ Component({
   imports: [OurFormComponent],
   providers: [{ provide: HOST_CONTEXT, useValue: "Angular host context" }],
   template:
-    '<our-form [schema]="schema" [data]="controlled ? data : undefined" [defaultData]="defaultData" [readOnly]="readOnly" (dataChange)="data=$event" (ready)="ready($event)" (submitted)="submitted($event)" /><button id="submit" (click)="submit()">Submit</button><pre id="result">{{result}}</pre>',
+    '<our-form [themes]="registeredThemes()" [schema]="schema" [data]="controlled ? data : undefined" [defaultData]="defaultData" [readOnly]="readOnly" (dataChange)="data=$event" (ready)="ready($event)" (submitted)="submitted($event)" /><button id="submit" (click)="submit()">Submit</button><pre id="result">{{result}}</pre>',
 })(App);
 const host = document.createElement("host-app");
 document.querySelector("#app")!.replaceChildren(host);
 const application = await bootstrapApplication(App, {
   providers: [
     provideZonelessChangeDetection(),
-    provideOurForm({ themes: [baseTheme], theme: baseTheme }),
+    provideOurForm({ themes, theme: "base" }),
     provideFormField("employee", EmployeeLookup),
     provideFormField("employeeObject", EmployeeObject, {
       value: employeeValue,

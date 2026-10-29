@@ -50,6 +50,7 @@ export interface RenderOptions extends ThemeOptions {
 }
 export interface FormView {
   setTheme(theme: Theme | string): void;
+  setThemes(themes: ThemeOptions["themes"], theme?: Theme | string): void;
   setMode(mode: ThemeMode): void;
   focus(componentId: string): void;
   submit(): ReturnType<FormSession["submit"]>;
@@ -80,6 +81,7 @@ function mountForm(
     ((key: string, params?: Record<string, unknown>) =>
       session.localize(key, params, defaultMessage));
   let theme = options.theme ?? "base";
+  let themes = options.themes;
   let mode = options.themeMode ?? "light";
   let destroyed = false;
   let submitted = false;
@@ -139,7 +141,11 @@ function mountForm(
     current.rule.cssText = declarations;
     return current.className;
   };
-  const themeOptions = () => ({ ...options, themeMode: mode });
+  const themeOptions = () => ({
+    ...options,
+    themes: themes ?? [],
+    themeMode: mode,
+  });
   const applyTheme = (): void => {
     const resolved = resolveTheme(theme, themeOptions());
     root.setAttribute("data-of-theme", resolved.name);
@@ -471,6 +477,12 @@ function mountForm(
       theme = next;
       refresh();
     },
+    setThemes(next, selected = theme) {
+      resolveTheme(selected, { ...themeOptions(), themes: next ?? [] });
+      themes = next;
+      theme = selected;
+      refresh();
+    },
     setMode(next) {
       mode = next;
       refresh();
@@ -500,6 +512,15 @@ export function renderToString(
   session: FormSession,
   options: RenderOptions,
 ): string {
+  // Report a missing required portable control before resolving appearance.
+  // Opt-in themes must not obscure the established no-view diagnostic.
+  for (const entry of session.form.nodes)
+    if (
+      entry.model.value &&
+      !options.views.get(entry.node.type)?.portable &&
+      !options.views.get(entry.node.type)?.layout
+    )
+      throw new Error(`No portable view: ${entry.node.type}`);
   const instance = options.idPrefix ?? "of-ssr";
   if (!/^[a-zA-Z0-9_-]+$/.test(instance))
     throw new Error(

@@ -129,6 +129,12 @@ const options = {
     query.get("settingsPreload") === "none"
       ? ("none" as const)
       : ("idle" as const),
+  planningPreload:
+    query.get("planningPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const),
+  dataPreload:
+    query.get("dataPreload") === "none" ? ("none" as const) : ("idle" as const),
   ...(query.has("assetBase") ? { assetBase: query.get("assetBase")! } : {}),
   ...(query.has("styleNonce") ? { styleNonce: query.get("styleNonce")! } : {}),
   ...(query.has("approved") ? { data: approvedData } : {}),
@@ -179,6 +185,31 @@ const controller = query.has("factory")
       fields: [...builtinComponents, customerReference],
     })
   : renderBuilder(document.getElementById("builder")!, options);
+// Before JSON is opened, expose the host's last patch at the legacy demo anchor.
+// The lazy JSON view owns that anchor once mounted; keep the host audit separate.
+const hostPatch = document.getElementById("builder-patch")!;
+const patchView = new MutationObserver(() => {
+  if (document.querySelector('[data-builder-part="patch"]')) {
+    hostPatch.id = "host-builder-patch";
+    patchView.disconnect();
+  }
+});
+patchView.observe(document.querySelector('[data-builder-part="json-panel"]')!, {
+  childList: true,
+  subtree: true,
+});
+window.addEventListener("pagehide", () => patchView.disconnect(), {
+  once: true,
+});
+document
+  .getElementById("builder")!
+  .addEventListener("of-schema-change", (event) => {
+    hostPatch.textContent = JSON.stringify(
+      (event as CustomEvent).detail.patch,
+      null,
+      2,
+    );
+  });
 document.getElementById("builder")!.addEventListener("of-save", () => {
   if (!query.has("manual-save"))
     window.setTimeout(() => controller.markSaved(), 500);

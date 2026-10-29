@@ -213,7 +213,8 @@ Header **Theme** selects the form theme. **More → Builder look** chooses Match
 persists it in browser-profile storage. `preferenceKey` (default `ourform.builder.look`) lets hosts
 namespace the preference per authenticated user. An explicit `chrome.theme` takes precedence at
 creation, including pinned/custom themes. Storage denial leaves the active instance usable. The
-More menu also contains Appearance, Insert into and Layout to wrap in for keyboard workflows.
+header More menu also contains Appearance. Insert into and Layout to wrap in are in the selected
+component’s More menu and keyboard workflows.
 
 Selection follows focused outline/canvas components, including End/Up then Duplicate or Wrap.
 Conditional/Disabled when and Calculated value use searchable sentence rows and a synchronized
@@ -232,8 +233,9 @@ focused header button. Body-level undo/redo is enabled only when this is the sol
 multiple instances scope shortcuts to their own roots. F6/Shift+F6 cycle header, palette, selected
 canvas/outline regions and a visible toast action. Alt/Option+Z is not a builder shortcut.
 
-The build uses pinned development-only Terser through tsup. Consumer-build gates are builder-owned
-initial ≤29,000 Brotli bytes and full minimal initial closure ≤64,613 bytes. Generated Settings is a
+The build uses pinned development-only Terser through tsup. Consumer-build gates are builder UI initial (excludes builder-core) ≤31,600, builder-core marginal
+consumer contribution ≤7,300 and full minimal initial closure ≤67,400 Brotli bytes. The standalone
+builder package ceiling is aligned at 31,600. Generated Settings is a
 separate ≤8,000-byte lazy chunk and idle-preloads after first render unless
 `settingsPreload: "none"`. `preload: "idle"` independently preloads Logic and JSON. See ADR-0018 and
 ADR-0020 for entry ownership and aggregate budgets.
@@ -260,3 +262,39 @@ the same meaning. Panel and Fieldset continue to use `node.label` for their head
 Inline editing is available only when the caption is visibly rendered. Enter or blur commits one
 trimmed update, Escape cancels, and an empty caption is refused with a visible reason. A `labelKey`
 opens Settings; editing never changes the data key.
+
+## Command search and multi-selection
+
+Ctrl/Cmd+K opens the command frame immediately; search and its schema index load on first use.
+Search Add component, Jump to component or Actions. The 500-field index is cached until the schema
+changes; results do not block typing. Escape restores focus. Failed loading shows a reason and Retry.
+
+Cmd/Ctrl+click toggles members on the canvas or outline. Shift+click and Shift+Up/Down extend the
+range through visible expanded outline rows. The outline is a multiselect tree, canvas selection
+mirrors it, and changes are announced. Structural actions normalize a selected ancestor/descendant
+to the ancestor; property changes use the exact selection. Undo/redo restore both schema and the
+before/after selection without an extra history entry.
+
+Copy/Cut/Paste, Duplicate, Delete, Move and Wrap act on the whole ordered selection as one undo step.
+Paste rechecks every slot, lock, id and key; a refused member refuses the complete operation.
+Clipboard access is synchronous in its user gesture. Delete and Required remain immediate.
+A cross-scope move is refused atomically. Lock refusals name blockers and offer Deselect locked
+components. Actions supporting one component are disabled with a reason for multiple selection.
+
+Edit selected components opens a lazy, generated bulk editor with only shared visible properties.
+Mixed values are identified without replacing them until edited. Save applies all supported edits as
+one command; Cancel discards the draft. Unsupported members or locks refuse the whole change.
+Bulk-editor/Retry closure is limited to 4,700 bytes; command search to 4,500, quick-add to 3,750.
+
+### Bulk planning and Data loading
+
+Bulk Move/Wrap/Duplicate/Paste preparation and the Data inspector body are separate lazy features.
+`planningPreload: "idle"` and `dataPreload: "idle"` are the defaults; set either to `"none"` to
+load only on activation. Together with `settingsPreload: "none"` and `preload: "none"`, they make
+no idle feature requests. Idle imports never mount panels or mutate schema/history. Bulk Delete,
+Required, selection, Shift+arrows, clipboard access and pointer dragging remain immediate.
+A cold bulk action opens an accessible busy dialog; Escape/close cancels without mutation. Failure
+shows its reason and Retry; a changed schema refuses pending preparation. Data mode shares the
+loading/error/Retry contract. Leaving the mode or destroying the builder cancels late mounting.
+Self-host `features/bulk-plan{,-retry}.js` and `features/data{,-retry}.js` with the other emitted assets
+under `assetBase`; they work with offline local assets and strict CSP without executable form JSON.

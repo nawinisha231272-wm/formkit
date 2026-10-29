@@ -100,6 +100,8 @@ export interface OurFormBuilderElement extends HTMLElement {
   assetBase: BuilderOptions["assetBase"];
   preload: BuilderOptions["preload"];
   settingsPreload: BuilderOptions["settingsPreload"];
+  planningPreload: BuilderOptions["planningPreload"];
+  dataPreload: BuilderOptions["dataPreload"];
   styleNonce: BuilderOptions["styleNonce"];
   themes: NonNullable<BuilderOptions["themes"]>;
   builderThemes: NonNullable<BuilderOptions["builderThemes"]>;
@@ -128,7 +130,12 @@ export function defineOurFormBuilderElement(
     #chrome: BuilderOptions["chrome"];
     #loading: Pick<
       BuilderOptions,
-      "assetBase" | "preload" | "settingsPreload" | "styleNonce"
+      | "assetBase"
+      | "preload"
+      | "settingsPreload"
+      | "planningPreload"
+      | "dataPreload"
+      | "styleNonce"
     > = {};
     #engine: BuilderOptions["engine"];
     #fields: NonNullable<BuilderOptions["fields"]> = [];
@@ -200,6 +207,18 @@ export function defineOurFormBuilderElement(
     set settingsPreload(value: BuilderOptions["settingsPreload"]) {
       this.setLoading("settingsPreload", value);
     }
+    get planningPreload() {
+      return this.#loading.planningPreload;
+    }
+    set planningPreload(value: BuilderOptions["planningPreload"]) {
+      this.setLoading("planningPreload", value);
+    }
+    get dataPreload() {
+      return this.#loading.dataPreload;
+    }
+    set dataPreload(value: BuilderOptions["dataPreload"]) {
+      this.setLoading("dataPreload", value);
+    }
     get styleNonce() {
       return this.#loading.styleNonce;
     }
@@ -209,7 +228,12 @@ export function defineOurFormBuilderElement(
     private setLoading<
       K extends keyof Pick<
         BuilderOptions,
-        "assetBase" | "preload" | "settingsPreload" | "styleNonce"
+        | "assetBase"
+        | "preload"
+        | "settingsPreload"
+        | "planningPreload"
+        | "dataPreload"
+        | "styleNonce"
       >,
     >(key: K, value: BuilderOptions[K]) {
       if (this.#loading[key] === value) return;
@@ -350,6 +374,7 @@ export interface OurFormElement extends HTMLElement {
   schema: unknown;
   data: unknown;
   theme: HostOptions["theme"];
+  themes: HostOptions["themes"];
   engine: HostOptions["engine"];
   readOnly: boolean;
   fields: NonNullable<HostOptions["fields"]>;
@@ -389,6 +414,9 @@ export function defineOurFormElement(
       this.dispatchEvent(
         new CustomEvent("of-error", {
           detail: {
+            ...(error instanceof Error && "code" in error
+              ? { code: error.code }
+              : {}),
             message:
               error instanceof Error ? error.message : "Invalid form attribute",
           },
@@ -401,6 +429,7 @@ export function defineOurFormElement(
     #schema: unknown;
     #data: unknown = {};
     #theme: HostOptions["theme"] = "base";
+    #themes: HostOptions["themes"];
     #engine: HostOptions["engine"];
     #readOnly = false;
     #fields: NonNullable<HostOptions["fields"]> = [];
@@ -442,6 +471,13 @@ export function defineOurFormElement(
       } finally {
         this.#reflecting = false;
       }
+    }
+    get themes() {
+      return this.#themes;
+    }
+    set themes(value: HostOptions["themes"]) {
+      this.#controller?.view.setThemes(value);
+      this.#themes = value;
     }
     get engine() {
       return this.#engine;
@@ -510,6 +546,7 @@ export function defineOurFormElement(
         schema: this.#schema,
         data: this.#data,
         fields: this.#fields,
+        ...(this.#themes ? { themes: this.#themes } : {}),
         readOnly: this.#readOnly,
         ...(this.#engine ? { engine: this.#engine } : {}),
         ...(this.#theme ? { theme: this.#theme } : {}),

@@ -1,3 +1,4 @@
+import { baseTheme } from "@ourform/themes/base";
 import { bootstrap4Theme } from "@ourform/theme-bootstrap4";
 import { defaultMessage } from "@ourform/sdk";
 import feedback from "../../fixtures/forms/feedback.json";
@@ -30,7 +31,13 @@ import { tailwindTheme } from "@ourform/theme-tailwind";
 import { materialTheme } from "@ourform/theme-material";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
-const themes = [bootstrap4Theme, bootstrap5Theme, tailwindTheme, materialTheme];
+const themes = [
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+];
 function renderForm(root, session, views, theme = "base") {
   return mount(root, session, {
     engine,

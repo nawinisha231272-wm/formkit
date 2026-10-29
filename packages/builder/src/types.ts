@@ -79,6 +79,7 @@ export interface BuilderController {
   destroy(): void;
 }
 export interface UI {
+  editor?: EditorOptions;
   document: Document;
   signal: AbortSignal;
   engine: Engine;
