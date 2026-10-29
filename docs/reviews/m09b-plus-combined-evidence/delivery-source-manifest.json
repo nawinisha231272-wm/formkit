@@ -1,6 +1,6 @@
 {
-  "method": "Pinned verify on this exact source fingerprint; only delivery documentation/evidence changes afterward. Screenshots are separately fingerprinted.",
-  "preCommitHead": "294980de33de1a4992c8aba7029cb89ca0edb6dd",
+  "method": "Full pinned verify on these exact runtime/test inputs; delivery-only documentation follows. Runtime packages/apps/scripts and every baseline are byte-identical to 80b4dfa. Its complete 240-case Linux comparison remains preserved; the two corrected captures additionally compare in all three Linux browsers.",
+  "preCommitHead": "80b4dfa6a880bc8fbd3b7c598469a45336300c4e",
   "verifyExit": 0,
   "source": {
     ".changeset/approved-builder-ux.md": "e3ba81f26c930b0b781d43172df17a0e75e8a03d40708b5ba0b72602cda4c63a",
@@ -164,7 +164,7 @@
     "docs/milestones/M08.md": "80113b8344c8719a6ab904b3bd2f8d4c6ffe50eda226602208cdf89cb4cab606",
     "docs/milestones/M09.md": "248506131c669f18d53f0a3332a45bd4e8b94e48cbcee32667400272ac90b454",
     "docs/milestones/M09a.md": "81cd61da3dc874d78ca3d3989e5d090a788c8b8b02d6d9972d119b1f60064747",
-    "docs/milestones/M09b-plus.md": "88eb48c825fe8fa8764b509834e004a220f1e4966898d3dc7abfe231e4e4b36a",
+    "docs/milestones/M09b-plus.md": "1ce7e69ea0f31a84d6b998eb6c279dfefc009115081bbeba18b67034ee9f97bf",
     "docs/milestones/M09b.md": "0b9537b24e99ad1588d61f1bca68a1193ab0fefc89bd5eac60fcc3145f9042ae",
     "docs/milestones/M09c.md": "7e5eeb40ef2483dfba368ad31212026982b07cd2272c65f5108d133d4a010581",
     "docs/milestones/M09d.md": "8d34eb2ed6db032dbddba87524245b9abe047aa5c78b390678bcc83f95865517",
@@ -179,7 +179,7 @@
     "docs/performance/m09b-builder-drag.md": "90fa474cf96e6cb6be8eb751a67c8dfd4def1f1f78e6598fa1ee41e9e741f43e",
     "docs/performance/work-counts.json": "af1157f62fe5276735a9524ab3a07547131fef2d7b7df66d6eaf8042f16f3528",
     "docs/phase0-report.md": "adfdafcd14ad1e7aed47a8d04a2e06b24e9b59efa5cca1cb9fc81530e93977e3",
-    "docs/progress.md": "55c3115c1cff8ed0439ca5d5c1bea475fdd5def78ccfd16e643dcf6f68a2bdd0",
+    "docs/progress.md": "a214f73441c8216753483f715cf6befe3f335530b4ded005db568d80f3edfa76",
     "docs/rehearsals/author-rehearsal-corrections.md": "df12c9220c9733895f48199f243040836d446b456d1df9af02dd4a8a35f9ddf6",
     "docs/rehearsals/color/README.md": "b28e22d7c068a2a7a3c648750bb51fa9325d44e955f69dd3606ca6be7250eeba",
     "docs/rehearsals/color/component.spec.ts.txt": "5c38f5d226a524e2585f283c1eb88b4ee5bd7e6e40fdb0426474aa578a9e10cb",
@@ -622,7 +622,7 @@
     "tests/e2e/builder-plus-step0.spec.ts": "ebbbd182700432aab6b0e827d85327dae0b3cc5b4df2ee54bcc6bc17eda71361",
     "tests/e2e/builder-pointer.spec.ts": "2d95753740c955bb538be79251e0f801fd52329b756d1eda8fb8b13135f9eea0",
     "tests/e2e/builder-quick-add-geometry.spec.ts": "3ec0e05a472082e857379731d97fdfaf7fa3bb5c0677fceddbede33c90b9f2a4",
-    "tests/e2e/builder-review-visual.spec.ts": "b1747f0e7b1658df58b88b0708d689908a6a26577a6f35f143d28a9f3488307c",
+    "tests/e2e/builder-review-visual.spec.ts": "21a0f53de557c7004d2580d354ac8fadcf0da5c93ef2a64d985fb14635a1681e",
     "tests/e2e/builder-review.spec.ts": "14866f3dcde9bc683bf0490beaeffacf52eda8049cf1782e58edbb7c324363e1",
     "tests/e2e/builder-round3.spec.ts": "1d99707168f8cae66bf879f86aca0af32488a27ca63300e34c9a644643e44e0e",
     "tests/e2e/builder-round4.spec.ts": "8f575ea809109f978d6e1ded9ccb479d46d17385acc360f90da8599c4db269eb",
@@ -631,7 +631,7 @@
     "tests/e2e/builder-task.spec.ts": "d8a9fc69c11158f6bd675b1a6f431e258b9c39b19b4ec3157dbee281c3e85d54",
     "tests/e2e/builder-theme-loading.spec.ts": "d1cea9348d4d8d79e21a31c0e951112b9e9649152178062b9c52d521cda6b65c",
     "tests/e2e/builder-toast.spec.ts": "393320c4779df7f02dd3fd6d3695fa07fc4a82dc0a9c82c21e1d5e6444f2dda7",
-    "tests/e2e/builder-visual.spec.ts": "db3a7d5c3ff17a808f634d7adc3e4c7fe52ca9236e5a1c38110818f0dbdd65ec",
+    "tests/e2e/builder-visual.spec.ts": "2e78bf94c435f197be070a436e3d129ad65623911acd95c71ee4309d99c35bea",
     "tests/e2e/builder-workbench.spec.ts": "dc6cc1e0bd36f897724c5db36289c0d74fe3dc99d764fcc4bdd47eef543398c3",
     "tests/e2e/builder.spec.ts": "5f0242ba78e22a2ceb18dc102466f3792c5313c4be53de739d7a9bb5a3b857ea",
     "tests/e2e/form-theme-registry.spec.ts": "feb66ec467dc4678b947ece989227ee33a03b7fa2f6991f24b089dca66ddb904",
@@ -659,5 +659,7 @@
     "turbo.json": "2a9cdf5524409247b865b45f3a24558b12965b570e18291bef098127ddab1962",
     "vitest.config.ts": "cde2a34480be9b111f4c18c96a34a21ddc4ef1d3b84620d190c5ac3b171fa28a"
   },
-  "verifyLogSha256": "fd15266d4e125c5667fd0b09f6b31a818d4663af1c424d529933c9b47eeaaf60"
+  "verifyLogSha256": "b941bf2df0fd27c1b374082cbcd2ff7638318a605439869f4340b2843698ebd7",
+  "linuxCaptureComparisons": 6,
+  "baselineChangesSince80b4dfa": 0
 }

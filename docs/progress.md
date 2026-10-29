@@ -2630,3 +2630,18 @@ all 24 unchanged keyboard-task/paste/wrapper and new quick-add focus/cancellatio
 (`final-keyboard-regressions.log.gz`). Current consumer UI/core/full **31,359 / 7,287 / 67,341**,
 under the fixed **31,600 / 7,300 / 67,400** ceilings. Full pinned verification and screenshot
 comparison are still pending on this final source; no commit/push or CI approval is claimed.
+
+M09b+ final-head CI 80b4dfa: first-attempt PR/push Verify failed only the new wall-clock capture
+waits for Loading Settings (3/2 failures; 1,482/1,483 browser passes; all 339 units pass). Advisory
+timings passed. Both CI logs are preserved in the delivery evidence. The two capture setups now
+install/advance Playwright time before their unchanged assertions; exact toast-expiry regressions
+already passed in every CI browser. Full pinned verification is pending again before any push;
+no workflow rerun, no runtime/timing/threshold/baseline change, no merge.
+
+M09b+ capture-clock correction: new full pinned verify **PASS**, 339 unit/1,485 browser checks,
+36 size gates, five runtime counts and exact 500-field authoring counts. Pinned Linux compares
+all six corrected capture/browser cases against unchanged images. All 442 baseline hashes and
+runtime packages/apps/scripts match 80b4dfa; byte delta **0/0/0** (UI/core/full: 31,379/7,209/67,317).
+Latest isolated index 15.300 ms/500 visits/cached; bulk counts 500/1/1 each.
+The failed 80b4dfa first attempts remain recorded; the correction's new first CI attempt must
+pass before delivery. Do not rerun failed workflows or merge; owner review remains pending.

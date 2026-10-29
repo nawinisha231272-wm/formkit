@@ -61,6 +61,7 @@ test("approved screen 2: generated modal and actual Bootstrap 5 error-state prev
   page,
 }, info) => {
   await page.setViewportSize({ width: 1440, height: 960 });
+  await page.clock.install();
   await page.goto("/builder.html?approved&chrome=neutral&theme=bootstrap5");
   await page.getByRole("tab", { name: "Build", exact: true }).click();
   await page
@@ -82,6 +83,7 @@ test("approved screen 2: generated modal and actual Bootstrap 5 error-state prev
     ),
   ).toHaveCount(1);
   await page.evaluate(() => document.fonts.ready);
+  await page.clock.fastForward(5001);
   await expect(page.locator(".of-builder-toast")).toBeHidden();
   if (info.project.name === "chromium")
     await expect(page).toHaveScreenshot("screen-2-neutral-edit-dialog.png", {

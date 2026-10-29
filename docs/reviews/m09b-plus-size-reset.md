@@ -1,7 +1,7 @@
 # M09b+ — approved size reset and delivery evidence
 
 Date: 2026-10-28. Branch: `m09b-plus-authoring`. PR: [#16](https://github.com/nawinisha231272-wm/formkit/pull/16).
-Status: full pinned local verification PASS (exit 0); owner review pending. Remote first-attempt CI is checked after push in PR #16. No merge authorized here.
+Status: capture-clock correction passes full pinned local verification and all six pinned-Linux comparisons. First-attempt CI on the new head is checked after push; 80b4dfa failed and is retained below. Owner review pending; no merge authorized.
 
 ## Decision and accounting
 
@@ -278,3 +278,43 @@ Screenshots: **295 changed / 38 new / 109 byte-identical**.
 [Owner review page](m09b-plus-owner-review.html) and [image fingerprints](m09b-plus-screenshots.json).
 Owner approval remains pending. Final first-attempt CI links/conclusions are recorded in PR #16 after
 push; prior failed heads are retained above, never re-run to obtain green. M09c/M09d are not started.
+
+## First final-head CI outcome — 80b4dfa, attempt 1
+
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/40955321646) fails
+three browser cases (1,482 pass); [push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/40955316354)
+fails two (1,483 pass). Both pass all 339 units. [Advisory timings](https://github.com/nawinisha231272-wm/formkit/actions/runs/40955321637)
+succeeds on attempt 1. No workflow is rerun. Logs are retained in `ci-80b4dfa-*-attempt1-failed.log.gz`.
+
+Both failing test names are `owner review: sentence-first Conditional settings with synchronized
+expression disclosure` and `approved screen 2: generated modal and actual Bootstrap 5 error-state
+preview`. Their new real-time capture waits race a five-second toast against a five-second assertion
+deadline. The deterministic expiry and action pause regressions pass in all three browsers in both
+CI runs. This is a capture setup error introduced here, not evidence to relax the toast contract.
+
+Install Playwright's clock before navigation in these two captures, advance it 5,001 ms immediately
+before the existing toast-hidden assertion, and keep every expression, invalid-state, screenshot and
+axe assertion unchanged. Runtime expiry remains 5,000 ms (8,000 for an actionable toast); no product
+source, assertion deadline, baseline image or pixel threshold changes. New full pinned verification
+is required before the correction is pushed; no passing CI is claimed for 80b4dfa.
+
+The clock-controlled captures pass all **6/6** native browser cases against the existing images
+(`capture-clock-six-native.log.gz`). Assertions and baseline hashes are unchanged.
+
+## Capture-clock correction: final local proof
+
+Full pinned `pnpm verify` **PASS (exit 0)** again: **339 units / 1,485 browser checks / 17 package +
+19 consumer/lazy size gates / 5 runtime counts**. The exact 500-field authoring test also passes.
+The two corrected captures compare **6/6** in the pinned official Linux image, without updating
+any image. Every one of the **442 baseline hashes** is unchanged since 80b4dfa; its complete
+48-recording/240-comparison proof is retained separately. No assertion, deadline, pixel threshold
+or runtime source changes. The four added test setup lines install/advance time only.
+
+All three measured byte deltas are **0 / 0 / 0**: UI **31,379/31,600**, core **7,209/7,300**,
+full **67,317/67,400**. Existing lazy/aggregate ceilings pass; no ceiling changes. Latest isolated
+500-field index: **15.300 ms**, 500 visits, cached reopen. Bulk counts remain
+500 child commands / one publication / one history entry for each of Delete/Move/Required.
+
+Evidence: updated `final-pinned-verify.log.gz`, `capture-clock-six-linux.log.gz`, source manifest
+and count/index JSON in `m09b-plus-combined-evidence/`. Remote CI on the correction is required
+after push; no rerun of either failed 80b4dfa workflow is permitted. No merge.
