@@ -138,3 +138,29 @@ See the separate display-sleep diagnosis for the no-application reproduction and
 
 Current-head remote first-attempt results will be recorded in PR #16. Local PASS does not imply CI PASS.
 Owner image/delivery approval remains pending. **Do not merge or start M09c/M09d.**
+
+## Final pinned follow-up proof — 2026-11-07
+
+The owner authorized narrowly scoped compaction of the redundant-CSP-write fix while retaining every
+ceiling. Binding the existing declaration once within the same helper brings UI/core/full to
+**31,733 / 7,168 / 67,657**, within **31,800 / 7,300 / 67,700**. The initial rejected guarded
+candidate (31,760 / 7,266 / 67,714) remains recorded; this compaction reduces its full closure by 57.
+No source moved between packages or lazy boundaries. No additional API, form JSON, runtime dependency,
+threshold or deadline change. Standalone builder stays capped at 31,600; lazy ceilings are unchanged.
+
+Full pinned verification **PASS, exit 0**: **341 unit / 1,596 browser / 36 size gates / five runtime
+count fixtures**. Non-document source and all 472 baseline PNG hashes match before/after verification.
+All 117 focused native checks pass, including the original twelve-field mouse/keyboard tasks in all
+three browsers; native WebKit took **9.9 s / 13.4 s** in that focused run. Fresh pinned Linux source
+build measurements match native; 142 runtime source files match. Linux six regression/CSP checks
+across three browsers and 41 Chromium visual comparisons pass, with no baseline update.
+
+500-field browser indexing: **13.800 ms**, exactly 500 visits, cached reopen. Bulk Delete/Move/Required:
+**500 child commands, one publication and one history entry each**. Timings are advisory; the field-drag
+report retains its 72.941 ms maximum task rather than hiding it.
+
+Canonical final numeric source: `docs/reviews/m09b-plus-linux-task-evidence/final-consumer-size.json`;
+consumer host reports and full logs are alongside it. The older November 6 files and numbers are
+historical evidence for pushed head 3bdf034. Its two first-attempt Verify failures remain recorded.
+New-head first-attempt CI must pass after push; local PASS does not imply CI PASS. PR #16 stays open
+for owner delivery/image review. **Do not merge or start M09c/M09d.**

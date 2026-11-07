@@ -1,0 +1,19 @@
+{
+  "tests/e2e/builder-bulk-actions.spec.ts": {
+    "original": 55,
+    "current": 57,
+    "originalAssertionsPreserved": true,
+    "missing": [],
+    "added": [
+      "expect.poll(() => schema(page)).not.toBe(before)",
+      "expect.poll(() => schema(page)).not.toBe(before)"
+    ]
+  },
+  "tests/e2e/builder.spec.ts": {
+    "original": 38,
+    "current": 38,
+    "originalAssertionsPreserved": true,
+    "missing": [],
+    "added": []
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "main": "0b3b452c46096e852248ca11872f9697888c621e",
+  "branch": "3bdf03416c9a402c6406b6ce8d6d1064e43c2bec",
+  "taskHash": "d8a9fc69c11158f6bd675b1a6f431e258b9c39b19b4ec3157dbee281c3e85d54",
+  "taskByteIdentical": true,
+  "image": "mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a",
+  "host": "darwin-arm64; linux-x64 emulation",
+  "deadline": 30000,
+  "retries": 0,
+  "diagnosticConfig": "Only playground dev server; all task assertions and input steps unchanged; list + step-duration reporter"
+}

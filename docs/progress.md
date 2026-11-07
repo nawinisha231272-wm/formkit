@@ -6,7 +6,11 @@ deviations from spec, open questions.
 
 ## Current state
 
-- **M09b+ local proof PASS (2026-11-06); CI and owner review pending.** 341 unit / 1,593 browser checks, all 36 size gates and five runtime count fixtures. UI/core/full **31,784 / 7,190 / 67,651** within fixed **31,800 / 7,300 / 67,700**. See [current proof](reviews/m09b-plus-owner-fixes.md), [display diagnosis](reviews/m09b-plus-webkit-diagnosis.md), and [phase measurements](reviews/m09b-plus-scaffold-phases.md). PR #16 stays unmerged; M09c/M09d not started.
+- **M09b+ final local proof PASS (2026-11-07); new-head first-attempt CI and owner review pending.** Full pinned verify: **341 unit / 1,596 browser / 36 size gates / five runtime count fixtures**, exit 0. Consumer UI/core/full **31,733 / 7,168 / 67,657**, within fixed **31,800 / 7,300 / 67,700**; native and fresh pinned Linux measurements match. The stylesheet fix skips redundant writes and preserves changed dimensions; owner-authorized compaction stayed inside the same helper. Linux: six regression/CSP checks and 41 unchanged visual comparisons PASS. [Final evidence](reviews/m09b-plus-linux-task-evidence/final-verification.json), [diagnosis](reviews/m09b-plus-linux-task-diagnosis.md). Old failed CI attempts retained; no reruns or merge.
+
+- **Historical initial Linux fix budget STOP (2026-11-07), now resolved by owner-authorized compaction.** Both first-attempt Verify runs at `3bdf034` failed only the two unchanged 30-second WebKit author tasks; no reruns. Owner-authorized profiling identifies redundant CSP stylesheet writes; the candidate regression passes in all three Linux browsers, but consumer UI/core/full **31,760 / 7,266 / 67,714** exceeds the fixed full ceiling by **14 bytes**. No commit/push or candidate full-verify claim. See [Linux diagnosis and exact evidence](reviews/m09b-plus-linux-task-diagnosis.md). M09b+ remains open; do not merge.
+
+- **Historical pushed-head local proof PASS (2026-11-06).** 341 unit / 1,593 browser checks, all 36 size gates and five runtime count fixtures. UI/core/full **31,784 / 7,190 / 67,651** within fixed **31,800 / 7,300 / 67,700**. See [current proof](reviews/m09b-plus-owner-fixes.md), [display diagnosis](reviews/m09b-plus-webkit-diagnosis.md), and [phase measurements](reviews/m09b-plus-scaffold-phases.md). PR #16 stays unmerged; M09c/M09d not started.
 
 - Starting point: `ourform-phase0` starter kit (5 packages, relative imports, 3 Node tests passing
   with TypeScript 5.8). See the "Starter kit review" in the build specification for the nine known issues.
@@ -23,6 +27,8 @@ deviations from spec, open questions.
   [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 delivery PR #5 is merged; the gate closure is recorded below under the revised owner decision.
 
 ## Open questions
+
+**Resolved Linux fix budget STOP (owner, 2026-11-07):** narrowly scoped compaction is authorized, keeping every ceiling unchanged. The helper-only compaction measures **31,733 / 7,168 / 67,657**, all gates passing. Retained initial rejected candidate: Candidate UI/core/full: **31,760 / 7,266 / 67,714**, ceilings **31,800 / 7,300 / 67,700**. The full closure is 14 bytes over. No ceiling increase requested, no byte-hunting beyond the measured candidate, no changed tests/deadlines, no CI reruns. See the [Linux diagnosis](reviews/m09b-plus-linux-task-diagnosis.md).
 
 Resolved scaffold-granularity decision (owner, 2026-10-30): separate proofs are approved,
 with every export/asset/install/offline/browser assertion retained. First measure pack, install,

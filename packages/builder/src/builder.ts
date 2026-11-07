@@ -84,8 +84,13 @@ export function createBuilderController(
     }
     // Renderer/class refreshes may remove the marker without replacing the element.
     target.classList.add(cached.name);
-    for (let index = 0; index < declarations.length; )
-      cached.rule.setProperty(declarations[index++]!, declarations[index++]!);
+    const rule = cached.rule;
+    for (let index = 0; index < declarations.length; ) {
+      const property = declarations[index++]!,
+        value = declarations[index++]!;
+      if (rule.getPropertyValue(property) !== value)
+        rule.setProperty(property, value);
+    }
   };
   const status = element(document, "div", "", "of-builder-status of-sr-only");
   status.id = `${prefix}diagnostics`;

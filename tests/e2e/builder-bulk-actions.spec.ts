@@ -234,6 +234,8 @@ test("bulk keyboard Move moves the whole block one sibling and preserves its sel
   await page.keyboard.press("Shift+ArrowDown");
   const before = await schema(page);
   await page.keyboard.press("Alt+ArrowDown");
+  // Move preparation is lazy: wait for its publication before inspecting the result.
+  await expect.poll(() => schema(page)).not.toBe(before);
   expect(
     await page.evaluate(() =>
       window.miniBuilder.builder
@@ -248,6 +250,7 @@ test("bulk keyboard Move moves the whole block one sibling and preserves its sel
   await row(page, "b").focus();
   await page.keyboard.press("Shift+ArrowDown");
   await page.keyboard.press("Alt+ArrowUp");
+  await expect.poll(() => schema(page)).not.toBe(before);
   expect(
     await page.evaluate(() =>
       window.miniBuilder.builder

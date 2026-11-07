@@ -1,0 +1,2558 @@
+{
+  "main-profile": [
+    {
+      "input": "mouse",
+      "label": "Customer onboarding",
+      "ms": 3370,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 1133,
+            "ms": 15,
+            "unchanged": 73
+          },
+          "getBoundingClientRect": {
+            "calls": 35,
+            "ms": 52,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 95,
+            "ms": 3,
+            "unchanged": 62
+          }
+        },
+        "nodes": 337,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact",
+      "ms": 1137,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 1973,
+            "ms": 16,
+            "unchanged": 131
+          },
+          "getBoundingClientRect": {
+            "calls": 105,
+            "ms": 66.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 197,
+            "ms": 3,
+            "unchanged": 129
+          }
+        },
+        "nodes": 401,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact details",
+      "ms": 1331,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 3139,
+            "ms": 18,
+            "unchanged": 189
+          },
+          "getBoundingClientRect": {
+            "calls": 171,
+            "ms": 82.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 299,
+            "ms": 3,
+            "unchanged": 191
+          }
+        },
+        "nodes": 479,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Full name",
+      "ms": 1761,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4691,
+            "ms": 23.00000000000182,
+            "unchanged": 267
+          },
+          "getBoundingClientRect": {
+            "calls": 226,
+            "ms": 119.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 387,
+            "ms": 3,
+            "unchanged": 246
+          }
+        },
+        "nodes": 563,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Email",
+      "ms": 1873,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 6589,
+            "ms": 28.000000000005457,
+            "unchanged": 345
+          },
+          "getBoundingClientRect": {
+            "calls": 322,
+            "ms": 155.0000000000009,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 497,
+            "ms": 10.999999999998181,
+            "unchanged": 314
+          }
+        },
+        "nodes": 643,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Phone",
+      "ms": 1899,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 8827,
+            "ms": 33.00000000000546,
+            "unchanged": 423
+          },
+          "getBoundingClientRect": {
+            "calls": 409,
+            "ms": 180.0000000000009,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 593,
+            "ms": 10.999999999998181,
+            "unchanged": 370
+          }
+        },
+        "nodes": 723,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Customer type",
+      "ms": 1452,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 11406,
+            "ms": 36.000000000007276,
+            "unchanged": 501
+          },
+          "getBoundingClientRect": {
+            "calls": 487,
+            "ms": 196.9999999999991,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 685,
+            "ms": 10.999999999998181,
+            "unchanged": 420
+          }
+        },
+        "nodes": 803,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Company name",
+      "ms": 3342,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 15430,
+            "ms": 49.000000000009095,
+            "unchanged": 761
+          },
+          "getBoundingClientRect": {
+            "calls": 606,
+            "ms": 225.9999999999991,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 793,
+            "ms": 12.999999999998181,
+            "unchanged": 486
+          }
+        },
+        "nodes": 887,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Tax ID",
+      "ms": 1685,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 18694,
+            "ms": 56.00000000001273,
+            "unchanged": 839
+          },
+          "getBoundingClientRect": {
+            "calls": 686,
+            "ms": 247.9999999999991,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 885,
+            "ms": 13.999999999994543,
+            "unchanged": 536
+          }
+        },
+        "nodes": 967,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Customer reference",
+      "ms": 1861,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 22324,
+            "ms": 58.00000000001273,
+            "unchanged": 922
+          },
+          "getBoundingClientRect": {
+            "calls": 767,
+            "ms": 271.9999999999918,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 995,
+            "ms": 15.999999999990905,
+            "unchanged": 600
+          }
+        },
+        "nodes": 1051,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Experience",
+      "ms": 1940,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 26355,
+            "ms": 62.00000000001637,
+            "unchanged": 1002
+          },
+          "getBoundingClientRect": {
+            "calls": 843,
+            "ms": 305.9999999999918,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1105,
+            "ms": 15.999999999990905,
+            "unchanged": 663
+          }
+        },
+        "nodes": 1141,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Industry",
+      "ms": 2026,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 30740,
+            "ms": 72.00000000002001,
+            "unchanged": 1082
+          },
+          "getBoundingClientRect": {
+            "calls": 928,
+            "ms": 357.00000000000273,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1221,
+            "ms": 18.999999999990905,
+            "unchanged": 735
+          }
+        },
+        "nodes": 1227,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Terms",
+      "ms": 1663,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 35457,
+            "ms": 85.0000000000382,
+            "unchanged": 1154
+          },
+          "getBoundingClientRect": {
+            "calls": 1017,
+            "ms": 413.00000000000273,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1333,
+            "ms": 18.999999999990905,
+            "unchanged": 798
+          }
+        },
+        "nodes": 1307,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer onboarding",
+      "ms": 3278,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 2789,
+            "ms": 35.00000000000034,
+            "unchanged": 793
+          },
+          "getBoundingClientRect": {
+            "calls": 21,
+            "ms": 208,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 8,
+            "ms": 1,
+            "unchanged": 6
+          }
+        },
+        "nodes": 337,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact",
+      "ms": 590,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4235,
+            "ms": 37.00000000000034,
+            "unchanged": 1079
+          },
+          "getBoundingClientRect": {
+            "calls": 52,
+            "ms": 217,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 20,
+            "ms": 1,
+            "unchanged": 18
+          }
+        },
+        "nodes": 401,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact details",
+      "ms": 1064,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 7179,
+            "ms": 49.00000000000125,
+            "unchanged": 1669
+          },
+          "getBoundingClientRect": {
+            "calls": 123,
+            "ms": 229,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 48,
+            "ms": 1,
+            "unchanged": 44
+          }
+        },
+        "nodes": 479,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Full name",
+      "ms": 1324,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 10227,
+            "ms": 54.00000000000125,
+            "unchanged": 2211
+          },
+          "getBoundingClientRect": {
+            "calls": 232,
+            "ms": 272.0000000000009,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 102,
+            "ms": 1,
+            "unchanged": 96
+          }
+        },
+        "nodes": 563,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Email",
+      "ms": 1380,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 13037,
+            "ms": 65.00000000000125,
+            "unchanged": 2521
+          },
+          "getBoundingClientRect": {
+            "calls": 363,
+            "ms": 295.00000000000273,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 154,
+            "ms": 1,
+            "unchanged": 146
+          }
+        },
+        "nodes": 643,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Phone",
+      "ms": 1785,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 16347,
+            "ms": 74.99999999999943,
+            "unchanged": 2831
+          },
+          "getBoundingClientRect": {
+            "calls": 499,
+            "ms": 333.00000000000637,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 208,
+            "ms": 1,
+            "unchanged": 198
+          }
+        },
+        "nodes": 723,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer type",
+      "ms": 3127,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 22622,
+            "ms": 97.99999999999761,
+            "unchanged": 3605
+          },
+          "getBoundingClientRect": {
+            "calls": 635,
+            "ms": 362.00000000000455,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 262,
+            "ms": 1.999999999998181,
+            "unchanged": 250
+          }
+        },
+        "nodes": 803,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Company name",
+      "ms": 4352,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 33027,
+            "ms": 130.99999999999397,
+            "unchanged": 4947
+          },
+          "getBoundingClientRect": {
+            "calls": 832,
+            "ms": 392.0000000000082,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 340,
+            "ms": 1.999999999998181,
+            "unchanged": 326
+          }
+        },
+        "nodes": 887,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Tax ID",
+      "ms": 1603,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 38236,
+            "ms": 141.99999999999397,
+            "unchanged": 5315
+          },
+          "getBoundingClientRect": {
+            "calls": 968,
+            "ms": 417.0000000000082,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 394,
+            "ms": 1.999999999998181,
+            "unchanged": 378
+          }
+        },
+        "nodes": 967,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer reference",
+      "ms": 3256,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 49311,
+            "ms": 179.9999999999867,
+            "unchanged": 6482
+          },
+          "getBoundingClientRect": {
+            "calls": 1164,
+            "ms": 532.0000000000118,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 476,
+            "ms": 1.999999999998181,
+            "unchanged": 456
+          }
+        },
+        "nodes": 1051,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Experience",
+      "ms": 1823,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 57743,
+            "ms": 197.9999999999867,
+            "unchanged": 7102
+          },
+          "getBoundingClientRect": {
+            "calls": 1240,
+            "ms": 557.0000000000082,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 506,
+            "ms": 1.999999999998181,
+            "unchanged": 484
+          }
+        },
+        "nodes": 1141,
+        "rules": [10, 7, 7, 7, 9, 9, 218, 1, 48, 48]
+      }
+    }
+  ],
+  "branch-profile": [
+    {
+      "input": "mouse",
+      "label": "Customer onboarding",
+      "ms": 3752,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 1154,
+            "ms": 15.999999999999773,
+            "unchanged": 79
+          },
+          "getBoundingClientRect": {
+            "calls": 40,
+            "ms": 149.99999999999818,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 21,
+            "ms": 5.9999999999990905,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 162,
+            "ms": 5.9999999999990905,
+            "unchanged": 70
+          }
+        },
+        "nodes": 326,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 179, 1, 49, 1, 49, 1]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact",
+      "ms": 3428,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 2032,
+            "ms": 19.999999999999773,
+            "unchanged": 152
+          },
+          "getBoundingClientRect": {
+            "calls": 130,
+            "ms": 644.9999999999964,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 43,
+            "ms": 9.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 355,
+            "ms": 19.00000000000091,
+            "unchanged": 160
+          }
+        },
+        "nodes": 389,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 193, 1, 49, 2, 49, 2]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact details",
+      "ms": 2748,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 3239,
+            "ms": 20.999999999999773,
+            "unchanged": 234
+          },
+          "getBoundingClientRect": {
+            "calls": 215,
+            "ms": 1085.9999999999964,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 77,
+            "ms": 10.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 548,
+            "ms": 36.99999999999909,
+            "unchanged": 245
+          }
+        },
+        "nodes": 465,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 207, 1, 49, 5, 49, 5]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Full name",
+      "ms": 2845,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4838,
+            "ms": 25.00000000000341,
+            "unchanged": 344
+          },
+          "getBoundingClientRect": {
+            "calls": 301,
+            "ms": 1585.9999999999927,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 115,
+            "ms": 13.00000000000091,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 731,
+            "ms": 50.00000000000273,
+            "unchanged": 325
+          }
+        },
+        "nodes": 548,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 221, 1, 49, 6, 49, 6]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Email",
+      "ms": 2491,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 6789,
+            "ms": 27.00000000000523,
+            "unchanged": 462
+          },
+          "getBoundingClientRect": {
+            "calls": 357,
+            "ms": 1909.9999999999927,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 154,
+            "ms": 16.000000000004547,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 892,
+            "ms": 72.00000000000273,
+            "unchanged": 389
+          }
+        },
+        "nodes": 627,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 232, 1, 49, 7, 49, 7]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Phone",
+      "ms": 3083,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 9086,
+            "ms": 30.00000000000523,
+            "unchanged": 588
+          },
+          "getBoundingClientRect": {
+            "calls": 474,
+            "ms": 2734.000000000011,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 203,
+            "ms": 18.000000000004547,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1091,
+            "ms": 99.99999999999181,
+            "unchanged": 473
+          }
+        },
+        "nodes": 706,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 249, 1, 49, 8, 49, 8]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Customer type",
+      "ms": 2636,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 11730,
+            "ms": 34.999999999997954,
+            "unchanged": 722
+          },
+          "getBoundingClientRect": {
+            "calls": 562,
+            "ms": 3252.0000000000073,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 253,
+            "ms": 19.000000000004547,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1266,
+            "ms": 116.99999999998454,
+            "unchanged": 540
+          }
+        },
+        "nodes": 785,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 263, 1, 49, 9, 49, 9]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Company name",
+      "ms": 4979,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 15804,
+            "ms": 42.999999999997954,
+            "unchanged": 1052
+          },
+          "getBoundingClientRect": {
+            "calls": 661,
+            "ms": 4081.9999999999927,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 353,
+            "ms": 25.000000000004547,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1535,
+            "ms": 143.99999999998818,
+            "unchanged": 616
+          }
+        },
+        "nodes": 868,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 293, 1, 49, 10, 49, 10]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer onboarding",
+      "ms": 3366,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 2828,
+            "ms": 18.999999999999773,
+            "unchanged": 835
+          },
+          "getBoundingClientRect": {
+            "calls": 1,
+            "ms": 77,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 33,
+            "ms": 18,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 51,
+            "ms": 21.000000000000455,
+            "unchanged": 0
+          }
+        },
+        "nodes": 326,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 173, 1, 49, 1, 49, 1]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact",
+      "ms": 1059,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4312,
+            "ms": 28.00000000000159,
+            "unchanged": 1148
+          },
+          "getBoundingClientRect": {
+            "calls": 62,
+            "ms": 359.99999999999727,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 67,
+            "ms": 19,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 150,
+            "ms": 24.000000000001364,
+            "unchanged": 33
+          }
+        },
+        "nodes": 389,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 187, 1, 49, 2, 49, 2]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact details",
+      "ms": 1774,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 7255,
+            "ms": 35.00000000000159,
+            "unchanged": 1790
+          },
+          "getBoundingClientRect": {
+            "calls": 143,
+            "ms": 773.9999999999955,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 171,
+            "ms": 22,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 265,
+            "ms": 36.000000000000455,
+            "unchanged": 78
+          }
+        },
+        "nodes": 465,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 201, 1, 49, 5, 49, 5]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Full name",
+      "ms": 2646,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 10318,
+            "ms": 39.00000000000159,
+            "unchanged": 2380
+          },
+          "getBoundingClientRect": {
+            "calls": 285,
+            "ms": 1660.9999999999982,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 260,
+            "ms": 27.00000000000182,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 452,
+            "ms": 55.000000000000455,
+            "unchanged": 174
+          }
+        },
+        "nodes": 548,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 218, 1, 49, 6, 49, 6]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Email",
+      "ms": 2204,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 13161,
+            "ms": 45.00000000000523,
+            "unchanged": 2738
+          },
+          "getBoundingClientRect": {
+            "calls": 401,
+            "ms": 2313.9999999999964,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 327,
+            "ms": 29,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 595,
+            "ms": 69.99999999999864,
+            "unchanged": 243
+          }
+        },
+        "nodes": 627,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 229, 1, 49, 7, 49, 7]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Phone",
+      "ms": 2767,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 16506,
+            "ms": 49.00000000000341,
+            "unchanged": 3104
+          },
+          "getBoundingClientRect": {
+            "calls": 547,
+            "ms": 3223.9999999999964,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 405,
+            "ms": 29.99999999999818,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 762,
+            "ms": 99.00000000000045,
+            "unchanged": 327
+          }
+        },
+        "nodes": 706,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 243, 1, 49, 8, 49, 8]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer type",
+      "ms": 3210,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 22762,
+            "ms": 60.99999999999977,
+            "unchanged": 3958
+          },
+          "getBoundingClientRect": {
+            "calls": 693,
+            "ms": 4198.999999999982,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 563,
+            "ms": 36.999999999992724,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 929,
+            "ms": 116.00000000000409,
+            "unchanged": 411
+          }
+        },
+        "nodes": 785,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 257, 1, 49, 9, 49, 9]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Company name",
+      "ms": 6503,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 33073,
+            "ms": 78.99999999999977,
+            "unchanged": 5406
+          },
+          "getBoundingClientRect": {
+            "calls": 925,
+            "ms": 5877.999999999964,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 878,
+            "ms": 53.99999999999636,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1367,
+            "ms": 153.00000000001137,
+            "unchanged": 543
+          }
+        },
+        "nodes": 868,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 322, 1, 49, 10, 49, 10]
+      }
+    }
+  ],
+  "css-guard": [
+    {
+      "input": "mouse",
+      "label": "Customer onboarding",
+      "ms": 3501,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 1154,
+            "ms": 19.99999999999909,
+            "unchanged": 79
+          },
+          "getBoundingClientRect": {
+            "calls": 40,
+            "ms": 86.99999999999909,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 21,
+            "ms": 5,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 92,
+            "ms": 4,
+            "unchanged": 0
+          }
+        },
+        "nodes": 326,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 179, 1, 49, 1, 49, 1]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact",
+      "ms": 2103,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 2032,
+            "ms": 20.99999999999909,
+            "unchanged": 152
+          },
+          "getBoundingClientRect": {
+            "calls": 130,
+            "ms": 325.99999999999727,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 43,
+            "ms": 5,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 195,
+            "ms": 14.00000000000091,
+            "unchanged": 0
+          }
+        },
+        "nodes": 389,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 193, 1, 49, 2, 49, 2]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact details",
+      "ms": 1907,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 3239,
+            "ms": 21.99999999999909,
+            "unchanged": 234
+          },
+          "getBoundingClientRect": {
+            "calls": 215,
+            "ms": 553.9999999999945,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 77,
+            "ms": 6,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 303,
+            "ms": 23.00000000000182,
+            "unchanged": 0
+          }
+        },
+        "nodes": 465,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 207, 1, 49, 5, 49, 5]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Full name",
+      "ms": 3294,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4838,
+            "ms": 27.99999999999727,
+            "unchanged": 344
+          },
+          "getBoundingClientRect": {
+            "calls": 301,
+            "ms": 1031.9999999999982,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 115,
+            "ms": 6,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 406,
+            "ms": 35.00000000000182,
+            "unchanged": 0
+          }
+        },
+        "nodes": 548,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 221, 1, 49, 6, 49, 6]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Email",
+      "ms": 3065,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 6789,
+            "ms": 30.999999999995453,
+            "unchanged": 462
+          },
+          "getBoundingClientRect": {
+            "calls": 392,
+            "ms": 1410.9999999999927,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 157,
+            "ms": 8.999999999998181,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 513,
+            "ms": 52.00000000000546,
+            "unchanged": 0
+          }
+        },
+        "nodes": 627,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 235, 1, 49, 7, 49, 7]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Phone",
+      "ms": 3406,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 9086,
+            "ms": 36.99999999999545,
+            "unchanged": 588
+          },
+          "getBoundingClientRect": {
+            "calls": 474,
+            "ms": 1719.9999999999982,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 203,
+            "ms": 10.999999999998181,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 618,
+            "ms": 63.000000000007276,
+            "unchanged": 0
+          }
+        },
+        "nodes": 706,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 249, 1, 49, 8, 49, 8]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Customer type",
+      "ms": 3037,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 11730,
+            "ms": 39.99999999999909,
+            "unchanged": 722
+          },
+          "getBoundingClientRect": {
+            "calls": 562,
+            "ms": 2103.999999999998,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 253,
+            "ms": 11.999999999998181,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 726,
+            "ms": 73.00000000000728,
+            "unchanged": 0
+          }
+        },
+        "nodes": 785,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 263, 1, 49, 9, 49, 9]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer onboarding",
+      "ms": 3382,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 2828,
+            "ms": 21,
+            "unchanged": 835
+          },
+          "getBoundingClientRect": {
+            "calls": 1,
+            "ms": 76,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 33,
+            "ms": 11,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 51,
+            "ms": 24.999999999999545,
+            "unchanged": 0
+          }
+        },
+        "nodes": 326,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 173, 1, 49, 1, 49, 1]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact",
+      "ms": 1090,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4312,
+            "ms": 28,
+            "unchanged": 1148
+          },
+          "getBoundingClientRect": {
+            "calls": 62,
+            "ms": 281.0000000000018,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 67,
+            "ms": 12.00000000000091,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 117,
+            "ms": 31.999999999999545,
+            "unchanged": 0
+          }
+        },
+        "nodes": 389,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 187, 1, 49, 2, 49, 2]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact details",
+      "ms": 2084,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 7255,
+            "ms": 35,
+            "unchanged": 1790
+          },
+          "getBoundingClientRect": {
+            "calls": 143,
+            "ms": 559.0000000000018,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 171,
+            "ms": 17.00000000000091,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 187,
+            "ms": 37.000000000000455,
+            "unchanged": 0
+          }
+        },
+        "nodes": 465,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 201, 1, 49, 5, 49, 5]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Full name",
+      "ms": 2975,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 10318,
+            "ms": 45.99999999999818,
+            "unchanged": 2380
+          },
+          "getBoundingClientRect": {
+            "calls": 285,
+            "ms": 1311,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 260,
+            "ms": 22.00000000000091,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 278,
+            "ms": 46.99999999999682,
+            "unchanged": 0
+          }
+        },
+        "nodes": 548,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 218, 1, 49, 6, 49, 6]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Email",
+      "ms": 2681,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 13161,
+            "ms": 54.00000000000182,
+            "unchanged": 2738
+          },
+          "getBoundingClientRect": {
+            "calls": 401,
+            "ms": 1792.0000000000073,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 327,
+            "ms": 24.00000000000273,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 352,
+            "ms": 54.999999999995,
+            "unchanged": 0
+          }
+        },
+        "nodes": 627,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 229, 1, 49, 7, 49, 7]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Phone",
+      "ms": 2737,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 16506,
+            "ms": 58,
+            "unchanged": 3104
+          },
+          "getBoundingClientRect": {
+            "calls": 547,
+            "ms": 2408.999999999998,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 405,
+            "ms": 26.00000000000091,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 435,
+            "ms": 67.99999999999682,
+            "unchanged": 0
+          }
+        },
+        "nodes": 706,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 243, 1, 49, 8, 49, 8]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer type",
+      "ms": 3945,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 22762,
+            "ms": 85.00000000001091,
+            "unchanged": 3958
+          },
+          "getBoundingClientRect": {
+            "calls": 693,
+            "ms": 3081.000000000009,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 563,
+            "ms": 28.99999999999727,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 518,
+            "ms": 79.99999999998954,
+            "unchanged": 0
+          }
+        },
+        "nodes": 785,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 257, 1, 49, 9, 49, 9]
+      }
+    }
+  ],
+  "css-inline": [
+    {
+      "input": "mouse",
+      "label": "Customer onboarding",
+      "ms": 3915,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 1154,
+            "ms": 14,
+            "unchanged": 79
+          },
+          "getBoundingClientRect": {
+            "calls": 40,
+            "ms": 36.99999999999909,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 21,
+            "ms": 4,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 162,
+            "ms": 9,
+            "unchanged": 70
+          }
+        },
+        "nodes": 326,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 179, 1, 49, 1, 49, 1]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact",
+      "ms": 1247,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 2032,
+            "ms": 16.00000000000091,
+            "unchanged": 152
+          },
+          "getBoundingClientRect": {
+            "calls": 120,
+            "ms": 65,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 43,
+            "ms": 6.0000000000009095,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 347,
+            "ms": 19,
+            "unchanged": 154
+          }
+        },
+        "nodes": 389,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 193, 1, 49, 2, 49, 2]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact details",
+      "ms": 1216,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 3239,
+            "ms": 17,
+            "unchanged": 234
+          },
+          "getBoundingClientRect": {
+            "calls": 197,
+            "ms": 109.99999999999818,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 77,
+            "ms": 7.0000000000009095,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 532,
+            "ms": 26,
+            "unchanged": 233
+          }
+        },
+        "nodes": 465,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 207, 1, 49, 5, 49, 5]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Full name",
+      "ms": 2932,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4838,
+            "ms": 19,
+            "unchanged": 344
+          },
+          "getBoundingClientRect": {
+            "calls": 283,
+            "ms": 175.99999999999818,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 115,
+            "ms": 10.000000000002728,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 715,
+            "ms": 42.00000000000182,
+            "unchanged": 313
+          }
+        },
+        "nodes": 548,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 221, 1, 49, 6, 49, 6]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Email",
+      "ms": 2865,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 6789,
+            "ms": 24,
+            "unchanged": 462
+          },
+          "getBoundingClientRect": {
+            "calls": 379,
+            "ms": 244.99999999999818,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 157,
+            "ms": 15.000000000002728,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 908,
+            "ms": 59.000000000007276,
+            "unchanged": 398
+          }
+        },
+        "nodes": 627,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 235, 1, 49, 7, 49, 7]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Phone",
+      "ms": 2632,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 9086,
+            "ms": 25,
+            "unchanged": 588
+          },
+          "getBoundingClientRect": {
+            "calls": 471,
+            "ms": 330.0000000000018,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 203,
+            "ms": 24.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1087,
+            "ms": 85.00000000001091,
+            "unchanged": 470
+          }
+        },
+        "nodes": 706,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 249, 1, 49, 8, 49, 8]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Customer type",
+      "ms": 2125,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 11730,
+            "ms": 31.000000000003638,
+            "unchanged": 722
+          },
+          "getBoundingClientRect": {
+            "calls": 554,
+            "ms": 373.9999999999982,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 253,
+            "ms": 28.999999999995453,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1258,
+            "ms": 99.00000000001091,
+            "unchanged": 534
+          }
+        },
+        "nodes": 785,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 263, 1, 49, 9, 49, 9]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Company name",
+      "ms": 4782,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 15804,
+            "ms": 42.00000000000364,
+            "unchanged": 1052
+          },
+          "getBoundingClientRect": {
+            "calls": 688,
+            "ms": 435.9999999999909,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 356,
+            "ms": 37.99999999999545,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1555,
+            "ms": 144.0000000000182,
+            "unchanged": 628
+          }
+        },
+        "nodes": 868,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 296, 1, 49, 10, 49, 10]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Tax ID",
+      "ms": 3162,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 19145,
+            "ms": 48.999999999989086,
+            "unchanged": 1202
+          },
+          "getBoundingClientRect": {
+            "calls": 778,
+            "ms": 493.9999999999982,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 414,
+            "ms": 46.999999999991815,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1730,
+            "ms": 164.0000000000182,
+            "unchanged": 695
+          }
+        },
+        "nodes": 947,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 310, 1, 49, 11, 49, 11]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer onboarding",
+      "ms": 3515,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 2828,
+            "ms": 27.000000000000227,
+            "unchanged": 835
+          },
+          "getBoundingClientRect": {
+            "calls": 26,
+            "ms": 97.00000000000091,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 36,
+            "ms": 20,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 71,
+            "ms": 13.999999999999545,
+            "unchanged": 12
+          }
+        },
+        "nodes": 326,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 176, 1, 49, 1, 49, 1]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact",
+      "ms": 646,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4312,
+            "ms": 32.00000000000023,
+            "unchanged": 1148
+          },
+          "getBoundingClientRect": {
+            "calls": 62,
+            "ms": 103.00000000000182,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 67,
+            "ms": 22,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 150,
+            "ms": 24.999999999998636,
+            "unchanged": 33
+          }
+        },
+        "nodes": 389,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 187, 1, 49, 2, 49, 2]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact details",
+      "ms": 2013,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 7255,
+            "ms": 50.000000000002046,
+            "unchanged": 1790
+          },
+          "getBoundingClientRect": {
+            "calls": 143,
+            "ms": 151.00000000000273,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 171,
+            "ms": 26.99999999999818,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 265,
+            "ms": 35.999999999998636,
+            "unchanged": 78
+          }
+        },
+        "nodes": 465,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 201, 1, 49, 5, 49, 5]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Full name",
+      "ms": 2724,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 10318,
+            "ms": 58.000000000003865,
+            "unchanged": 2380
+          },
+          "getBoundingClientRect": {
+            "calls": 285,
+            "ms": 303.00000000000273,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 260,
+            "ms": 41.99999999999636,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 452,
+            "ms": 64.99999999999682,
+            "unchanged": 174
+          }
+        },
+        "nodes": 548,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 218, 1, 49, 6, 49, 6]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Email",
+      "ms": 2121,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 13161,
+            "ms": 70.00000000000932,
+            "unchanged": 2738
+          },
+          "getBoundingClientRect": {
+            "calls": 401,
+            "ms": 316.00000000000273,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 327,
+            "ms": 45.99999999999636,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 595,
+            "ms": 95.99999999999682,
+            "unchanged": 243
+          }
+        },
+        "nodes": 627,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 229, 1, 49, 7, 49, 7]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Phone",
+      "ms": 2347,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 16506,
+            "ms": 80.00000000000932,
+            "unchanged": 3104
+          },
+          "getBoundingClientRect": {
+            "calls": 547,
+            "ms": 384.0000000000009,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 405,
+            "ms": 52.99999999999454,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 762,
+            "ms": 108.99999999999682,
+            "unchanged": 327
+          }
+        },
+        "nodes": 706,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 243, 1, 49, 8, 49, 8]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer type",
+      "ms": 2920,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 22762,
+            "ms": 91.00000000001296,
+            "unchanged": 3958
+          },
+          "getBoundingClientRect": {
+            "calls": 693,
+            "ms": 458.9999999999991,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 563,
+            "ms": 60.999999999990905,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 929,
+            "ms": 124.99999999999318,
+            "unchanged": 411
+          }
+        },
+        "nodes": 785,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 257, 1, 49, 9, 49, 9]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Company name",
+      "ms": 5760,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 33073,
+            "ms": 122.0000000000166,
+            "unchanged": 5406
+          },
+          "getBoundingClientRect": {
+            "calls": 900,
+            "ms": 556.9999999999991,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 875,
+            "ms": 95.99999999998727,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1347,
+            "ms": 219.00000000000773,
+            "unchanged": 531
+          }
+        },
+        "nodes": 868,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 319, 1, 49, 10, 49, 10]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Tax ID",
+      "ms": 3250,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 38314,
+            "ms": 146.00000000000932,
+            "unchanged": 5856
+          },
+          "getBoundingClientRect": {
+            "calls": 1046,
+            "ms": 657.9999999999991,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 988,
+            "ms": 105.9999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1514,
+            "ms": 300.00000000001137,
+            "unchanged": 615
+          }
+        },
+        "nodes": 947,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 333, 1, 49, 11, 49, 11]
+      }
+    }
+  ],
+  "css-append": [
+    {
+      "input": "mouse",
+      "label": "Customer onboarding",
+      "ms": 4475,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 1154,
+            "ms": 17.000000000000227,
+            "unchanged": 79
+          },
+          "getBoundingClientRect": {
+            "calls": 45,
+            "ms": 208.9999999999991,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 21,
+            "ms": 3.9999999999990905,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 166,
+            "ms": 9,
+            "unchanged": 73
+          }
+        },
+        "nodes": 326,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 179, 1, 49, 1, 49, 1]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact",
+      "ms": 2668,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 2032,
+            "ms": 18.000000000000227,
+            "unchanged": 152
+          },
+          "getBoundingClientRect": {
+            "calls": 120,
+            "ms": 626.9999999999991,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 43,
+            "ms": 5.9999999999990905,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 347,
+            "ms": 46.99999999999818,
+            "unchanged": 154
+          }
+        },
+        "nodes": 389,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 193, 1, 49, 2, 49, 2]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Contact details",
+      "ms": 2908,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 3239,
+            "ms": 24.000000000000227,
+            "unchanged": 234
+          },
+          "getBoundingClientRect": {
+            "calls": 195,
+            "ms": 1098.0000000000027,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 77,
+            "ms": 7.9999999999990905,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 532,
+            "ms": 65.99999999999636,
+            "unchanged": 233
+          }
+        },
+        "nodes": 465,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 207, 1, 49, 5, 49, 5]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Full name",
+      "ms": 3785,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4838,
+            "ms": 29.99999999999841,
+            "unchanged": 344
+          },
+          "getBoundingClientRect": {
+            "calls": 281,
+            "ms": 1677.9999999999973,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 115,
+            "ms": 9.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 715,
+            "ms": 82.99999999999454,
+            "unchanged": 313
+          }
+        },
+        "nodes": 548,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 221, 1, 49, 6, 49, 6]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Email",
+      "ms": 3861,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 6789,
+            "ms": 35.99999999999841,
+            "unchanged": 462
+          },
+          "getBoundingClientRect": {
+            "calls": 377,
+            "ms": 2283.0000000000064,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 157,
+            "ms": 11.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 908,
+            "ms": 103.99999999999272,
+            "unchanged": 398
+          }
+        },
+        "nodes": 627,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 235, 1, 49, 7, 49, 7]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Phone",
+      "ms": 3960,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 9086,
+            "ms": 41.99999999999477,
+            "unchanged": 588
+          },
+          "getBoundingClientRect": {
+            "calls": 474,
+            "ms": 2982.0000000000027,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 203,
+            "ms": 12.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1091,
+            "ms": 122.99999999999272,
+            "unchanged": 473
+          }
+        },
+        "nodes": 706,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 249, 1, 49, 8, 49, 8]
+      }
+    },
+    {
+      "input": "mouse",
+      "label": "Customer type",
+      "ms": 3089,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 11730,
+            "ms": 47.99999999999477,
+            "unchanged": 722
+          },
+          "getBoundingClientRect": {
+            "calls": 562,
+            "ms": 3566.0000000000064,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 253,
+            "ms": 19.99999999999909,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 1266,
+            "ms": 136.99999999999636,
+            "unchanged": 540
+          }
+        },
+        "nodes": 785,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 263, 1, 49, 9, 49, 9]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer onboarding",
+      "ms": 4044,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 2828,
+            "ms": 22.000000000000227,
+            "unchanged": 835
+          },
+          "getBoundingClientRect": {
+            "calls": 1,
+            "ms": 85,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 33,
+            "ms": 13,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 51,
+            "ms": 8,
+            "unchanged": 0
+          }
+        },
+        "nodes": 326,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 173, 1, 49, 1, 49, 1]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact",
+      "ms": 1684,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 4312,
+            "ms": 25.9999999999975,
+            "unchanged": 1148
+          },
+          "getBoundingClientRect": {
+            "calls": 62,
+            "ms": 534.0000000000009,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 67,
+            "ms": 16,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 150,
+            "ms": 15.99999999999909,
+            "unchanged": 33
+          }
+        },
+        "nodes": 389,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 187, 1, 49, 2, 49, 2]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Contact details",
+      "ms": 2565,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 7255,
+            "ms": 41.99999999999568,
+            "unchanged": 1790
+          },
+          "getBoundingClientRect": {
+            "calls": 143,
+            "ms": 1012.0000000000018,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 171,
+            "ms": 19.00000000000091,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 265,
+            "ms": 30.999999999996362,
+            "unchanged": 78
+          }
+        },
+        "nodes": 465,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 201, 1, 49, 5, 49, 5]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Full name",
+      "ms": 3213,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 10318,
+            "ms": 46.99999999999568,
+            "unchanged": 2380
+          },
+          "getBoundingClientRect": {
+            "calls": 260,
+            "ms": 1923.000000000009,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 257,
+            "ms": 20.00000000000091,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 432,
+            "ms": 50.999999999992724,
+            "unchanged": 162
+          }
+        },
+        "nodes": 548,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 215, 1, 49, 6, 49, 6]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Email",
+      "ms": 2965,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 13161,
+            "ms": 48.9999999999975,
+            "unchanged": 2738
+          },
+          "getBoundingClientRect": {
+            "calls": 401,
+            "ms": 2876,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 327,
+            "ms": 21.00000000000091,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 595,
+            "ms": 77.99999999999272,
+            "unchanged": 243
+          }
+        },
+        "nodes": 627,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 229, 1, 49, 7, 49, 7]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Phone",
+      "ms": 3493,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 16506,
+            "ms": 54.9999999999975,
+            "unchanged": 3104
+          },
+          "getBoundingClientRect": {
+            "calls": 547,
+            "ms": 3969.999999999982,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 405,
+            "ms": 25.000000000004547,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 762,
+            "ms": 109.00000000000364,
+            "unchanged": 327
+          }
+        },
+        "nodes": 706,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 243, 1, 49, 8, 49, 8]
+      }
+    },
+    {
+      "input": "keyboard",
+      "label": "Customer type",
+      "ms": 3722,
+      "metrics": {
+        "counters": {
+          "setAttribute": {
+            "calls": 22762,
+            "ms": 67.00000000000114,
+            "unchanged": 3958
+          },
+          "getBoundingClientRect": {
+            "calls": 693,
+            "ms": 5056.999999999967,
+            "unchanged": 0
+          },
+          "insertRule": {
+            "calls": 563,
+            "ms": 27.000000000004547,
+            "unchanged": 0
+          },
+          "setProperty": {
+            "calls": 929,
+            "ms": 139.0000000000109,
+            "unchanged": 411
+          }
+        },
+        "nodes": 785,
+        "rules": [10, 7, 7, 7, 9, 9, 53, 257, 1, 49, 9, 49, 9]
+      }
+    }
+  ]
+}

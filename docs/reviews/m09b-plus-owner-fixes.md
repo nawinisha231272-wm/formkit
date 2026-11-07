@@ -1,5 +1,13 @@
 # M09b+ owner review fixes — 2026-10-30
 
+Current follow-up (2026-11-07): redundant CSP stylesheet writes are fixed, and owner-authorized helper
+compaction keeps every ceiling unchanged. Full pinned local verify passes **341 units / 1,596 browser
+checks / 36 size gates / five count fixtures**. Current UI/core/full: **31,733 / 7,168 / 67,657**.
+See [Linux follow-up and retained failed CI evidence](m09b-plus-linux-task-diagnosis.md) and
+[final measurements](m09b-plus-linux-task-evidence/final-consumer-size.json). Earlier sections below
+record the historical November 6 proof; its first CI attempts failed and were never rerun.
+New-head CI and owner delivery/image review remain pending. Do not merge.
+
 Status: **full pinned local verification PASS; current-head CI and owner review pending**.
 Earlier failed-run evidence below remains historical; this proof supersedes its status.
 
