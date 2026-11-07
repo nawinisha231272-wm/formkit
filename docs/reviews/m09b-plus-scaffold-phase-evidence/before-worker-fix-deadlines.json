@@ -1,0 +1,17 @@
+{
+  "component": {
+    "maxMeasuredSeconds": 53.69533379100001,
+    "unclampedSeconds": 110,
+    "deadlineSeconds": 110
+  },
+  "theme": {
+    "maxMeasuredSeconds": 55.17123591699998,
+    "unclampedSeconds": 120,
+    "deadlineSeconds": 120
+  },
+  "plugin": {
+    "maxMeasuredSeconds": 63.90103691699996,
+    "unclampedSeconds": 130,
+    "deadlineSeconds": 120
+  }
+}

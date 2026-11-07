@@ -64,6 +64,7 @@ const english: Readonly<Record<string, string>> = {
   "ofb.history.AtomicCommand": "{label}",
   "ofb.commands": "Commands",
   "ofb.bulk": "Edit selected components",
+  "ofb.renamed": "Renamed {before} to {after}",
   "ofb.planning": "Preparing selected components",
   "ofb.planningConflict":
     "The form changed while preparing this action. Please try again.",

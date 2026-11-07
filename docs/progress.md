@@ -6,6 +6,8 @@ deviations from spec, open questions.
 
 ## Current state
 
+- **M09b+ local proof PASS (2026-11-06); CI and owner review pending.** 341 unit / 1,593 browser checks, all 36 size gates and five runtime count fixtures. UI/core/full **31,784 / 7,190 / 67,651** within fixed **31,800 / 7,300 / 67,700**. See [current proof](reviews/m09b-plus-owner-fixes.md), [display diagnosis](reviews/m09b-plus-webkit-diagnosis.md), and [phase measurements](reviews/m09b-plus-scaffold-phases.md). PR #16 stays unmerged; M09c/M09d not started.
+
 - Starting point: `ourform-phase0` starter kit (5 packages, relative imports, 3 Node tests passing
   with TypeScript 5.8). See the "Starter kit review" in the build specification for the nine known issues.
 - **M00 complete** — clean installation and full verification pass.
@@ -21,6 +23,24 @@ deviations from spec, open questions.
   [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 delivery PR #5 is merged; the gate closure is recorded below under the revised owner decision.
 
 ## Open questions
+
+Resolved scaffold-granularity decision (owner, 2026-10-30): separate proofs are approved,
+with every export/asset/install/offline/browser assertion retained. First measure pack, install,
+offline reinstall, build and browser phases against verified main. Each per-scaffold deadline is
+2 × measured branch time, rounded up to 10 seconds and capped at 120 seconds; report their sum
+beside the former collective 180 seconds. Diagnose package-caused slowdown and propose a fix
+instead of absorbing it. Five native WebKit navigation failures must be explained before push;
+no retry, deadline increase or WebKit skip. Measurements and the controlled diagnosis are complete; full pinned local verification passes.
+No further approval is needed for this formula. Current-head remote CI and owner delivery review remain pending.
+
+Resolved owner-review size STOP (2026-10-30): final UI **31,800** and full initial **67,700**
+are explicitly approved. Cause: `9c7f0f4` removed Menu CSS while switching to `ofb-action-menu`;
+restoring initial menu CSS/positioning and requested polish accounts for the growth. Builder-core
+stays **7,300**, standalone builder **31,600**, and all lazy limits stay unchanged. ADR-0018/0020
+record the amendment. The final build's size JSON will populate every current measurement table;
+retained intermediate logs are historical. Full pinned verify must pass before committing/pushing.
+
+Historical reset (the two UI/full ceilings below are superseded by the owner decision above):
 
 Resolved M09b+ size STOP (owner decision 2026-10-28): additional lazy bulk planning and Data bodies
 are approved. Their first completed boundary measurement is UI/core/full **31,069 / 7,196 / 66,818**.

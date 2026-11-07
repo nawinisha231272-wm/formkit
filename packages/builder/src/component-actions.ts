@@ -17,7 +17,7 @@ interface Context {
   root: HTMLElement;
   ui: UI;
   batch(action: Action, node: ComponentNode): boolean;
-  count(): number;
+  count(id?: string): number;
   restoreFocus(anchor?: HTMLElement): void;
   icons?: BuilderIcons;
   copy(id: string): void;
@@ -63,10 +63,13 @@ export class ComponentActions {
       { signal: ui.signal },
     );
   }
-  _ofbLabel(action: Action) {
-    return this._ofbContext.ui.t(
-      action === "json" ? "ofb.editJson" : `ofb.${action}`,
-    );
+  _ofbLabel(action: Action, id?: string) {
+    const { ui } = this._ofbContext;
+    const label = ui.t(action === "json" ? "ofb.editJson" : `ofb.${action}`);
+    const count = this._ofbContext.count(id);
+    return count > 1 && !["json", "more", "collapse", "unwrap"].includes(action)
+      ? ui.t("ofb.bulkAction", { action: label, count })
+      : label;
   }
   _ofbReason(action: Action, id: string): string | undefined {
     const { ui } = this._ofbContext,
@@ -141,7 +144,7 @@ export class ComponentActions {
     for (const action of ui.actions ?? order) {
       const button = actionButton(
         primitiveContext,
-        this._ofbLabel(action),
+        this._ofbLabel(action, node.id),
         () => this._ofbExecute(action, node, button),
         {
           icon: action,
@@ -172,21 +175,13 @@ export class ComponentActions {
       this._ofbContext.restoreFocus(anchor);
     };
     const popup = element(ui.document, "div", "", "ofb-action-menu");
-    const bounds = (anchor ?? root).getBoundingClientRect(),
-      outer = root.getBoundingClientRect();
+    const bounds = (anchor ?? root).getBoundingClientRect();
     root.append(popup);
-    ui._ofbStyle(
-      popup,
-      "inset-inline-start",
-      `${Math.max(0, Math.min(bounds.left - outer.left, outer.width - 230))}px`,
-      "inset-block-start",
-      `${bounds.bottom - outer.top + root.scrollTop}px`,
-    );
     this.#menu = popup;
     mountActionMenu(popup, ui, {
       more,
       ...(ui.actions ? { enabled: ui.actions } : {}),
-      label: (action) => this._ofbLabel(action as Action),
+      label: (action) => this._ofbLabel(action as Action, node.id),
       reason: (action) => this._ofbReason(action as Action, node.id),
       execute: (action) => this._ofbExecute(action as Action, node, anchor),
       close,
@@ -199,6 +194,14 @@ export class ComponentActions {
       actionButton,
       disableAction,
     });
+    const viewport = ui.document.documentElement;
+    ui._ofbStyle(
+      popup,
+      "left",
+      `${Math.max(8, Math.min(bounds.left, viewport.clientWidth - popup.offsetWidth - 8))}px`,
+      "top",
+      `${Math.max(8, Math.min(bounds.bottom, viewport.clientHeight - popup.offsetHeight - 8))}px`,
+    );
   }
   _ofbCloseMenu() {
     this.#menu?.remove();

@@ -130,7 +130,6 @@ export class SettingsLoader {
     host.append(container);
     overlay?.show();
     status.focus();
-    ui.announce(status.textContent ?? "");
     this.#view = undefined;
     this.#loading = { id, local, close };
     const frame: SettingsFrame = {
@@ -153,8 +152,9 @@ export class SettingsLoader {
     };
     const load = () => {
       container.setAttribute("aria-busy", "true");
-      void this._ofbContext.features
-        .load("settings")
+      const request = this._ofbContext.features.load("settings");
+      ui.loading(request, status.textContent ?? "", local.signal);
+      void request
         .then((module) => {
           if (local.signal.aborted || this.#loading?.local !== local) return;
           if (!this.#style) {

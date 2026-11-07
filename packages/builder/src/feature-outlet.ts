@@ -41,9 +41,9 @@ export function featureOutlet(
       ui.t("ofb.featureLoading", { feature: ui.t(`ofb.${name}`) }),
     );
     host.append(feedback);
-    ui.announce(feedback.textContent ?? "");
-    void loader
-      .load(name)
+    const requestModule = loader.load(name);
+    ui.loading(requestModule, feedback.textContent ?? "");
+    void requestModule
       .then((module) => {
         if (request !== generation || ui.signal.aborted) return;
         clear();

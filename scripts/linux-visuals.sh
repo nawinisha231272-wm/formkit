@@ -11,12 +11,13 @@ visual_suite=${2:-themes}
 case "$visual_mode" in record|check|review) ;; *) echo "Usage: sh scripts/linux-visuals.sh [record|check|review]" >&2; exit 2;; esac
 visual_review=false
 if [ "$visual_mode" = review ]; then
-  if [ "$visual_suite" != owner-review ] && [ "$visual_suite" != m09b-plus ]; then echo "review requires owner-review or m09b-plus" >&2; exit 2; fi
+  if [ "$visual_suite" != owner-review ] && [ "$visual_suite" != m09b-plus ] && [ "$visual_suite" != owner-followup ]; then echo "review requires owner-review, m09b-plus or owner-followup" >&2; exit 2; fi
   visual_review=true
   visual_mode=record
 fi
 visual_snapshot_pattern="*.png"
 case "$visual_suite" in
+  owner-followup) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
   m09b-plus) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
   owner-review) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
   material-additions) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64 ;;
@@ -29,7 +30,7 @@ case "$visual_suite" in
   builder) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts ;;
   tabs) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/tabs.spec.ts ;;
   sdk) visual_snapshot_dir=tests/e2e/__screenshots__/linux-x64/sdk-extensions.spec.ts ;;
-  *) echo "Usage: sh scripts/linux-visuals.sh [record|check|review] [owner-review|themes|material|material-additions|workbench|sdk|author|boolean|tabs|builder|m09]" >&2; exit 2;;
+  *) echo "Usage: sh scripts/linux-visuals.sh [record|check|review] [owner-followup|owner-review|themes|material|material-additions|workbench|sdk|author|boolean|tabs|builder|m09]" >&2; exit 2;;
 esac
 mkdir -p "$visual_snapshot_dir"
 if [ "$visual_review" = true ]; then
@@ -51,7 +52,10 @@ if [ "$visual_mode" = record ] && [ "$visual_suite" = m09 ] && [ -n "$(find test
   exit 2
 fi
 # Source is read-only. Container dependencies/builds live only in its disposable filesystem.
-docker run --rm --init --ipc=host --platform linux/amd64 \
+docker_cleanup=--rm
+if [ "$visual_suite" = owner-followup ]; then docker_cleanup=; fi
+# Preserve a failed owner-followup container for a cached diagnostic continuation.
+docker run $docker_cleanup --init --ipc=host --platform linux/amd64 \
   --name ourform-linux-visuals \
   --mount "type=bind,source=$repository_root,target=/source,readonly" \
   --mount "type=bind,source=$repository_root/tests/e2e/__screenshots__/linux-x64,target=/visual-output" \
@@ -66,6 +70,16 @@ tar --exclude="./.git" --exclude="node_modules" --exclude="dist" --exclude=".tur
 cd /work/ourform
 npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm install --frozen-lockfile
 npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm build
+# These targeted tests use only the playground. Keep all browser projects/assertions/deadlines;
+# avoid starting unrelated example servers in every emulated recording/comparison batch.
+if [ "$OURFORM_VISUAL_SUITE" = owner-followup ]; then
+  npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec node scripts/builder-size-gate.mjs > /results/owner-consumer-size.json
+  cp playwright.config.ts playwright.full.config.ts
+  cat > playwright.config.ts <<"CONFIG"
+import all from "./playwright.full.config";
+export default { ...all, webServer: all.webServer.filter((server) => server.url === "http://127.0.0.1:4173") };
+CONFIG
+fi
 visual_filter="conformance states and visual snapshot|read-only prevents text, checkbox and Rating edits|Bootstrap preset works with the real Bootstrap 5 stylesheet installed|Bootstrap 4 .* with real framework CSS"
 visual_file=tests/e2e/themes.spec.ts
 if [ "$OURFORM_VISUAL_SUITE" = workbench ]; then visual_file=tests/e2e/builder-visual.spec.ts; visual_filter="approved screen"; fi
@@ -80,7 +94,13 @@ if [ "$OURFORM_VISUAL_SUITE" = builder ]; then visual_file=tests/e2e/builder-hos
 run_visual() {
   local snapshot_args=()
   if [ "$1" = record ]; then snapshot_args=(--update-snapshots=all); fi
-  if [ "$OURFORM_VISUAL_SUITE" = m09b-plus ]; then
+  if [ "$OURFORM_VISUAL_SUITE" = owner-followup ]; then
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-authoring-visual.spec.ts tests/e2e/builder-review-menus.spec.ts --project=chromium --workers=1 --max-failures=1 "${snapshot_args[@]}" || return $?
+    if [ "${#snapshot_args[@]}" -gt 0 ]; then cp -R tests/e2e/__screenshots__/linux-x64/. /visual-output/; return 0; fi
+    # Existing builder images compare without replacement; only changed authoring/menu images record.
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-visual.spec.ts tests/e2e/builder-review-visual.spec.ts tests/e2e/builder-round4.spec.ts --project=chromium --workers=1 --max-failures=1 || return $?
+    npx --yes --package=node@22.22.3 --package=pnpm@10.10.0 pnpm exec playwright test tests/e2e/builder-review-menus.spec.ts --project=firefox --project=webkit --workers=1 --max-failures=1 || return $?
+  elif [ "$OURFORM_VISUAL_SUITE" = m09b-plus ]; then
     # Bound emulated browser/server lifetimes without changing any test or deadline.
     # Preserve completed recording batches even if a later batch fails; approval stays pending.
     capture_m09_batch() {
@@ -130,3 +150,5 @@ cp -R test-results /results/ 2>/dev/null || true
 if [ "$result" -eq 0 ]; then cp -R tests/e2e/__screenshots__/linux-x64/. /visual-output/; fi
 exit "$result"
 '
+
+if [ "$visual_suite" = owner-followup ]; then docker rm ourform-linux-visuals > /dev/null; fi

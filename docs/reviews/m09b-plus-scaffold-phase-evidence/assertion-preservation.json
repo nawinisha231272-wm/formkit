@@ -1,0 +1,8 @@
+{
+  "file": "packages/cli/tests/scaffolds.test.ts",
+  "existingExpectExpressions": 25,
+  "unchanged": true,
+  "oldCollectiveDeadline": 180000,
+  "newIndependentDeadlines": [120000, 120000, 120000],
+  "sum": 360000
+}

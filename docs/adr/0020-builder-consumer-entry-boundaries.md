@@ -1,9 +1,9 @@
 # ADR-0020 — Consumer entry boundaries for the builder loading split
 
-Current enforcement: the owner-approved 2026-10-28 reset below supersedes earlier size tables:
-**UI 31,600 / builder-core 7,300 / full initial 67,400 / standalone builder 31,600 bytes.**
+Current enforcement: the owner-approved 2026-10-30 amendment below supersedes earlier size tables:
+**UI 31,800 / builder-core 7,300 / full initial 67,700 / standalone builder 31,600 bytes.**
 Earlier measurements, ceilings and rejected probes remain historical evidence.
-Status: accepted by the owner, including the explicit 2026-10-28 size reset and lazy-body amendments
+Status: accepted by the owner, including the explicit 2026-10-28 size reset/lazy bodies and final 2026-10-30 menu allowance
 Date: 2026-10-23
 Milestone: M09b+
 Related: accepted ADR-0018; accepted ADR-0019 remains M09d
@@ -241,3 +241,29 @@ registry changes reuse the mounted session; Element light/shadow instances retai
 on reconnect. Preserve values, touched/errors, control identity, focus/caret; unknown names report
 `unknown-theme` without fallback. Document/test these additive consequences of the accepted opt-in
 design and list them in delivery API additions. All fixed size gates remain unchanged.
+
+## Final M09b+ owner-review allowance — accepted 2026-10-30
+
+The owner approved final consumer ceilings of **31,800 builder UI initial (excludes builder-core)**
+and **67,700 full initial closure** Brotli bytes. `9c7f0f4` replaced the styled Menu primitive with
+`ofb-action-menu` but removed its CSS without a replacement. Restoring initial menu styles/viewport
+positioning, plus the requested delivery polish, accounts for the growth. Context actions/clipboard,
+selection, Ctrl/Cmd+K's frame and PointerDrag stay initial. No additional deferral is authorized.
+Builder-core stays **7,300**, standalone builder stays **31,600**, and every lazy/aggregate ceiling
+is unchanged. These supersede only the UI/full numbers in the historical 2026-10-28 reset table.
+
+The final build's machine-readable size report is the single measurement source used by progress,
+the delivery report and PR. Earlier probe/build logs remain historical evidence, clearly labelled;
+they are not interchangeable final measurements. No further M09b+ ceiling increase is authorized.
+
+Current-build measurement (2026-10-30): UI **31,784 / 31,800**, builder-core **7,190 / 7,300**,
+full initial **67,651 / 67,700** Brotli bytes, independently identical on native and pinned Linux.
+Canonical evidence: `docs/reviews/m09b-plus-owner-fixes-evidence/consumer-size.json`.
+No code moved into builder-core; marginal compression attribution can change shared bytes.
+At this historical checkpoint local verification was blocked by CLI deadline/native navigation failures;
+the final November 6 proof below resolves them. The original failures remain recorded
+in the owner-fix report. These size passes do not imply a completed milestone or current-head CI.
+
+## Final measurement evidence — 2026-11-06
+
+Full pinned local verify passed: 341 unit / 1,593 browser checks and every size/count gate. Current consumer UI/core/full **31,784 / 7,190 / 67,651**, within **31,800 / 7,300 / 67,700**; standalone builder and all lazy ceilings unchanged. Canonical source: `docs/reviews/m09b-plus-owner-fixes-evidence/consumer-size.json`. No code moved into builder-core. Earlier failed runs and measured probes remain historical; no current-head CI result is claimed before it finishes. Owner delivery review and PR #16 remain open.

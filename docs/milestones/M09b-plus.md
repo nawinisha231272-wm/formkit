@@ -4,8 +4,8 @@ Status: **approved with owner amendments; starts after M09b approval**. Depends 
 Prerequisite satisfied: PR #15 approved at `79e69f6`, merged as `0b3b452` on 2026-10-23 after
 first-attempt green PR/push Verify. Work is on `m09b-plus-authoring`; ADR-0020 is accepted with
 the owner's opt-in-theme/option-B amendment and 2026-10-28 lazy-body/size reset. Current enforced
-consumer gates: builder UI initial (excludes builder-core) **31,600**, builder-core marginal
-contribution **7,300**, full initial closure **67,400** Brotli bytes; standalone builder **31,600**.
+consumer gates: builder UI initial (excludes builder-core) **31,800**, builder-core marginal
+contribution **7,300**, full initial closure **67,700** Brotli bytes; standalone builder **31,600**.
 The one-time reset is fixed from the approved first boundary measurement, not recomputed after polish.
 Existing per-feature/aggregate lazy limits remain; new bulk-plan **1,750** and Data **300** limits
 cover their independent Retry entries. Both bodies default to idle preload. No further byte-hunting
@@ -87,3 +87,54 @@ The original `c9457cd` test asserted Enter commit and Escape cancellation, not b
 `3815932` added explicit blur-commit/empty-refusal and declared-layout-caption tests without changing
 those original assertions. This final change retains all those committed assertions. Prior failures/probes
 and current source/screenshot manifests are preserved. History/diff and M09c/M09d remain unshipped.
+
+## Owner follow-up — 2026-10-30
+
+Owner approved final UI/full ceilings 31,800/67,700 for restored initial menu CSS/positioning and
+requested polish. Core 7,300 and all lazy limits stay unchanged. Delivery requires Linux menu
+baselines, main/after/diff comparisons grouped by approved cause with unexplained-change audit,
+new 500-field measurements, final pinned verification and first-attempt green PR CI. No merge.
+
+## Final local proof — 2026-11-06
+
+Full pinned verification **PASS (exit 0)**: **341 unit / 1,593 browser / 36 size gates / five runtime count fixtures**.
+Frozen install, lint, build, typecheck, coverage, all browser/axe cases and deterministic counts passed.
+The non-document source/PNG fingerprints match before and after the proof. Logs and metadata:
+`m09b-plus-owner-fixes-evidence/nov06-verify.log.gz` and `verification.json`.
+
+| Gate                                        | Final Brotli bytes | Ceiling | Delta from 7885dca |
+| ------------------------------------------- | -----------------: | ------: | -----------------: |
+| Builder UI initial (excludes builder-core)  |             31,784 |  31,800 |               +405 |
+| Builder-core marginal consumer contribution |              7,190 |   7,300 |                -19 |
+| Full initial closure                        |             67,651 |  67,700 |               +334 |
+
+`consumer-size.json` is the single current numeric source. Native and saved pinned Linux sizes match;
+builder source hashes are unchanged from that Linux evidence. `consumer-hosts.json` lists the consumer
+builds for Vite/React, Angular CLI, vanilla and per-theme script tags. No code moved into builder-core.
+Lazy ceilings stay unchanged; all per-feature, Retry and aggregate gates pass. No new lazy chunk.
+
+500-field browser index: **13.800 ms**, exactly **500 visits**, cached reopen.
+Bulk Delete/Move/Required: **500 child commands, one publication and one history entry each**.
+Individual timings remain advisory and are retained; the drag reports also retain tasks above 50 ms.
+
+Gallery versus main: **295 changed / 68 new / 109 byte-identical**;
+**43 unexplained older preview differences** are explicitly listed for owner review.
+Each changed image has main/after/diff; new states are marked absent from main. Group counts and reasons
+are in the gallery/manifest. Linux menu images came from the official pinned Playwright image; no pixel
+threshold changed. `outputs_cmp/` is removed.
+
+The scaffold split preserves all 25 existing expect expressions, every export/asset/install/offline/browser
+assertion, and every 30-second browser case. Owner-approved independent deadlines are **120/120/120 s**,
+**sum 360 versus the former collective 180 s**. The phase report preserves the measured formula and
+larger-kit analysis. Generated browser concurrency returns to main's one worker. No runtime dependency,
+form JSON or public API is added by this owner-review follow-up.
+
+The earlier failing keyboard trace is retained. The unchanged isolated task passed at **22.9 s without
+tracing / 23.3 s with tracing**; tracing alone is not claimed as the cause. Temporary diagnostic tracing
+was removed after capture (the original suite had none). Final native verification uses a process-scoped
+`caffeinate -di` display-awake host; the root macOS WebKit launcher also suppresses native AppKit window
+animations without changing browser defaults, global preferences, test assertions or deadlines.
+See the separate display-sleep diagnosis for the no-application reproduction and fixed control.
+
+Current-head remote first-attempt results will be recorded in PR #16. Local PASS does not imply CI PASS.
+Owner image/delivery approval remains pending. **Do not merge or start M09c/M09d.**

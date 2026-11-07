@@ -68,7 +68,7 @@ test("first command activation opens its frame before download and searches when
   const input = frame.getByRole("searchbox", { name: "Search commands" });
   await expect(input).toBeFocused();
   await input.fill("Full name");
-  await frame.getByRole("button", { name: "Full name", exact: true }).click();
+  await frame.getByRole("option", { name: "Full name", exact: true }).click();
   await expect(frame).toHaveCount(0);
   await expect(
     page.locator('#canvas [data-field-id="fullName"]'),
@@ -89,7 +89,7 @@ test("command-bar bulk delete is one undo step and restores the selection set", 
     .getByRole("searchbox", { name: "Search commands" })
     .fill("Delete");
   await commands
-    .getByRole("button", { name: "Delete 2 components", exact: true })
+    .getByRole("option", { name: "Delete 2 components", exact: true })
     .click();
   await expect(outline.locator('[data-drag-id="email"]')).toHaveCount(0);
   expect(

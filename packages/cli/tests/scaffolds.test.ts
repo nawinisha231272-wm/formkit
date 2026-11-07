@@ -81,120 +81,137 @@ test("CLI rejects invalid arguments and existing targets without modifying calle
   }
 });
 
-test("all three unedited CLI scaffolds install from packed workspace packages and pass pinned verify", async () => {
-  const root = await mkdtemp(join(tmpdir(), "ourform-cli-proof-"));
-  const kit = join(root, "kit");
-  const run = (args: string[], cwd = resolve(".")) => {
-    try {
-      const started = performance.now();
-      const result = execFileSync("pnpm", args, {
-        cwd,
-        encoding: "utf8",
-        timeout: 120000,
-        maxBuffer: 5 * 1024 * 1024,
-        // Initial dependency resolution may use the registry; the explicit offline
-        // install below must succeed after removing node_modules. npx --offline
-        // pins the test runner and must not disable this documented setup step.
-        env: { ...process.env, CI: "true", npm_config_offline: "false" },
-      });
-      console.info(
-        JSON.stringify({
-          scaffoldStep: args.join(" "),
-          project: cwd.split(/[\\/]/).at(-1),
-          milliseconds: performance.now() - started,
-        }),
-      );
-      return result;
-    } catch (error) {
-      if (error instanceof Error && "stdout" in error)
-        throw new Error(`${error.message}\n${String(error.stdout)}`);
-      throw error;
-    }
-  };
-  try {
-    run(["sdk:pack", kit]);
-    for (const archive of await readdir(kit)) {
-      const path = join(kit, archive);
-      const files = new Set(
-        execFileSync("tar", ["-tzf", path], { encoding: "utf8" }).split("\n"),
-      );
-      const manifest = JSON.parse(
-        execFileSync("tar", ["-xOzf", path, "package/package.json"], {
-          encoding: "utf8",
-        }),
-      );
-      const checkExports = (value: unknown): void => {
-        if (typeof value === "string" && value.startsWith("./"))
-          expect(
-            files.has(`package/${value.slice(2)}`),
-            `${archive}: ${value}`,
-          ).toBe(true);
-        else if (value && typeof value === "object")
-          Object.values(value).forEach(checkExports);
-      };
-      checkExports(manifest.exports);
-      const dist = resolve("packages", manifest.name.split("/")[1], "dist");
-      for (const file of await readdir(dist, {
-        recursive: true,
-        withFileTypes: true,
-      }))
-        if (file.isFile()) {
-          const asset = relative(dist, join(file.parentPath, file.name))
-            .split("\\")
-            .join("/");
-          expect(
-            files.has(`package/dist/${asset}`),
-            `${archive}: missing ${asset}`,
-          ).toBe(true);
+// Owner-approved formula from docs/reviews/m09b-plus-scaffold-phases.md.
+// Includes independent pack/export checks, fresh install, offline reinstall and verify.
+const measuredScaffoldMilliseconds = {
+  component: 83491.557542,
+  theme: 65578.59287499997,
+  plugin: 72129.82587500004,
+};
+for (const kind of ["component", "theme", "plugin"] as const) {
+  const deadline = Math.min(
+    120_000,
+    Math.ceil((2 * measuredScaffoldMilliseconds[kind]) / 10_000) * 10_000,
+  );
+  test(
+    `unedited ${kind} CLI scaffold installs every packed entry and passes pinned verify`,
+    async () => {
+      const root = await mkdtemp(join(tmpdir(), "ourform-cli-proof-"));
+      const kit = join(root, "kit");
+      const run = (args: string[], cwd = resolve(".")) => {
+        try {
+          const started = performance.now();
+          const result = execFileSync("pnpm", args, {
+            cwd,
+            encoding: "utf8",
+            timeout: 120000,
+            maxBuffer: 5 * 1024 * 1024,
+            // Initial dependency resolution may use the registry; the explicit offline
+            // install below must succeed after removing node_modules. npx --offline
+            // pins the test runner and must not disable this documented setup step.
+            env: { ...process.env, CI: "true", npm_config_offline: "false" },
+          });
+          console.info(
+            JSON.stringify({
+              scaffoldStep: args.join(" "),
+              project: cwd.split(/[\\/]/).at(-1),
+              milliseconds: performance.now() - started,
+            }),
+          );
+          return result;
+        } catch (error) {
+          if (error instanceof Error && "stdout" in error)
+            throw new Error(`${error.message}\n${String(error.stdout)}`);
+          throw error;
         }
-      if (manifest.name === "@ourform/builder")
-        for (const feature of [
-          "settings",
-          "settings-retry",
-          "json",
-          "commands",
-          "quick-add",
-          "quick-add-retry",
-        ])
-          expect(
-            files.has(`package/dist/features/${feature}.js`),
-            `missing lazy ${feature}`,
-          ).toBe(true);
-    }
-    for (const kind of ["component", "theme", "plugin"] as const) {
-      const directory = join(root, kind);
-      // Exercise the built executable users receive, not only the in-process generator.
-      execFileSync(
-        process.execPath,
-        [
-          resolve("packages/cli/dist/cli.js"),
-          `create-${kind}`,
-          `sample-${kind}`,
-          "--directory",
+      };
+      try {
+        run(["sdk:pack", kit]);
+        for (const archive of await readdir(kit)) {
+          const path = join(kit, archive);
+          const files = new Set(
+            execFileSync("tar", ["-tzf", path], { encoding: "utf8" }).split(
+              "\n",
+            ),
+          );
+          const manifest = JSON.parse(
+            execFileSync("tar", ["-xOzf", path, "package/package.json"], {
+              encoding: "utf8",
+            }),
+          );
+          const checkExports = (value: unknown): void => {
+            if (typeof value === "string" && value.startsWith("./"))
+              expect(
+                files.has(`package/${value.slice(2)}`),
+                `${archive}: ${value}`,
+              ).toBe(true);
+            else if (value && typeof value === "object")
+              Object.values(value).forEach(checkExports);
+          };
+          checkExports(manifest.exports);
+          const dist = resolve("packages", manifest.name.split("/")[1], "dist");
+          for (const file of await readdir(dist, {
+            recursive: true,
+            withFileTypes: true,
+          }))
+            if (file.isFile()) {
+              const asset = relative(dist, join(file.parentPath, file.name))
+                .split("\\")
+                .join("/");
+              expect(
+                files.has(`package/dist/${asset}`),
+                `${archive}: missing ${asset}`,
+              ).toBe(true);
+            }
+          if (manifest.name === "@ourform/builder")
+            for (const feature of [
+              "settings",
+              "settings-retry",
+              "json",
+              "commands",
+              "quick-add",
+              "quick-add-retry",
+            ])
+              expect(
+                files.has(`package/dist/features/${feature}.js`),
+                `missing lazy ${feature}`,
+              ).toBe(true);
+        }
+        const directory = join(root, kind);
+        // Exercise the built executable users receive, not only the in-process generator.
+        execFileSync(
+          process.execPath,
+          [
+            resolve("packages/cli/dist/cli.js"),
+            `create-${kind}`,
+            `sample-${kind}`,
+            "--directory",
+            directory,
+            "--local-packages",
+            kit,
+          ],
+          { encoding: "utf8" },
+        );
+        const cache = join(root, "registry-cache");
+        // A frozen workspace install caches contents but need not cache registry
+        // metadata for a new project's first resolution. Exercise the documented
+        // initial install with a fresh metadata cache, then prove frozen/offline use.
+        run(["install", "--prefer-offline", "--cache-dir", cache], directory);
+        await rm(join(directory, "node_modules"), {
+          recursive: true,
+          force: true,
+        });
+        run(
+          ["install", "--offline", "--frozen-lockfile", "--cache-dir", cache],
           directory,
-          "--local-packages",
-          kit,
-        ],
-        { encoding: "utf8" },
-      );
-      const cache = join(root, "registry-cache");
-      // A frozen workspace install caches contents but need not cache registry
-      // metadata for a new project's first resolution. Exercise the documented
-      // initial install with a fresh metadata cache, then prove frozen/offline use.
-      run(["install", "--prefer-offline", "--cache-dir", cache], directory);
-      await rm(join(directory, "node_modules"), {
-        recursive: true,
-        force: true,
-      });
-      run(
-        ["install", "--offline", "--frozen-lockfile", "--cache-dir", cache],
-        directory,
-      );
-      const result = run(["verify"], directory);
-      expect(result).toContain("1 passed");
-      expect(result).toContain("generated builder palette/undo/redo");
-    }
-  } finally {
-    await rm(root, { recursive: true, force: true });
-  }
-}, 180000);
+        );
+        const result = run(["verify"], directory);
+        expect(result).toContain("1 passed");
+        expect(result).toContain("generated builder palette/undo/redo");
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    },
+    deadline,
+  );
+}

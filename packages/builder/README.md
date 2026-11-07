@@ -7,6 +7,9 @@ real form renderer; no framework, drag library, global registry or network depen
 import { createBuilderController } from "@ourform/builder";
 import { builtinComponents } from "@ourform/components";
 import { AddComponent } from "@ourform/builder-core";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap4BuilderTheme } from "@ourform/builder/themes/bootstrap4";
 const controller = createBuilderController(
   document.querySelector("#builder")!,
   {
@@ -17,6 +20,9 @@ const controller = createBuilderController(
       components: [],
     },
     fields: builtinComponents,
+    theme: "base",
+    themes: [baseTheme, bootstrap4Theme],
+    builderThemes: [bootstrap4BuilderTheme],
     historyLimit: 100,
     onSchemaChange: ({ definition, patch }) => saveLocally(definition, patch),
   },

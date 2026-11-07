@@ -149,8 +149,11 @@ export function mountBulkEditor(
     button.id = `${body.id}-${index}`;
     button.setAttribute("aria-controls", body.id);
   });
-  for (const group of groups)
+  for (const group of groups) {
     ui._ofbStyle(group, "border", "0", "padding", "0", "margin", "0");
+    const legend = group.querySelector("legend");
+    if (legend) legend.className = "of-sr-only";
+  }
   for (const field of body.querySelectorAll<HTMLElement>(
     ".of-builder-property",
   )) {

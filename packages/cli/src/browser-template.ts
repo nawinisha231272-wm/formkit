@@ -50,8 +50,8 @@ export default defineConfig({test: {include: ["tests/**/*.test.ts"]}});\n`,
     "playwright.config.ts": `import { defineConfig, devices } from "@playwright/test";
 import { platform, arch } from "node:os";
 export default defineConfig({
-  // Independent theme/browser contexts share one local preview server.
-  testDir: "./browser", workers: 2, reporter: "list",
+  // Bound native browser load; every theme and browser still runs.
+  testDir: "./browser", workers: 1, reporter: "list",
   snapshotPathTemplate: \`{testDir}/__screenshots__/\${platform()}-\${arch()}/{projectName}/{arg}{ext}\`,
   use: {baseURL: "http://127.0.0.1:4175"},
   projects: [{name: "chromium", use: devices["Desktop Chrome"]}, {name: "firefox", use: devices["Desktop Firefox"]}, {name: "webkit", use: devices["Desktop Safari"]}],

@@ -26,7 +26,7 @@ async function action(page: Page, label: string) {
   const frame = page.getByRole("dialog", { name: "Commands", exact: true });
   await frame.getByRole("searchbox").fill(label);
   await frame
-    .getByRole("button", { name: `${label} 2 components`, exact: true })
+    .getByRole("option", { name: `${label} 2 components`, exact: true })
     .click();
 }
 
@@ -309,7 +309,7 @@ test("bulk property edit includes both a selected ancestor and descendant while 
   expect(await schema(page)).toBe(before);
   await action(page, "Edit");
   const editor = page.getByRole("dialog", {
-    name: "Edit selected components",
+    name: /^(Edit selected components|Edit \d+ components: .+)$/,
     exact: true,
   });
   await editor

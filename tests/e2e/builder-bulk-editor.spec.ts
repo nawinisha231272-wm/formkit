@@ -11,10 +11,10 @@ async function openBulk(page: import("@playwright/test").Page) {
     .getByRole("searchbox", { name: "Search commands" })
     .fill("Edit");
   await commands
-    .getByRole("button", { name: "Edit 2 components", exact: true })
+    .getByRole("option", { name: "Edit 2 components", exact: true })
     .click();
   return page.getByRole("dialog", {
-    name: "Edit selected components",
+    name: /^(Edit selected components|Edit \d+ components: .+)$/,
     exact: true,
   });
 }

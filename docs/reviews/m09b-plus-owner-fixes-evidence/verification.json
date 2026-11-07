@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-06",
+  "status": "LOCAL_PASS_CI_PENDING",
+  "baseHead": "7885dcaec4a838c8057391f5ae2dba834c9b81d6",
+  "verifyExit": 0,
+  "sourceUnchanged": true,
+  "unit": 341,
+  "browser": 1593,
+  "sizeGates": 36,
+  "runtimeCountTests": 5,
+  "consumerGates": {
+    "ui": 31784,
+    "builderCore": 7190,
+    "full": 67651
+  },
+  "limits": {
+    "ui": 31800,
+    "builderCore": 7300,
+    "full": 67700
+  },
+  "index": {
+    "platform": "darwin-arm64",
+    "fields": 500,
+    "milliseconds": 13.800000190734863,
+    "nodes": 500,
+    "visits": 500,
+    "cached": true,
+    "advisoryTargetMilliseconds": 50,
+    "advisoryTargetMet": true
+  },
+  "bulk": {
+    "platform": "darwin-arm64",
+    "fields": 500,
+    "indexMs": 11.97912500000001,
+    "indexNodeVisits": 500,
+    "bulk": {
+      "delete": {
+        "childCommands": 500,
+        "publications": 1,
+        "historyEntries": 1,
+        "milliseconds": 92.02987500000006
+      },
+      "move": {
+        "childCommands": 500,
+        "publications": 1,
+        "historyEntries": 1,
+        "milliseconds": 395.330833
+      },
+      "required": {
+        "childCommands": 500,
+        "publications": 1,
+        "historyEntries": 1,
+        "milliseconds": 230.40308300000004
+      }
+    }
+  },
+  "displayControl": {
+    "status": "CONFIRMED",
+    "baselineCompleted": 63,
+    "fixedCompleted": 200,
+    "baselineThreads": [8, 71],
+    "fixedThreads": [8, 13]
+  },
+  "screenshots": {
+    "changed": 295,
+    "new": 68,
+    "unchanged": 109
+  },
+  "sinceReviewCounts": {
+    "changed": 25,
+    "new": 30,
+    "unchanged": 417
+  },
+  "unexplained": 43,
+  "ci": "Current-head first-attempt checks will be linked in PR #16; no merge."
+}

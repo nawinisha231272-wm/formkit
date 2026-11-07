@@ -2,9 +2,10 @@ import { componentChildren } from "@ourform/schema";
 import type { ComponentNode, FormDefinition } from "@ourform/schema";
 import type { DropTarget } from "@ourform/builder-core";
 import { paletteGroups } from "../palette";
-import { componentTitle, button, element } from "../types";
+import { componentLocation, componentTitle, button, element } from "../types";
 import type { UI } from "../types";
 import { labelledInput } from "../primitives";
+import { icon, componentIcon } from "../icons";
 
 export function createCommandIndex() {
   let previous: FormDefinition | undefined;
@@ -66,6 +67,28 @@ export function mountCommands(
   const search = labelledInput(ui, ui.t("ofb.commandSearch"), "search");
   const input = search.input as HTMLInputElement;
   const results = element(ui.document, "div");
+  results.id = `ofb-commands-${globalThis.crypto.randomUUID()}`;
+  results.setAttribute("role", "listbox");
+  results.setAttribute("aria-label", ui.t("ofb.commands"));
+  input.setAttribute("aria-controls", results.id);
+  input.setAttribute("aria-autocomplete", "list");
+  let controls: HTMLButtonElement[] = [],
+    active = 0;
+  const activate = (index: number) => {
+    active = index;
+    controls.forEach((row, i) => {
+      row.setAttribute("aria-selected", String(i === active));
+      ui._ofbStyle(
+        row,
+        "background",
+        i === active ? "var(--ofb-accent-soft)" : "var(--ofb-transparent)",
+      );
+    });
+    if (controls[active]) {
+      input.setAttribute("aria-activedescendant", controls[active]!.id);
+      controls[active]!.scrollIntoView({ block: "nearest" });
+    } else input.removeAttribute("aria-activedescendant");
+  };
   ui._ofbStyle(host, "display", "grid", "gap", "12px");
   ui._ofbStyle(search.wrapper, "display", "grid", "gap", "6px");
   ui._ofbStyle(
@@ -86,27 +109,78 @@ export function mountCommands(
   let generation = 0;
   const draw = () => {
     results.replaceChildren();
+    controls = [];
     const query = input.value.trim().toLowerCase();
     const append = (
       group: string,
-      items: { label: string; run(): void; reason?: string }[],
+      items: {
+        label: string;
+        run(): void;
+        reason?: string;
+        type?: string;
+        location?: string;
+      }[],
     ) => {
       const matches = items
         .filter((item) => item.label.toLowerCase().includes(query))
         .slice(0, 30);
       if (!matches.length) return;
-      results.append(element(ui.document, "h3", ui.t(group)));
+      const section = element(ui.document, "div");
+      section.setAttribute("role", "group");
+      section.setAttribute("aria-label", ui.t(group));
+      const heading = element(ui.document, "h3", ui.t(group));
+      heading.setAttribute("aria-hidden", "true");
+      ui._ofbStyle(
+        heading,
+        "font-size",
+        "var(--ofb-font-size-small)",
+        "margin",
+        "8px 0 4px",
+      );
+      section.append(heading);
+      results.append(section);
       for (const item of matches) {
         const control = button(ui, item.label, () => {
           if (item.reason) return ui.announce(item.reason);
           options.close();
           item.run();
         });
+        control.id = `${results.id}-${controls.length}`;
+        control.setAttribute("role", "option");
+        control.setAttribute("aria-label", item.label);
+        control.tabIndex = -1;
+        control.prepend(
+          icon(ui.document, componentIcon(item.type ?? group), ui.icons),
+        );
+        if (item.location) {
+          const location = element(ui.document, "small", ` — ${item.location}`);
+          location.id = `${control.id}-location`;
+          control.setAttribute("aria-describedby", location.id);
+          control.append(location);
+        }
+        ui._ofbStyle(
+          control,
+          "display",
+          "flex",
+          "justify-content",
+          "start",
+          "text-align",
+          "start",
+          "inline-size",
+          "100%",
+          "padding",
+          "5px 8px",
+          "white-space",
+          "normal",
+        );
+        control.onpointermove = () => activate(controls.indexOf(control));
+        control.onmousedown = (event) => event.preventDefault();
+        controls.push(control);
         if (item.reason) {
           control.setAttribute("aria-disabled", "true");
           control.title = item.reason;
         }
-        results.append(control);
+        section.append(control);
       }
     };
     append(
@@ -121,6 +195,7 @@ export function mountCommands(
         )
         .map((item) => ({
           label: ui.t("ofb.addType", { title: ui.t(item.title) }),
+          type: item.type,
           run: () => {
             ui.add!(item.type, options.target());
           },
@@ -130,6 +205,11 @@ export function mountCommands(
       "ofb.commandJump",
       nodes.map((node) => ({
         label: componentTitle(ui, node),
+        type: node.type,
+        location: componentLocation(ui, ui.form!()!, node.id)
+          .split(" › ")
+          .slice(1, -1)
+          .join(" › "),
         run: () => options.jump(node.id),
       })),
     );
@@ -156,9 +236,11 @@ export function mountCommands(
               })
             : ui.t(`ofb.${action}`),
         ...(ids.length === 0 ? { reason: ui.t("ofb.singleAction") } : {}),
+        type: action,
         run: () => options.action(action, ids),
       })),
     );
+    activate(0);
   };
   input.addEventListener(
     "input",
@@ -176,21 +258,15 @@ export function mountCommands(
         event.stopPropagation();
         options.close();
       }
-      const controls = [
-        ...results.querySelectorAll<HTMLButtonElement>("button"),
-      ];
       if (["ArrowDown", "ArrowUp"].includes(event.key)) {
         event.preventDefault();
-        const current = controls.indexOf(
-          ui.document.activeElement as HTMLButtonElement,
+        activate(
+          (active + (event.key === "ArrowDown" ? 1 : controls.length - 1)) %
+            controls.length,
         );
-        controls[
-          (current + (event.key === "ArrowDown" ? 1 : controls.length - 1)) %
-            controls.length
-        ]?.focus();
       } else if (event.key === "Enter" && ui.document.activeElement === input) {
         event.preventDefault();
-        controls[0]?.click();
+        controls[active]?.click();
       }
     },
     { signal: ui.signal },

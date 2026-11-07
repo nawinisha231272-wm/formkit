@@ -23,7 +23,14 @@ import { ComponentActions } from "./component-actions";
 import { icon, componentIcon } from "./icons";
 import { paletteGroups } from "./palette";
 import { describeExpression, controlledFields } from "./signals";
-import { chip, placeSelection, dialog, actionButton, tabs } from "./primitives";
+import {
+  chip,
+  placeSelection,
+  dialog,
+  actionButton,
+  tabs,
+  disableAction,
+} from "./primitives";
 import type { FeatureLoader, FeatureModules } from "./feature-loader";
 import { SelectionSet } from "./selection-set";
 type Entry = { node: ComponentNode; parent?: ComponentNode };
@@ -215,7 +222,10 @@ export class Canvas {
       root,
       ui,
       ...(ui.icons ? { icons: ui.icons } : {}),
-      count: () => this._ofbSelectionSet._ofbMembers.length,
+      count: (id) =>
+        !id || this._ofbSelectionSet._ofbMembers.includes(id)
+          ? this._ofbSelectionSet._ofbMembers.length
+          : 1,
       restoreFocus: (anchor) => {
         this.#selectionFocus = true;
         anchor?.focus();
@@ -340,7 +350,7 @@ export class Canvas {
     caption.hidden = true;
     const input = element(this._ofbUi.document, "input");
     input.className = "ofb-inline-label";
-    const value = property
+    const valueBefore = property
       .split(".")
       .reduce<unknown>(
         (value, key) =>
@@ -350,8 +360,8 @@ export class Canvas {
         entry.node,
       );
     input.value =
-      typeof value === "string"
-        ? value
+      typeof valueBefore === "string"
+        ? valueBefore
         : componentTitle(this._ofbUi, entry.node);
     input.setAttribute("aria-label", this._ofbUi.t("ofb.editLabel"));
     caption.after(input);
@@ -369,7 +379,19 @@ export class Canvas {
           caption.focus();
           return;
         }
-        this._ofbUi.dispatch(new UpdateProperty(id, property, value));
+        const diagnostics = this._ofbUi.dispatch(
+          new UpdateProperty(id, property, value),
+        );
+        if (!diagnostics.some((item) => item.severity === "error"))
+          this._ofbUi.announce(
+            this._ofbUi.t("ofb.renamed", {
+              before:
+                typeof valueBefore === "string"
+                  ? valueBefore
+                  : componentTitle(this._ofbUi, entry.node),
+              after: value,
+            }),
+          );
       }
       if (restoreFocus) this.#roots.get(id)?.focus();
     };
@@ -400,7 +422,6 @@ export class Canvas {
         ui.t("ofb.featureLoading", { feature: ui.t("ofb.add") }),
       ),
     );
-    ui.announce(ui.t("ofb.featureLoading", { feature: ui.t("ofb.add") }));
     const source = paletteGroups(ui)
       .flatMap((group) => group.components)
       .filter(
@@ -427,8 +448,12 @@ export class Canvas {
     origin.focus();
     const load = () => {
       popup.setAttribute("aria-busy", "true");
-      void this._ofbFeatures
-        .load("quickAdd")
+      const request = this._ofbFeatures.load("quickAdd");
+      ui.loading(
+        request,
+        ui.t("ofb.featureLoading", { feature: ui.t("ofb.add") }),
+      );
+      void request
         .then(({ mountQuickAdd }) => {
           if (this.#mini !== popup || ui.signal.aborted) return;
           mountQuickAdd(popup, ui, {
@@ -1075,6 +1100,18 @@ export class Canvas {
     for (const [id, handle] of this.#handles) {
       attribute(handle, "aria-pressed", String(id === selected));
       const root = this.#roots.get(id)!;
+      for (const control of root.querySelectorAll<HTMLButtonElement>(
+        `:scope > .ofb-component-toolbar [data-ofb-action]`,
+      )) {
+        const action = control.dataset
+          .ofbAction as import("./types").ToolbarAction;
+        attribute(
+          control,
+          "aria-label",
+          this._ofbActions._ofbLabel(action, id),
+        );
+        disableAction(control, this._ofbActions._ofbReason(action, id));
+      }
       attribute(root, "data-of-selected", String(id === selected));
       attribute(
         root,
@@ -1373,9 +1410,17 @@ export class Canvas {
     if (this.#commands) return;
     const ui = this._ofbUi;
     const baseline = ui.builder.getState().definition;
-    const label = ui.t(
-      plan ? "ofb.planning" : bulk ? "ofb.bulk" : "ofb.commands",
-    );
+    const label =
+      bulk && !plan
+        ? ui.t("ofb.bulkAction", {
+            action: ui.t("ofb.edit"),
+            count: this._ofbSelectionSet._ofbMembers.length,
+          }) +
+          ": " +
+          this._ofbSelectionSet._ofbMembers
+            .map((id) => componentTitle(ui, this._ofbLocation(id)!.node))
+            .join(", ")
+        : ui.t(plan ? "ofb.planning" : "ofb.commands");
     const origin = ui.document.activeElement as HTMLElement | null;
     const local = new AbortController();
     const frame = dialog({ ...ui, signal: local.signal }, label, () => close());
@@ -1392,6 +1437,7 @@ export class Canvas {
     ui.signal.addEventListener("abort", close, { once: true });
     const heading = element(ui.document, "header");
     const title = element(ui.document, "h2", label);
+    title.title = label;
     ui._ofbStyle(
       frame.element,
       "padding",
@@ -1436,9 +1482,11 @@ export class Canvas {
       host.textContent = ui.t("ofb.featureLoading", {
         feature: label,
       });
-      ui.announce(host.textContent);
-      void this._ofbFeatures
-        .load(plan ? "planning" : bulk ? "bulk" : "commands")
+      const request = this._ofbFeatures.load(
+        plan ? "planning" : bulk ? "bulk" : "commands",
+      );
+      ui.loading(request, host.textContent, local.signal);
+      void request
         .then((module) => {
           if (local.signal.aborted) return;
           if ("selectionCommand" in module && plan) {

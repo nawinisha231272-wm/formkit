@@ -1,0 +1,110 @@
+{
+  "name": "baseline",
+  "start": "2026-11-07T00:11:38.164Z",
+  "pid": 49911,
+  "display": {
+    "source": "pmset display notification",
+    "event": "2026-11-06 19:11:32",
+    "asleep": true
+  },
+  "startThreads": 8,
+  "pages": [
+    {
+      "i": 0,
+      "ms": 1014.2522499999995,
+      "threads": 13,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 10,
+      "ms": 185.31020800000078,
+      "threads": 25,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 20,
+      "ms": 186.21424999999908,
+      "threads": 33,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 30,
+      "ms": 164.85625000000073,
+      "threads": 45,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 40,
+      "ms": 172.95699999999852,
+      "threads": 54,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 50,
+      "ms": 164.04383400000006,
+      "threads": 63,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 60,
+      "ms": 434.04170800000065,
+      "threads": 72,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    }
+  ],
+  "completed": 63,
+  "failed": true,
+  "failure": {
+    "i": 63,
+    "error": "TimeoutError: page.goto: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:4199/63\", waiting until \"load\"\u001b[22m\n",
+    "seen": 0,
+    "serverRequests": 0,
+    "threads": 70,
+    "display": {
+      "source": "pmset display notification",
+      "event": "2026-11-06 19:11:32",
+      "asleep": true
+    },
+    "externalProbe": {
+      "status": 200,
+      "milliseconds": 15.997333999999682,
+      "body": "<!doctype html><title>Probe</title><h1>ok</h1>"
+    },
+    "animationBlocked": true
+  },
+  "endThreads": 71,
+  "endDisplay": {
+    "source": "pmset display notification",
+    "event": "2026-11-06 19:11:32",
+    "asleep": true
+  },
+  "end": "2026-11-07T00:12:31.243Z"
+}

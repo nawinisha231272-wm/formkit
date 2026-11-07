@@ -5,9 +5,9 @@ import { resolve } from "node:path";
 const entrySource =
   'import { createBuilder } from "@ourform/builder"; import { bootstrap5Theme } from "@ourform/themes/bootstrap5"; import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5"; globalThis.mountOurFormBuilder = [createBuilder, bootstrap5Theme, bootstrap5BuilderTheme];';
 const limits = {
-  builderUiInitial: 31_600,
+  builderUiInitial: 31_800,
   builderCoreInitial: 7_300,
-  fullInitial: 67_400,
+  fullInitial: 67_700,
   logic: 10_000,
   json: 8_000,
   map: 10_000,

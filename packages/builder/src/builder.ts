@@ -220,12 +220,13 @@ export function createBuilderController(
   const announce: UI["announce"] = (message, action) => {
     dismiss();
     status.textContent = "";
-    if (!message) return;
+    if (!message) return dismiss;
     // Toast expiry never clears the independent polite live-region message.
     queueMicrotask(() => {
       if (!destroyed) status.textContent = message;
     });
-    notice.replaceChildren(document.createTextNode(message));
+    const text = document.createTextNode(message);
+    notice.replaceChildren(text);
     if (action) {
       const undoAction = document.createElement("button");
       undoAction.type = "button";
@@ -241,6 +242,22 @@ export function createBuilderController(
     remaining = action ? 8000 : 5000;
     started = Date.now();
     resume();
+    return () => {
+      if (notice.firstChild === text) dismiss();
+    };
+  };
+  const loading: UI["loading"] = (request, message, signal = events.signal) => {
+    let clear: (() => void) | undefined;
+    const timer = setTimeout(() => {
+      if (!signal.aborted) clear = announce(message);
+    }, 0);
+    const done = () => {
+      clearTimeout(timer);
+      clear?.();
+      signal.removeEventListener("abort", done);
+    };
+    signal.addEventListener("abort", done, { once: true });
+    void request.then(done, done);
   };
   document.addEventListener(
     "keydown",
@@ -390,6 +407,7 @@ export function createBuilderController(
     form: () => preview?.session.form,
     t,
     announce,
+    loading,
     _ofbStyle,
     dispatch,
     ...(options.icons ? { icons: options.icons } : {}),

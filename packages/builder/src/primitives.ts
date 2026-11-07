@@ -115,7 +115,8 @@ export function disableAction(
   if (reason) button.title = reason;
   else button.removeAttribute("title");
   const tip = button.querySelector<HTMLElement>('[role="tooltip"]');
-  if (tip) tip.textContent = reason ?? button.getAttribute("aria-label") ?? "";
+  const text = reason ?? button.ariaLabel;
+  if (tip && tip.textContent !== text) tip.textContent = text;
 }
 export function labelledInput(
   context: PrimitiveContext,

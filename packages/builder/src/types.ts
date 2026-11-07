@@ -86,7 +86,15 @@ export interface UI {
   builder: Builder;
   t(key: string, params?: Record<string, unknown>): string;
   dispatch(command: Command, options?: DispatchOptions): Diagnostic[];
-  announce(message: string, action?: { label: string; run(): void }): void;
+  announce(
+    message: string,
+    action?: { label: string; run(): void },
+  ): () => void;
+  loading(
+    request: Promise<unknown>,
+    message: string,
+    signal?: AbortSignal,
+  ): void;
   _ofbStyle(element: HTMLElement, ...declarations: string[]): void;
   liveProperties?: boolean;
   propertyIssue?: (key: string, message: string | undefined) => void;

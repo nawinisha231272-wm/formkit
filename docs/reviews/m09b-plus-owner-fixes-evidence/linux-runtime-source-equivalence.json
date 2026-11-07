@@ -1,0 +1,574 @@
+{
+  "method": "Compare saved source manifest from Linux capture era with final runtime package source; CLI author tooling excluded because it is not used by the captured builder",
+  "files": {
+    "packages/angular/src/index.ts": {
+      "savedLinuxEra": "2a41d15762339e80d21ed13288bdbeec4f5f901062022f8b4b69b6b53efa62f4",
+      "current": "2a41d15762339e80d21ed13288bdbeec4f5f901062022f8b4b69b6b53efa62f4"
+    },
+    "packages/builder-core/src/builder.ts": {
+      "savedLinuxEra": "39013c7b566919af18709d3ffb1240a0486706bbc82ae59600ee00ebc630c770",
+      "current": "39013c7b566919af18709d3ffb1240a0486706bbc82ae59600ee00ebc630c770"
+    },
+    "packages/builder-core/src/commands.ts": {
+      "savedLinuxEra": "c987ecd3ca26b33e2b713852355322e9018b6bb811577665b426f8673ae1a3ca",
+      "current": "c987ecd3ca26b33e2b713852355322e9018b6bb811577665b426f8673ae1a3ca"
+    },
+    "packages/builder-core/src/index.ts": {
+      "savedLinuxEra": "06a215e1c37d4435ab4332171cc01c003118b13722d6ef5c759e6fc762656d88",
+      "current": "06a215e1c37d4435ab4332171cc01c003118b13722d6ef5c759e6fc762656d88"
+    },
+    "packages/builder-core/src/locks.ts": {
+      "savedLinuxEra": "5dda1884dd44784890511a0762a1251ff18320fdcce9b0552938998acb4f6250",
+      "current": "5dda1884dd44784890511a0762a1251ff18320fdcce9b0552938998acb4f6250"
+    },
+    "packages/builder-core/src/property-panel.ts": {
+      "savedLinuxEra": "f3dce5f7f43fc0adeea53503a00cc6d9e2ae169ab4a37f967f7993bb6e6a21ee",
+      "current": "f3dce5f7f43fc0adeea53503a00cc6d9e2ae169ab4a37f967f7993bb6e6a21ee"
+    },
+    "packages/builder-core/src/structural-commands.ts": {
+      "savedLinuxEra": "3591963dedc5c34ff8e063775665000fed3c5547dff6c75925f34098f8dae8d5",
+      "current": "3591963dedc5c34ff8e063775665000fed3c5547dff6c75925f34098f8dae8d5"
+    },
+    "packages/builder-core/src/structure.ts": {
+      "savedLinuxEra": "1ff8acd1f513b12c3157e2544db12f514ba47cec0ea7fa746c6ea90e6940274d",
+      "current": "1ff8acd1f513b12c3157e2544db12f514ba47cec0ea7fa746c6ea90e6940274d"
+    },
+    "packages/builder/src/builder.ts": {
+      "savedLinuxEra": "9ad772924efea5cc0778e8fa93a9a9daf4b5bc2074efb5320886c986d83ff6f4",
+      "current": "9ad772924efea5cc0778e8fa93a9a9daf4b5bc2074efb5320886c986d83ff6f4"
+    },
+    "packages/builder/src/bulk-commands.ts": {
+      "savedLinuxEra": "ac1d197e572adbc44ccfde7616487a9d1076b01f25c49c62e93627f0b99a69e0",
+      "current": "ac1d197e572adbc44ccfde7616487a9d1076b01f25c49c62e93627f0b99a69e0"
+    },
+    "packages/builder/src/canvas.ts": {
+      "savedLinuxEra": "b20bfcdf93f567f72f3876ae515b7d95f05a4945583cc25eda4feca36588cd94",
+      "current": "b20bfcdf93f567f72f3876ae515b7d95f05a4945583cc25eda4feca36588cd94"
+    },
+    "packages/builder/src/component-actions.ts": {
+      "savedLinuxEra": "3cd0a8b03d3c2bb17be5b5c0a63dd1c2750daa48e9e11c3a2cbd0b1581ec2932",
+      "current": "3cd0a8b03d3c2bb17be5b5c0a63dd1c2750daa48e9e11c3a2cbd0b1581ec2932"
+    },
+    "packages/builder/src/editors.ts": {
+      "savedLinuxEra": "695af7231018ea6d68dfd0cee0e03da406557e30b6b0c15e30963f4b7bbaacc5",
+      "current": "695af7231018ea6d68dfd0cee0e03da406557e30b6b0c15e30963f4b7bbaacc5"
+    },
+    "packages/builder/src/entry-index.ts": {
+      "savedLinuxEra": "106501d6f8c51ba4b2ff28182fa927842d0a6f4515d9973ffe459e61b1a54643",
+      "current": "106501d6f8c51ba4b2ff28182fa927842d0a6f4515d9973ffe459e61b1a54643"
+    },
+    "packages/builder/src/feature-loader.ts": {
+      "savedLinuxEra": "eb35b92dd930e5e4af97bb8e3b3b65695ea2762fdbb11c318eb116ae9154a042",
+      "current": "eb35b92dd930e5e4af97bb8e3b3b65695ea2762fdbb11c318eb116ae9154a042"
+    },
+    "packages/builder/src/feature-outlet.ts": {
+      "savedLinuxEra": "59513e4eec5c62fb42b1dee1851264922691631dedf7de29a804a5bc1b04aa0d",
+      "current": "59513e4eec5c62fb42b1dee1851264922691631dedf7de29a804a5bc1b04aa0d"
+    },
+    "packages/builder/src/features/bulk-editor-retry.ts": {
+      "savedLinuxEra": "177b1f383255fb6ae11a57af7cd0f205ee02326286f73a644f7bd5e1f4f55db2",
+      "current": "177b1f383255fb6ae11a57af7cd0f205ee02326286f73a644f7bd5e1f4f55db2"
+    },
+    "packages/builder/src/features/bulk-editor.ts": {
+      "savedLinuxEra": "79f3b45c5da5cd1a09e3c7a23d0376e4a68c466d8c81b772b2f28d5084af52df",
+      "current": "79f3b45c5da5cd1a09e3c7a23d0376e4a68c466d8c81b772b2f28d5084af52df"
+    },
+    "packages/builder/src/features/bulk-plan-retry.ts": {
+      "savedLinuxEra": "2735c1d2678b9970bc2a872d1203e214047b9a3d405f5a3a560d96719e72004e",
+      "current": "2735c1d2678b9970bc2a872d1203e214047b9a3d405f5a3a560d96719e72004e"
+    },
+    "packages/builder/src/features/bulk-plan.ts": {
+      "savedLinuxEra": "2735c1d2678b9970bc2a872d1203e214047b9a3d405f5a3a560d96719e72004e",
+      "current": "2735c1d2678b9970bc2a872d1203e214047b9a3d405f5a3a560d96719e72004e"
+    },
+    "packages/builder/src/features/commands-retry.ts": {
+      "savedLinuxEra": "35498b45536d9a5392010524599049fe0b7284900df86674742bb93395c47a23",
+      "current": "35498b45536d9a5392010524599049fe0b7284900df86674742bb93395c47a23"
+    },
+    "packages/builder/src/features/commands.ts": {
+      "savedLinuxEra": "f31bc7db5a32d9359896116cd28fa3efa631deb5c08be8a7d451d46148ac6d07",
+      "current": "f31bc7db5a32d9359896116cd28fa3efa631deb5c08be8a7d451d46148ac6d07"
+    },
+    "packages/builder/src/features/data-retry.ts": {
+      "savedLinuxEra": "20bafbefa4f48a6bbae5e52a193a2e57f4d6f6725bfd2cb0571420ce5f786baa",
+      "current": "20bafbefa4f48a6bbae5e52a193a2e57f4d6f6725bfd2cb0571420ce5f786baa"
+    },
+    "packages/builder/src/features/data.ts": {
+      "savedLinuxEra": "ef6561f818502353114173e8b804aeb65c1a0b96d5b4d6e8f69347d4aced81a0",
+      "current": "ef6561f818502353114173e8b804aeb65c1a0b96d5b4d6e8f69347d4aced81a0"
+    },
+    "packages/builder/src/features/history.ts": {
+      "savedLinuxEra": "5238fde26b54a01346b8ea1a95ea62f240572304589d2bb3b8ac118d1ed5d106",
+      "current": "5238fde26b54a01346b8ea1a95ea62f240572304589d2bb3b8ac118d1ed5d106"
+    },
+    "packages/builder/src/features/json.ts": {
+      "savedLinuxEra": "924d4e6fa06699873e51a7c513ac3d0b4a5ad9493020ce560f79f2eaed898d6e",
+      "current": "924d4e6fa06699873e51a7c513ac3d0b4a5ad9493020ce560f79f2eaed898d6e"
+    },
+    "packages/builder/src/features/logic.ts": {
+      "savedLinuxEra": "632f1c1dccee169ec181e5f2ffec0d3286d00b7b1a362ed613a3193108a65d9b",
+      "current": "632f1c1dccee169ec181e5f2ffec0d3286d00b7b1a362ed613a3193108a65d9b"
+    },
+    "packages/builder/src/features/map.ts": {
+      "savedLinuxEra": "254ed5cd5744690882f6e044c067e3946e466d7611795620b835e9a8eb578b66",
+      "current": "254ed5cd5744690882f6e044c067e3946e466d7611795620b835e9a8eb578b66"
+    },
+    "packages/builder/src/features/quick-add-retry.ts": {
+      "savedLinuxEra": "02b3805a33b65dc070b4b5eea0796913bfefad1761c2af9bdb3d7d7dc685f26f",
+      "current": "02b3805a33b65dc070b4b5eea0796913bfefad1761c2af9bdb3d7d7dc685f26f"
+    },
+    "packages/builder/src/features/quick-add.ts": {
+      "savedLinuxEra": "589db41ae2204a32cfbfcc23d2539592b90b01c7a5fc04f4948fb17cb645e5b9",
+      "current": "589db41ae2204a32cfbfcc23d2539592b90b01c7a5fc04f4948fb17cb645e5b9"
+    },
+    "packages/builder/src/features/secondary-tools.ts": {
+      "savedLinuxEra": "bee50083e73394d99d4d0146f9297dc93977479257459a718553356214528baa",
+      "current": "bee50083e73394d99d4d0146f9297dc93977479257459a718553356214528baa"
+    },
+    "packages/builder/src/features/settings-retry.ts": {
+      "savedLinuxEra": "813836edab6ce43a5a729084b96ef84d9f577cb2064c29fa3e52b7f04e37f17f",
+      "current": "813836edab6ce43a5a729084b96ef84d9f577cb2064c29fa3e52b7f04e37f17f"
+    },
+    "packages/builder/src/icons.ts": {
+      "savedLinuxEra": "f721a3a048deda2e91ef4d518a5a412528d19b3f962144a345b7ed7b4ba168b7",
+      "current": "f721a3a048deda2e91ef4d518a5a412528d19b3f962144a345b7ed7b4ba168b7"
+    },
+    "packages/builder/src/index.ts": {
+      "savedLinuxEra": "1d7453c9418d7752befacfe0969f55142ea4e5d7bb241f6d57825803a9a50610",
+      "current": "1d7453c9418d7752befacfe0969f55142ea4e5d7bb241f6d57825803a9a50610"
+    },
+    "packages/builder/src/issues.ts": {
+      "savedLinuxEra": "8fc0fde243875f7e6b40a5cd8151419f9d185fe07ab959ebcacd2909fe44d510",
+      "current": "8fc0fde243875f7e6b40a5cd8151419f9d185fe07ab959ebcacd2909fe44d510"
+    },
+    "packages/builder/src/messages.ts": {
+      "savedLinuxEra": "fdf1fbc8228528b113364972bbeb049cc8c1e7e15ba43918198b4e2d55e31010",
+      "current": "fdf1fbc8228528b113364972bbeb049cc8c1e7e15ba43918198b4e2d55e31010"
+    },
+    "packages/builder/src/palette.ts": {
+      "savedLinuxEra": "7aa774690f0a55bd554ead97f194b9c28d15bb6c35e78187d686edcc6f932026",
+      "current": "7aa774690f0a55bd554ead97f194b9c28d15bb6c35e78187d686edcc6f932026"
+    },
+    "packages/builder/src/picker.ts": {
+      "savedLinuxEra": "533b2f9665f582b85cab04c409c549db26ac9d9548f962bb04f7fd3315fe1f4b",
+      "current": "533b2f9665f582b85cab04c409c549db26ac9d9548f962bb04f7fd3315fe1f4b"
+    },
+    "packages/builder/src/pointer-style.ts": {
+      "savedLinuxEra": "555632480fb41226a478d833d1da329eb137c898ec3b9e72a2ac9f00edc4ea96",
+      "current": "555632480fb41226a478d833d1da329eb137c898ec3b9e72a2ac9f00edc4ea96"
+    },
+    "packages/builder/src/pointer.ts": {
+      "savedLinuxEra": "2a2d6080907fc9fad37d5b38fbf219747ac41b97a7669bbb5c047ded5d28e13c",
+      "current": "2a2d6080907fc9fad37d5b38fbf219747ac41b97a7669bbb5c047ded5d28e13c"
+    },
+    "packages/builder/src/primitive-style.ts": {
+      "savedLinuxEra": "884f0359718c5afd7f4409ac49203ef96db34da771e05aceed7d85626084226b",
+      "current": "884f0359718c5afd7f4409ac49203ef96db34da771e05aceed7d85626084226b"
+    },
+    "packages/builder/src/primitives.ts": {
+      "savedLinuxEra": "ad24bc627f5b4c2c2afeb9b98861f14b0acf3d77a45fc23f7b8b703b57c04690",
+      "current": "ad24bc627f5b4c2c2afeb9b98861f14b0acf3d77a45fc23f7b8b703b57c04690"
+    },
+    "packages/builder/src/selection-set.ts": {
+      "savedLinuxEra": "64c967596149ce1ff2c6e93adbd2be92587f9502174b4a72d110cc917e356646",
+      "current": "64c967596149ce1ff2c6e93adbd2be92587f9502174b4a72d110cc917e356646"
+    },
+    "packages/builder/src/settings-loader.ts": {
+      "savedLinuxEra": "31e7a2243613fbdcdc8dfe25dfc2593118d75782539c54b21d69dafe78b65df7",
+      "current": "31e7a2243613fbdcdc8dfe25dfc2593118d75782539c54b21d69dafe78b65df7"
+    },
+    "packages/builder/src/settings-messages.ts": {
+      "savedLinuxEra": "98cf391667c916f10c843e94d27b1d61e0233ff3a0c338e582c03370868bac76",
+      "current": "98cf391667c916f10c843e94d27b1d61e0233ff3a0c338e582c03370868bac76"
+    },
+    "packages/builder/src/settings-style.ts": {
+      "savedLinuxEra": "09954773a9af3199330b46daa62d6f21c5483a3038b8ecad295af56e97c18ace",
+      "current": "09954773a9af3199330b46daa62d6f21c5483a3038b8ecad295af56e97c18ace"
+    },
+    "packages/builder/src/settings.ts": {
+      "savedLinuxEra": "69c4a3b126c4496660022b67567ce6982dea3136805a1103909dfec7a52b385f",
+      "current": "69c4a3b126c4496660022b67567ce6982dea3136805a1103909dfec7a52b385f"
+    },
+    "packages/builder/src/sidebar.ts": {
+      "savedLinuxEra": "0911c726c8a563add6da3b88e36be4994975a5cc1d2cebe7b20caa25d0146139",
+      "current": "0911c726c8a563add6da3b88e36be4994975a5cc1d2cebe7b20caa25d0146139"
+    },
+    "packages/builder/src/signals.ts": {
+      "savedLinuxEra": "b86c3559162d9ab3355c67630c4c09ddbc19bcbd8cc79be81c2e7f319495e20a",
+      "current": "b86c3559162d9ab3355c67630c4c09ddbc19bcbd8cc79be81c2e7f319495e20a"
+    },
+    "packages/builder/src/style.ts": {
+      "savedLinuxEra": "9823e8c72d2044cb916719a1fc715463e94c7fb3141dfb47f2878b571633617a",
+      "current": "9823e8c72d2044cb916719a1fc715463e94c7fb3141dfb47f2878b571633617a"
+    },
+    "packages/builder/src/theme.ts": {
+      "savedLinuxEra": "448845874b8f74c38ca9c0758aae57b7a1f07e2b1ffcc0cbc785ea5d6b17b27c",
+      "current": "448845874b8f74c38ca9c0758aae57b7a1f07e2b1ffcc0cbc785ea5d6b17b27c"
+    },
+    "packages/builder/src/themes/base.ts": {
+      "savedLinuxEra": "fcf20b3beadb4981aaeb85b3d47803a4309c25f2c8dd2ae9a8201ce032407e4a",
+      "current": "fcf20b3beadb4981aaeb85b3d47803a4309c25f2c8dd2ae9a8201ce032407e4a"
+    },
+    "packages/builder/src/themes/bootstrap4.ts": {
+      "savedLinuxEra": "c8d8bfd242e2054bb12ffe1dc7ddd776a04d409f5a679df6b7641f91c56047e2",
+      "current": "c8d8bfd242e2054bb12ffe1dc7ddd776a04d409f5a679df6b7641f91c56047e2"
+    },
+    "packages/builder/src/themes/bootstrap5.ts": {
+      "savedLinuxEra": "b318ca9409db10044dc6f5c9808e7c83042e6e55b5083a415ebe569a320c98fb",
+      "current": "b318ca9409db10044dc6f5c9808e7c83042e6e55b5083a415ebe569a320c98fb"
+    },
+    "packages/builder/src/themes/material.ts": {
+      "savedLinuxEra": "b59ebdbf17a1c491b45167b8c8608994d819732dc1ceeb4d7e68d6d61ea80cf3",
+      "current": "b59ebdbf17a1c491b45167b8c8608994d819732dc1ceeb4d7e68d6d61ea80cf3"
+    },
+    "packages/builder/src/themes/tailwind.ts": {
+      "savedLinuxEra": "9fe4338c8cfaffad2538b06197e8a68b7a8dd4ecf356dc120c860d899806bc21",
+      "current": "9fe4338c8cfaffad2538b06197e8a68b7a8dd4ecf356dc120c860d899806bc21"
+    },
+    "packages/builder/src/types.ts": {
+      "savedLinuxEra": "71050d72b50d32bb46ac74441945b7801cbb89818748135fbcb817958770c10f",
+      "current": "71050d72b50d32bb46ac74441945b7801cbb89818748135fbcb817958770c10f"
+    },
+    "packages/builder/src/workbench-style.ts": {
+      "savedLinuxEra": "269d74e040b615d63c56b21c012ede455adbaf6ed9b5ca3563c9305a5e11924b",
+      "current": "269d74e040b615d63c56b21c012ede455adbaf6ed9b5ca3563c9305a5e11924b"
+    },
+    "packages/builder/src/workbench.ts": {
+      "savedLinuxEra": "448d414663693e7b81dbb39633af2fa1fadcd940cac22b9109091fbde22855ee",
+      "current": "448d414663693e7b81dbb39633af2fa1fadcd940cac22b9109091fbde22855ee"
+    },
+    "packages/components/src/button.ts": {
+      "savedLinuxEra": "aad77e7cf0625188935e1b0e0970d6c05cb6a11e8bb64eeebba764b36c2ecabc",
+      "current": "aad77e7cf0625188935e1b0e0970d6c05cb6a11e8bb64eeebba764b36c2ecabc"
+    },
+    "packages/components/src/checkbox.ts": {
+      "savedLinuxEra": "88bc630e24d169cc5056c649416ab690b34921225504367dcadefcc3d5d8ce66",
+      "current": "88bc630e24d169cc5056c649416ab690b34921225504367dcadefcc3d5d8ce66"
+    },
+    "packages/components/src/choices.ts": {
+      "savedLinuxEra": "0481e113d2b36ce0c505a924e2d0468ba2e517795d38569dca4d39f0f24ab496",
+      "current": "0481e113d2b36ce0c505a924e2d0468ba2e517795d38569dca4d39f0f24ab496"
+    },
+    "packages/components/src/content.ts": {
+      "savedLinuxEra": "42e194e1b5e56a128414754e78875c30e720af3f3c00c077b86bc5f7f591a0b5",
+      "current": "42e194e1b5e56a128414754e78875c30e720af3f3c00c077b86bc5f7f591a0b5"
+    },
+    "packages/components/src/index.ts": {
+      "savedLinuxEra": "8357ec4280ce8f1bcb036e29c86541acd65ba16a295ad4c29a753b1575f20116",
+      "current": "8357ec4280ce8f1bcb036e29c86541acd65ba16a295ad4c29a753b1575f20116"
+    },
+    "packages/components/src/layouts.ts": {
+      "savedLinuxEra": "83c07572dbd65ab87091b30a0d3637030d7fb258c19092d11f38f4b6134747b2",
+      "current": "83c07572dbd65ab87091b30a0d3637030d7fb258c19092d11f38f4b6134747b2"
+    },
+    "packages/components/src/number.ts": {
+      "savedLinuxEra": "5fd2081be2299b93026093009731000bc1d8b87c86201d2d69e0420f68f5941c",
+      "current": "5fd2081be2299b93026093009731000bc1d8b87c86201d2d69e0420f68f5941c"
+    },
+    "packages/components/src/rating.ts": {
+      "savedLinuxEra": "93e54cd376c4c47dfa6230f32e262f3ed351081538713a44008f4de1f490d3da",
+      "current": "93e54cd376c4c47dfa6230f32e262f3ed351081538713a44008f4de1f490d3da"
+    },
+    "packages/components/src/tabs.ts": {
+      "savedLinuxEra": "da657980eb432e7b697b42b69b4c376336cc4dc1cfa87ec349b6bc0ae81f3634",
+      "current": "da657980eb432e7b697b42b69b4c376336cc4dc1cfa87ec349b6bc0ae81f3634"
+    },
+    "packages/components/src/text-variants.ts": {
+      "savedLinuxEra": "112c47746d3113bb238fc8d30d550066f329986496feae20a5f55e5a22d32acf",
+      "current": "112c47746d3113bb238fc8d30d550066f329986496feae20a5f55e5a22d32acf"
+    },
+    "packages/components/src/text.ts": {
+      "savedLinuxEra": "6aec81c94148317a345d018a4ca424ae9ad23aa6c7548df54f17d80c372c972e",
+      "current": "6aec81c94148317a345d018a4ca424ae9ad23aa6c7548df54f17d80c372c972e"
+    },
+    "packages/core/src/composites.ts": {
+      "savedLinuxEra": "7b7be8e99bb9ff7b9b3874d754c11a24ae2444588f881008e5430505c3fb0593",
+      "current": "7b7be8e99bb9ff7b9b3874d754c11a24ae2444588f881008e5430505c3fb0593"
+    },
+    "packages/core/src/engine.ts": {
+      "savedLinuxEra": "39319cadc9a94334e850fa6931d2a8daf0fdc7eeafaeecf9b9186e00c22273e7",
+      "current": "39319cadc9a94334e850fa6931d2a8daf0fdc7eeafaeecf9b9186e00c22273e7"
+    },
+    "packages/core/src/expressions.ts": {
+      "savedLinuxEra": "45c45195e948b773d274fd23c2971c1efc56ae581b8b229e2f37c62e9fd4d683",
+      "current": "45c45195e948b773d274fd23c2971c1efc56ae581b8b229e2f37c62e9fd4d683"
+    },
+    "packages/core/src/graph.ts": {
+      "savedLinuxEra": "2676658c0a41d8af2fdc902f064133ae54d403b98efa3375baa351b82ee2f3ad",
+      "current": "2676658c0a41d8af2fdc902f064133ae54d403b98efa3375baa351b82ee2f3ad"
+    },
+    "packages/core/src/index.ts": {
+      "savedLinuxEra": "1b552e32a89872e712ad779c8d8efb5c054ca1e06427224b03936b28fce7f0be",
+      "current": "1b552e32a89872e712ad779c8d8efb5c054ca1e06427224b03936b28fce7f0be"
+    },
+    "packages/core/src/messages.ts": {
+      "savedLinuxEra": "44ec9c544246cb65178ca9cb1de2f6ddef9d380c6b12c8ffb0b0a5909c4796a6",
+      "current": "44ec9c544246cb65178ca9cb1de2f6ddef9d380c6b12c8ffb0b0a5909c4796a6"
+    },
+    "packages/core/src/model.ts": {
+      "savedLinuxEra": "de0ba6c4478bb4a8dad905efb626027bb38eb9ac0b91cc4b90cf136087b81390",
+      "current": "de0ba6c4478bb4a8dad905efb626027bb38eb9ac0b91cc4b90cf136087b81390"
+    },
+    "packages/core/src/paths.ts": {
+      "savedLinuxEra": "3e4638c9850c045850bb38cce395608e51d27aa8fb554d6fb06c8d5cbd31d599",
+      "current": "3e4638c9850c045850bb38cce395608e51d27aa8fb554d6fb06c8d5cbd31d599"
+    },
+    "packages/core/src/plugins.ts": {
+      "savedLinuxEra": "64e26ff7f4c58fecb72ea6497fdee20fbecc43cc7cb4b5df28abe119ab306585",
+      "current": "64e26ff7f4c58fecb72ea6497fdee20fbecc43cc7cb4b5df28abe119ab306585"
+    },
+    "packages/core/src/session.ts": {
+      "savedLinuxEra": "cc5ecc543a664335d899832b23124818f22851118e6917d4233b4b01d8371f0a",
+      "current": "cc5ecc543a664335d899832b23124818f22851118e6917d4233b4b01d8371f0a"
+    },
+    "packages/core/src/slots.ts": {
+      "savedLinuxEra": "3d2f2634809e9d800f93dbbd9e319de70f7e6665706ac66930c72799a75e4cd5",
+      "current": "3d2f2634809e9d800f93dbbd9e319de70f7e6665706ac66930c72799a75e4cd5"
+    },
+    "packages/core/src/types.ts": {
+      "savedLinuxEra": "0a4c067c359ecd4f3c2cde5d32f6e56474cea81c00aa9162976785cd6f9c9b27",
+      "current": "0a4c067c359ecd4f3c2cde5d32f6e56474cea81c00aa9162976785cd6f9c9b27"
+    },
+    "packages/core/src/validation.ts": {
+      "savedLinuxEra": "b19acdbfd566963ea736a826b653894b5702c902c36a5888ecf56414ae07a74c",
+      "current": "b19acdbfd566963ea736a826b653894b5702c902c36a5888ecf56414ae07a74c"
+    },
+    "packages/core/src/validators.ts": {
+      "savedLinuxEra": "cdede4891b7f6f054c7e5d661699fd4a7670349312ee5a903a4a251a75cdb337",
+      "current": "cdede4891b7f6f054c7e5d661699fd4a7670349312ee5a903a4a251a75cdb337"
+    },
+    "packages/element/src/index.ts": {
+      "savedLinuxEra": "70d31d1912b4ad6e8f8980a7b95c4d5c899fcfc305b815117dc75f5bc805f6c1",
+      "current": "70d31d1912b4ad6e8f8980a7b95c4d5c899fcfc305b815117dc75f5bc805f6c1"
+    },
+    "packages/react/src/index.ts": {
+      "savedLinuxEra": "699d552c087edefc6e2db5641aaca299bf0c2f26f92ac024f23dbc8342659e3d",
+      "current": "699d552c087edefc6e2db5641aaca299bf0c2f26f92ac024f23dbc8342659e3d"
+    },
+    "packages/renderer-dom/src/host.ts": {
+      "savedLinuxEra": "1689a60bb5cc1e087b25458a3b6f30a132537ed5bf987f3d7f9599654e51b274",
+      "current": "1689a60bb5cc1e087b25458a3b6f30a132537ed5bf987f3d7f9599654e51b274"
+    },
+    "packages/renderer-dom/src/index.ts": {
+      "savedLinuxEra": "249beb97483f4b081f6fd06f68c5a2bdc8e7f7c196292a7ca5a811e2deff30ba",
+      "current": "249beb97483f4b081f6fd06f68c5a2bdc8e7f7c196292a7ca5a811e2deff30ba"
+    },
+    "packages/renderer-dom/src/layout.ts": {
+      "savedLinuxEra": "95c0553d63c7b81a78e1c1161e8a3d6ffa632e7b9dba4a88cb974776918bb5b7",
+      "current": "95c0553d63c7b81a78e1c1161e8a3d6ffa632e7b9dba4a88cb974776918bb5b7"
+    },
+    "packages/renderer-dom/src/native.ts": {
+      "savedLinuxEra": "d221771a0792bb244878b0b4ebd2897d63c44c0ffed20baa520b493a96040570",
+      "current": "d221771a0792bb244878b0b4ebd2897d63c44c0ffed20baa520b493a96040570"
+    },
+    "packages/renderer-dom/src/render.ts": {
+      "savedLinuxEra": "ba633715f9d6d331ee8066601f5c6bb356db8770d943a9de69f7df117aa11c16",
+      "current": "ba633715f9d6d331ee8066601f5c6bb356db8770d943a9de69f7df117aa11c16"
+    },
+    "packages/renderer-dom/src/shell.ts": {
+      "savedLinuxEra": "389c0f81bb86d3d18ee210f9886bbd4b56d77014296f2be18665e1386ba02494",
+      "current": "389c0f81bb86d3d18ee210f9886bbd4b56d77014296f2be18665e1386ba02494"
+    },
+    "packages/renderer-dom/src/theme.ts": {
+      "savedLinuxEra": "5f304a6f8780bd310517a75c9ff1a40901991cbc561a6b19a3925e499f90cb8b",
+      "current": "5f304a6f8780bd310517a75c9ff1a40901991cbc561a6b19a3925e499f90cb8b"
+    },
+    "packages/renderer-dom/src/vnode-dom.ts": {
+      "savedLinuxEra": "cd0047ad4b2616b4e4224435c31512f4e242944022d373069784a38af2355b94",
+      "current": "cd0047ad4b2616b4e4224435c31512f4e242944022d373069784a38af2355b94"
+    },
+    "packages/schema/src/children.ts": {
+      "savedLinuxEra": "c70b0ae5d82cb26af1be6f19975dd4e6b1eab9548d98bc480320bebaf75a598d",
+      "current": "c70b0ae5d82cb26af1be6f19975dd4e6b1eab9548d98bc480320bebaf75a598d"
+    },
+    "packages/schema/src/form-definition.schema.json": {
+      "savedLinuxEra": "1d26448c2d5eb6cca6c6966e4a5eebd3e74aab1f2160fbc497e080a3cb03c8ce",
+      "current": "1d26448c2d5eb6cca6c6966e4a5eebd3e74aab1f2160fbc497e080a3cb03c8ce"
+    },
+    "packages/schema/src/index.ts": {
+      "savedLinuxEra": "0842b2ac2e2f20ff6249c11580de3f9a34db9b5e414d26c8f71e047c7f07bd73",
+      "current": "0842b2ac2e2f20ff6249c11580de3f9a34db9b5e414d26c8f71e047c7f07bd73"
+    },
+    "packages/schema/src/json.ts": {
+      "savedLinuxEra": "3ec7b7a0584f9758f2817de6d4152544d59c9da6e06537ec223d3a06c9537a6d",
+      "current": "3ec7b7a0584f9758f2817de6d4152544d59c9da6e06537ec223d3a06c9537a6d"
+    },
+    "packages/schema/src/migrate-columns.ts": {
+      "savedLinuxEra": "a3e7a10156af0a05381bc3bb4459188f888dc29db76039a6caf968eb68087fe3",
+      "current": "a3e7a10156af0a05381bc3bb4459188f888dc29db76039a6caf968eb68087fe3"
+    },
+    "packages/schema/src/properties.ts": {
+      "savedLinuxEra": "ce9c759465439dc50277548e4922300a48807204d827b5c253d67fcfe839e326",
+      "current": "ce9c759465439dc50277548e4922300a48807204d827b5c253d67fcfe839e326"
+    },
+    "packages/schema/src/shape.ts": {
+      "savedLinuxEra": "162ea8ada930a33bbe033621a28d6aa70b89dfb0e617ec88da0e70cb7e4e4bce",
+      "current": "162ea8ada930a33bbe033621a28d6aa70b89dfb0e617ec88da0e70cb7e4e4bce"
+    },
+    "packages/schema/src/submission-schema.ts": {
+      "savedLinuxEra": "9270cd7bc74de1a4f2a36444a0cfd2da38555587a1fbb5813731ed9d64f229d8",
+      "current": "9270cd7bc74de1a4f2a36444a0cfd2da38555587a1fbb5813731ed9d64f229d8"
+    },
+    "packages/schema/src/types.ts": {
+      "savedLinuxEra": "78d0c377a4caae8b1ffbd3cdd51845b48e25438b9159a2fd5bd87c0f66262338",
+      "current": "78d0c377a4caae8b1ffbd3cdd51845b48e25438b9159a2fd5bd87c0f66262338"
+    },
+    "packages/schema/src/validate-definition.ts": {
+      "savedLinuxEra": "d23c313285e6840e8d71206cb7dde7323336e1d91fc9d16c163b50b89b7ffdd8",
+      "current": "d23c313285e6840e8d71206cb7dde7323336e1d91fc9d16c163b50b89b7ffdd8"
+    },
+    "packages/sdk/src/builder-theme.ts": {
+      "savedLinuxEra": "48a61e356e26617f4bf12debfe95b72ca6bc243a1dd86f06253228798ef66fea",
+      "current": "48a61e356e26617f4bf12debfe95b72ca6bc243a1dd86f06253228798ef66fea"
+    },
+    "packages/sdk/src/config.ts": {
+      "savedLinuxEra": "cdb46e285b9bfad7d7f93a4976bd21abed38931b5ea9ec976de19598e3268616",
+      "current": "cdb46e285b9bfad7d7f93a4976bd21abed38931b5ea9ec976de19598e3268616"
+    },
+    "packages/sdk/src/contracts.ts": {
+      "savedLinuxEra": "41cf9b9df65d99ee034104148a114401fe40e49c1c35c9a0b3f06f58701a086a",
+      "current": "41cf9b9df65d99ee034104148a114401fe40e49c1c35c9a0b3f06f58701a086a"
+    },
+    "packages/sdk/src/define-composite.ts": {
+      "savedLinuxEra": "96050b0fccdd9ba861bbf1ac287ba995fcf83b90fe80186aaa4a075c191501be",
+      "current": "96050b0fccdd9ba861bbf1ac287ba995fcf83b90fe80186aaa4a075c191501be"
+    },
+    "packages/sdk/src/define-display.ts": {
+      "savedLinuxEra": "be2dcab6aab2398be4ae4cbe3af8b4e03f12baf3508c2710219ef9fa59a0481a",
+      "current": "be2dcab6aab2398be4ae4cbe3af8b4e03f12baf3508c2710219ef9fa59a0481a"
+    },
+    "packages/sdk/src/define-field.ts": {
+      "savedLinuxEra": "bffe3aeebec49d5c342e96cdee9daf674bac190cecea291a708e810a5cc37e3d",
+      "current": "bffe3aeebec49d5c342e96cdee9daf674bac190cecea291a708e810a5cc37e3d"
+    },
+    "packages/sdk/src/define-layout.ts": {
+      "savedLinuxEra": "a559dad43a3ad3ad80b882177e27db54cbf0d7fa43b1dd38449a2a3bfcf68af1",
+      "current": "a559dad43a3ad3ad80b882177e27db54cbf0d7fa43b1dd38449a2a3bfcf68af1"
+    },
+    "packages/sdk/src/define-plugin.ts": {
+      "savedLinuxEra": "6f60492eceed72fdc1d6c5ba07d37cd55d2bc8590f090f33e50fe5973ee6d828",
+      "current": "6f60492eceed72fdc1d6c5ba07d37cd55d2bc8590f090f33e50fe5973ee6d828"
+    },
+    "packages/sdk/src/define-preset.ts": {
+      "savedLinuxEra": "4a64cb23fa669f189749e5b690b2ff7aef7b74e8c497c5bce8a6990f640cc55a",
+      "current": "4a64cb23fa669f189749e5b690b2ff7aef7b74e8c497c5bce8a6990f640cc55a"
+    },
+    "packages/sdk/src/index.ts": {
+      "savedLinuxEra": "fb68e6fdb9279bc9f0eb4b4f76b3415db174956ba050633655fe615a1f58da27",
+      "current": "fb68e6fdb9279bc9f0eb4b4f76b3415db174956ba050633655fe615a1f58da27"
+    },
+    "packages/sdk/src/messages.ts": {
+      "savedLinuxEra": "138340fca4b723d49f5e67cd62019ec42a64abe74bb35a716209b5dd3ebbd363",
+      "current": "138340fca4b723d49f5e67cd62019ec42a64abe74bb35a716209b5dd3ebbd363"
+    },
+    "packages/sdk/src/native.ts": {
+      "savedLinuxEra": "4516e038e5e5997259d45e814ecf1846d60ca6b91b4eeeecb6b3afc62b742b1f",
+      "current": "4516e038e5e5997259d45e814ecf1846d60ca6b91b4eeeecb6b3afc62b742b1f"
+    },
+    "packages/sdk/src/properties.ts": {
+      "savedLinuxEra": "b972e63574082bd335b32d722e735d504af6955263f9cf2cb79086c04ffa8462",
+      "current": "b972e63574082bd335b32d722e735d504af6955263f9cf2cb79086c04ffa8462"
+    },
+    "packages/sdk/src/theme.ts": {
+      "savedLinuxEra": "bb6694f69e3787e5f30f08a8e220593355ec4eae9aafea3ea0f12c15a46dea16",
+      "current": "bb6694f69e3787e5f30f08a8e220593355ec4eae9aafea3ea0f12c15a46dea16"
+    },
+    "packages/sdk/src/value.ts": {
+      "savedLinuxEra": "c6209de6c412d540189dcc0d70069ba78fa6d032e1d1094780d154f694db0067",
+      "current": "c6209de6c412d540189dcc0d70069ba78fa6d032e1d1094780d154f694db0067"
+    },
+    "packages/sdk/src/vnode.ts": {
+      "savedLinuxEra": "ec2e74c7e7f458543998faafaac23e58f87827e829e8244f22d9f5d3870e63b7",
+      "current": "ec2e74c7e7f458543998faafaac23e58f87827e829e8244f22d9f5d3870e63b7"
+    },
+    "packages/testing/src/authoring.ts": {
+      "savedLinuxEra": "66c236065002f2a2e86faaa90a34f8e5a728af5d1015e0c4790a85e3bf38ebf5",
+      "current": "66c236065002f2a2e86faaa90a34f8e5a728af5d1015e0c4790a85e3bf38ebf5"
+    },
+    "packages/testing/src/component-builder.ts": {
+      "savedLinuxEra": "a2c6d8e3ea0fa9ebf5cce7a2b27b7e2a7eda827095ae6b53787e66280f3a0777",
+      "current": "a2c6d8e3ea0fa9ebf5cce7a2b27b7e2a7eda827095ae6b53787e66280f3a0777"
+    },
+    "packages/testing/src/components.ts": {
+      "savedLinuxEra": "fae985ea496d15d5f8117756cee995aa03066ebe11017d3cf1cbbe1d715577ce",
+      "current": "fae985ea496d15d5f8117756cee995aa03066ebe11017d3cf1cbbe1d715577ce"
+    },
+    "packages/testing/src/index.ts": {
+      "savedLinuxEra": "9c654374aa08226aa148bca295804f71a339c0b8b84a35b98c334e89d4c6c630",
+      "current": "9c654374aa08226aa148bca295804f71a339c0b8b84a35b98c334e89d4c6c630"
+    },
+    "packages/testing/src/playwright.ts": {
+      "savedLinuxEra": "9e7b3ef8848b57947227ef0e84601c509fd224e4c01e397f95296eb14d32eb42",
+      "current": "9e7b3ef8848b57947227ef0e84601c509fd224e4c01e397f95296eb14d32eb42"
+    },
+    "packages/theme-base/src/builder-theme.ts": {
+      "savedLinuxEra": "0fb195bb51e6efe26bbe212f469b6b526f7bab04f2ee9ed36bbcb3016ba443b5",
+      "current": "0fb195bb51e6efe26bbe212f469b6b526f7bab04f2ee9ed36bbcb3016ba443b5"
+    },
+    "packages/theme-base/src/index.ts": {
+      "savedLinuxEra": "08fb958b42e4ae3b150055e0b7c9f16979c5350f41d4382739b3b49153ec9e13",
+      "current": "08fb958b42e4ae3b150055e0b7c9f16979c5350f41d4382739b3b49153ec9e13"
+    },
+    "packages/theme-bootstrap4/src/builder-theme.ts": {
+      "savedLinuxEra": "f972432c8c454a986fac070d53adc3287e04a634171298faf1c715ba2cf8235c",
+      "current": "f972432c8c454a986fac070d53adc3287e04a634171298faf1c715ba2cf8235c"
+    },
+    "packages/theme-bootstrap4/src/index.ts": {
+      "savedLinuxEra": "a8a8836601926bbc08bf69a8f79e868181cc599af6f8031003588268d9211179",
+      "current": "a8a8836601926bbc08bf69a8f79e868181cc599af6f8031003588268d9211179"
+    },
+    "packages/theme-bootstrap5/src/builder-theme.ts": {
+      "savedLinuxEra": "59d5b3c1a9ab57f0df880d45c83a2bcda42782507ee4e562764a47c80bab95ce",
+      "current": "59d5b3c1a9ab57f0df880d45c83a2bcda42782507ee4e562764a47c80bab95ce"
+    },
+    "packages/theme-bootstrap5/src/index.ts": {
+      "savedLinuxEra": "37c3ce4d2467d7edfbab49b91af02d509e2837da060b06d75f563d2ee295b810",
+      "current": "37c3ce4d2467d7edfbab49b91af02d509e2837da060b06d75f563d2ee295b810"
+    },
+    "packages/theme-material/src/builder-theme.ts": {
+      "savedLinuxEra": "e961de4a7e7616a2f6f90ad4e2701882261d05687ac10dc248650c8091c084fa",
+      "current": "e961de4a7e7616a2f6f90ad4e2701882261d05687ac10dc248650c8091c084fa"
+    },
+    "packages/theme-material/src/index.ts": {
+      "savedLinuxEra": "26a681f810ffbaf7e5a374b49020517507ae31f34f8b496f5e214819b2175726",
+      "current": "26a681f810ffbaf7e5a374b49020517507ae31f34f8b496f5e214819b2175726"
+    },
+    "packages/theme-tailwind/src/builder-theme.ts": {
+      "savedLinuxEra": "a23a3d490b07728fb23f4c1783468009047a92ce90f2156cdf3a00b0a0a71664",
+      "current": "a23a3d490b07728fb23f4c1783468009047a92ce90f2156cdf3a00b0a0a71664"
+    },
+    "packages/theme-tailwind/src/index.ts": {
+      "savedLinuxEra": "19e74d4cac51a559b4f5e179a9848a01bd511e0a8fd74b66333623532cd35e95",
+      "current": "19e74d4cac51a559b4f5e179a9848a01bd511e0a8fd74b66333623532cd35e95"
+    },
+    "packages/themes/src/base.ts": {
+      "savedLinuxEra": "8e901c87284c21d0321da42904cf5114c3249f3d5d138ff017d3d7ac8777afb7",
+      "current": "8e901c87284c21d0321da42904cf5114c3249f3d5d138ff017d3d7ac8777afb7"
+    },
+    "packages/themes/src/bootstrap4.ts": {
+      "savedLinuxEra": "3f652f81f675e172ee0cd83f44e281975be178fa49746721f1c6f4afe643ade3",
+      "current": "3f652f81f675e172ee0cd83f44e281975be178fa49746721f1c6f4afe643ade3"
+    },
+    "packages/themes/src/bootstrap5.ts": {
+      "savedLinuxEra": "77e0d8a43e8ec029416d7319eb61eb9e75ec0442b442935fb3af40cc1e001a87",
+      "current": "77e0d8a43e8ec029416d7319eb61eb9e75ec0442b442935fb3af40cc1e001a87"
+    },
+    "packages/themes/src/index.ts": {
+      "savedLinuxEra": "e95cca8851ae9161131174ed995d10beedc92fca411f033d14d8d56fb9451efc",
+      "current": "e95cca8851ae9161131174ed995d10beedc92fca411f033d14d8d56fb9451efc"
+    },
+    "packages/themes/src/material.ts": {
+      "savedLinuxEra": "c16763090322a2a76b2dc5a8e7ff724021856a7141de0f97f7b8f4aa6ec4736d",
+      "current": "c16763090322a2a76b2dc5a8e7ff724021856a7141de0f97f7b8f4aa6ec4736d"
+    },
+    "packages/themes/src/tailwind.ts": {
+      "savedLinuxEra": "faf7125efa3a08c4a0e726673df5dbc426e982d31a965889d696094a228d579e",
+      "current": "faf7125efa3a08c4a0e726673df5dbc426e982d31a965889d696094a228d579e"
+    },
+    "packages/validation/src/index.ts": {
+      "savedLinuxEra": "5d85f9318bcf57da768f0529a656aebbb98bdd2b38190c72a3af4b082d62dfff",
+      "current": "5d85f9318bcf57da768f0529a656aebbb98bdd2b38190c72a3af4b082d62dfff"
+    }
+  },
+  "identical": true
+}

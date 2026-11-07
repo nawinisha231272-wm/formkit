@@ -249,3 +249,23 @@ diagnostics instead. Successful no-op commands capture subject metadata without 
 Each new desktop builder opens Build. View mode is not persisted; the user's Builder look preference
 is independent. Below 768px the existing read-only Preview rule still applies. Approved desktop
 screenshot fixtures explicitly select Build before interacting or capturing.
+
+## Owner delivery review amendment — 2026-10-30
+
+Context actions and component/header More popovers are styled by initial builder chrome, positioned
+inside the viewport in every builder theme. No secondary-tools lazy chunk is introduced. Loading
+toasts belong only to a pending activation and disappear when its body mounts; dismissing the visible
+toast leaves the independent polite live-region message available. A completed old request cannot
+dismiss a newer command toast. Cached activation does not announce a new wait.
+
+Command search uses compact, left-aligned icon/title options grouped in a listbox. Jump results also
+show the component's location. Search retains focus; arrows update `aria-activedescendant` and the
+highlighted option, and Enter executes that option. Empty results followed by a new query restore a
+valid active option. Bulk Settings uses “Edit N components: <labels>”, ellipsized visually with the full
+accessible name/title, and does not repeat the active tab's title inside its panel. Toolbar/context
+labels and tooltips name a multi-selection's count. Inline caption commits announce
+“Renamed Phone to Mobile phone” using the previous displayed caption and committed caption.
+
+Delivery evidence shows before (main), after and diff for each changed image, grouped by approved
+reason with group counts; unexplained changes are listed explicitly. Recording a baseline is not owner
+approval. The current draft is stopped at the unchanged size gates; see the current progress question.

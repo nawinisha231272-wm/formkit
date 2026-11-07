@@ -1,4 +1,8 @@
-# M09b+ — approved size reset and delivery evidence
+# M09b+ — historical size reset and 7885dca delivery evidence
+
+This is the historical candidate reviewed at `7885dca`. The current final build, budgets and
+verification are in [owner review fixes](m09b-plus-owner-fixes.md). Earlier measurements and failed
+CI evidence below are intentionally retained; they are not alternative current measurements.
 
 Date: 2026-10-28. Branch: `m09b-plus-authoring`. PR: [#16](https://github.com/nawinisha231272-wm/formkit/pull/16).
 Status: capture-clock correction passes full pinned local verification and all six pinned-Linux comparisons. First-attempt CI on the new head is checked after push; 80b4dfa failed and is retained below. Owner review pending; no merge authorized.

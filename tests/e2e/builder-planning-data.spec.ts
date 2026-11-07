@@ -30,7 +30,9 @@ for (const id of ["email", "customerType"])
     const before = await state(page);
     const field = page.locator(`#canvas [data-field-id="${id}"]`);
     await field.hover();
-    await field.getByRole("button", { name: "Duplicate", exact: true }).click();
+    await field
+      .getByRole("button", { name: "Duplicate 2 components", exact: true })
+      .click();
     await expect.poll(async () => (await state(page)).history).toBe(1);
     expect((await state(page)).selected).toHaveLength(2);
     await page
@@ -191,7 +193,7 @@ test("first-pointer drag stays immediate and moves the selected block between co
   const before = await state(page);
   const handle = page
     .locator('#canvas [data-field-id="customerType"]')
-    .getByRole("button", { name: "Move", exact: true });
+    .getByRole("button", { name: "Move 2 components", exact: true });
   const column = page.locator(
     '#canvas [data-of-slot-owner="contactColumns"][data-of-slot="column_0"]',
   );
@@ -281,7 +283,7 @@ test("Copy and bulk Delete/Required remain immediate with planning unavailable",
   const commands = page.getByRole("dialog", { name: "Commands", exact: true });
   await commands.getByRole("searchbox").fill("Required");
   await commands
-    .getByRole("button", { name: "Required 2 components", exact: true })
+    .getByRole("option", { name: "Required 2 components", exact: true })
     .click();
   expect((await state(page)).history).toBe(1);
   await expect(page.getByRole("dialog")).toHaveCount(0);
