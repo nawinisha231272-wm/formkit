@@ -132,3 +132,13 @@ JSON-logic value → `setValue`. JavaScript triggers/values and custom actions p
       fully keyboard operable, axe clean, in every builder theme.
 - [ ] The dependency map reflects the compiled graph for the onboarding fixture; cycles and conflicts appear.
 - [ ] A fresh Codex session builds the "Business customers" rule from the docs alone.
+
+## M09c implementation planning — owner review pending
+
+The plan is [M09c](../milestones/M09c.md) and
+[proposed ADR-0022](../adr/0022-logic-engine-and-authoring-plan.md). The runtime belongs in headless
+core; the root Logic authoring body and dependency-map visualization use separate lazy boundaries.
+Build badges/info chips remain initial. The ADR explicitly requests decisions on submission replay
+of editable edge values, effect/event/async-call contracts and the narrow import boundary before
+implementation. Its initial-byte allowances and explicit map activation are proposals, not changes
+to this normative spec or the enforced ADR-0018 budgets. No M09c behavior is implemented in the plan PR.

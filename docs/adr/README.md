@@ -30,3 +30,6 @@ Accepted with owner no-growth amendment: [ADR-0020 — Consumer entry boundaries
 
 Accepted: [ADR-0021 — Builder selection and command contracts](0021-builder-selection-and-command-contracts.md)
 (M09b+; ordered DOM selection, atomic bulk commands, precise quick-add and shared command search).
+
+Proposed for owner review: [ADR-0022 — Logic engine placement, lazy authoring and M09c allowances](0022-logic-engine-and-authoring-plan.md)
+(M09c plan only; initial-growth proposal, existing 10 kB Logic/map budgets, runtime parity and edit-work gates).

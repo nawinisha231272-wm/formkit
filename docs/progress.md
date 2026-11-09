@@ -6,6 +6,45 @@ deviations from spec, open questions.
 
 ## Current state
 
+## M09b+ owner approval and merge; M09c plan — 2026-11-09
+
+**M09b+ APPROVED and MERGED.** The owner explicitly approved screenshots and delivery at
+`a9899587bd9369589e2cc9729dbc73238c33e7df`. Immediately before merge, PR #16 still had that head,
+was clean/mergeable, and both correctness runs were green on **attempt 1**. Merged at
+2026-11-09 22:56:59 UTC as `cd6d0b679027da328da9f5e4f63480437d6c765b`:
+[PR #16](https://github.com/nawinisha231272-wm/formkit/pull/16),
+[PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/42708009167),
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/42707997025).
+[Advisory timings](https://github.com/nawinisha231272-wm/formkit/actions/runs/42708009735) also
+succeeded on attempt 1; timings are separate from correctness. No workflow was re-run to get green.
+The merged baseline is **31,769 / 7,120 / 67,674** against **31,800 / 7,300 / 67,700**;
+341 unit / 1,605 browser / 36 size / nine runtime count checks passed locally and on Verify.
+Historical pending/no-merge entries below describe earlier checkpoints and are superseded by this approval.
+
+**M09c PLAN ONLY**, branch `m09c-logic-plan`. Implementation, changed budgets and M09d are not
+started. [Milestone plan](milestones/M09c.md),
+[proposed ADR-0022](adr/0022-logic-engine-and-authoring-plan.md).
+
+Ordered work after owner plan approval: settle wire/edge-replay/effect/import contracts → schema and
+indexed headless execution → browser/Node parity and host effects → atomic rule commands/initial
+Build badges → lazy Logic authoring/test panel → separately opened compiled dependency map → consumer
+size/loading and runtime performance/count checks → five-theme axe/visuals, fresh author trial,
+full verify/first-attempt CI → owner delivery gate. Risks: editable edge values versus authoritative
+Node replay, async effects, rule priority/revert/cascades, minimal initial headroom and map loading.
+
+Allowance proposal (unmeasured new code, **not approved/enforced**): UI **32,600** (+800 ceiling),
+builder-core **8,300** (+1,000), full initial **75,700** (+8,000). Maximum growth from the measured
+baseline: +800/+1,000/+8,000; no change to core's existing 30,000-byte package ceiling or other runtime
+package budgets. Logic/map retain 10,000 each, JSON 8,000, union 28,000, Settings 8,000 and union
+with Settings 36,000. All other lazy limits remain. ADR-0022 contains attribution and measurement
+scope; present code/scripts retain all M09b+ ceilings.
+
+Runtime acceptance: form edits ≤1.10× immutable merged main at 100/500/1,000 fields, with absolute ms,
+paired isolated-runner production measurements and unchanged advisory CI policy. Extend exact hard
+work counts for indexed rule conditions/actions/writers/edges/effects/cascades, including zero unrelated
+work; preserve old processor/DOM/patch/render expectations. No new implementation count/timing PASS
+is claimed. Stop at the plan PR for owner review before any M09c code.
+
 - **2026-11-09 final local owner-follow-up proof PASS:** pinned frozen install/verify exits 0: **341 unit / 1,605 browser / 36 size / nine runtime count checks**. Final UI/core/full **31,769 / 7,120 / 67,674**, fixed ceilings **31,800 / 7,300 / 67,700**, native/Linux identical; delta from cc05111 **+36 / −48 / +17**. Kept focus compaction **+39 / −103 / −52**; growing request-object probe discarded. Linux 15 focused + 50 menu/selection visual + nine completed-loading checks PASS. Only requested 43 host PNGs changed; 429 unchanged. 500-field index 13.900 ms advisory/500 visits/cached; bulk Delete/Move/Required 500/one publication/one history. Three old stale-Loading expectations explicitly corrected for the owner's new behavior; ordinary expiry tests retained. [Canonical proof and review](reviews/m09b-plus-owner-followup.md). Current-head first-attempt CI is linked in PR #16/final report after push. No merge; owner re-review required.
 
 - **Historical 2026-11-09 approved-compaction checkpoint:** shared the identical theme success/failure focus-restoration callback, removing no behavior, CSS, selector, ARIA, message or test. UI/core/full **31,769 / 7,120 / 67,674**, fixed ceilings **31,800 / 7,300 / 67,700**. Delta from blocked candidate **+39 / −103 / −52**; rejected unique-request-object probe grew **+47 / +104 / +50** and was discarded. Full verification/new-head first-attempt CI and owner review remain pending. [Ledger and review](reviews/m09b-plus-owner-followup.md).
@@ -28,15 +67,22 @@ Owner follow-up (2026-11-09), cc05111 not approved to merge: preserve context-cl
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
 - **M03–M08 complete** — local and Linux evidence is recorded below. **M08 accepted by the owner under the amended author criterion** — SDK 0.x freeze accepted; closure PR #6 merged on first-run green CI. Human guide usability is required in M11; the owner approved the 24 new Yes/No screenshots. M09 is authorized after the separate plan-amendment PR.
-- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11). **M09b approved and merged**: the owner approved PR #15 screenshots at `79e69f688b1779696449465fbe34869460018cd0`; merge `0b3b452c46096e852248ca11872f9697888c621e` on 2026-10-23. M09c, M09d and M10a/M10b are not started.
+- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11). **M09b approved and merged**: the owner approved PR #15 screenshots at `79e69f688b1779696449465fbe34869460018cd0`; merge `0b3b452c46096e852248ca11872f9697888c621e` on 2026-10-23. M09b+ is now approved/merged above; M09c is plan-only, and M09d/M10a/M10b implementation is not started.
 - Planned order: **M09b+ → M09c → M09d → M10a → M10b → M11 → M12**. The owner approved M09d's
-  plan with six amendments (ADR-0019 accepted). M09b+ is authorized next; stop at its owner gate.
+  plan with six amendments (ADR-0019 accepted). M09c plan is authorized next; stop at owner plan review.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
   [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 delivery PR #5 is merged; the gate closure is recorded below under the revised owner decision.
 
 ## Open questions
+
+**M09c plan review (2026-11-09; no implementation):** ADR-0022 proposes the initial allowance
+above and records three spec boundaries to resolve before coding: authoritative load/submit replay
+versus user-editable change/event values; the typed effect/event API and async-call lifecycle; and
+spec 11's narrow Form.io logic conversion versus architecture 00's deferred general importer.
+The separately opened lazy map and additive optional format-1.0 logic handling also need plan sign-off.
+Current size gates remain unchanged; these are proposals, not accepted contract changes.
 
 **Owner decision — compaction (2026-11-09):** targeted announcement/theme-request compaction is approved, and behavior-preserving compaction may continue for the rest of M09b+ without asking. Remove no CSS rule, selector, ARIA attribute, message or test; retain every ceiling and pass the full browser suite plus menu/selection baselines. Report each compaction and its UI/core/full byte delta. Implemented: the request-object probe was discarded, the shared-focus helper fits, and final full verification plus Linux menu/selection checks pass. Immutable first-attempt CI is recorded in PR #16 after push; no merge.
 

@@ -338,3 +338,13 @@ ordinary toast expiry assertions and all deadlines/thresholds remain. Earlier pe
 measurements above are historical. [Canonical proof](../reviews/m09b-plus-owner-followup.md)
 records logs, sizes and compactions. PR #16/final report carry immutable first-attempt CI evidence
 after push; local PASS does not imply remote success or owner merge approval. Do not merge.
+
+## M09b+ closure and M09c proposal — 2026-11-09
+
+The owner approved M09b+ at `a9899587bd9369589e2cc9729dbc73238c33e7df`; PR #16 merged as
+`cd6d0b679027da328da9f5e4f63480437d6c765b` after first-attempt green correctness CI. The final
+consumer baseline remains **31,769 UI / 7,120 builder-core / 67,674 full initial** against
+**31,800 / 7,300 / 67,700**. Earlier pending/no-merge checkpoints above are historical.
+[ADR-0022](0022-logic-engine-and-authoring-plan.md) proposes M09c engine/loading/initial allowances
+for owner review. It is not accepted and does not amend these enforced ceilings. Logic/map retain
+10,000 each; Logic/JSON/map 28,000 and that union with Settings 36,000 remain unchanged.
