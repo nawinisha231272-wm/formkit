@@ -216,6 +216,15 @@ test("desktop header stays one row; Theme and persisted Builder look are visible
   );
   await expect(
     page.getByRole("combobox", { name: "Insert into", exact: true }),
+  ).toHaveCount(0);
+  const selected = page.locator('#canvas [data-field-id="email"]');
+  await selected.focus();
+  await selected.getByRole("button", { name: "More", exact: true }).click();
+  await expect(
+    page.getByRole("combobox", { name: "Insert into", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("combobox", { name: "Layout to wrap in", exact: true }),
   ).toBeVisible();
   await page.reload();
   await expect(page.locator(".of-builder")).toHaveAttribute(

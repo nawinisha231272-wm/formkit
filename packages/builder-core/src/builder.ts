@@ -1,7 +1,7 @@
 import type { Diagnostic, FormDefinition } from "@ourform/schema";
 import { inspectJson } from "@ourform/schema";
 import type { Engine } from "@ourform/core";
-import { copy, freeze, locate } from "./commands";
+import { copy, freeze, locate, AtomicCommand } from "./commands";
 import { checkDrop, keyFromLabel, uniqueKey, entries } from "./structure";
 import type { DropTarget } from "./structure";
 import { pathWarnings, MoveComponent } from "./structural-commands";
@@ -179,6 +179,11 @@ export function createBuilder(
       const changingPaths =
         renaming ||
         ["MoveComponent", "WrapInLayout", "Unwrap"].includes(command.type);
+      const removes = (candidate: Command): boolean =>
+        candidate.type === "RemoveComponent" ||
+        candidate.type === "Unwrap" ||
+        (candidate instanceof AtomicCommand &&
+          candidate.commands.some(removes));
       const warnings = changingPaths
         ? pathWarnings(state.definition, result.state.definition, engine)
         : [];
@@ -190,7 +195,7 @@ export function createBuilder(
             (d): Diagnostic =>
               (d.code === "bad-ref" || d.code === "bad-path") &&
               (existing.has(signature(d)) ||
-                command.type === "RemoveComponent" ||
+                removes(command) ||
                 command.type === "Unwrap" ||
                 (changingPaths && d.code === "bad-path"))
                 ? {
@@ -223,6 +228,11 @@ export function createBuilder(
       labels.set(command, {
         action: command.type,
         label:
+          (command.type === "AtomicCommand" &&
+          "label" in command &&
+          typeof command.label === "string"
+            ? command.label
+            : "") ||
           node?.label?.trim() ||
           (node
             ? (engine.getField(node.type)?.builder?.title ??

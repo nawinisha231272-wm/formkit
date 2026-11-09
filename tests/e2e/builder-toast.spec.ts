@@ -46,3 +46,21 @@ for (const pause of ["hover", "focus"] as const)
     await page.keyboard.press("ControlOrMeta+z");
     await expect(field).toBeVisible();
   });
+
+test("plain announcements expire while hovered without clearing the live region", async ({
+  page,
+}) => {
+  await page.goto("/builder.html?approved");
+  await page.clock.install({ time: new Date("2026-10-22T12:00:00Z") });
+  await page.clock.pauseAt(new Date("2026-10-22T12:00:01Z"));
+  await page.locator('#canvas [data-field-id="email"]').focus();
+  await page.keyboard.press("ControlOrMeta+d");
+  const toast = page.locator(".of-builder-toast");
+  await expect(toast).toHaveText("Duplicated Email");
+  await toast.hover();
+  await page.clock.fastForward(3000);
+  await page.mouse.move(0, 0);
+  await page.clock.fastForward(2001);
+  await expect(toast).toBeHidden();
+  await expect(page.locator("#diagnostics")).toHaveText("Duplicated Email");
+});

@@ -235,6 +235,7 @@ test("custom element attributes/properties sync data, theme and read-only withou
     const element = document.createElement(
       "our-form",
     ) as import("@ourform/element").OurFormElement;
+    element.themes = window.hostThemes;
     element.id = "attribute-form";
     element.setAttribute(
       "schema",

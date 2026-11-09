@@ -8,6 +8,19 @@ import { checkBuilderRoundTrip, renderComponent } from "@ourform/testing";
 import { createElement as el } from "react";
 import { createRoot } from "react-dom/client";
 import { Form, registerReactField } from "@ourform/react";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
+
+const themes = [
+  baseTheme,
+  bootstrap4Theme,
+  bootstrap5Theme,
+  tailwindTheme,
+  materialTheme,
+];
 
 export const shortRating = definePreset("sample.short-rating", {
   base: ratingField,
@@ -91,6 +104,7 @@ const form = createFormController(document.querySelector("#form")!, {
   engine,
   fields,
   schema,
+  themes,
   idPrefix: "extensions-",
   onSubmit: (result) => {
     document.querySelector("#result")!.textContent = JSON.stringify(
@@ -140,6 +154,7 @@ document.querySelector("#harness")!.addEventListener("click", () => {
     engine: harnessEngine,
     host: document.querySelector("#test-harness")!,
     theme: "bootstrap4",
+    themes,
     readOnly:
       document.querySelector<HTMLInputElement>("#harness-readonly")!.checked,
     ...(isAddress
@@ -244,6 +259,8 @@ const reactRoot = createRoot(document.querySelector("#react")!);
 reactRoot.render(
   el(Form, {
     fields: [conventional, unusual],
+    themes,
+    theme: baseTheme,
     schema: {
       $formVersion: "1.0",
       id: "registration",

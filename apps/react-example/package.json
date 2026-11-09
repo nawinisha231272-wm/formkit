@@ -15,7 +15,8 @@
     "@ourform/react": "workspace:*",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "@ourform/builder": "workspace:*"
+    "@ourform/builder": "workspace:*",
+    "@ourform/themes": "workspace:*"
   },
   "devDependencies": {}
 }

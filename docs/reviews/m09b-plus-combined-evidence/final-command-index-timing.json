@@ -1,0 +1,10 @@
+{
+  "platform": "darwin-arm64",
+  "fields": 500,
+  "milliseconds": 15.299999713897705,
+  "nodes": 500,
+  "visits": 500,
+  "cached": true,
+  "advisoryTargetMilliseconds": 50,
+  "advisoryTargetMet": true
+}

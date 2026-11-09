@@ -1,0 +1,27 @@
+{
+  "base": "0b3b452c46096e852248ca11872f9697888c621e",
+  "unchanged": {
+    "darwin-arm64": 202,
+    "linux-x64": 202
+  },
+  "changed": [],
+  "new": [],
+  "firstPanelImages": [
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-bootstrap5-first-panel-field.png",
+      "sha256": "4ea2eaa7bf5cc9a1714cd35f0914e17f9eddb86170968c0b8758e96295459f46"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/darwin-arm64/builder-round4.spec.ts/chromium/round4-material-first-panel-field.png",
+      "sha256": "b86dd13df498bb3a9086621da31bef9821d78f30efcdbc00502da0485fcb4a2d"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-bootstrap5-first-panel-field.png",
+      "sha256": "9f50c92e389972dd80db4535b415337b9494fdef16ea974a5c828e1926ff37ed"
+    },
+    {
+      "path": "tests/e2e/__screenshots__/linux-x64/builder-round4.spec.ts/chromium/round4-material-first-panel-field.png",
+      "sha256": "3b36c5fedbd65812fdbf05cf8005a121290c6445d05edbf7d9816322b7fc3037"
+    }
+  ]
+}

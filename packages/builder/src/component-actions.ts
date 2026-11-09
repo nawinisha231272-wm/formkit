@@ -2,25 +2,35 @@ import {
   DuplicateComponent,
   RemoveComponent,
   Unwrap,
-  WrapInLayout,
 } from "@ourform/builder-core";
+import type { DropTarget } from "@ourform/builder-core";
 import type { ComponentNode } from "@ourform/schema";
 import type { ToolbarAction, UI } from "./types";
-import { actionButton, disableAction, menu } from "./primitives";
+import { actionButton, disableAction } from "./primitives";
 import { element } from "./types";
 import { icon } from "./icons";
 import type { BuilderIcons } from "./icons";
+import { mountActionMenu } from "./features/secondary-tools";
 
 type Action = ToolbarAction | "cut" | "wrap" | "unwrap" | "collapse";
 interface Context {
   root: HTMLElement;
   ui: UI;
+  batch(action: Action, node: ComponentNode): boolean;
+  count(id?: string): number;
+  restoreFocus(anchor?: HTMLElement): void;
   icons?: BuilderIcons;
   copy(id: string): void;
   cut(id: string): void;
   paste(): void;
   move(node: ComponentNode): void;
   collapse(id: string): void;
+  entries(): readonly ComponentNode[];
+  slots(node: ComponentNode): readonly import("@ourform/sdk").ComponentSlot[];
+  caption(slot: import("@ourform/sdk").ComponentSlot): string;
+  target(): DropTarget;
+  choose(target: DropTarget): void;
+  wrap(id: string, type: string): void;
 }
 const order: ToolbarAction[] = [
   "edit",
@@ -36,35 +46,39 @@ const shortcuts: Partial<Record<Action, string>> = {
   edit: "Enter",
   move: "Space",
   duplicate: "Control+D Meta+D",
-  copy: "Control+C Meta+C",
-  paste: "Control+V Meta+V",
-  json: "Control+Shift+J Meta+Shift+J",
   delete: "Delete",
-  cut: "Control+X Meta+X",
   more: "Shift+F10",
 };
 /** Toolbar, context menu and keyboard routes execute the same command path. */
 export class ComponentActions {
   #menu: HTMLElement | undefined;
-  constructor(readonly context: Context) {
-    const { root, ui } = context;
+  constructor(readonly _ofbContext: Context) {
+    const { root, ui } = _ofbContext;
     root.addEventListener(
       "pointerdown",
       (event) => {
         if (this.#menu && !this.#menu.contains(event.target as Node))
-          this.closeMenu();
+          this._ofbCloseMenu();
       },
       { signal: ui.signal },
     );
   }
-  label(action: Action) {
-    return this.context.ui.t(
-      action === "json" ? "ofb.editJson" : `ofb.${action}`,
-    );
+  _ofbLabel(action: Action, id?: string) {
+    const { ui } = this._ofbContext;
+    const label = ui.t(action === "json" ? "ofb.editJson" : `ofb.${action}`);
+    const count = this._ofbContext.count(id);
+    return count > 1 && !["json", "more", "collapse", "unwrap"].includes(action)
+      ? ui.t("ofb.bulkAction", { action: label, count })
+      : label;
   }
-  reason(action: Action, id: string): string | undefined {
-    const { ui } = this.context,
+  _ofbReason(action: Action, id: string): string | undefined {
+    const { ui } = this._ofbContext,
       level = ui.builder.lockLevel(id);
+    if (
+      ["json", "unwrap", "collapse"].includes(action) &&
+      this._ofbContext.count() > 1
+    )
+      return ui.t("ofb.singleAction");
     if (action === "json") return;
     if (level === "all")
       return ui.t(action === "move" ? "ofb.lock.move" : "ofb.lock.edit");
@@ -72,9 +86,10 @@ export class ComponentActions {
       return ui.t("ofb.lock.delete");
     return;
   }
-  execute(action: Action, node: ComponentNode, anchor?: HTMLElement) {
-    const { ui } = this.context;
-    const reason = this.reason(action, node.id);
+  _ofbExecute(action: Action, node: ComponentNode, anchor?: HTMLElement) {
+    const { ui } = this._ofbContext;
+    if (this._ofbContext.batch(action, node)) return;
+    const reason = this._ofbReason(action, node.id);
     if (reason) {
       ui.announce(reason);
       return;
@@ -88,55 +103,49 @@ export class ComponentActions {
         ui.edit?.(node.id, true);
         break;
       case "move":
-        this.context.move(node);
+        this._ofbContext.move(node);
         break;
       case "duplicate":
         ui.dispatch(new DuplicateComponent(node.id));
         break;
       case "copy":
-        this.context.copy(node.id);
+        this._ofbContext.copy(node.id);
         break;
       case "cut":
-        this.context.cut(node.id);
+        this._ofbContext.cut(node.id);
         break;
       case "paste":
-        this.context.paste();
+        this._ofbContext.paste();
         break;
       case "delete":
         ui.dispatch(new RemoveComponent(node.id));
         break;
       case "wrap":
-        ui.dispatch(new WrapInLayout(node.id, "panel"));
+        this._ofbContext.wrap(node.id, "panel");
         break;
       case "unwrap":
         ui.dispatch(new Unwrap(node.id));
         break;
       case "collapse":
-        this.context.collapse(node.id);
+        this._ofbContext.collapse(node.id);
         break;
       case "more":
-        this.openMenu(node, anchor, true);
+        this._ofbOpenMenu(node, anchor, true);
         break;
     }
   }
-  toolbar(node: ComponentNode) {
-    const { ui } = this.context;
+  _ofbToolbar(node: ComponentNode) {
+    const { ui } = this._ofbContext;
     const toolbar = element(ui.document, "div", "", "ofb-component-toolbar");
     toolbar.setAttribute("role", "group");
     toolbar.setAttribute("aria-label", ui.t("ofb.toolbar"));
     toolbar.dataset.componentToolbar = node.id;
-    const primitiveContext = {
-      document: ui.document,
-      signal: ui.signal,
-      ...(this.context.icons ? { icons: this.context.icons } : {}),
-    };
-    for (const action of order.filter(
-      (action) => ui.actions?.includes(action) ?? true,
-    )) {
+    const primitiveContext = ui;
+    for (const action of ui.actions ?? order) {
       const button = actionButton(
         primitiveContext,
-        this.label(action),
-        () => this.execute(action, node, button),
+        this._ofbLabel(action, node.id),
+        () => this._ofbExecute(action, node, button),
         {
           icon: action,
           iconOnly: true,
@@ -145,7 +154,7 @@ export class ComponentActions {
         },
       );
       button.dataset.ofbAction = action;
-      disableAction(button, this.reason(action, node.id));
+      disableAction(button, this._ofbReason(action, node.id));
       toolbar.append(button);
     }
     if (ui.builder.lockLevel(node.id)) {
@@ -153,55 +162,48 @@ export class ComponentActions {
       lock.title = ui.t("ofb.lock");
       lock.setAttribute("role", "img");
       lock.setAttribute("aria-label", ui.t("ofb.lock"));
-      lock.append(icon(ui.document, "lock", this.context.icons));
+      lock.append(icon(ui.document, "lock", this._ofbContext.icons));
       toolbar.prepend(lock);
     }
     return toolbar;
   }
-  openMenu(node: ComponentNode, anchor?: HTMLElement, more = false) {
-    this.closeMenu();
-    const { ui, root } = this.context;
-    const actions: Action[] = more
-      ? ["copy", "paste", "json", "cut", "wrap", "unwrap", "collapse"]
-      : [
-          ...order.filter((a) => a !== "more"),
-          "cut",
-          "wrap",
-          "unwrap",
-          "collapse",
-        ];
+  _ofbOpenMenu(node: ComponentNode, anchor?: HTMLElement, more = false) {
+    this._ofbCloseMenu();
+    const { ui, root } = this._ofbContext;
     const close = () => {
-      this.closeMenu();
-      anchor?.focus();
+      this._ofbCloseMenu();
+      this._ofbContext.restoreFocus(anchor);
     };
-    const popup = menu(
-      { document: ui.document, signal: ui.signal },
-      ui.t("ofb.toolbar"),
-      actions
-        .filter(
-          (a) =>
-            !ui.actions ||
-            !order.includes(a as ToolbarAction) ||
-            ui.actions.includes(a as ToolbarAction),
-        )
-        .map((action) => ({
-          label: this.label(action),
-          action: () => this.execute(action, node, anchor),
-          ...(this.reason(action, node.id)
-            ? { reason: this.reason(action, node.id)! }
-            : {}),
-        })),
-      close,
-    );
-    const bounds = (anchor ?? root).getBoundingClientRect(),
-      outer = root.getBoundingClientRect();
-    popup.style.insetInlineStart = `${Math.max(0, Math.min(bounds.left - outer.left, outer.width - 230))}px`;
-    popup.style.insetBlockStart = `${bounds.bottom - outer.top + root.scrollTop}px`;
+    const popup = element(ui.document, "div", "", "ofb-action-menu");
+    const bounds = (anchor ?? root).getBoundingClientRect();
     root.append(popup);
     this.#menu = popup;
-    popup.querySelector<HTMLElement>("button")?.focus();
+    mountActionMenu(popup, ui, {
+      more,
+      ...(ui.actions ? { enabled: ui.actions } : {}),
+      label: (action) => this._ofbLabel(action as Action, node.id),
+      reason: (action) => this._ofbReason(action as Action, node.id),
+      execute: (action) => this._ofbExecute(action as Action, node, anchor),
+      close,
+      entries: this._ofbContext.entries,
+      slots: this._ofbContext.slots,
+      caption: this._ofbContext.caption,
+      target: this._ofbContext.target,
+      choose: this._ofbContext.choose,
+      wrap: (type) => this._ofbContext.wrap(node.id, type),
+      actionButton,
+      disableAction,
+    });
+    const viewport = ui.document.documentElement;
+    ui._ofbStyle(
+      popup,
+      "left",
+      `${Math.max(8, Math.min(bounds.left, viewport.clientWidth - popup.offsetWidth - 8))}px`,
+      "top",
+      `${Math.max(8, Math.min(bounds.bottom, viewport.clientHeight - popup.offsetHeight - 8))}px`,
+    );
   }
-  closeMenu() {
+  _ofbCloseMenu() {
     this.#menu?.remove();
     this.#menu = undefined;
   }

@@ -5,6 +5,7 @@ import { renderToString, createFormHost } from "@ourform/renderer-dom";
 import { toSubmissionSchema, validateSubmission } from "@ourform/validation";
 import fixture from "../../../fixtures/forms/onboarding/customer.json";
 import data from "../../../fixtures/forms/onboarding/customer.data.json";
+import { baseTheme } from "@ourform/themes/base";
 test("40-field onboarding uses transparent layouts, an object container and consistent escaped semantic SSR", async () => {
   const engine = createEngine();
   for (const field of builtinComponents) engine.register(field.model);
@@ -24,7 +25,7 @@ test("40-field onboarding uses transparent layouts, an object container and cons
   const views = new Map(
     builtinComponents.map((field) => [field.model.type, field.views]),
   );
-  const html = renderToString(session, { views });
+  const html = renderToString(session, { views, themes: [baseTheme] });
   expect(html).toContain("<section");
   expect(html).toMatch(/<fieldset[^>]*data-field-id="address-panel"/);
   expect(html).toContain("<legend");
@@ -72,6 +73,7 @@ test("named transparent layouts expose a group and escape their heading in SSR",
   if (!compiled.ok) throw new Error("Compile failed");
   const session = engine.createSession(compiled.form);
   const html = renderToString(session, {
+    themes: [baseTheme],
     views: new Map(
       builtinComponents.map((field) => [field.model.type, field.views]),
     ),

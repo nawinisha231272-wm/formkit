@@ -1,0 +1,354 @@
+{
+  "method": {
+    "tool": "esbuild 0.25.12 consumer production build + node:zlib Brotli",
+    "entrySource": "import { createBuilder } from \"@ourform/builder\"; import { bootstrap5Theme } from \"@ourform/themes/bootstrap5\"; import { bootstrap5BuilderTheme } from \"@ourform/builder/themes/bootstrap5\"; globalThis.mountOurFormBuilder = [createBuilder, bootstrap5Theme, bootstrap5BuilderTheme];",
+    "sharedChunks": "counted once per closure",
+    "builderCore": "Marginal compressed initial consumer closure: full build minus otherwise identical build externalizing @ourform/builder-core; bundling and Brotli can change shared output bytes."
+  },
+  "limits": {
+    "builderUiInitial": 29000,
+    "builderCoreInitial": 7050,
+    "fullInitial": 64613,
+    "logic": 10000,
+    "json": 8000,
+    "map": 10000,
+    "logicJsonMap": 28000,
+    "settings": 8000,
+    "quickAdd": 3750,
+    "commands": 4500,
+    "bulkEditor": 4700,
+    "logicJsonMapSettings": 36000
+  },
+  "builderUiInitialExcludingBuilderCore": {
+    "initial": {
+      "files": [
+        {
+          "file": "stdin.js",
+          "raw": 119234,
+          "brotli": 32058
+        }
+      ],
+      "raw": 119234,
+      "brotli": 32058
+    },
+    "features": {
+      "settings": {
+        "files": [
+          {
+            "file": "settings-TTHLC3ZT.js",
+            "raw": 23432,
+            "brotli": 7302
+          }
+        ],
+        "raw": 23432,
+        "brotli": 7302
+      },
+      "settings-retry": {
+        "files": [
+          {
+            "file": "settings-retry-U3RZ2NXL.js",
+            "raw": 23432,
+            "brotli": 7302
+          }
+        ],
+        "raw": 23432,
+        "brotli": 7302
+      },
+      "logic": {
+        "files": [
+          {
+            "file": "logic-JRXHRDX5.js",
+            "raw": 33,
+            "brotli": 37
+          }
+        ],
+        "raw": 33,
+        "brotli": 37
+      },
+      "json": {
+        "files": [
+          {
+            "file": "json-XP3QCKBS.js",
+            "raw": 1623,
+            "brotli": 663
+          }
+        ],
+        "raw": 1623,
+        "brotli": 663
+      },
+      "map": {
+        "files": [
+          {
+            "file": "map-GSW4HY5E.js",
+            "raw": 33,
+            "brotli": 37
+          }
+        ],
+        "raw": 33,
+        "brotli": 37
+      },
+      "history": {
+        "files": [
+          {
+            "file": "history-XXHKW5PA.js",
+            "raw": 462,
+            "brotli": 262
+          }
+        ],
+        "raw": 462,
+        "brotli": 262
+      },
+      "commands": {
+        "files": [
+          {
+            "file": "commands-GNPKBKXN.js",
+            "raw": 6869,
+            "brotli": 2873
+          }
+        ],
+        "raw": 6869,
+        "brotli": 2873
+      },
+      "commands-retry": {
+        "files": [
+          {
+            "file": "commands-retry-AO6DVRJ6.js",
+            "raw": 6869,
+            "brotli": 2873
+          }
+        ],
+        "raw": 6869,
+        "brotli": 2873
+      },
+      "quick-add": {
+        "files": [
+          {
+            "file": "quick-add-HSC5TXPG.js",
+            "raw": 4343,
+            "brotli": 1855
+          }
+        ],
+        "raw": 4343,
+        "brotli": 1855
+      },
+      "quick-add-retry": {
+        "files": [
+          {
+            "file": "quick-add-retry-4ZDSBP4A.js",
+            "raw": 4343,
+            "brotli": 1855
+          }
+        ],
+        "raw": 4343,
+        "brotli": 1855
+      },
+      "bulk-editor": {
+        "files": [
+          {
+            "file": "bulk-editor-SNVZ3VX2.js",
+            "raw": 10637,
+            "brotli": 3867
+          }
+        ],
+        "raw": 10637,
+        "brotli": 3867
+      },
+      "bulk-editor-retry": {
+        "files": [
+          {
+            "file": "bulk-editor-retry-GESDH4F7.js",
+            "raw": 10611,
+            "brotli": 3858
+          }
+        ],
+        "raw": 10611,
+        "brotli": 3858
+      }
+    },
+    "logicJsonMap": {
+      "files": [
+        {
+          "file": "json-XP3QCKBS.js",
+          "raw": 1623,
+          "brotli": 663
+        },
+        {
+          "file": "logic-JRXHRDX5.js",
+          "raw": 33,
+          "brotli": 37
+        },
+        {
+          "file": "map-GSW4HY5E.js",
+          "raw": 33,
+          "brotli": 37
+        }
+      ],
+      "raw": 1689,
+      "brotli": 737
+    },
+    "logicJsonMapSettings": {
+      "files": [
+        {
+          "file": "json-XP3QCKBS.js",
+          "raw": 1623,
+          "brotli": 663
+        },
+        {
+          "file": "logic-JRXHRDX5.js",
+          "raw": 33,
+          "brotli": 37
+        },
+        {
+          "file": "map-GSW4HY5E.js",
+          "raw": 33,
+          "brotli": 37
+        },
+        {
+          "file": "settings-TTHLC3ZT.js",
+          "raw": 23432,
+          "brotli": 7302
+        }
+      ],
+      "raw": 25121,
+      "brotli": 8039
+    },
+    "allDeferred": {
+      "files": [
+        {
+          "file": "bulk-editor-SNVZ3VX2.js",
+          "raw": 10637,
+          "brotli": 3867
+        },
+        {
+          "file": "bulk-editor-retry-GESDH4F7.js",
+          "raw": 10611,
+          "brotli": 3858
+        },
+        {
+          "file": "commands-GNPKBKXN.js",
+          "raw": 6869,
+          "brotli": 2873
+        },
+        {
+          "file": "commands-retry-AO6DVRJ6.js",
+          "raw": 6869,
+          "brotli": 2873
+        },
+        {
+          "file": "history-XXHKW5PA.js",
+          "raw": 462,
+          "brotli": 262
+        },
+        {
+          "file": "json-XP3QCKBS.js",
+          "raw": 1623,
+          "brotli": 663
+        },
+        {
+          "file": "logic-JRXHRDX5.js",
+          "raw": 33,
+          "brotli": 37
+        },
+        {
+          "file": "map-GSW4HY5E.js",
+          "raw": 33,
+          "brotli": 37
+        },
+        {
+          "file": "quick-add-HSC5TXPG.js",
+          "raw": 4343,
+          "brotli": 1855
+        },
+        {
+          "file": "quick-add-retry-4ZDSBP4A.js",
+          "raw": 4343,
+          "brotli": 1855
+        },
+        {
+          "file": "settings-TTHLC3ZT.js",
+          "raw": 23432,
+          "brotli": 7302
+        },
+        {
+          "file": "settings-retry-U3RZ2NXL.js",
+          "raw": 23432,
+          "brotli": 7302
+        }
+      ],
+      "raw": 92687,
+      "brotli": 32784
+    }
+  },
+  "builderCore": {
+    "contribution": 7151,
+    "proposedCeiling": 7550,
+    "enforced": true,
+    "withoutCoreInitial": {
+      "files": [
+        {
+          "file": "chunk-DHRVKC3N.js",
+          "raw": 19589,
+          "brotli": 6767
+        },
+        {
+          "file": "chunk-EK7ODJWE.js",
+          "raw": 544,
+          "brotli": 290
+        },
+        {
+          "file": "chunk-QSUHAYCS.js",
+          "raw": 7389,
+          "brotli": 1871
+        },
+        {
+          "file": "chunk-V7KIIZEG.js",
+          "raw": 64822,
+          "brotli": 18654
+        },
+        {
+          "file": "stdin.js",
+          "raw": 125019,
+          "brotli": 32945
+        }
+      ],
+      "raw": 217363,
+      "brotli": 60527
+    }
+  },
+  "fullInitial": {
+    "files": [
+      {
+        "file": "chunk-EK7ODJWE.js",
+        "raw": 544,
+        "brotli": 290
+      },
+      {
+        "file": "chunk-FYHLSIFP.js",
+        "raw": 24122,
+        "brotli": 7247
+      },
+      {
+        "file": "chunk-QSUHAYCS.js",
+        "raw": 7389,
+        "brotli": 1871
+      },
+      {
+        "file": "chunk-S2T3FAEY.js",
+        "raw": 19589,
+        "brotli": 6769
+      },
+      {
+        "file": "chunk-XIZS4XL5.js",
+        "raw": 64859,
+        "brotli": 18718
+      },
+      {
+        "file": "stdin.js",
+        "raw": 124480,
+        "brotli": 32783
+      }
+    ],
+    "raw": 240983,
+    "brotli": 67678
+  }
+}

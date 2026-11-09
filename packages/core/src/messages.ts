@@ -96,6 +96,7 @@ export const englishMessages: Readonly<Record<string, string>> = Object.freeze({
   "of.builder.tabs": "Tabs",
   "of.builder.designField": "Design {label}",
   "of.builder.label": "Label",
+  "of.builder.labelKey": "Label message key",
   "of.builder.description": "Description",
   "of.builder.placeholder": "Placeholder",
   "of.builder.hidden": "Hidden",

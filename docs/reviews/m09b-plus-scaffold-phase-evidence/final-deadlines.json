@@ -1,0 +1,15 @@
+{
+  "measuredMilliseconds": {
+    "component": 83491.557542,
+    "theme": 65578.59287499997,
+    "plugin": 72129.82587500004
+  },
+  "formula": "min(120000, ceil(2 * measuredMilliseconds / 10000) * 10000)",
+  "deadlinesMilliseconds": {
+    "component": 120000,
+    "theme": 120000,
+    "plugin": 120000
+  },
+  "oldCollectiveMilliseconds": 180000,
+  "sumMilliseconds": 360000
+}

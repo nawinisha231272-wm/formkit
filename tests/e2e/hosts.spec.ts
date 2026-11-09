@@ -189,6 +189,7 @@ for (const shadow of [false, true])
       const form = document.createElement(
         "acme-form",
       ) as import("@ourform/element").OurFormElement;
+      form.themes = window.hostThemes;
       if (shadow) form.setAttribute("shadow", "");
       const events: string[] = [];
       form.addEventListener("of-ready", () => events.push("ready"));

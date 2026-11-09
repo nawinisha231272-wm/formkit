@@ -31,6 +31,30 @@ export function checkCountBaselineEvolution(previous, current) {
         );
   }
 }
+/** Authoring work is also a deterministic gate; the 500-field workload cannot change in a PR. */
+export function checkAuthoringCountBaselineEvolution(previous, current) {
+  if (
+    current?.version !== 1 ||
+    current.fields !== 500 ||
+    (previous &&
+      (previous.version !== current.version ||
+        previous.fields !== current.fields))
+  )
+    throw new Error("Unsupported authoring count workload");
+  const values = (value) => [
+    value.indexNodeVisits,
+    ...["delete", "move", "required"].flatMap((action) =>
+      ["childCommands", "publications", "historyEntries"].map(
+        (metric) => value.bulk?.[action]?.[metric],
+      ),
+    ),
+  ];
+  const next = values(current);
+  if (next.some((value) => !Number.isSafeInteger(value) || value < 0))
+    throw new Error("Invalid or missing authoring count expectation");
+  if (previous && next.some((value, index) => value > values(previous)[index]))
+    throw new Error("Cannot increase authoring count baseline");
+}
 if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
@@ -58,6 +82,23 @@ if (
     : null;
   const current = JSON.parse(readFileSync(file, "utf8"));
   checkCountBaselineEvolution(previous, current);
+  const authoringFile = "docs/performance/builder-authoring-counts.json";
+  const authoringExists = execFileSync(
+    "git",
+    ["ls-tree", "--name-only", reference, "--", authoringFile],
+    { encoding: "utf8" },
+  ).trim();
+  const authoringPrevious = authoringExists
+    ? JSON.parse(
+        execFileSync("git", ["show", `${reference}:${authoringFile}`], {
+          encoding: "utf8",
+        }),
+      )
+    : null;
+  checkAuthoringCountBaselineEvolution(
+    authoringPrevious,
+    JSON.parse(readFileSync(authoringFile, "utf8")),
+  );
   console.log(
     previous
       ? `Count baseline cannot increase relative to ${reference}; exact measurements follow.`

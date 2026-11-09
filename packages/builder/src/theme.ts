@@ -1,4 +1,4 @@
-import { defaultBuilderThemes } from "@ourform/renderer-dom";
+import { builderTheme as neutralBuilderTheme } from "@ourform/theme-base";
 import { defineBuilderTheme } from "@ourform/sdk";
 import type {
   BuilderTheme,
@@ -26,12 +26,9 @@ export function resolveChrome(
   formMode = "light",
   themes: readonly BuilderTheme[] = [],
 ): ResolvedChrome {
-  const registry = new Map(
-    defaultBuilderThemes.map((theme) => [
-      theme.name,
-      defineBuilderTheme(theme),
-    ]),
-  );
+  const registry = new Map([
+    [neutralBuilderTheme.name, defineBuilderTheme(neutralBuilderTheme)],
+  ]);
   for (const theme of themes) {
     if (registry.has(theme.name))
       throw new Error(`Duplicate builder theme: ${theme.name}`);

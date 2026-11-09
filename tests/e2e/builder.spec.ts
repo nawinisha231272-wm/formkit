@@ -243,11 +243,22 @@ test("offline runtime: native builder editing and client validation/submission n
     external.push(url.origin);
     return route.abort();
   });
+  const settingsPreload = page.waitForRequest(
+    /\/features\/settings\.js(?:\?.*)?$/,
+  );
   await page.goto("/builder.html");
   await mode(page, "Preview");
   await expect(
     page.getByRole("button", { name: "4 of 5 stars" }),
   ).toBeVisible();
+  // Cache the approved idle-loaded client code before disconnecting localhost too.
+  // The first Settings interaction and every edit below still happen offline.
+  await page.evaluate(
+    async (url) => {
+      await import(url);
+    },
+    (await settingsPreload).url(),
+  );
   await context.setOffline(true);
   await page.getByRole("button", { name: "Submit preview" }).click();
   await expect(page.locator("#builder-result")).toContainText('"ok": false');

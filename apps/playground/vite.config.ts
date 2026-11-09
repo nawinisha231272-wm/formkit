@@ -3,6 +3,7 @@ import { createEngine } from "@ourform/core";
 import { builtinComponents } from "@ourform/components";
 import { renderToString } from "@ourform/renderer-dom";
 import schema from "../../fixtures/forms/onboarding/customer.json";
+import { baseTheme } from "@ourform/themes/base";
 export default defineConfig({
   plugins: [
     {
@@ -18,6 +19,7 @@ export default defineConfig({
           return html.replace(
             "<!--ourform-ssr-->",
             renderToString(session, {
+              themes: [baseTheme],
               views: new Map(
                 builtinComponents.map((field) => [
                   field.model.type,

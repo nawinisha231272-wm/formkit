@@ -51,6 +51,8 @@ export interface ComponentNode {
   type: string;
   key?: string;
   label?: string;
+  /** Explicit translation key; label remains the literal/English fallback. */
+  labelKey?: string;
   description?: string;
   placeholder?: string;
   tooltip?: string;

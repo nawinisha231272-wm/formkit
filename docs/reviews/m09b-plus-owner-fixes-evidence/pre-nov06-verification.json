@@ -1,0 +1,77 @@
+{
+  "status": "BLOCKED",
+  "baseHead": "7885dcaec4a838c8057391f5ae2dba834c9b81d6",
+  "pushed": false,
+  "verifyExit": 1,
+  "sourceUnchanged": true,
+  "consumerGates": {
+    "ui": 31784,
+    "builderCore": 7190,
+    "full": 67651
+  },
+  "limits": {
+    "ui": 31800,
+    "builderCore": 7300,
+    "full": 67700
+  },
+  "latestFullUnit": {
+    "passed": 338,
+    "failed": 1,
+    "failure": "CLI three-scaffold proof exceeded collective 180000ms deadline"
+  },
+  "precedingFullBrowser": {
+    "passed": 1588,
+    "failed": 5,
+    "failure": "WebKit initial page.goto load timeouts"
+  },
+  "index": {
+    "platform": "darwin-arm64",
+    "fields": 500,
+    "milliseconds": 15.299999713897705,
+    "nodes": 500,
+    "visits": 500,
+    "cached": true,
+    "advisoryTargetMilliseconds": 50,
+    "advisoryTargetMet": true
+  },
+  "screenshots": {
+    "changed": 295,
+    "new": 68,
+    "unchanged": 109
+  },
+  "sinceReviewCounts": {
+    "changed": 25,
+    "new": 30,
+    "unchanged": 417
+  },
+  "unexplained": 43,
+  "ci": "Not pushed: full pinned local verify must pass first.",
+  "sizeGates": 36,
+  "runtimeCountTests": 5,
+  "bulk": {
+    "platform": "darwin-arm64",
+    "fields": 500,
+    "indexMs": 11.878041999999994,
+    "indexNodeVisits": 500,
+    "bulk": {
+      "delete": {
+        "childCommands": 500,
+        "publications": 1,
+        "historyEntries": 1,
+        "milliseconds": 96.01533400000005
+      },
+      "move": {
+        "childCommands": 500,
+        "publications": 1,
+        "historyEntries": 1,
+        "milliseconds": 407.60137499999996
+      },
+      "required": {
+        "childCommands": 500,
+        "publications": 1,
+        "historyEntries": 1,
+        "milliseconds": 242.14858299999992
+      }
+    }
+  }
+}

@@ -55,6 +55,7 @@ export interface ComponentModel<T = unknown> {
     title: string;
     group: string;
     icon?: string;
+    caption?: string | false;
     order?: number;
     rootOnly?: boolean;
   };

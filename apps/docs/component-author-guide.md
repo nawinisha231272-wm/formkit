@@ -51,8 +51,7 @@ without nvm/Corepack/global installs. Commit the generated pnpm-lock.yaml; subse
 `ofrun pnpm install --frozen-lockfile`. The integration suite also proves a frozen/offline reinstall.
 
 `create-theme` and `create-plugin` take the same arguments. A theme includes a preview field; a plugin
-packages its field. The generator refuses an existing target. The local kit provides all thirteen
-unpublished public dependencies. After matching SDK packages are published, install
+packages its field. The generator refuses an existing target. The local kit provides all unpublished public dependencies, including explicit theme entries and builder lazy assets. After matching SDK packages are published, install
 `@ourform/cli@0.0.1` and omit --local-packages. The kit and generated file overrides must remain at
 their chosen paths during development; regenerate a project when relocating its kit.
 
@@ -413,3 +412,12 @@ layouts. See `@ourform/builder` README for keyboard authoring and lifecycle deta
 
 Slot captions are literal text by default, including text that matches a catalog key. Optional
 `labelKey: "acme.card.body"` opts into host translation with `label: "Contents"` as its English fallback.
+
+## Declared builder caption
+
+`ComponentModel.builder.caption` identifies the displayed inline-edit property and defaults to
+`label` when omitted; `false` opts out. `defineField` and `defineLayout` accept `caption` with
+the same meaning. Panel and Fieldset continue to use `node.label` for their heading and legend.
+Inline editing is available only when the caption is visibly rendered. Enter or blur commits one
+trimmed update, Escape cancels, and an empty caption is refused with a visible reason. A `labelKey`
+opens Settings; editing never changes the data key.

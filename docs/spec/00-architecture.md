@@ -18,7 +18,7 @@ apps (playground, examples, docs, benchmarks)
 adapters      @ourform/element   @ourform/react   @ourform/angular   (@ourform/vue later)
   │
 renderer      @ourform/renderer-dom  (portable renderer, FieldShell, theme runtime)
-  │           @ourform/theme-base | theme-bootstrap4 | theme-bootstrap5 | theme-tailwind | theme-material
+  │           @ourform/themes (opt-in entries; compatibility theme-base/bootstrap4/bootstrap5/tailwind/material)
   │           @ourform/builder (UI)  ──uses──▶ @ourform/builder-core (headless)
 sdk           @ourform/sdk  (define* APIs, property helpers, contracts, test kit)
   │           @ourform/components (built-ins, written on the public SDK)
@@ -39,7 +39,7 @@ side packages: @ourform/licensing (offline keys), @ourform/testing (conformance)
 | sdk                     | schema, core                                                                        |
 | components              | sdk (and its re-exports)                                                            |
 | renderer-dom            | schema, core, sdk, theme-\* presets (ADR-0005)                                      |
-| theme-\*                | sdk (types only)                                                                    |
+| themes, theme-\*        | sdk (types only); themes re-exports compatibility descriptors                       |
 | builder-core            | schema, core, sdk                                                                   |
 | builder                 | builder-core, renderer-dom, sdk, core, schema                                       |
 | element, react, angular | renderer-dom, builder (M09 wrappers), sdk, core, schema, components (optional peer) |
@@ -89,3 +89,7 @@ renderer-dom, sdk, core and schema. Runtime renderer/core packages never import 
 
 M09b (ADR-0016 and spec 10) adds a portable Material form theme and five builder chrome themes.
 Material uses the same SDK-only theme contract; it does not introduce a framework renderer pack.
+
+M09b+ (ADR-0018/0020) makes form themes and matching builder recipes explicit, per-instance opt-ins.
+The root builder owns Neutral chrome only. Compatibility theme packages re-export the same source
+descriptors; theme selection remains host configuration and never changes form JSON.

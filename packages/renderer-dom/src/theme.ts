@@ -1,4 +1,3 @@
-import { baseTheme } from "@ourform/theme-base";
 import type {
   FieldPart,
   ShellVariant,
@@ -24,7 +23,7 @@ export function resolveTheme(
   options: ThemeOptions = {},
   componentId?: string,
 ): ResolvedTheme {
-  const installed = new Map<string, Theme>([["base", baseTheme]]);
+  const installed = new Map<string, Theme>();
   for (const item of options.themes ?? []) {
     if (installed.has(item.name))
       throw new Error(`Duplicate theme: ${item.name}`);
@@ -37,15 +36,18 @@ export function resolveTheme(
         ? "bootstrap5"
         : theme
       : theme.name;
-  const chain: (Theme | ThemeOverride)[] = [baseTheme];
+  const chain: (Theme | ThemeOverride)[] = [];
   const seen = new Set<string>();
   const visit = (key: string): void => {
     if (seen.has(key)) throw new Error(`Theme inheritance cycle: ${key}`);
     const item = installed.get(key);
-    if (!item) throw new Error(`Unknown theme: ${key}`);
+    if (!item)
+      throw Object.assign(new Error(`Unknown theme: ${key}`), {
+        code: "unknown-theme" as const,
+      });
     seen.add(key);
     if (item.extends) visit(item.extends);
-    if (item !== baseTheme) chain.push(item);
+    chain.push(item);
   };
   visit(name);
   for (const override of [

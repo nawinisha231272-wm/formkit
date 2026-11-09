@@ -71,14 +71,18 @@ test("design canvas shows only the active tab and preserves tab DOM/selection on
   await expect(canvas).toHaveAttribute("data-of-theme", "material");
 });
 
-test("copy toolbar captures a snapshot; keyboard paste commits once without opening settings", async ({
+test("Copy in toolbar More captures a snapshot; keyboard paste commits once without opening settings", async ({
   page,
 }) => {
   await page.goto("/builder.html");
   const rating = page.locator(
     '[data-builder-part="canvas"] [data-field-id="cmp_rating"]',
   );
-  await rating.getByRole("button", { name: "Copy", exact: true }).click();
+  await rating.getByRole("button", { name: "More", exact: true }).click();
+  await page
+    .locator(".ofb-action-menu")
+    .getByRole("button", { name: "Copy", exact: true })
+    .click();
   expect(
     await page.evaluate(
       () => window.miniBuilder.builder.getState().history.past.length,

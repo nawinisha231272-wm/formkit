@@ -1,0 +1,6 @@
+{
+  "node": "v22.22.3",
+  "platform": "linux",
+  "arch": "x64",
+  "pnpm": "pnpm/10.10.0 npm/? node/v22.22.3 linux x64"
+}

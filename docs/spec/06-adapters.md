@@ -13,7 +13,7 @@ form.session.subscribe(p => console.log(p.data));
 
 ## Web Component — `<our-form>`
 
-- Properties: `schema`, `data`, `theme`, `engine` (optional), `readOnly`.
+- Properties: `schema`, `data`, `theme`, `themes`, `engine` (optional), `readOnly`.
 - Events: `of-change` (`detail: { data, changedPaths }`), `of-submit` (`detail: SubmitResult`), `of-ready`.
 - Methods: `submit()`, `validate()`, `reset()`, `focusField(id)`.
 - Light DOM by default; `shadow` attribute opts into Shadow DOM.
@@ -136,3 +136,18 @@ React FormBuilder preserves owner portals/context and current preview useForm; A
 OurFormBuilderComponent preserves owner DI and exposes schemaChange/changed/diagnostics/ready.
 Controlled schema echoes are no-op; external schemas import atomically. Engine/field changes recreate
 history, appearance changes preserve identity, teardown destroys native instances and UI listeners.
+
+### M09b+ form registry completion (owner approved 2026-10-29)
+
+Element `themes: HostOptions["themes"]`, React `FormProps.themes`, and Angular `[themes]`
+expose the same per-instance optional descriptor registry. Changing it updates the mounted view
+without replacing the session or focused control; values, touched/errors, focus and caret survive.
+Element retains the registry on reconnect (as usual reconnect creates a new session from saved data).
+React/Angular resolve simultaneous registry/selection changes atomically. An unknown theme reports
+`unknown-theme` with no fallback; Element attribute/connect errors emit `of-error` detail
+`{ code: "unknown-theme", message }`, while invalid direct setters throw before changing state.
+
+Builder wrappers expose the approved independent `planningPreload` and `dataPreload` controls,
+alongside `settingsPreload` (each defaults to `idle`). `preload` remains the Logic/JSON policy
+(default `none`). Changing a preload policy rebuilds the builder with the current schema.
+Set every policy to `none` for no background feature requests.

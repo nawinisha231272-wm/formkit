@@ -1,0 +1,39 @@
+{
+  "status": "candidate; full-closure budget STOP; not committed or pushed",
+  "sourceHead": "3bdf03416c9a402c6406b6ce8d6d1064e43c2bec",
+  "patch": {
+    "file": "packages/builder/src/builder.ts",
+    "sha256": "d7cfb6350f9d075a1bd21c11da66f14f356d8af85f80703a641b7b9ab3a3bf88"
+  },
+  "regression": {
+    "original": "3 failures, each 27 redundant writes",
+    "candidate": "3 passes (Chromium, Firefox, WebKit), zero redundant writes; changed dimensions still written"
+  },
+  "gates": {
+    "builderUi": {
+      "before": 31784,
+      "candidate": 31760,
+      "ceiling": 31800
+    },
+    "builderCore": {
+      "before": 7190,
+      "candidate": 7266,
+      "ceiling": 7300
+    },
+    "full": {
+      "before": 67651,
+      "candidate": 67714,
+      "ceiling": 67700
+    }
+  },
+  "limitsChanged": false,
+  "apiChanged": false,
+  "formJsonChanged": false,
+  "ciRerun": false,
+  "taskAssertionsAndDeadlineChanged": false,
+  "limitations": [
+    "Local Linux x64 emulation hits the unchanged 30-second deadline on main too; these local end-to-end outcomes cannot substitute for native Linux CI.",
+    "Controls isolate redundant CSSOM writes and geometry overhead; eliminating the redundant work has not yet been shown to make the entire CI workload pass.",
+    "Candidate build made with pinned Node/pnpm on macOS; exact generated builder JS copied into the pinned Linux image for the focused browser regression. No formal new Linux source build/visual proof claimed."
+  ]
+}

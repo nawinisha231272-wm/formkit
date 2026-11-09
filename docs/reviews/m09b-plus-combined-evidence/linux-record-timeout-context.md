@@ -1,0 +1,46 @@
+# Page snapshot
+
+```yaml
+- main [ref=e2]:
+    - heading "Theme conformance" [level=1] [ref=e3]
+    - generic [ref=e4]:
+        - region "Please correct these errors" [ref=e5]:
+            - heading "Please correct these errors" [level=3] [ref=e6]
+            - list [ref=e7]:
+                - listitem [ref=e8]:
+                    - link "Name is required" [ref=e9]:
+                        - /url: "#of-2ceb1faa-588d2d38-3c36e32-d79fe211-name"
+        - generic [ref=e10]:
+            - generic [ref=e11]: Name (required)
+            - generic [ref=e12]: Use your full name
+            - textbox "Name" [active] [ref=e14]
+            - generic [ref=e15]: We will use this on your receipt
+            - paragraph [ref=e16]: Name is required
+        - generic [ref=e17]:
+            - generic [ref=e18]: Amount
+            - generic [ref=e19]:
+                - generic [ref=e20]: $
+                - spinbutton "Amount" [ref=e21]: "12"
+                - generic [ref=e22]: USD
+        - generic [ref=e23]:
+            - checkbox "Accept" [ref=e25]
+            - generic [ref=e26]: Accept
+        - group "Rating" [ref=e27]:
+            - generic [ref=e28]: Rating (required)
+            - group "Rating" [ref=e30]:
+                - button "1 of 5 stars" [ref=e31] [cursor=pointer]: ★
+                - button "2 of 5 stars" [ref=e32] [cursor=pointer]: ★
+                - button "3 of 5 stars" [pressed] [ref=e33] [cursor=pointer]: ★
+                - button "4 of 5 stars" [ref=e34] [cursor=pointer]: ☆
+                - button "5 of 5 stars" [ref=e35] [cursor=pointer]: ☆
+        - generic [ref=e36]:
+            - generic [ref=e37]: Disabled
+            - textbox "Disabled" [disabled] [ref=e39]: Unavailable
+        - generic [ref=e40]:
+            - heading "Details" [level=3] [ref=e41]
+            - generic [ref=e42]:
+                - generic [ref=e43]: Quantity, item A
+                - textbox "Quantity, item A" [ref=e45]: "3"
+        - generic [ref=e46]: 1 error in the form
+        - button "Submit" [ref=e47]
+```

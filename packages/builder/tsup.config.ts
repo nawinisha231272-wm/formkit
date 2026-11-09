@@ -1,6 +1,102 @@
 import { defineConfig } from "tsup";
+import { readFile } from "node:fs/promises";
+import { transform } from "esbuild";
 
 export default defineConfig({
+  entry: {
+    index: "src/index.ts",
+    "features/json": "src/features/json.ts",
+    "features/settings": "src/settings.ts",
+    "features/settings-retry": "src/features/settings-retry.ts",
+    "features/history": "src/features/history.ts",
+    "features/logic": "src/features/logic.ts",
+    "features/map": "src/features/map.ts",
+    "features/commands": "src/features/commands.ts",
+    "features/commands-retry": "src/features/commands-retry.ts",
+    "features/bulk-editor": "src/features/bulk-editor.ts",
+    "features/bulk-editor-retry": "src/features/bulk-editor-retry.ts",
+    "features/bulk-plan": "src/features/bulk-plan.ts",
+    "features/bulk-plan-retry": "src/features/bulk-plan-retry.ts",
+    "features/data": "src/features/data.ts",
+    "features/data-retry": "src/features/data-retry.ts",
+    "features/quick-add": "src/features/quick-add.ts",
+    "features/quick-add-retry": "src/features/quick-add-retry.ts",
+    "themes/base": "src/themes/base.ts",
+    "themes/bootstrap4": "src/themes/bootstrap4.ts",
+    "themes/bootstrap5": "src/themes/bootstrap5.ts",
+    "themes/tailwind": "src/themes/tailwind.ts",
+    "themes/material": "src/themes/material.ts",
+  },
+  format: ["esm"],
+  dts: {
+    entry: {
+      index: "src/index.ts",
+      "themes/base": "src/themes/base.ts",
+      "themes/bootstrap4": "src/themes/bootstrap4.ts",
+      "themes/bootstrap5": "src/themes/bootstrap5.ts",
+      "themes/tailwind": "src/themes/tailwind.ts",
+      "themes/material": "src/themes/material.ts",
+    },
+  },
+  clean: true,
+  sourcemap: true,
+  splitting: false,
+  esbuildPlugins: [
+    {
+      name: "preserve-lazy-entry-boundaries",
+      setup(build) {
+        build.onResolve({ filter: /^\.\// }, (args) => {
+          if (
+            args.kind !== "dynamic-import" ||
+            !args.importer.endsWith("feature-loader.ts")
+          )
+            return;
+          const path =
+            args.path === "./settings" ? "./features/settings" : args.path;
+          return { path: `${path}.js`, external: true };
+        });
+      },
+    },
+    {
+      name: "static-builder-css",
+      setup(build) {
+        build.onLoad(
+          { filter: /(?:^|[/\\])(?:.*-style|style)\.ts$/ },
+          async ({ path }) => {
+            const source = await readFile(path, "utf8");
+            const match = /export const (\w+) = `([\s\S]*)`;/.exec(source);
+            const outside = match
+              ? source.slice(0, match.index) +
+                source.slice(match.index + match[0].length)
+              : source;
+            if (
+              outside
+                .split("\n")
+                .some((line) => line.trim() && !line.trim().startsWith("//"))
+            )
+              return undefined;
+            if (!match || match[2]!.includes("${")) return undefined;
+            const css = await transform(match[2]!, {
+              loader: "css",
+              minify: true,
+              target: "es2022",
+            });
+            return {
+              contents: `export const ${match[1]} = ${JSON.stringify(css.code)};`,
+              loader: "ts",
+            };
+          },
+        );
+      },
+    },
+  ],
   minify: "terser",
-  terserOptions: { module: true, compress: { passes: 3 }, mangle: true },
+  terserOptions: {
+    module: true,
+    compress: { passes: 10 },
+    // Lazy entries are minified independently, so cross-entry UI members must
+    // retain one spelling. Other internal _ofb members remain safely mangled.
+    mangle: { properties: { regex: /^_ofb/, reserved: ["_ofbStyle"] } },
+    format: { comments: /@vite-ignore/ },
+  },
 });

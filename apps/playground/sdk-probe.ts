@@ -1,3 +1,4 @@
+import { baseTheme } from "@ourform/themes/base";
 import { bootstrap5Theme } from "@ourform/theme-bootstrap5";
 import { tailwindTheme } from "@ourform/theme-tailwind";
 import "@angular/compiler";
@@ -68,7 +69,7 @@ const views = new Map([
 const view = mount(document.querySelector("#form")!, session, {
   engine: e,
   views,
-  themes: [bootstrap5Theme, tailwindTheme],
+  themes: [baseTheme, bootstrap5Theme, tailwindTheme],
   idPrefix: "",
 });
 export const sdk = {

@@ -50,9 +50,9 @@ test("registries reject duplicates, cycles and missing themes, with no state sha
     "tailwind",
   );
   expect(() => resolveTheme("tailwind")).toThrow("Unknown theme");
-  expect(() => resolveTheme("base", { themes: [baseTheme] })).toThrow(
-    "Duplicate theme",
-  );
+  expect(() =>
+    resolveTheme("base", { themes: [baseTheme, baseTheme] }),
+  ).toThrow("Duplicate theme");
   expect(() =>
     resolveTheme({ ...baseTheme, name: "cycle", extends: "cycle" }),
   ).toThrow("cycle");
@@ -115,6 +115,7 @@ test("static shells share ARIA anatomy, safe ids, scoped CSS, modes and translat
         type: "text",
         key: "name",
         label: "<Name>",
+        labelKey: "form.name",
         description: "A description",
         validation: { required: true },
       },
@@ -136,6 +137,12 @@ test("static shells share ARIA anatomy, safe ids, scoped CSS, modes and translat
     themeMode: "dark" as const,
     idPrefix: "first",
     presentation: { name: { help: "Helpful", prefix: "$", suffix: "USD" } },
+    t: (key: string, params?: Readonly<Record<string, unknown>>) =>
+      key === "form.name"
+        ? "Translated name"
+        : key === "of.required"
+          ? `${String(params?.label)} is required`
+          : key,
   };
   const html = renderToString(session, options);
   expect(html).toContain("<fieldset");
@@ -146,7 +153,8 @@ test("static shells share ARIA anatomy, safe ids, scoped CSS, modes and translat
   );
   expect(html).toContain('aria-invalid="true"');
   expect(html).toContain('aria-required="true"');
-  expect(html).toContain("&lt;Name&gt; is required");
+  expect(html).toContain("Translated name is required");
+  expect(html).toContain(">Translated name</span>");
   expect(html).not.toContain("<Name>");
   expect(html.match(/aria-live=/g)).toHaveLength(1);
   expect(html).toContain('.of-root[data-of-instance="first"]');
@@ -206,6 +214,7 @@ test("SSR nested none containers and cell labels retain hierarchy; custom messag
   const session = engine.createSession(result.form);
   await session.validate();
   const html = renderToString(session, {
+    themes: [baseTheme],
     views: new Map([["text", { ...textField.views, shell: "cell" }]]),
     presentation: { child: { cellLabel: "Quantity, item A" } },
     t: (key) => (key === "of.required" ? "Translated error" : key),
@@ -218,7 +227,17 @@ test("SSR nested none containers and cell labels retain hierarchy; custom messag
     html.indexOf('data-field-id="child"'),
   );
   const ownShell = renderToString(session, {
+    themes: [baseTheme],
     views: new Map([["text", { ...textField.views, shell: "none" }]]),
   });
   expect(ownShell).not.toContain("<label");
+});
+
+test("unknown theme resolution carries an unknown-theme diagnostic without fallback", () => {
+  expect(() => resolveTheme("missing", { themes: [baseTheme] })).toThrowError(
+    expect.objectContaining({
+      code: "unknown-theme",
+      message: "Unknown theme: missing",
+    }),
+  );
 });

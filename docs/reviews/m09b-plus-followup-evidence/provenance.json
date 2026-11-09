@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-09",
+  "baseHead": "cc05111b3498668af0314e65a7cb8b3217ea6a3b",
+  "main": "0b3b452c46096e852248ca11872f9697888c621e",
+  "image": "mcr.microsoft.com/playwright:v1.56.1-noble@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a",
+  "linuxArchitecture": "linux-x64, emulated on darwin-arm64",
+  "benchmark": "apps/benchmarks/main.ts runBenchmark: form-runtime API setValue(field0), 25 edits with forced layout, 25 calculated dependent fields; not builder editing",
+  "samples": "three warm-ups plus 15 measured samples; five main/branch interleaved pairs per platform",
+  "previousCI": "https://github.com/nawinisha231272-wm/formkit/actions/runs/42395643377",
+  "beforePushSourceFingerprint": "a515ea9df673812730665b54e3d2191df79c8b780a7102f79aafe83d03d213ea",
+  "captures": {
+    "requested": 43,
+    "macOS": 30,
+    "linux": 13,
+    "changedPngFiles": 43,
+    "otherPngFilesUnchanged": 429,
+    "dimensionsChanged": 0,
+    "pixelAudit": "Exact differences in image-audit.json; diagnostic raster comparison allows a one-pixel neighborhood and RGB L1 distance <=90 solely to identify antialias/crop differences. All remaining pixels lie on the documented 3px control-border bands. This diagnostic changes no screenshot threshold and does not confer approval."
+  },
+  "testChanges": "Existing screenshot hover action replaced by parking pointer0,0, with a no-hover assertion. Existing screenshot options and all existing command assertions/deadlines/retries unchanged. Added six context gesture cases, three loading completion cases and four CSS work-count cases."
+}

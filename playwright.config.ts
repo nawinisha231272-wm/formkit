@@ -1,8 +1,9 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices, webkit } from "@playwright/test";
 import { platform, arch } from "node:os";
+import { fileURLToPath } from "node:url";
 export default defineConfig({
   // Bound concurrent real framework hosts without changing deadlines or assertions.
-  workers: process.env.CI ? 1 : 2,
+  workers: 1,
   reporter: "list",
   snapshotPathTemplate: `{testDir}/__screenshots__/${platform()}-${arch()}/{testFilePath}/{projectName}/{arg}{ext}`,
   testDir: "./tests/e2e",
@@ -10,7 +11,26 @@ export default defineConfig({
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "firefox", use: { ...devices["Desktop Firefox"] } },
-    { name: "webkit", use: { ...devices["Desktop Safari"] } },
+    {
+      name: "webkit",
+      use: {
+        ...devices["Desktop Safari"],
+        ...(platform() === "darwin"
+          ? {
+              launchOptions: {
+                // Process-local AppKit preference; never changes global defaults.
+                executablePath: fileURLToPath(
+                  new URL("./scripts/webkit-macos.sh", import.meta.url),
+                ),
+                env: {
+                  ...process.env,
+                  OURFORM_PINNED_WEBKIT_EXECUTABLE: webkit.executablePath(),
+                },
+              },
+            }
+          : {}),
+      },
+    },
   ],
   webServer: [
     {
@@ -28,6 +48,8 @@ export default defineConfig({
       "react-example",
       "angular-example",
       "angular21-example",
+      "script-tag-example",
+      "angular-cli-example",
     ].map((name, index) => ({
       command: `pnpm --filter @ourform/${name} dev`,
       url: `http://127.0.0.1:${4181 + index}`,

@@ -1,6 +1,7 @@
 import { createEngine } from "@ourform/core";
 import { builtinComponents } from "@ourform/components";
 import { mount } from "@ourform/renderer-dom";
+import { baseTheme } from "@ourform/themes/base";
 import type { FormDefinition } from "@ourform/sdk";
 const engine = createEngine();
 for (const field of builtinComponents) engine.register(field.model);
@@ -47,7 +48,7 @@ export async function runBenchmark(count: number, samples = 9) {
     if (!compiled.ok) throw new Error("Benchmark compile failed");
     const session = engine.createSession(compiled.form);
     start = performance.now();
-    const view = mount(root, session, { engine, views });
+    const view = mount(root, session, { engine, views, themes: [baseTheme] });
     void root.offsetHeight;
     const mountMS = performance.now() - start;
     const input = root.querySelector<HTMLInputElement>("input")!;

@@ -12,6 +12,7 @@
     "@ourform/core": "workspace:*",
     "@ourform/components": "workspace:*",
     "@ourform/renderer-dom": "workspace:*",
-    "@ourform/sdk": "workspace:*"
+    "@ourform/sdk": "workspace:*",
+    "@ourform/themes": "workspace:*"
   }
 }

@@ -1,0 +1,6 @@
+{
+  "node": "v22.22.3",
+  "platform": "darwin",
+  "arch": "arm64",
+  "pnpm": "pnpm/10.10.0 npm/? node/v22.22.3 darwin arm64"
+}

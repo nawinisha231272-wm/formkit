@@ -18,6 +18,19 @@ test("defineLayout composes frozen per-definition metadata without a value adapt
     defineLayout({ type: "grid", title: "Grid", columns: true }).views.layout,
   ).toEqual({ tag: "div", columns: true });
 });
+test("layout author can declare or disable the inline caption", () => {
+  expect(
+    defineLayout({ type: "a", title: "A", caption: "label" }).model.builder
+      ?.caption,
+  ).toBe("label");
+  expect(
+    defineLayout({ type: "b", title: "B", caption: false }).model.builder
+      ?.caption,
+  ).toBe(false);
+  expect(
+    defineLayout({ type: "c", title: "C" }).model.builder?.caption,
+  ).toBeUndefined();
+});
 test("declared SDK slots are frozen snapshots and discoverable without builder code", () => {
   const slots = [{ name: "body", label: "Body", accepts: ["field"], max: 2 }];
   const layout = defineLayout({

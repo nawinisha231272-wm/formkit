@@ -1,6 +1,9 @@
 # ADR-0018 — Builder feature loading and size budgets
 
-Status: accepted by the owner with amendments on 2026-10-22. Implement at the start of M09b+, after M09b approval.
+Current enforcement: the owner-approved 2026-10-30 amendment below supersedes earlier size tables:
+**UI 31,800 / builder-core 7,300 / full initial 67,700 / standalone builder 31,600 bytes.**
+Earlier measurements, ceilings and rejected probes remain historical evidence.
+Status: accepted by the owner, including the explicit 2026-10-28 size reset/lazy bodies and final 2026-10-30 menu allowance. Implementation is M09b+; earlier decisions remain recorded below.
 
 The M09b builder is close to its unchanged 30 kB compressed budget (last focused measurement:
 29.92 kB). Additional Logic functionality should not increase the initial builder payload. M09b
@@ -18,17 +21,29 @@ remain in core; loading the History view must not be necessary to undo an edit. 
 per module; feature state, subscriptions and DOM belong to each builder instance. Dependencies
 continue to follow the architecture; headless packages acquire no browser or feature dependencies.
 
-| Entry          | Compressed limit  | What triggers its first load                  |
-| -------------- | ----------------- | --------------------------------------------- |
-| Core builder   | 26 kB after split | Import/create builder                         |
-| Logic mode     | 10 kB             | First activation of root Logic mode           |
-| JSON editor    | 8 kB              | First JSON mode or component Edit JSON action |
-| Dependency map | 10 kB             | First request to open the dependency map      |
+| Entry / accounting scope                                                | Compressed limit                                                            | What triggers its first load                                                   |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Builder UI initial (excludes builder-core), after consumer build        | ≤29 kB                                                                      | Import/create builder, including Neutral chrome and registered builder recipes |
+| Entire initial transitive closure, including runtime/shared code/styles | ≤64,613 bytes; no growth                                                    | Initial builder load; deferred chunks excluded only while not requested        |
+| Builder-core initial contribution (marginal consumer build)             | ≤7,050 bytes                                                                | Initial builder load                                                           |
+| Shared form-runtime dependencies                                        | Existing package budgets, unchanged; reported fully, each shared chunk once | As required by the initial/first-open route                                    |
+| Logic mode                                                              | 10 kB                                                                       | First activation of root Logic mode                                            |
+| JSON editor                                                             | 8 kB                                                                        | First JSON mode or component Edit JSON action                                  |
+| Dependency map                                                          | 10 kB                                                                       | First request to open the dependency map                                       |
 
 Command bar and History/diff must also have independent CI size budgets before their implementation
-ships. Their numeric ceilings require a separate proposal; they do not inherit an unbounded allowance
-or silently consume the existing 28 kB Logic/JSON/map allowance. The core target is **≤26 kB** after
-the split, leaving room for M09b+. M09b retains its current 30 kB check until this split lands.
+ships. The command-bar ceiling is now approved below; History/diff still requires a separate proposal.
+They do not inherit an unbounded allowance
+or silently consume the existing 28 kB Logic/JSON/map allowance. The core target is **≤29 kB** after
+the split, including approximately 1 kB headroom for M09b+.
+
+Owner accounting amendment (2026-10-23), accepted in ADR-0020: the builder-owned ceiling is
+initial code/styles on top of the existing form runtime, not a substitute for reporting the whole
+initial closure. Also gate that full initial transitive closure at **64,613 Brotli bytes, no growth**.
+A later increase requires a measured proposal and explicit owner approval. Shared runtime remains
+under its existing budgets and appears fully in every report, with each shared chunk attributed once.
+Lazy Logic/JSON/map/command-bar/History chunks stay outside the initial closure only while deferred
+and remain under their own budgets. Do not conceal an initial request as deferred bytes.
 
 Size each entry **after a consumer production build**, as consumers receive it, including runtime
 loader code and CSS/assets required by the route. Cover Vite/React, Angular CLI, vanilla and the
@@ -47,7 +62,7 @@ only its editor closure; opening the dependency map loads its closure (including
 implementation actually requires it). Reopening an already loaded feature makes no new module
 request. Record emitted filenames, compressed bytes and observed network requests for initial Build
 and each first-open route in the M09b+ loading report, using both cold and warm sessions.
-The exact emitted chunk names and measured route bytes are pending implementation, not claims about
+At the initial design stage the emitted names and route bytes were unmeasured; the final canonical graph is now linked below. The original estimates were not claims about
 M09b.
 
 Host option `preload: 'none' | 'idle'` defaults to `'none'`. With `none`, creating an idle builder
@@ -76,6 +91,250 @@ M09b approval, before the approved authoring shortcuts are implemented.
 ## Owner amendment — M09b+ interaction contracts
 
 The split is the first M09b+ task, with command-bar loading deferred from its first release and core
-≤26 kB. Inline label editing opens the dialog for translation-key labels. Quick-add lists only
+≤29 kB. Inline label editing opens the dialog for translation-key labels. Quick-add lists only
 components accepted by the destination slot. Outline multi-selection uses Shift+arrows. Bulk editing
 shows shared properties only. Cross-scope moves are refused atomically, with a visible reason.
+
+## Owner amendment — generated Settings boundary (2026-10-25)
+
+Generated Settings UI and its styles are a separate lazy entry. The modal/drawer frame, focus and
+accessible loading/error state, command dispatch, locks, schema state, validation, and private Add
+draft semantics remain initial. PointerDrag and its first-pointerdown response remain initial.
+Settings preloads after first render at idle by default; hosts can set `settingsPreload: 'none'`.
+This is separate from `preload`, whose accepted default remains `none` for Logic/JSON.
+
+Add/Edit opens its frame immediately with `aria-busy` and an announcement. Failure displays the
+reason and Retry; Add also offers “Add with defaults”, exactly matching `openOnAdd:false`. Cancel
+discards the private Add with no history entry. Slow, failed, retried and cancelled loading preserves
+focus, schema, selection, draft and history. Cover strict CSP, offline/custom `assetBase`, and all
+three browsers. Settings receives an independent measured budget outside the 28 kB Logic/JSON/map
+aggregate; its ceiling and the revised deferred-union ceiling require owner approval before shipping.
+
+The full-initial ceiling remains 64,613 bytes. The later opt-in-theme amendment below supersedes the
+26,000-byte builder-owned ceiling and the candidate-deferral instruction.
+
+## Owner amendment — opt-in themes and final initial boundary (2026-10-26)
+
+Themes are explicit per builder instance. `@ourform/builder` imports Neutral chrome only; form themes
+come from `@ourform/themes/<name>` and matching builder recipes from
+`@ourform/builder/themes/<name>`. The picker lists only registered themes. A host may register a lazy
+theme loader under the same accessible loading/retry/focus, offline, strict-CSP and `assetBase`
+principles as other lazy features. Material registers Base as its dependency. Custom
+`defineBuilderTheme` recipes use the same instance registry. Generated script-tag bundles provide one
+entry per theme plus an all-themes playground entry. Compatibility entries remain during migration;
+form JSON does not change.
+
+Ship measured option B: generated Settings remains lazy, while context menu, toolbar More, Issues and
+all clipboard UI/handlers stay initial. Do not ship a secondary-tools chunk. The builder UI initial (excludes builder-core)
+ceiling rises from 26,000 to **29,000 Brotli bytes** because Neutral plus the match-form/theme registry
+(approximately 1.4 kB) move into builder-owned accounting and M09b+ retains about 1 kB headroom. The
+full initial closure remains the primary no-growth gate at **64,613 bytes**. Settings stays ≤8,000;
+Logic/JSON/map stays ≤28,000 combined; Logic/JSON/map/Settings stays ≤36,000. Every feature PR reports
+builder-owned and full-closure deltas. New menus, panels and dialogs are lazy by default; crossing
+either initial ceiling stops for an owner decision.
+
+## M09b+ implementation evidence — 2026-10-26
+
+The accepted option-B split and opt-in-theme design are implemented on the M09b+ branch. Generated
+Settings is lazy and defaults to idle preload; its frame, focus, draft/history semantics, validation,
+failure/Retry and Add-with-defaults behavior remain initial. Pointer drag, context/More menus, Issues
+and every clipboard handler/buffer/system operation remain initial. No `secondary-tools` entry ships.
+
+The pinned consumer probe measures **27,484** builder UI initial (excludes builder-core) bytes and **61,049** full minimal
+initial bytes (Brotli). Settings is **7,391**; Logic/JSON/map is **745**; their union with Settings is
+**8,136**; all currently emitted deferred entries total **8,524**. These pass every accepted ceiling.
+Framework and per-theme script-distribution closures are recorded separately in
+`docs/reviews/m09b-plus-loading-split.md`; they include host/framework/built-in code and do not replace
+the canonical minimal-consumer gates. Browser coverage exercises Vite vanilla/React, Angular CLI and
+script-tag hosts under strict CSP, local/offline assets and custom `assetBase`, with Settings lifecycle
+and lazy-theme failure/retry in Chromium, Firefox and WebKit.
+
+## Owner amendment — command bar and multi-select, 2026-10-27
+
+The command-bar consumer closure has an approved **4,500 Brotli-byte** ceiling with lazy indexing.
+Builder UI initial (excludes builder-core) remains ≤29,000 bytes (target ≤28,800); the full initial closure remains
+≤64,613 bytes. Preserve all owner-protected initial behavior and defer nothing else without approval.
+Before shipping either the command bar or multi-select, measure their combined initial builder-owned
+and full-closure sizes, and measure the separately lazy bulk editor with a proposed ceiling. If the
+combined initial exceeds 29,000, present measured compaction or shared headless selection alternatives.
+
+On first Ctrl/Cmd+K the accessible frame appears immediately. Indexing the 500-field fixture is
+advisory ≤50 ms and has a deterministic index-work count gate; typing is never blocked by results.
+Reopening uses the cached index, rebuilt only on schema changes. History/diff remains unbudgeted
+and unshipped.
+
+## Owner amendment — quick-add budget, 2026-10-27
+
+| Consumer-built lazy closure         | Brotli ceiling |
+| ----------------------------------- | -------------: |
+| Quick-add (including Retry closure) |    3,750 bytes |
+| Command bar (lazy indexing)         |    4,500 bytes |
+
+Every future lazy chunk requires an owner-approved ceiling before shipping. Quick-add measured
+3,403 bytes including shared chunks; the size gate enforces its main and Retry closures.
+
+## Owner decision — builder-core consumer accounting
+
+Keep the established builder UI boundary, now named **builder UI initial (excludes builder-core)**,
+and the full initial closure boundary. Report builder-core separately as the marginal Brotli difference
+between the full consumer build and the otherwise identical build with `@ourform/builder-core`
+externalized; static shared output is counted once in each closure. Compression and chunk changes
+mean this is a marginal contribution, not a sum of independently compressed source files. At the
+the baseline measures **6,675 bytes**. The owner confirmed the **7,050-byte** ceiling (105%,
+rounded up to 50), and the third gate is enforced. Every combined-feature
+report must show all three measurements and moved-code attribution. Headless selection may move to
+builder-core only within the confirmed ceiling; full closure remains at most 64,613 bytes. Compact
+first, then measure headless placement, then propose at most a one-time 29,500 UI ceiling if needed.
+
+## Owner work-mode amendment — 2026-10-27
+
+Complete the combined command-bar/multi-select/bulk-editor prototype and work-count/timing probes before
+compaction. Measure UI, builder-core and full initial against 28,857 / 6,675 / 63,623 bytes. Compact
+first and discard growing variants, then allow headless selection placement only within the enforced
+7,050-byte core contribution. If still needed, the owner pre-approved one final UI ceiling equal to the
+measured value rounded up to 50, at most 29,500, while full initial remains at most 64,613. Record the
+actual amendment only after measurement; the current UI ceiling remains 29,000 until then.
+
+New lazy chunk ceilings are pre-approved by formula: measured closure plus 10%, rounded up to 50,
+at most 5,000 bytes. This does not change existing command-bar, quick-add, Settings or aggregate
+ceilings. Each new ceiling is recorded and enforced before shipping. Immediate command frame, selection
+highlighting/Shift arrows, clipboard, context menu and PointerDrag stay initial. History/diff remains
+unbudgeted and unshipped. Every push requires a passing full pinned verify; do not merge this milestone.
+
+## M09b+ bulk-editor measurement — 2026-10-28
+
+Under the owner's pre-approved work-mode rule 4, the new bulk editor's consumer-built closure
+measures **4,266 Brotli bytes** (Retry 4,252). Its enforced ceiling is **4,700 bytes**:
+`ceil(4266 × 1.10 / 50) × 50`. Shared generated editor and message chunks count once per closure;
+this is not its entry file in isolation. The command bar retains its 4,500-byte ceiling. UI initial
+remains 29,000, builder-core 7,050, and full initial 64,613. The combined prototype exceeds the
+initial gates and remains unshipped; no one-time UI increase is applied while the full gate fails.
+See [combined prototype measurement](../reviews/m09b-plus-combined-prototype-measurement.md).
+
+## Owner size reset and two additional lazy bodies — 2026-10-28
+
+The owner explicitly approved lazy bulk Move/Wrap/Duplicate/Paste planning and the Data inspector
+body, with separate `planningPreload` and `dataPreload` policies, both defaulting to `idle` (`none`
+opts out). Their accessible activation frame, focus, reason/Retry and cancellation remain initial.
+Bulk Delete/Required, Delete key, clipboard handlers/buffer/system access, selection, Shift arrows,
+Ctrl/Cmd+K frame, context menu and PointerDrag remain initial. Pending planning snapshots the source
+schema; intervening schema changes refuse the operation without history. Cancel/destroy never applies
+late mutations. Preloading imports bodies only; it never mounts or mutates them.
+
+The completed boundary measurement uses the same consumer method and accounting as every earlier
+report. Before: UI **31,951**, builder-core **7,173**, full initial **67,628**. After: **31,069 /
+7,196 / 66,818**. UI drops 882, core marginal contribution rises 23 (no core source changes), full
+drops 810. The owner authorized one ceiling reset using measured +500, rounded up to 100, subject
+to UI 32,000/full 68,500 maxima; all measurements are within those maxima:
+
+| Enforced consumer gate                     |               Measured | New ceiling | Previous ceiling |
+| ------------------------------------------ | ---------------------: | ----------: | ---------------: |
+| Builder UI initial (excludes builder-core) |                 31,069 |  **31,600** |           29,000 |
+| Builder-core marginal initial contribution |                  7,196 |   **7,300** |            7,050 |
+| Full initial closure                       |                 66,818 |  **67,400** |           64,613 |
+| Standalone builder package                 | reported by size-limit |  **31,600** |           30,000 |
+| Bulk planning / Retry closure              |             1,547 each |   **1,750** |              new |
+| Data inspector / Retry closure             |               269 each |     **300** |              new |
+
+New lazy ceilings follow rule 4: measured +10%, rounded up to 50, at most 5,000. All earlier lazy
+and aggregate ceilings stay unchanged. Independent-entry duplication (deferred union 15,399 →
+32,900) is explicitly accepted by the owner; the two additional approved bodies bring the union to
+**36,532**, counting each shared output once. The complete measurement and every rejected probe
+remain in `docs/reviews/m09b-plus-combined-evidence/`; the failed attempts are not overwritten.
+
+No more byte-hunting probes for the rest of M09b+. Remaining polish must fit these ceilings; new
+bodies are lazy by default. No History/diff ships. From M09c onward, each milestone must propose
+initial/lazy allowances for explicit owner approval before implementation. This reset is not an
+open-ended future budget increase and does not authorize correctness-test changes.
+
+## Final M09b+ owner-review allowance — accepted 2026-10-30
+
+The owner approved final consumer ceilings of **31,800 builder UI initial (excludes builder-core)**
+and **67,700 full initial closure** Brotli bytes. `9c7f0f4` replaced the styled Menu primitive with
+`ofb-action-menu` but removed its CSS without a replacement. Restoring initial menu styles/viewport
+positioning, plus the requested delivery polish, accounts for the growth. Context actions/clipboard,
+selection, Ctrl/Cmd+K's frame and PointerDrag stay initial. No additional deferral is authorized.
+Builder-core stays **7,300**, standalone builder stays **31,600**, and every lazy/aggregate ceiling
+is unchanged. These supersede only the UI/full numbers in the historical 2026-10-28 reset table.
+
+The final build's machine-readable size report is the single measurement source used by progress,
+the delivery report and PR. Earlier probe/build logs remain historical evidence, clearly labelled;
+they are not interchangeable final measurements. No further M09b+ ceiling increase is authorized.
+
+Current-build measurement (2026-10-30): UI **31,784 / 31,800**, builder-core **7,190 / 7,300**,
+full initial **67,651 / 67,700** Brotli bytes, independently identical on native and pinned Linux.
+Canonical evidence: `docs/reviews/m09b-plus-owner-fixes-evidence/consumer-size.json`.
+No code moved into builder-core; marginal compression attribution can change shared bytes.
+At this historical checkpoint local verification was blocked by CLI deadline/native navigation failures;
+the final November 6 proof below resolves them. The original failures remain recorded
+in the owner-fix report. These size passes do not imply a completed milestone or current-head CI.
+
+## Final measurement evidence — 2026-11-06
+
+Full pinned local verify passed: 341 unit / 1,593 browser checks and every size/count gate. Current consumer UI/core/full **31,784 / 7,190 / 67,651**, within **31,800 / 7,300 / 67,700**; standalone builder and all lazy ceilings unchanged. Canonical source: `docs/reviews/m09b-plus-owner-fixes-evidence/consumer-size.json`. No code moved into builder-core. Earlier failed runs and measured probes remain historical; no current-head CI result is claimed before it finishes. Owner delivery review and PR #16 remain open.
+
+## Final pinned follow-up proof — 2026-11-07
+
+The owner authorized narrowly scoped compaction of the redundant-CSP-write fix while retaining every
+ceiling. Binding the existing declaration once within the same helper brings UI/core/full to
+**31,733 / 7,168 / 67,657**, within **31,800 / 7,300 / 67,700**. The initial rejected guarded
+candidate (31,760 / 7,266 / 67,714) remains recorded; this compaction reduces its full closure by 57.
+No source moved between packages or lazy boundaries. No additional API, form JSON, runtime dependency,
+threshold or deadline change. Standalone builder stays capped at 31,600; lazy ceilings are unchanged.
+
+Full pinned verification **PASS, exit 0**: **341 unit / 1,596 browser / 36 size gates / five runtime
+count fixtures**. Non-document source and all 472 baseline PNG hashes match before/after verification.
+All 117 focused native checks pass, including the original twelve-field mouse/keyboard tasks in all
+three browsers; native WebKit took **9.9 s / 13.4 s** in that focused run. Fresh pinned Linux source
+build measurements match native; 142 runtime source files match. Linux six regression/CSP checks
+across three browsers and 41 Chromium visual comparisons pass, with no baseline update.
+
+500-field browser indexing: **13.800 ms**, exactly 500 visits, cached reopen. Bulk Delete/Move/Required:
+**500 child commands, one publication and one history entry each**. Timings are advisory; the field-drag
+report retains its 72.941 ms maximum task rather than hiding it.
+
+Canonical final numeric source: `docs/reviews/m09b-plus-linux-task-evidence/final-consumer-size.json`;
+consumer host reports and full logs are alongside it. The older November 6 files and numbers are
+historical evidence for pushed head 3bdf034. Its two first-attempt Verify failures remain recorded.
+New-head first-attempt CI must pass after push; local PASS does not imply CI PASS. PR #16 stays open
+for owner delivery/image review. **Do not merge or start M09c/M09d.**
+
+### Owner review follow-up measurement — 2026-11-09
+
+Context selection, completed loading feedback and unchanged renderer-style caching measure
+**31,746 UI / 7,209 builder-core / 67,699 full initial** Brotli bytes, versus the fixed
+**31,800 / 7,300 / 67,700** ceilings. Delta from `cc05111`: **+13 / +41 / +42**; no code moved
+between boundaries, new lazy chunk, API addition or ceiling change. Builder-core source is unchanged;
+its contribution remains the marginal consumer-build difference. Native and pinned Linux agree.
+[Owner follow-up evidence](../reviews/m09b-plus-owner-followup.md) records the final verification
+and first-attempt CI separately. Ordinary runtime edits no longer rewrite identical CSP declarations.
+
+Final loading audit (same follow-up): lazy-theme completion also needs the owned announcement
+cleanup. Current native UI/core/full **31,730 / 7,223 / 67,726**, full **26 bytes over** the fixed
+67,700 ceiling. Earlier 31,746 / 7,209 / 67,699 is a retained pre-theme checkpoint. No ceiling
+change, push or new CI. Fifteen focused browser cases pass; targeted announcement/theme bookkeeping
+compaction authorization is pending under the owner's no-more-byte-hunting restriction.
+
+Owner compaction approval and result (2026-11-09): behavior-preserving compaction is authorized for
+M09b+, removing no CSS rule/selector, ARIA attribute, message or test. Full browser plus menu/selection
+visual checks remain mandatory. Share the identical theme focus-restoration callback at the same
+success/failure call sites: UI/core/full **31,769 / 7,120 / 67,674**, delta **+39 / −103 / −52** from
+the blocked candidate. All fixed ceilings pass. A unique request-object alternative grew full by 50
+and exceeded core, so it was discarded. No code moved/deferred, no ceiling or API/JSON change.
+See the [compaction ledger](../reviews/m09b-plus-owner-followup.md); full verification/CI are pending.
+
+### Final owner-follow-up local proof — 2026-11-09
+
+Final single measurement set: **31,769 UI / 7,120 builder-core / 67,674 full initial**,
+fixed **31,800 / 7,300 / 67,700** ceilings, identical native/pinned Linux; standalone 31,600
+and all lazy limits unchanged. Delta from cc05111 **+36 / −48 / +17**. Full pinned verify PASS:
+341 unit, 1,605 browser, 36 size and nine runtime count checks; unchanged-source fingerprints.
+Linux 15 focused, 50 menu/selection visual and nine completed-loading checks PASS. The kept
+shared-focus helper saves 52 full bytes (UI +39/core −103); the growing request-object probe
+was discarded. No code moved between packages or deferred, no CSS/selector/ARIA/message removal,
+no API/JSON or ceiling change. Only 43 requested host captures changed; 429 unchanged.
+Three old stale-loading assertions were corrected explicitly for the owner's requested behavior;
+ordinary toast expiry assertions and all deadlines/thresholds remain. Earlier pending/STOP
+measurements above are historical. [Canonical proof](../reviews/m09b-plus-owner-followup.md)
+records logs, sizes and compactions. PR #16/final report carry immutable first-attempt CI evidence
+after push; local PASS does not imply remote success or owner merge approval. Do not merge.

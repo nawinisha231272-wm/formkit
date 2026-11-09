@@ -62,3 +62,27 @@ PR baseline evolution is checked against its immutable main/base SHA: raising ex
 removing an existing fixture fails even if the measurements match the edited JSON. Decreases remain
 allowed only with exact updated expectations and matching measurements in that PR. The initial
 baseline is explicitly seeded because the prior main revision has no count artifact.
+
+### M09b+ one-time owner size reset (2026-10-28)
+
+ADR-0018/0020 record the owner-approved additional planning/Data lazy boundaries and measured
+ceilings: builder UI initial (excludes builder-core) **31,600**, builder-core marginal consumer
+contribution **7,300**, full initial closure **67,400**, standalone builder package **31,600** Brotli
+bytes. New lazy closure ceilings are planning **1,750** and Data **300**, including each Retry closure.
+Existing per-feature/aggregate and correctness gates remain enforced. No further byte-hunting in
+M09b+; remaining polish must fit. From M09c on, each milestone proposes initial/lazy size allowances
+for owner approval before implementation. Historical measurements and failed probes are retained.
+
+### Final M09b+ owner menu-restoration amendment (2026-10-30)
+
+The owner approved final builder UI initial **31,800** and full initial closure **67,700** ceilings.
+Builder-core remains **7,300**, standalone builder **31,600**, and all lazy ceilings stay unchanged.
+Commit `9c7f0f4` dropped menu CSS; restoring initial menu styling and the requested product polish
+accounts for the growth. ADR-0018/0020 preserve the measured cause and historical limits.
+
+The owner also approved independent CLI scaffold proofs after phase measurements against main.
+Each retains complete packed exports/assets, install, offline reinstall, build and browser assertions.
+The deadline is twice its measured branch duration, rounded up to 10 seconds, capped at 120 seconds:
+**120/120/120 seconds, sum 360 versus the former collective 180**. Generated browser workers return
+from two to main's one; every browser case remains at 30 seconds with zero retries. See the
+[phase report](../reviews/m09b-plus-scaffold-phases.md) and raw evidence for the exact measurements.

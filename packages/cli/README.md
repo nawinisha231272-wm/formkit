@@ -38,3 +38,8 @@ the complete component author guide; initial dependency setup uses the registry 
 
 `ourform --help` and `ourform -h` print usage and exit 0 without creating a scaffold or making network
 calls. runCli(["--help"]) returns the same usage text. Missing/invalid generation arguments still fail.
+
+The generated browser harness uses two workers for independent browser/theme contexts. It keeps
+all three browsers, all five themes, axe and property-editor checks; only scheduling changes.
+The repository headless pool is serial, so these compilers/browser workers do not overlap another
+headless file. Packed-kit/fresh-install/frozen-offline proof deadlines remain unchanged.

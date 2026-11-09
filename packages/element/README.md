@@ -6,12 +6,14 @@ import {
   registerElementField,
   defineOurFormElement,
 } from "@ourform/element";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
 const fields = [registerElementField("employee", "employee-lookup")];
 const form = renderForm("#container", {
   schema,
   fields,
   data: {},
   theme: "bootstrap5",
+  themes: [bootstrap5Theme],
 });
 form.session.subscribe(({ data, changedPaths }) =>
   console.log(data, changedPaths),
@@ -29,12 +31,12 @@ The component owns its internal focusable element and must forward its supplied 
 The bridge forwards global ARIA attributes to the custom root; required is passed as a property so it
 can be applied to a supported inner role. A custom element may override focus() for Shadow DOM.
 
-`<our-form>` properties: schema, data, theme, engine, readOnly, fields. Set properties before connecting
+`<our-form>` properties: schema, data, theme, themes, engine, readOnly, fields. Set properties before connecting
 for a single initial mount. Light DOM is default; set `shadow` before connecting for an open shadow root.
 Events bubble and are composed: of-ready, of-change ({ data, changedPaths }), of-submit (SubmitResult).
 Methods: submit(), validate(), reset(data?), focusField(id). controller exposes the active session/view.
 Disconnect disposes the mount/session; reconnect preserves the latest data. Schema/engine/fields/readOnly
-changes rebuild deliberately; data/theme changes update in place. Use setData on the returned controller
+changes rebuild deliberately; data/theme/themes changes update in place. Use setData on the returned controller
 for changed-leaf controlled updates. Duplicate tag registrations throw. No plugin API is implied by fields.
 
 M06 registers all Tier 1 builtinFields automatically. Configure custom/async validation and localization
@@ -91,3 +93,18 @@ schema events bubble/composed. Use controller.preview for response data. No glob
 M09b builder elements expose `chrome` as a JavaScript property. Setting it calls `setChrome` in place;
 it is retained across disconnect/reconnect. The imperative `renderBuilder` factory accepts the full
 builder options, including palette, toolbar, editor and locks. Native elements stay in the owner's DOM.
+
+Register form descriptors per instance with `element.themes = [baseTheme, bootstrap5Theme]`
+(imported from `@ourform/themes/base` and `@ourform/themes/bootstrap5`) before connecting;
+set `element.theme = "bootstrap5"` to select one. Replacing `themes` after connection updates
+styles and controls in place, preserving values, touched/errors, focus and caret. The same registry
+is retained on reconnect. Unknown names throw an Error with `code: "unknown-theme"`; attribute or
+connection failures emit composed `of-error` with `{ code, message }`. Invalid registry/selection
+updates leave the previous registry, selection and live session unchanged; there is no fallback.
+
+### Per-feature builder preload
+
+The builder host exposes independent `settingsPreload`, `planningPreload` and `dataPreload`
+options (`'idle'` by default, `'none'` to load only on activation). `preload` controls only
+Logic/JSON and defaults to `'none'`. Set all four to `'none'` for a no-background-import host.
+Angular uses inputs, React uses props, and the builder custom element uses properties.

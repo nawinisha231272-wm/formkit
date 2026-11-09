@@ -19,9 +19,15 @@ export const employeeValue: ValueAdapter<Employee | null> = {
 import type { FormController } from "@ourform/renderer-dom";
 declare global {
   interface Window {
+    hostThemes: import("@ourform/renderer-dom").HostOptions["themes"];
     hostDemo: {
       form: FormController;
       frameworkVersion?: string;
+      setThemes?(
+        themes: NonNullable<
+          import("@ourform/renderer-dom").HostOptions["themes"]
+        >,
+      ): void;
       unmount(): void;
     };
     defineExampleTag(tag?: string): CustomElementConstructor;

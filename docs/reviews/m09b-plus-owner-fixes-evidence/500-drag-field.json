@@ -1,0 +1,11 @@
+{
+  "platform": "darwin-arm64",
+  "fields": 500,
+  "source": "field",
+  "pointerMoves": 80,
+  "pickupMilliseconds": 108.908,
+  "activeMilliseconds": 1425.129,
+  "taskCount": 4573,
+  "maxTaskMilliseconds": 73.005,
+  "over50ms": [73.005]
+}

@@ -1,0 +1,23 @@
+{
+  "status": "BLOCKED_SIZE",
+  "baseHead": "cc05111b3498668af0314e65a7cb8b3217ea6a3b",
+  "pushed": false,
+  "newCIStarted": false,
+  "consumerGates": {
+    "ui": 31730,
+    "builderCore": 7223,
+    "full": 67726
+  },
+  "ceilings": {
+    "ui": 31800,
+    "builderCore": 7300,
+    "full": 67700
+  },
+  "fullGap": 26,
+  "currentNativeFocusedTests": 15,
+  "earlierLinuxFocusedTests": 9,
+  "runtimeCountsNativeAndLinux": 9,
+  "newThemeCleanupLinuxVerification": "pending",
+  "fullVerify": "interrupted for discovered lazy-theme cleanup, exit130;341units/131browserpassed before interruption; not a completed PASS",
+  "permissionPending": "Targeted announcement/theme-request bookkeeping compaction with unchanged ceilings"
+}

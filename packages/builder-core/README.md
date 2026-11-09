@@ -146,3 +146,10 @@ Successful no-op commands also capture `commandLabel` subject metadata, without 
 or adding history. Whole-definition commands fall back to the original form title. Browser hosts use
 this metadata for completion feedback as well as undo/redo, so unchanged settings Save replaces stale
 live text. Failed commands do not acquire a successful captured subject.
+
+## Atomic authoring commands
+
+`new AtomicCommand(label, commands)` applies its children privately, returning the original state
+and no patch on a child error. Dispatch validates the final definition and host locks once, publishes
+one patch sequence, and records one snapshot-based undo/redo step. Structural normalization and
+property selection are the caller's responsibility under ADR-0021.

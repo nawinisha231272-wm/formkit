@@ -6,7 +6,6 @@ export const builderStyle = `
 .of-builder-chrome input,.of-builder-chrome select,.of-builder-chrome textarea{font:inherit;color:var(--ofb-text);background:var(--ofb-surface);border:1px solid var(--ofb-border);border-radius:var(--ofb-radius);padding:7px;max-inline-size:100%}
 .of-builder-chrome input:not([type=checkbox]),.of-builder-chrome textarea{inline-size:100%}
 .of-builder-chrome :focus-visible,.of-builder-handle:focus-visible,.of-builder-drop:focus-visible{outline:3px solid var(--ofb-accent);outline-offset:2px}
-.of-builder-toolbar{display:flex;flex-wrap:wrap}
 .of-builder .of-sr-only{position:absolute!important;inline-size:1px;block-size:1px!important;min-block-size:0!important;max-block-size:1px!important;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 .of-builder-grid{display:grid}
 .of-builder-panel{min-inline-size:0}
@@ -18,9 +17,6 @@ export const builderStyle = `
 .of-builder-outline>[role=tree]{padding:0}.of-builder-outline [role=treeitem]{padding:4px;border-radius:var(--ofb-radius);cursor:pointer;outline-offset:-2px}
 .of-builder-outline [role=treeitem][aria-selected=true]>.of-builder-tree-name{color:var(--ofb-accent);background:var(--ofb-accent-soft);font-weight:var(--ofb-font-weight-bold)}
 .of-builder-outline [role=treeitem][data-cut=true]>.of-builder-tree-name{opacity:.55}.of-builder-tree-name{display:block;padding:4px;border-radius:var(--ofb-radius);overflow-wrap:anywhere}
-.of-builder-property{display:grid;gap:4px;margin-block:8px}
-.of-builder-expression{margin-block:8px}.of-builder-expression fieldset{margin:8px 0}.of-builder-expression label{display:grid;gap:4px;margin-block:6px}
-
 .of-builder-json{inline-size:100%;min-block-size:250px;font:var(--ofb-font-size-code)/1.5 var(--ofb-font-family-code)!important;resize:vertical}
 .of-builder-patch,.of-builder-result{white-space:pre-wrap;overflow-wrap:anywhere;max-block-size:250px;overflow:auto;font:var(--ofb-font-size-code)/1.5 var(--ofb-font-family-code)}
 .of-builder-canvas{overflow-wrap:anywhere}.of-builder-canvas [data-of-design-node]{position:relative;margin-block-end:12px}

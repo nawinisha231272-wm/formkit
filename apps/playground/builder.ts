@@ -9,6 +9,15 @@ import { createBuilder as createPortableBuilder } from "@ourform/builder";
 import { builtinComponents } from "@ourform/components";
 import type { BuilderController } from "@ourform/builder";
 import type { FormController } from "@ourform/renderer-dom";
+import { baseTheme } from "@ourform/themes/base";
+import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
+import { bootstrap5Theme } from "@ourform/themes/bootstrap5";
+import { tailwindTheme } from "@ourform/themes/tailwind";
+import { materialTheme } from "@ourform/themes/material";
+import { bootstrap4BuilderTheme } from "@ourform/builder/themes/bootstrap4";
+import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5";
+import { tailwindBuilderTheme } from "@ourform/builder/themes/tailwind";
+import { materialBuilderTheme } from "@ourform/builder/themes/material";
 import { defineLayout } from "@ourform/sdk";
 import { customerReference } from "./builder-fields";
 import approved from "../../fixtures/forms/builder-ux/customer-onboarding.json";
@@ -52,6 +61,7 @@ const schema = query.has("empty")
 const card = defineLayout({
   type: "acme.card",
   title: "SDK card",
+  caption: "label",
   slots: [
     { name: "body", label: "Fields only", accepts: ["field"], max: 2 },
     { name: "extra", label: "Extra fields", accepts: ["field"], max: 1 },
@@ -62,8 +72,48 @@ const rootSection = defineLayout({
   title: "Root section",
   rootOnly: true,
 });
+const materialIsLazy = query.get("lazyTheme") === "material";
+let materialLoadAttempts = 0;
 const options = {
   schema,
+  themes: [
+    baseTheme,
+    bootstrap4Theme,
+    bootstrap5Theme,
+    tailwindTheme,
+    ...(materialIsLazy ? [] : [materialTheme]),
+  ],
+  builderThemes: [
+    bootstrap4BuilderTheme,
+    bootstrap5BuilderTheme,
+    tailwindBuilderTheme,
+    ...(materialIsLazy ? [] : [materialBuilderTheme]),
+  ],
+  ...(materialIsLazy
+    ? {
+        lazyThemes: [
+          {
+            name: "material",
+            label: "Material",
+            async load() {
+              materialLoadAttempts++;
+              if (query.has("slowTheme"))
+                await new Promise((resolve) => setTimeout(resolve, 350));
+              if (query.has("failTheme") && materialLoadAttempts === 1)
+                throw new Error("Local theme bundle unavailable");
+              const [
+                { materialTheme: form },
+                { materialBuilderTheme: recipe },
+              ] = await Promise.all([
+                import("@ourform/themes/material"),
+                import("@ourform/builder/themes/material"),
+              ]);
+              return { theme: form, builderTheme: recipe };
+            },
+          },
+        ],
+      }
+    : {}),
   fields: query.has("demos")
     ? [...employeeFields, customerReference, card, rootSection]
     : [
@@ -73,6 +123,20 @@ const options = {
         customerReference,
       ],
   idPrefix: "",
+  preload:
+    query.get("preload") === "idle" ? ("idle" as const) : ("none" as const),
+  settingsPreload:
+    query.get("settingsPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const),
+  planningPreload:
+    query.get("planningPreload") === "none"
+      ? ("none" as const)
+      : ("idle" as const),
+  dataPreload:
+    query.get("dataPreload") === "none" ? ("none" as const) : ("idle" as const),
+  ...(query.has("assetBase") ? { assetBase: query.get("assetBase")! } : {}),
+  ...(query.has("styleNonce") ? { styleNonce: query.get("styleNonce")! } : {}),
   ...(query.has("approved") ? { data: approvedData } : {}),
   theme: query.get("theme") ?? "base",
   themeMode: query.get("mode") === "dark" ? "dark" : "light",
@@ -121,6 +185,31 @@ const controller = query.has("factory")
       fields: [...builtinComponents, customerReference],
     })
   : renderBuilder(document.getElementById("builder")!, options);
+// Before JSON is opened, expose the host's last patch at the legacy demo anchor.
+// The lazy JSON view owns that anchor once mounted; keep the host audit separate.
+const hostPatch = document.getElementById("builder-patch")!;
+const patchView = new MutationObserver(() => {
+  if (document.querySelector('[data-builder-part="patch"]')) {
+    hostPatch.id = "host-builder-patch";
+    patchView.disconnect();
+  }
+});
+patchView.observe(document.querySelector('[data-builder-part="json-panel"]')!, {
+  childList: true,
+  subtree: true,
+});
+window.addEventListener("pagehide", () => patchView.disconnect(), {
+  once: true,
+});
+document
+  .getElementById("builder")!
+  .addEventListener("of-schema-change", (event) => {
+    hostPatch.textContent = JSON.stringify(
+      (event as CustomEvent).detail.patch,
+      null,
+      2,
+    );
+  });
 document.getElementById("builder")!.addEventListener("of-save", () => {
   if (!query.has("manual-save"))
     window.setTimeout(() => controller.markSaved(), 500);

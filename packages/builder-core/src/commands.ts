@@ -42,7 +42,8 @@ export interface Command {
     | "ChangeKey"
     | "WrapInLayout"
     | "Unwrap"
-    | "ReplaceDefinition";
+    | "ReplaceDefinition"
+    | "AtomicCommand";
   apply(state: BuilderState, ctx: BuilderContext): CommandResult;
   invert(before: BuilderState): Command;
 }
@@ -228,6 +229,38 @@ export class UpdateProperty implements Command {
 
 export function restoreSnapshot(before: BuilderState): Command {
   return new RestoreSnapshot(before);
+}
+
+/** Apply children privately; the builder validates and publishes the final state once. */
+export class AtomicCommand implements Command {
+  readonly type = "AtomicCommand";
+  readonly commands: readonly Command[];
+  constructor(
+    readonly label: string,
+    commands: readonly Command[],
+  ) {
+    this.commands = Object.freeze([...commands]);
+    Object.freeze(this);
+  }
+  apply(before: BuilderState, context: BuilderContext): CommandResult {
+    let state = before;
+    const patch: JsonPatchOp[] = [];
+    const diagnostics: Diagnostic[] = [];
+    for (const command of this.commands) {
+      const result = command.apply(state, context);
+      diagnostics.push(...result.diagnostics);
+      if (
+        result.diagnostics.some((diagnostic) => diagnostic.severity === "error")
+      )
+        return { state: before, patch: [], diagnostics };
+      state = result.state;
+      patch.push(...result.patch);
+    }
+    return { state, patch, diagnostics };
+  }
+  invert(before: BuilderState): Command {
+    return restoreSnapshot(before);
+  }
 }
 
 /** Commit a validated dialog/JSON draft as one component replacement and one undo step. */

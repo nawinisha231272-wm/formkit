@@ -1,0 +1,222 @@
+{
+  "name": "fixed",
+  "start": "2026-11-07T00:12:31.572Z",
+  "pid": 50536,
+  "display": {
+    "source": "pmset display notification",
+    "event": "2026-11-06 19:11:32",
+    "asleep": true
+  },
+  "startThreads": 8,
+  "pages": [
+    {
+      "i": 0,
+      "ms": 319.2960830000011,
+      "threads": 13,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 10,
+      "ms": 163.80554200000188,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 20,
+      "ms": 165.02270899999712,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 30,
+      "ms": 165.5561250000028,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 40,
+      "ms": 167.35470799999894,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 50,
+      "ms": 172.01762499999313,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 60,
+      "ms": 167.9962080000114,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 70,
+      "ms": 165.85699999998906,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 80,
+      "ms": 166.46916700000293,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 90,
+      "ms": 164.7401669999963,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 100,
+      "ms": 167.5659169999999,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 110,
+      "ms": 163.2334159999882,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 120,
+      "ms": 166.24012499999662,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 130,
+      "ms": 165.98016599999391,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 140,
+      "ms": 164.50991599999543,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 150,
+      "ms": 164.54141700000037,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 160,
+      "ms": 163.08679100000882,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 170,
+      "ms": 167.9317919999885,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 180,
+      "ms": 167.54712499999732,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    },
+    {
+      "i": 190,
+      "ms": 163.2421659999818,
+      "threads": 14,
+      "display": {
+        "source": "pmset display notification",
+        "event": "2026-11-06 19:11:32",
+        "asleep": true
+      }
+    }
+  ],
+  "completed": 200,
+  "failed": false,
+  "endThreads": 13,
+  "endDisplay": {
+    "source": "pmset display notification",
+    "event": "2026-11-06 19:11:32",
+    "asleep": true
+  },
+  "end": "2026-11-07T00:13:55.470Z"
+}

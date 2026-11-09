@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-07",
+  "status": "LOCAL_PASS_FIRST_ATTEMPT_CI_PENDING",
+  "baseHead": "3bdf03416c9a402c6406b6ce8d6d1064e43c2bec",
+  "sourceUnchanged": true,
+  "verifyExit": 0,
+  "unit": 341,
+  "browser": 1596,
+  "sizeGates": 36,
+  "runtimeCountTests": 5,
+  "targetedBrowserTests": 117,
+  "linuxRegressionTests": 6,
+  "linuxReadinessTests": 6,
+  "readinessBrowserTests": 6,
+  "linuxVisualTests": 41,
+  "consumerGates": {
+    "ui": 31733,
+    "builderCore": 7168,
+    "full": 67657
+  },
+  "limits": {
+    "ui": 31800,
+    "builderCore": 7300,
+    "full": 67700
+  },
+  "index": {
+    "platform": "darwin-arm64",
+    "fields": 500,
+    "milliseconds": 13.800000190734863,
+    "nodes": 500,
+    "visits": 500,
+    "cached": true,
+    "advisoryTargetMilliseconds": 50,
+    "advisoryTargetMet": true
+  },
+  "drag": [
+    {
+      "platform": "darwin-arm64",
+      "fields": 500,
+      "source": "palette",
+      "pointerMoves": 80,
+      "pickupMilliseconds": 75.155,
+      "activeMilliseconds": 1399.541,
+      "taskCount": 4587,
+      "maxTaskMilliseconds": 48.117,
+      "over50ms": []
+    },
+    {
+      "platform": "darwin-arm64",
+      "fields": 500,
+      "source": "field",
+      "pointerMoves": 80,
+      "pickupMilliseconds": 108.793,
+      "activeMilliseconds": 1421.487,
+      "taskCount": 4578,
+      "maxTaskMilliseconds": 72.941,
+      "over50ms": [72.941]
+    }
+  ],
+  "bulk": {
+    "platform": "darwin-arm64",
+    "fields": 500,
+    "indexMs": 10.795875000000024,
+    "indexNodeVisits": 500,
+    "bulk": {
+      "delete": {
+        "childCommands": 500,
+        "publications": 1,
+        "historyEntries": 1,
+        "milliseconds": 92.78141700000003
+      },
+      "move": {
+        "childCommands": 500,
+        "publications": 1,
+        "historyEntries": 1,
+        "milliseconds": 392.22475
+      },
+      "required": {
+        "childCommands": 500,
+        "publications": 1,
+        "historyEntries": 1,
+        "milliseconds": 229.379417
+      }
+    }
+  },
+  "screenshotsThisFix": {
+    "changed": 0,
+    "new": 0,
+    "unchanged": 472
+  },
+  "screenshotsVsMain": {
+    "changed": 295,
+    "new": 68,
+    "unchanged": 109,
+    "unexplainedOlderPreviewDiffs": 43
+  },
+  "apiAdditionsThisFix": [],
+  "oldCi": {
+    "pullRequest": 42317266414,
+    "push": 42317260357,
+    "advisory": 42317266362,
+    "rerun": false
+  },
+  "note": "CI URLs and conclusions for the final commit are recorded in PR #16 after push. No merge; owner delivery review pending."
+}

@@ -12,6 +12,7 @@ export {
   RemoveComponent,
   UpdateProperty,
   UpdateComponent,
+  AtomicCommand,
 } from "./commands";
 export type {
   BuilderState,

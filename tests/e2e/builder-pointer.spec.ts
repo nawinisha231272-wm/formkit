@@ -177,7 +177,10 @@ test("virtual outline slots collapse and expand by keyboard without editing thei
   await expect(
     page.getByRole("treeitem", { name: "Experience", exact: true }),
   ).toBeFocused();
-  await column.click({ button: "right" });
+  // The expanded treeitem also bounds its children; target the slot row itself.
+  await column
+    .locator(":scope > .of-builder-tree-name")
+    .click({ button: "right" });
   await expect(page.getByRole("menu")).toHaveCount(0);
   await column.press("Delete");
   await expect(page.getByRole("status")).toHaveText(

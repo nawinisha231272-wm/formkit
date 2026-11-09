@@ -9,6 +9,7 @@ import { createFormController } from "@ourform/renderer-dom";
 import type { FormController, HostOptions } from "@ourform/renderer-dom";
 import { defaultMessage } from "@ourform/sdk";
 import type { RegisteredField } from "@ourform/sdk";
+import { baseTheme } from "@ourform/themes/base";
 
 /** A small author fixture, using the real metadata-driven builder and renderer. */
 export function mountComponentBuilder(
@@ -124,8 +125,8 @@ export function mountComponentBuilder(
       schema: state.definition,
       fields: [field],
       ...(data ? { data } : {}),
-      ...(options.theme === undefined ? {} : { theme: options.theme }),
-      ...(options.themes ? { themes: options.themes } : {}),
+      theme: options.theme ?? baseTheme,
+      themes: options.themes ?? [baseTheme],
     });
   }
   const add = () => builder.dispatch(new AddComponent(field.model.type));
