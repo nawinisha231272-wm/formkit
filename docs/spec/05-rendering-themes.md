@@ -262,3 +262,11 @@ mounted view in place. With no selectedTheme, retain the active selection. Prese
 touched/errors, control identity, focus and caret. Unknown names produce an Error with
 `code: "unknown-theme"`, no fallback, and preserve the previous registry/view. Registry entries
 remain explicit, per-instance host configuration; form JSON is unchanged.
+
+### Unchanged runtime styles — M09b+ review follow-up
+
+An ordinary field edit must not rewrite an unchanged CSP stylesheet declaration. Cache the emitted
+raw declaration string per mounted field rule; theme/mode/registry updates still apply changed tokens.
+The 100/500/1,000-field and onboarding edit fixtures additionally assert zero redundant declaration
+writes across the same 25 edits, alongside the unchanged exact processor/DOM/StatePatch/render counts.
+This is renderer work, independent of builder commands and theme selection UI.

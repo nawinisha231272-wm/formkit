@@ -248,7 +248,7 @@ export function createBuilderController(
     started = Date.now();
     resume();
     return () => {
-      if (notice.firstChild === text) dismiss();
+      if (notice.firstChild === text) announce("");
     };
   };
   const loading: UI["loading"] = (request, message, signal = events.signal) => {
@@ -851,13 +851,17 @@ export function createBuilderController(
     }
     const request = ++themeRequest;
     const focused = activeElement();
+    const restoreFocus = () =>
+      (focused?.isConnected ? focused : appearance).focus({
+        preventScroll: true,
+      });
     appearance.disabled = true;
     appearanceLabel.setAttribute("aria-busy", "true");
     appearanceStatus.hidden = false;
     appearanceStatus.replaceChildren(
       t("ofb.featureLoading", { feature: registration.label ?? name }),
     );
-    announce(appearanceStatus.textContent ?? "");
+    const clearLoading = announce(appearanceStatus.textContent ?? "");
     void registration
       .load()
       .then((loaded) => {
@@ -884,10 +888,9 @@ export function createBuilderController(
         appearance.disabled = false;
         appearanceLabel.removeAttribute("aria-busy");
         appearanceStatus.hidden = true;
+        clearLoading();
         applyTheme(loaded.theme);
-        (focused?.isConnected ? focused : appearance).focus({
-          preventScroll: true,
-        });
+        restoreFocus();
       })
       .catch((cause: unknown) => {
         if (destroyed || request !== themeRequest) return;
@@ -901,9 +904,7 @@ export function createBuilderController(
           button(ui, t("ofb.retry"), () => loadTheme(name)),
         );
         announce(appearanceStatus.firstChild?.textContent ?? "");
-        (focused?.isConnected ? focused : appearance).focus({
-          preventScroll: true,
-        });
+        restoreFocus();
       });
   };
   const setTheme = (next: Theme | string) => {

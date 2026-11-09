@@ -18,11 +18,16 @@ test("a registered lazy theme loads on selection and preserves focus", async ({
   await theme.selectOption("material");
   await expect(theme.locator("..")).toHaveAttribute("aria-busy", "true");
   await expect(theme.locator("..")).toContainText("Loading Material");
+  await expect(page.locator(".of-builder-status")).toHaveText(
+    "Loading Material…",
+  );
   await expect(
     page.locator('[data-builder-part="preview"].of-root'),
   ).toHaveAttribute("data-of-theme", "material");
   await expect(theme).toHaveValue("material");
   await expect(theme).toBeFocused();
+  await expect(page.locator(".of-builder-status")).toHaveText("");
+  await expect(page.locator(".of-builder-toast")).toBeHidden();
 });
 
 test("a failed lazy theme keeps the current theme and Retry succeeds", async ({
@@ -44,4 +49,6 @@ test("a failed lazy theme keeps the current theme and Retry succeeds", async ({
     page.locator('[data-builder-part="preview"].of-root'),
   ).toHaveAttribute("data-of-theme", "material");
   await expect(theme).toBeFocused();
+  await expect(page.locator(".of-builder-status")).toHaveText("");
+  await expect(page.locator(".of-builder-toast")).toBeHidden();
 });

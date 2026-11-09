@@ -1,0 +1,26 @@
+{
+  "platform": "darwin-arm64",
+  "fields": 500,
+  "indexMs": 13.072084000000018,
+  "indexNodeVisits": 500,
+  "bulk": {
+    "delete": {
+      "childCommands": 500,
+      "publications": 1,
+      "historyEntries": 1,
+      "milliseconds": 97.64095800000001
+    },
+    "move": {
+      "childCommands": 500,
+      "publications": 1,
+      "historyEntries": 1,
+      "milliseconds": 509.1102920000001
+    },
+    "required": {
+      "childCommands": 500,
+      "publications": 1,
+      "historyEntries": 1,
+      "milliseconds": 251.98899999999992
+    }
+  }
+}

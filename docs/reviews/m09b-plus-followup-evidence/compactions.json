@@ -1,0 +1,40 @@
+[
+  {
+    "compaction": "Unique request object combining identity and loading cancellation",
+    "decision": "discarded: grows full and exceeds core",
+    "baseline": {
+      "ui": 31730,
+      "core": 7223,
+      "full": 67726
+    },
+    "measured": {
+      "ui": 31777,
+      "core": 7327,
+      "full": 67776
+    },
+    "delta": {
+      "ui": 47,
+      "core": 104,
+      "full": 50
+    }
+  },
+  {
+    "compaction": "Share the identical captured-focus restoration callback between theme success and failure",
+    "decision": "kept: same call sites and behavior; all ceilings pass",
+    "baseline": {
+      "ui": 31730,
+      "core": 7223,
+      "full": 67726
+    },
+    "measured": {
+      "ui": 31769,
+      "core": 7120,
+      "full": 67674
+    },
+    "delta": {
+      "ui": 39,
+      "core": -103,
+      "full": -52
+    }
+  }
+]

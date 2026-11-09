@@ -319,9 +319,11 @@ for (const [host, url] of hosts)
         el.style.lineHeight = "1.45";
         el.style.minHeight = `${Math.ceil(el.getBoundingClientRect().height)}px`;
       });
-      await preview
-        .getByRole("textbox", { name: "Email", exact: true })
-        .hover();
+      // Runtime comparison captures must not include an incidental input hover state.
+      await page.mouse.move(0, 0);
+      expect(await preview.evaluate((node) => node.matches(":hover"))).toBe(
+        false,
+      );
       if (testInfo.project.name === "chromium")
         await expect(preview).toHaveScreenshot(
           `builder-${host.replaceAll(" ", "-")}-${theme}.png`,

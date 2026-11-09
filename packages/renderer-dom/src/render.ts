@@ -124,7 +124,7 @@ function mountForm(
   let dynamicStyleId = 0;
   const dynamicRules = new Map<
     string,
-    { className: string; rule: CSSStyleDeclaration }
+    { className: string; rule: CSSStyleDeclaration; declarations?: string }
   >();
   const styleClass = (key: string, declarations: string): string => {
     let current = dynamicRules.get(key);
@@ -138,7 +138,10 @@ function mountForm(
       };
       dynamicRules.set(key, current);
     }
-    current.rule.cssText = declarations;
+    if (current.declarations !== declarations) {
+      current.rule.cssText = declarations;
+      current.declarations = declarations;
+    }
     return current.className;
   };
   const themeOptions = () => ({

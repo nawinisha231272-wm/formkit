@@ -8,9 +8,9 @@
     "unchanged": 109
   },
   "sinceReviewCounts": {
-    "changed": 25,
+    "changed": 68,
     "new": 30,
-    "unchanged": 417
+    "unchanged": 374
   },
   "groups": {
     "Single error without a bullet": 102,
@@ -18,55 +18,11 @@
     "Bulk editor title and shared properties": 10,
     "Command search presentation": 10,
     "Selection, inline captions and quick-add": 18,
-    "Unexplained preview capture changes": 43,
+    "Host preview capture audit": 43,
     "Restored initial menu chrome": 30,
     "Builder chrome and Settings polish": 30
   },
-  "unexplained": [
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-base.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap4.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap5.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-material.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-tailwind.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-base.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap4.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap5.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-material.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-tailwind.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-base.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap4.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap5.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-material.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-tailwind.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-base.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-bootstrap4.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-bootstrap5.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-material.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-tailwind.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-base.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap4.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap5.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-material.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-tailwind.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-base.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap4.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap5.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-material.png",
-    "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-tailwind.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-base.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap4.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap5.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-tailwind.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap4.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap5.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-tailwind.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap5.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-base.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-tailwind.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-base.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap5.png",
-    "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-tailwind.png"
-  ],
+  "unexplained": [],
   "images": [
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/authoring.spec.ts/chromium/authoring-base.png",
@@ -82,7 +38,7 @@
         "bounds": {
           "left": 16,
           "top": 287,
-          "right": 140,
+          "right": 177,
           "bottom": 669
         }
       },
@@ -104,7 +60,7 @@
         "bounds": {
           "left": 16,
           "top": 287,
-          "right": 138,
+          "right": 173,
           "bottom": 670
         }
       },
@@ -126,7 +82,7 @@
         "bounds": {
           "left": 16,
           "top": 287,
-          "right": 138,
+          "right": 173,
           "bottom": 670
         }
       },
@@ -148,7 +104,7 @@
         "bounds": {
           "left": 20,
           "top": 294,
-          "right": 144,
+          "right": 181,
           "bottom": 691
         }
       },
@@ -170,7 +126,7 @@
         "bounds": {
           "left": 16,
           "top": 296,
-          "right": 141,
+          "right": 177,
           "bottom": 688
         }
       },
@@ -192,7 +148,7 @@
         "bounds": {
           "left": 0,
           "top": 294,
-          "right": 138,
+          "right": 208,
           "bottom": 685
         }
       },
@@ -214,7 +170,7 @@
         "bounds": {
           "left": 0,
           "top": 294,
-          "right": 138,
+          "right": 208,
           "bottom": 685
         }
       },
@@ -236,7 +192,7 @@
         "bounds": {
           "left": 20,
           "top": 304,
-          "right": 145,
+          "right": 181,
           "bottom": 712
         }
       },
@@ -258,7 +214,7 @@
         "bounds": {
           "left": 16,
           "top": 287,
-          "right": 140,
+          "right": 176,
           "bottom": 670
         }
       },
@@ -280,7 +236,7 @@
         "bounds": {
           "left": 16,
           "top": 287,
-          "right": 137,
+          "right": 173,
           "bottom": 671
         }
       },
@@ -302,7 +258,7 @@
         "bounds": {
           "left": 16,
           "top": 287,
-          "right": 137,
+          "right": 173,
           "bottom": 671
         }
       },
@@ -324,7 +280,7 @@
         "bounds": {
           "left": 20,
           "top": 295,
-          "right": 144,
+          "right": 180,
           "bottom": 694
         }
       },
@@ -734,10 +690,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-base.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "446da54821031597efcdc8af1f86664919d986539e1cd72c638bb5425a56a316",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6982,
         "before": [575, 515],
@@ -745,7 +701,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -756,10 +712,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap4.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "52abded2fcfbc67c34c17773690d7887a60cba10751439f47468125664da1f53",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7015,
         "before": [575, 515],
@@ -767,7 +723,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -778,10 +734,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "e46c36124371d83f6da7b663e154e097bde6f5bede8fa99b69aaca39559f4c57",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7019,
         "before": [575, 515],
@@ -789,7 +745,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -800,18 +756,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-material.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "709a4af2b6390beb3e0c6bcdfaddefc2eb7a7854c7c52fd54642fc80b3716181",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 1149,
+        "changedPixels": 1170,
         "before": [575, 539],
         "after": [575, 539],
         "bounds": {
           "left": 41,
-          "top": 332,
-          "right": 532,
+          "top": 252,
+          "right": 533,
           "bottom": 427
         }
       },
@@ -822,18 +778,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-21-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "41b6c5f7ee0a544feb073258809478550ce2c6e72d181311307c8e6b9a01fbc8",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 7583,
+        "changedPixels": 6922,
         "before": [575, 547],
         "after": [575, 547],
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 120,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -844,10 +800,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-base.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "446da54821031597efcdc8af1f86664919d986539e1cd72c638bb5425a56a316",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6982,
         "before": [575, 515],
@@ -855,7 +811,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -866,10 +822,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap4.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "52abded2fcfbc67c34c17773690d7887a60cba10751439f47468125664da1f53",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7015,
         "before": [575, 515],
@@ -877,7 +833,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -888,10 +844,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "e46c36124371d83f6da7b663e154e097bde6f5bede8fa99b69aaca39559f4c57",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7019,
         "before": [575, 515],
@@ -899,7 +855,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -910,18 +866,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-material.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "709a4af2b6390beb3e0c6bcdfaddefc2eb7a7854c7c52fd54642fc80b3716181",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 1149,
+        "changedPixels": 1170,
         "before": [575, 539],
         "after": [575, 539],
         "bounds": {
           "left": 41,
-          "top": 332,
-          "right": 532,
+          "top": 252,
+          "right": 533,
           "bottom": 427
         }
       },
@@ -932,18 +888,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-Angular-22-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "41b6c5f7ee0a544feb073258809478550ce2c6e72d181311307c8e6b9a01fbc8",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 7583,
+        "changedPixels": 6922,
         "before": [575, 547],
         "after": [575, 547],
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 120,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -954,10 +910,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-base.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "446da54821031597efcdc8af1f86664919d986539e1cd72c638bb5425a56a316",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6982,
         "before": [575, 515],
@@ -965,7 +921,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -976,10 +932,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap4.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "52abded2fcfbc67c34c17773690d7887a60cba10751439f47468125664da1f53",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7015,
         "before": [575, 515],
@@ -987,7 +943,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -998,10 +954,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "e46c36124371d83f6da7b663e154e097bde6f5bede8fa99b69aaca39559f4c57",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7019,
         "before": [575, 515],
@@ -1009,7 +965,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1020,18 +976,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-material.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "709a4af2b6390beb3e0c6bcdfaddefc2eb7a7854c7c52fd54642fc80b3716181",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 1149,
+        "changedPixels": 1170,
         "before": [575, 539],
         "after": [575, 539],
         "bounds": {
           "left": 41,
-          "top": 332,
-          "right": 532,
+          "top": 252,
+          "right": 533,
           "bottom": 427
         }
       },
@@ -1042,18 +998,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-DOM-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "41b6c5f7ee0a544feb073258809478550ce2c6e72d181311307c8e6b9a01fbc8",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 7583,
+        "changedPixels": 6922,
         "before": [575, 547],
         "after": [575, 547],
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 120,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -1064,10 +1020,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-base.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "446da54821031597efcdc8af1f86664919d986539e1cd72c638bb5425a56a316",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6982,
         "before": [575, 515],
@@ -1075,7 +1031,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1086,10 +1042,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-bootstrap4.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "52abded2fcfbc67c34c17773690d7887a60cba10751439f47468125664da1f53",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7015,
         "before": [575, 515],
@@ -1097,7 +1053,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1108,10 +1064,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "e46c36124371d83f6da7b663e154e097bde6f5bede8fa99b69aaca39559f4c57",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7019,
         "before": [575, 515],
@@ -1119,7 +1075,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1130,18 +1086,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-material.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "709a4af2b6390beb3e0c6bcdfaddefc2eb7a7854c7c52fd54642fc80b3716181",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 1149,
+        "changedPixels": 1170,
         "before": [575, 539],
         "after": [575, 539],
         "bounds": {
           "left": 41,
-          "top": 332,
-          "right": 532,
+          "top": 252,
+          "right": 533,
           "bottom": 427
         }
       },
@@ -1152,18 +1108,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-React-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "41b6c5f7ee0a544feb073258809478550ce2c6e72d181311307c8e6b9a01fbc8",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 7583,
+        "changedPixels": 6922,
         "before": [575, 547],
         "after": [575, 547],
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 120,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -1174,10 +1130,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-base.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "446da54821031597efcdc8af1f86664919d986539e1cd72c638bb5425a56a316",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6982,
         "before": [575, 515],
@@ -1185,7 +1141,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1196,10 +1152,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap4.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "52abded2fcfbc67c34c17773690d7887a60cba10751439f47468125664da1f53",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7015,
         "before": [575, 515],
@@ -1207,7 +1163,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1218,10 +1174,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "e46c36124371d83f6da7b663e154e097bde6f5bede8fa99b69aaca39559f4c57",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7019,
         "before": [575, 515],
@@ -1229,7 +1185,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1240,18 +1196,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-material.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "709a4af2b6390beb3e0c6bcdfaddefc2eb7a7854c7c52fd54642fc80b3716181",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 1149,
+        "changedPixels": 1170,
         "before": [575, 539],
         "after": [575, 539],
         "bounds": {
           "left": 41,
-          "top": 332,
-          "right": 532,
+          "top": 252,
+          "right": 533,
           "bottom": 427
         }
       },
@@ -1262,18 +1218,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-light-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "41b6c5f7ee0a544feb073258809478550ce2c6e72d181311307c8e6b9a01fbc8",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 7583,
+        "changedPixels": 6922,
         "before": [575, 547],
         "after": [575, 547],
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 120,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -1284,10 +1240,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-base.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "1a3ecb5c862644053b8a447aea71cac26fe42715accf542958f8ee567d2a0a60",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "446da54821031597efcdc8af1f86664919d986539e1cd72c638bb5425a56a316",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6982,
         "before": [575, 515],
@@ -1295,7 +1251,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1306,10 +1262,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap4.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "c273aea64680ba65c155a29e4d49b9ff3c2baa6cf5cce92813b5446a036fcd75",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "52abded2fcfbc67c34c17773690d7887a60cba10751439f47468125664da1f53",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7015,
         "before": [575, 515],
@@ -1317,7 +1273,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1328,10 +1284,10 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "69e3f59ee8250006c11773b0c93b0eb1868a5e7a5dbf5b2cd8f1ad76ca471489",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "e46c36124371d83f6da7b663e154e097bde6f5bede8fa99b69aaca39559f4c57",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7019,
         "before": [575, 515],
@@ -1339,7 +1295,7 @@
         "bounds": {
           "left": 1,
           "top": 20,
-          "right": 120,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -1350,18 +1306,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-material.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "87a84dbd965fbb49e15ac9bf5ed274d2f9caebca0ada5d032dc037ef4c3b8747",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "709a4af2b6390beb3e0c6bcdfaddefc2eb7a7854c7c52fd54642fc80b3716181",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 1149,
+        "changedPixels": 1170,
         "before": [575, 539],
         "after": [575, 539],
         "bounds": {
           "left": 41,
-          "top": 332,
-          "right": 532,
+          "top": 252,
+          "right": 533,
           "bottom": 427
         }
       },
@@ -1372,18 +1328,18 @@
     {
       "file": "tests/e2e/__screenshots__/darwin-arm64/builder-hosts.spec.ts/chromium/builder-element-shadow-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "9d05cc7b9e77bfd5b4edd42b6e91d27de6797e7ed3b5b70ab557b9658894e01c",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "41b6c5f7ee0a544feb073258809478550ce2c6e72d181311307c8e6b9a01fbc8",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
-        "changedPixels": 7583,
+        "changedPixels": 6922,
         "before": [575, 547],
         "after": [575, 547],
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 120,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -1742,7 +1698,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 1200,
+          "right": 1346,
           "bottom": 901
         }
       },
@@ -1770,7 +1726,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1186,
           "bottom": 572
         }
       },
@@ -1792,7 +1748,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1186,
           "bottom": 572
         }
       },
@@ -1814,7 +1770,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1186,
           "bottom": 572
         }
       },
@@ -1836,7 +1792,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1188,
           "bottom": 572
         }
       },
@@ -1858,7 +1814,7 @@
         "bounds": {
           "left": 18,
           "top": 12,
-          "right": 243,
+          "right": 1188,
           "bottom": 617
         }
       },
@@ -1880,7 +1836,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1188,
           "bottom": 572
         }
       },
@@ -1902,7 +1858,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1346,
           "bottom": 580
         }
       },
@@ -1924,7 +1880,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 1200,
+          "right": 1346,
           "bottom": 922
         }
       },
@@ -1946,7 +1902,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1346,
           "bottom": 580
         }
       },
@@ -1968,7 +1924,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1346,
           "bottom": 580
         }
       },
@@ -1990,7 +1946,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 991,
+          "right": 1348,
           "bottom": 589
         }
       },
@@ -2012,7 +1968,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 991,
+          "right": 1426,
           "bottom": 595
         }
       },
@@ -2034,7 +1990,7 @@
         "bounds": {
           "left": 75,
           "top": 431,
-          "right": 1001,
+          "right": 1308,
           "bottom": 994
         }
       },
@@ -2056,7 +2012,7 @@
         "bounds": {
           "left": 217,
           "top": 170,
-          "right": 340,
+          "right": 376,
           "bottom": 185
         }
       },
@@ -2078,7 +2034,7 @@
         "bounds": {
           "left": 16,
           "top": 157,
-          "right": 118,
+          "right": 370,
           "bottom": 201
         }
       },
@@ -2100,7 +2056,7 @@
         "bounds": {
           "left": 16,
           "top": 157,
-          "right": 118,
+          "right": 370,
           "bottom": 201
         }
       },
@@ -2122,7 +2078,7 @@
         "bounds": {
           "left": 221,
           "top": 178,
-          "right": 344,
+          "right": 380,
           "bottom": 193
         }
       },
@@ -2144,7 +2100,7 @@
         "bounds": {
           "left": 218,
           "top": 173,
-          "right": 342,
+          "right": 378,
           "bottom": 188
         }
       },
@@ -2166,7 +2122,7 @@
         "bounds": {
           "left": 2,
           "top": 159,
-          "right": 207,
+          "right": 370,
           "bottom": 236
         }
       },
@@ -2188,7 +2144,7 @@
         "bounds": {
           "left": 2,
           "top": 159,
-          "right": 207,
+          "right": 370,
           "bottom": 236
         }
       },
@@ -2210,7 +2166,7 @@
         "bounds": {
           "left": 222,
           "top": 181,
-          "right": 346,
+          "right": 382,
           "bottom": 196
         }
       },
@@ -2232,7 +2188,7 @@
         "bounds": {
           "left": 213,
           "top": 170,
-          "right": 336,
+          "right": 372,
           "bottom": 185
         }
       },
@@ -2254,7 +2210,7 @@
         "bounds": {
           "left": 2,
           "top": 156,
-          "right": 186,
+          "right": 370,
           "bottom": 231
         }
       },
@@ -2276,7 +2232,7 @@
         "bounds": {
           "left": 2,
           "top": 156,
-          "right": 186,
+          "right": 370,
           "bottom": 231
         }
       },
@@ -2298,7 +2254,7 @@
         "bounds": {
           "left": 217,
           "top": 178,
-          "right": 340,
+          "right": 376,
           "bottom": 193
         }
       },
@@ -2320,7 +2276,7 @@
         "bounds": {
           "left": 16,
           "top": 366,
-          "right": 166,
+          "right": 203,
           "bottom": 811
         }
       },
@@ -2342,7 +2298,7 @@
         "bounds": {
           "left": 16,
           "top": 364,
-          "right": 163,
+          "right": 199,
           "bottom": 812
         }
       },
@@ -2364,7 +2320,7 @@
         "bounds": {
           "left": 16,
           "top": 364,
-          "right": 163,
+          "right": 199,
           "bottom": 812
         }
       },
@@ -2386,7 +2342,7 @@
         "bounds": {
           "left": 20,
           "top": 785,
-          "right": 137,
+          "right": 165,
           "bottom": 797
         }
       },
@@ -2408,7 +2364,7 @@
         "bounds": {
           "left": 20,
           "top": 374,
-          "right": 170,
+          "right": 207,
           "bottom": 839
         }
       },
@@ -2430,7 +2386,7 @@
         "bounds": {
           "left": 16,
           "top": 252,
-          "right": 179,
+          "right": 250,
           "bottom": 379
         }
       },
@@ -2452,7 +2408,7 @@
         "bounds": {
           "left": 16,
           "top": 251,
-          "right": 175,
+          "right": 246,
           "bottom": 379
         }
       },
@@ -2474,7 +2430,7 @@
         "bounds": {
           "left": 16,
           "top": 251,
-          "right": 175,
+          "right": 246,
           "bottom": 379
         }
       },
@@ -2502,7 +2458,7 @@
         "bounds": {
           "left": 20,
           "top": 260,
-          "right": 183,
+          "right": 254,
           "bottom": 391
         }
       },
@@ -2524,7 +2480,7 @@
         "bounds": {
           "left": 16,
           "top": 379,
-          "right": 167,
+          "right": 204,
           "bottom": 838
         }
       },
@@ -2546,7 +2502,7 @@
         "bounds": {
           "left": 16,
           "top": 16,
-          "right": 163,
+          "right": 833,
           "bottom": 832
         }
       },
@@ -2568,7 +2524,7 @@
         "bounds": {
           "left": 16,
           "top": 16,
-          "right": 163,
+          "right": 833,
           "bottom": 832
         }
       },
@@ -2590,7 +2546,7 @@
         "bounds": {
           "left": 20,
           "top": 796,
-          "right": 137,
+          "right": 165,
           "bottom": 808
         }
       },
@@ -2612,7 +2568,7 @@
         "bounds": {
           "left": 20,
           "top": 387,
-          "right": 171,
+          "right": 829,
           "bottom": 866
         }
       },
@@ -2634,7 +2590,7 @@
         "bounds": {
           "left": 16,
           "top": 260,
-          "right": 180,
+          "right": 251,
           "bottom": 391
         }
       },
@@ -2706,7 +2662,7 @@
         "bounds": {
           "left": 20,
           "top": 268,
-          "right": 184,
+          "right": 255,
           "bottom": 403
         }
       },
@@ -2728,7 +2684,7 @@
         "bounds": {
           "left": 16,
           "top": 366,
-          "right": 166,
+          "right": 203,
           "bottom": 794
         }
       },
@@ -2750,7 +2706,7 @@
         "bounds": {
           "left": 16,
           "top": 364,
-          "right": 163,
+          "right": 199,
           "bottom": 795
         }
       },
@@ -2772,7 +2728,7 @@
         "bounds": {
           "left": 16,
           "top": 364,
-          "right": 163,
+          "right": 199,
           "bottom": 795
         }
       },
@@ -2794,7 +2750,7 @@
         "bounds": {
           "left": 20,
           "top": 756,
-          "right": 137,
+          "right": 165,
           "bottom": 768
         }
       },
@@ -2816,7 +2772,7 @@
         "bounds": {
           "left": 20,
           "top": 374,
-          "right": 170,
+          "right": 207,
           "bottom": 822
         }
       },
@@ -2838,7 +2794,7 @@
         "bounds": {
           "left": 16,
           "top": 252,
-          "right": 179,
+          "right": 250,
           "bottom": 379
         }
       },
@@ -2860,7 +2816,7 @@
         "bounds": {
           "left": 16,
           "top": 251,
-          "right": 175,
+          "right": 246,
           "bottom": 379
         }
       },
@@ -2882,7 +2838,7 @@
         "bounds": {
           "left": 16,
           "top": 251,
-          "right": 175,
+          "right": 246,
           "bottom": 379
         }
       },
@@ -2910,7 +2866,7 @@
         "bounds": {
           "left": 20,
           "top": 260,
-          "right": 183,
+          "right": 254,
           "bottom": 391
         }
       },
@@ -3112,7 +3068,7 @@
         "bounds": {
           "left": 16,
           "top": 282,
-          "right": 72,
+          "right": 156,
           "bottom": 787
         }
       },
@@ -3134,7 +3090,7 @@
         "bounds": {
           "left": 403,
           "top": 282,
-          "right": 507,
+          "right": 542,
           "bottom": 297
         }
       },
@@ -3156,7 +3112,7 @@
         "bounds": {
           "left": 16,
           "top": 282,
-          "right": 19,
+          "right": 156,
           "bottom": 734
         }
       },
@@ -3178,7 +3134,7 @@
         "bounds": {
           "left": 17,
           "top": 144,
-          "right": 24,
+          "right": 156,
           "bottom": 434
         }
       },
@@ -3200,7 +3156,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 72,
+          "right": 548,
           "bottom": 759
         }
       },
@@ -3222,7 +3178,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 542,
+          "right": 548,
           "bottom": 706
         }
       },
@@ -3244,7 +3200,7 @@
         "bounds": {
           "left": 11,
           "top": 173,
-          "right": 81,
+          "right": 548,
           "bottom": 787
         }
       },
@@ -3266,7 +3222,7 @@
         "bounds": {
           "left": 11,
           "top": 173,
-          "right": 16,
+          "right": 548,
           "bottom": 724
         }
       },
@@ -3288,7 +3244,7 @@
         "bounds": {
           "left": 11,
           "top": 173,
-          "right": 17,
+          "right": 548,
           "bottom": 687
         }
       },
@@ -3310,7 +3266,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 19,
+          "right": 548,
           "bottom": 706
         }
       },
@@ -3332,7 +3288,7 @@
         "bounds": {
           "left": 16,
           "top": 46,
-          "right": 121,
+          "right": 543,
           "bottom": 159
         }
       },
@@ -3354,7 +3310,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 72,
+          "right": 548,
           "bottom": 759
         }
       },
@@ -3376,7 +3332,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 542,
+          "right": 548,
           "bottom": 672
         }
       },
@@ -3398,7 +3354,7 @@
         "bounds": {
           "left": 11,
           "top": 173,
-          "right": 17,
+          "right": 548,
           "bottom": 695
         }
       },
@@ -3420,7 +3376,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 17,
+          "right": 548,
           "bottom": 461
         }
       },
@@ -3442,7 +3398,7 @@
         "bounds": {
           "left": 16,
           "top": 46,
-          "right": 32,
+          "right": 543,
           "bottom": 279
         }
       },
@@ -3488,7 +3444,7 @@
         "bounds": {
           "left": 20,
           "top": 290,
-          "right": 76,
+          "right": 160,
           "bottom": 823
         }
       },
@@ -3510,7 +3466,7 @@
         "bounds": {
           "left": 399,
           "top": 290,
-          "right": 533,
+          "right": 539,
           "bottom": 762
         }
       },
@@ -3532,7 +3488,7 @@
         "bounds": {
           "left": 20,
           "top": 290,
-          "right": 29,
+          "right": 160,
           "bottom": 762
         }
       },
@@ -3554,7 +3510,7 @@
         "bounds": {
           "left": 21,
           "top": 148,
-          "right": 125,
+          "right": 160,
           "bottom": 163
         }
       },
@@ -4040,7 +3996,7 @@
         "bounds": {
           "left": 15,
           "top": 282,
-          "right": 66,
+          "right": 156,
           "bottom": 786
         }
       },
@@ -4062,7 +4018,7 @@
         "bounds": {
           "left": 403,
           "top": 282,
-          "right": 507,
+          "right": 542,
           "bottom": 297
         }
       },
@@ -4084,7 +4040,7 @@
         "bounds": {
           "left": 17,
           "top": 282,
-          "right": 121,
+          "right": 156,
           "bottom": 297
         }
       },
@@ -4106,7 +4062,7 @@
         "bounds": {
           "left": 17,
           "top": 144,
-          "right": 121,
+          "right": 156,
           "bottom": 159
         }
       },
@@ -4128,7 +4084,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 66,
+          "right": 548,
           "bottom": 758
         }
       },
@@ -4150,7 +4106,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 507,
+          "right": 548,
           "bottom": 297
         }
       },
@@ -4172,7 +4128,7 @@
         "bounds": {
           "left": 11,
           "top": 172,
-          "right": 81,
+          "right": 548,
           "bottom": 789
         }
       },
@@ -4194,7 +4150,7 @@
         "bounds": {
           "left": 11,
           "top": 172,
-          "right": 107,
+          "right": 548,
           "bottom": 304
         }
       },
@@ -4216,7 +4172,7 @@
         "bounds": {
           "left": 11,
           "top": 172,
-          "right": 107,
+          "right": 548,
           "bottom": 304
         }
       },
@@ -4238,7 +4194,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 121,
+          "right": 548,
           "bottom": 297
         }
       },
@@ -4260,7 +4216,7 @@
         "bounds": {
           "left": 16,
           "top": 46,
-          "right": 121,
+          "right": 543,
           "bottom": 159
         }
       },
@@ -4282,7 +4238,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 66,
+          "right": 548,
           "bottom": 758
         }
       },
@@ -4304,7 +4260,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 507,
+          "right": 548,
           "bottom": 297
         }
       },
@@ -4326,7 +4282,7 @@
         "bounds": {
           "left": 11,
           "top": 172,
-          "right": 107,
+          "right": 548,
           "bottom": 306
         }
       },
@@ -4348,7 +4304,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 121,
+          "right": 548,
           "bottom": 297
         }
       },
@@ -4370,7 +4326,7 @@
         "bounds": {
           "left": 16,
           "top": 46,
-          "right": 121,
+          "right": 543,
           "bottom": 159
         }
       },
@@ -4416,7 +4372,7 @@
         "bounds": {
           "left": 19,
           "top": 290,
-          "right": 70,
+          "right": 160,
           "bottom": 822
         }
       },
@@ -4438,7 +4394,7 @@
         "bounds": {
           "left": 399,
           "top": 290,
-          "right": 503,
+          "right": 538,
           "bottom": 305
         }
       },
@@ -4460,7 +4416,7 @@
         "bounds": {
           "left": 21,
           "top": 290,
-          "right": 125,
+          "right": 160,
           "bottom": 305
         }
       },
@@ -4482,7 +4438,7 @@
         "bounds": {
           "left": 21,
           "top": 148,
-          "right": 125,
+          "right": 160,
           "bottom": 163
         }
       },
@@ -4504,7 +4460,7 @@
         "bounds": {
           "left": 16,
           "top": 300,
-          "right": 136,
+          "right": 171,
           "bottom": 696
         }
       },
@@ -4526,7 +4482,7 @@
         "bounds": {
           "left": 16,
           "top": 287,
-          "right": 138,
+          "right": 174,
           "bottom": 667
         }
       },
@@ -4548,7 +4504,7 @@
         "bounds": {
           "left": 16,
           "top": 287,
-          "right": 138,
+          "right": 174,
           "bottom": 667
         }
       },
@@ -4570,7 +4526,7 @@
         "bounds": {
           "left": 20,
           "top": 308,
-          "right": 140,
+          "right": 175,
           "bottom": 720
         }
       },
@@ -4592,7 +4548,7 @@
         "bounds": {
           "left": 16,
           "top": 306,
-          "right": 136,
+          "right": 171,
           "bottom": 706
         }
       },
@@ -4614,7 +4570,7 @@
         "bounds": {
           "left": 16,
           "top": 296,
-          "right": 138,
+          "right": 173,
           "bottom": 684
         }
       },
@@ -4636,7 +4592,7 @@
         "bounds": {
           "left": 16,
           "top": 296,
-          "right": 138,
+          "right": 173,
           "bottom": 684
         }
       },
@@ -4658,7 +4614,7 @@
         "bounds": {
           "left": 20,
           "top": 314,
-          "right": 140,
+          "right": 175,
           "bottom": 730
         }
       },
@@ -4680,7 +4636,7 @@
         "bounds": {
           "left": 0,
           "top": 310,
-          "right": 136,
+          "right": 1252,
           "bottom": 722
         }
       },
@@ -4702,7 +4658,7 @@
         "bounds": {
           "left": 16,
           "top": 292,
-          "right": 138,
+          "right": 173,
           "bottom": 679
         }
       },
@@ -4724,7 +4680,7 @@
         "bounds": {
           "left": 16,
           "top": 292,
-          "right": 138,
+          "right": 173,
           "bottom": 679
         }
       },
@@ -4746,7 +4702,7 @@
         "bounds": {
           "left": 0,
           "top": 318,
-          "right": 140,
+          "right": 1248,
           "bottom": 746
         }
       },
@@ -5156,10 +5112,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-base.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "4c688db472cfd0cd2450cc33a018c286a11865ea32c1df534deea7fcddfdd800",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6552,
         "before": [575, 515],
@@ -5167,7 +5123,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 113,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -5178,10 +5134,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap4.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "8e1bcd8d5d2e874007c6770da40a2c589993d99de50365a2dac586b73c35b7b4",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7523,
         "before": [575, 515],
@@ -5189,7 +5145,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 113,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -5200,10 +5156,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "3f69a658397c20c4df500b2d05430ec55f93141ae5cfdd5ce245a84df69c7b9c",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7527,
         "before": [575, 515],
@@ -5211,7 +5167,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 113,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -5228,10 +5184,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-21-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "a85b48c04f581466d84af44bac6537b5db8e91cf37e3a012748fc4792e537898",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6492,
         "before": [575, 547],
@@ -5239,7 +5195,7 @@
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 113,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -5256,10 +5212,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap4.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "a449ba4598a1f9a8f628c407627044127cf33c9b0ebe02f7fafb53e3e782ba2f",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "8e1bcd8d5d2e874007c6770da40a2c589993d99de50365a2dac586b73c35b7b4",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7523,
         "before": [575, 515],
@@ -5267,7 +5223,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 113,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -5278,10 +5234,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "3f69a658397c20c4df500b2d05430ec55f93141ae5cfdd5ce245a84df69c7b9c",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7527,
         "before": [575, 515],
@@ -5289,7 +5245,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 113,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -5306,10 +5262,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-Angular-22-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "a85b48c04f581466d84af44bac6537b5db8e91cf37e3a012748fc4792e537898",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6492,
         "before": [575, 547],
@@ -5317,7 +5273,7 @@
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 113,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -5340,10 +5296,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-DOM-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "3f69a658397c20c4df500b2d05430ec55f93141ae5cfdd5ce245a84df69c7b9c",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7527,
         "before": [575, 515],
@@ -5351,7 +5307,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 113,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -5404,10 +5360,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-base.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "4c688db472cfd0cd2450cc33a018c286a11865ea32c1df534deea7fcddfdd800",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6552,
         "before": [575, 515],
@@ -5415,7 +5371,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 113,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -5444,10 +5400,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-light-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "a85b48c04f581466d84af44bac6537b5db8e91cf37e3a012748fc4792e537898",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6492,
         "before": [575, 547],
@@ -5455,7 +5411,7 @@
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 113,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -5466,10 +5422,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-base.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "38420d76aba7f6b20c7a265f4cb30b662e0def0467b5c8233016635f8137a712",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "4c688db472cfd0cd2450cc33a018c286a11865ea32c1df534deea7fcddfdd800",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6552,
         "before": [575, 515],
@@ -5477,7 +5433,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 113,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -5494,10 +5450,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-bootstrap5.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "74b080da26f814c9aed8c704d59df5cd75615be25dc0372d4731c11b4dd88974",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "3f69a658397c20c4df500b2d05430ec55f93141ae5cfdd5ce245a84df69c7b9c",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 7527,
         "before": [575, 515],
@@ -5505,7 +5461,7 @@
         "bounds": {
           "left": 1,
           "top": 21,
-          "right": 113,
+          "right": 541,
           "bottom": 514
         }
       },
@@ -5522,10 +5478,10 @@
     {
       "file": "tests/e2e/__screenshots__/linux-x64/builder-hosts.spec.ts/chromium/builder-element-shadow-tailwind.png",
       "status": "changed",
-      "sinceReview": "unchanged",
-      "sha256": "7e6ceaf3334236a87b8fbf59ad203a4724c3779d4d9b2931c8a08579847d0d58",
-      "group": "Unexplained preview capture changes",
-      "explanation": "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "sinceReview": "changed",
+      "sha256": "a85b48c04f581466d84af44bac6537b5db8e91cf37e3a012748fc4792e537898",
+      "group": "Host preview capture audit",
+      "explanation": "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
       "pixelAudit": {
         "changedPixels": 6492,
         "before": [575, 547],
@@ -5533,7 +5489,7 @@
         "bounds": {
           "left": 1,
           "top": 25,
-          "right": 113,
+          "right": 533,
           "bottom": 546
         }
       },
@@ -5892,7 +5848,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 1200,
+          "right": 1346,
           "bottom": 901
         }
       },
@@ -5920,7 +5876,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1189,
           "bottom": 572
         }
       },
@@ -5942,7 +5898,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1189,
           "bottom": 572
         }
       },
@@ -5964,7 +5920,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1189,
           "bottom": 572
         }
       },
@@ -5986,7 +5942,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1190,
           "bottom": 572
         }
       },
@@ -6008,7 +5964,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1190,
           "bottom": 572
         }
       },
@@ -6030,7 +5986,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1190,
           "bottom": 572
         }
       },
@@ -6052,7 +6008,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1346,
           "bottom": 580
         }
       },
@@ -6074,7 +6030,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 1200,
+          "right": 1346,
           "bottom": 922
         }
       },
@@ -6096,7 +6052,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1349,
           "bottom": 580
         }
       },
@@ -6118,7 +6074,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 162,
+          "right": 1349,
           "bottom": 580
         }
       },
@@ -6140,7 +6096,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 991,
+          "right": 1350,
           "bottom": 589
         }
       },
@@ -6162,7 +6118,7 @@
         "bounds": {
           "left": 149,
           "top": 12,
-          "right": 991,
+          "right": 1426,
           "bottom": 595
         }
       },
@@ -6184,7 +6140,7 @@
         "bounds": {
           "left": 74,
           "top": 431,
-          "right": 1001,
+          "right": 1310,
           "bottom": 994
         }
       },
@@ -6206,7 +6162,7 @@
         "bounds": {
           "left": 201,
           "top": 178,
-          "right": 321,
+          "right": 356,
           "bottom": 192
         }
       },
@@ -6228,7 +6184,7 @@
         "bounds": {
           "left": 16,
           "top": 158,
-          "right": 118,
+          "right": 371,
           "bottom": 200
         }
       },
@@ -6250,7 +6206,7 @@
         "bounds": {
           "left": 16,
           "top": 158,
-          "right": 118,
+          "right": 371,
           "bottom": 200
         }
       },
@@ -6272,7 +6228,7 @@
         "bounds": {
           "left": 205,
           "top": 186,
-          "right": 325,
+          "right": 360,
           "bottom": 200
         }
       },
@@ -6294,7 +6250,7 @@
         "bounds": {
           "left": 208,
           "top": 177,
-          "right": 328,
+          "right": 363,
           "bottom": 191
         }
       },
@@ -6316,7 +6272,7 @@
         "bounds": {
           "left": 16,
           "top": 158,
-          "right": 118,
+          "right": 370,
           "bottom": 200
         }
       },
@@ -6338,7 +6294,7 @@
         "bounds": {
           "left": 16,
           "top": 158,
-          "right": 118,
+          "right": 370,
           "bottom": 200
         }
       },
@@ -6360,7 +6316,7 @@
         "bounds": {
           "left": 212,
           "top": 185,
-          "right": 332,
+          "right": 367,
           "bottom": 199
         }
       },
@@ -6382,7 +6338,7 @@
         "bounds": {
           "left": 197,
           "top": 183,
-          "right": 317,
+          "right": 352,
           "bottom": 197
         }
       },
@@ -6404,7 +6360,7 @@
         "bounds": {
           "left": 2,
           "top": 158,
-          "right": 240,
+          "right": 370,
           "bottom": 233
         }
       },
@@ -6426,7 +6382,7 @@
         "bounds": {
           "left": 2,
           "top": 158,
-          "right": 240,
+          "right": 370,
           "bottom": 233
         }
       },
@@ -6448,7 +6404,7 @@
         "bounds": {
           "left": 201,
           "top": 191,
-          "right": 321,
+          "right": 356,
           "bottom": 205
         }
       },
@@ -6470,7 +6426,7 @@
         "bounds": {
           "left": 16,
           "top": 390,
-          "right": 161,
+          "right": 196,
           "bottom": 855
         }
       },
@@ -6492,7 +6448,7 @@
         "bounds": {
           "left": 16,
           "top": 365,
-          "right": 164,
+          "right": 200,
           "bottom": 809
         }
       },
@@ -6514,7 +6470,7 @@
         "bounds": {
           "left": 16,
           "top": 365,
-          "right": 164,
+          "right": 200,
           "bottom": 809
         }
       },
@@ -6536,7 +6492,7 @@
         "bounds": {
           "left": 20,
           "top": 805,
-          "right": 95,
+          "right": 155,
           "bottom": 816
         }
       },
@@ -6558,7 +6514,7 @@
         "bounds": {
           "left": 20,
           "top": 398,
-          "right": 165,
+          "right": 200,
           "bottom": 883
         }
       },
@@ -6580,7 +6536,7 @@
         "bounds": {
           "left": 16,
           "top": 266,
-          "right": 174,
+          "right": 243,
           "bottom": 398
         }
       },
@@ -6602,7 +6558,7 @@
         "bounds": {
           "left": 16,
           "top": 252,
-          "right": 176,
+          "right": 247,
           "bottom": 378
         }
       },
@@ -6624,7 +6580,7 @@
         "bounds": {
           "left": 16,
           "top": 252,
-          "right": 176,
+          "right": 247,
           "bottom": 378
         }
       },
@@ -6652,7 +6608,7 @@
         "bounds": {
           "left": 20,
           "top": 274,
-          "right": 178,
+          "right": 247,
           "bottom": 410
         }
       },
@@ -6674,7 +6630,7 @@
         "bounds": {
           "left": 16,
           "top": 390,
-          "right": 115,
+          "right": 196,
           "bottom": 856
         }
       },
@@ -6696,7 +6652,7 @@
         "bounds": {
           "left": 16,
           "top": 369,
-          "right": 163,
+          "right": 199,
           "bottom": 820
         }
       },
@@ -6718,7 +6674,7 @@
         "bounds": {
           "left": 16,
           "top": 369,
-          "right": 163,
+          "right": 199,
           "bottom": 820
         }
       },
@@ -6740,7 +6696,7 @@
         "bounds": {
           "left": 20,
           "top": 804,
-          "right": 95,
+          "right": 155,
           "bottom": 815
         }
       },
@@ -6762,7 +6718,7 @@
         "bounds": {
           "left": 20,
           "top": 398,
-          "right": 119,
+          "right": 200,
           "bottom": 884
         }
       },
@@ -6784,7 +6740,7 @@
         "bounds": {
           "left": 16,
           "top": 266,
-          "right": 175,
+          "right": 243,
           "bottom": 398
         }
       },
@@ -6806,7 +6762,7 @@
         "bounds": {
           "left": 16,
           "top": 255,
-          "right": 175,
+          "right": 246,
           "bottom": 383
         }
       },
@@ -6828,7 +6784,7 @@
         "bounds": {
           "left": 16,
           "top": 255,
-          "right": 175,
+          "right": 246,
           "bottom": 383
         }
       },
@@ -6856,7 +6812,7 @@
         "bounds": {
           "left": 20,
           "top": 274,
-          "right": 179,
+          "right": 247,
           "bottom": 410
         }
       },
@@ -6878,7 +6834,7 @@
         "bounds": {
           "left": 16,
           "top": 407,
-          "right": 161,
+          "right": 833,
           "bottom": 895
         }
       },
@@ -6900,7 +6856,7 @@
         "bounds": {
           "left": 16,
           "top": 365,
-          "right": 163,
+          "right": 199,
           "bottom": 816
         }
       },
@@ -6922,7 +6878,7 @@
         "bounds": {
           "left": 16,
           "top": 365,
-          "right": 163,
+          "right": 199,
           "bottom": 816
         }
       },
@@ -6944,7 +6900,7 @@
         "bounds": {
           "left": 20,
           "top": 830,
-          "right": 95,
+          "right": 155,
           "bottom": 841
         }
       },
@@ -6966,7 +6922,7 @@
         "bounds": {
           "left": 20,
           "top": 415,
-          "right": 165,
+          "right": 829,
           "bottom": 923
         }
       },
@@ -7010,7 +6966,7 @@
         "bounds": {
           "left": 16,
           "top": 252,
-          "right": 175,
+          "right": 246,
           "bottom": 379
         }
       },
@@ -7032,7 +6988,7 @@
         "bounds": {
           "left": 16,
           "top": 252,
-          "right": 175,
+          "right": 246,
           "bottom": 379
         }
       },
@@ -7262,7 +7218,7 @@
         "bounds": {
           "left": 16,
           "top": 282,
-          "right": 72,
+          "right": 156,
           "bottom": 785
         }
       },
@@ -7284,7 +7240,7 @@
         "bounds": {
           "left": 403,
           "top": 282,
-          "right": 542,
+          "right": 543,
           "bottom": 785
         }
       },
@@ -7306,7 +7262,7 @@
         "bounds": {
           "left": 16,
           "top": 282,
-          "right": 72,
+          "right": 156,
           "bottom": 785
         }
       },
@@ -7328,7 +7284,7 @@
         "bounds": {
           "left": 16,
           "top": 144,
-          "right": 72,
+          "right": 157,
           "bottom": 648
         }
       },
@@ -7350,7 +7306,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 72,
+          "right": 548,
           "bottom": 757
         }
       },
@@ -7372,7 +7328,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 542,
+          "right": 548,
           "bottom": 757
         }
       },
@@ -7394,7 +7350,7 @@
         "bounds": {
           "left": 11,
           "top": 173,
-          "right": 81,
+          "right": 548,
           "bottom": 787
         }
       },
@@ -7416,7 +7372,7 @@
         "bounds": {
           "left": 11,
           "top": 173,
-          "right": 79,
+          "right": 548,
           "bottom": 785
         }
       },
@@ -7438,7 +7394,7 @@
         "bounds": {
           "left": 11,
           "top": 173,
-          "right": 79,
+          "right": 548,
           "bottom": 785
         }
       },
@@ -7460,7 +7416,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 72,
+          "right": 548,
           "bottom": 757
         }
       },
@@ -7482,7 +7438,7 @@
         "bounds": {
           "left": 16,
           "top": 46,
-          "right": 72,
+          "right": 543,
           "bottom": 620
         }
       },
@@ -7504,7 +7460,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 72,
+          "right": 548,
           "bottom": 757
         }
       },
@@ -7526,7 +7482,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 542,
+          "right": 548,
           "bottom": 757
         }
       },
@@ -7548,7 +7504,7 @@
         "bounds": {
           "left": 11,
           "top": 173,
-          "right": 79,
+          "right": 548,
           "bottom": 791
         }
       },
@@ -7570,7 +7526,7 @@
         "bounds": {
           "left": 11,
           "top": 179,
-          "right": 72,
+          "right": 548,
           "bottom": 757
         }
       },
@@ -7592,7 +7548,7 @@
         "bounds": {
           "left": 16,
           "top": 46,
-          "right": 72,
+          "right": 543,
           "bottom": 620
         }
       },
@@ -7638,7 +7594,7 @@
         "bounds": {
           "left": 20,
           "top": 290,
-          "right": 76,
+          "right": 160,
           "bottom": 821
         }
       },
@@ -7660,7 +7616,7 @@
         "bounds": {
           "left": 399,
           "top": 290,
-          "right": 538,
+          "right": 539,
           "bottom": 821
         }
       },
@@ -7682,7 +7638,7 @@
         "bounds": {
           "left": 20,
           "top": 290,
-          "right": 76,
+          "right": 160,
           "bottom": 821
         }
       },
@@ -7704,7 +7660,7 @@
         "bounds": {
           "left": 20,
           "top": 148,
-          "right": 76,
+          "right": 161,
           "bottom": 680
         }
       },
@@ -7726,7 +7682,7 @@
         "bounds": {
           "left": 16,
           "top": 284,
-          "right": 68,
+          "right": 156,
           "bottom": 791
         }
       },
@@ -7770,7 +7726,7 @@
         "bounds": {
           "left": 16,
           "top": 284,
-          "right": 68,
+          "right": 156,
           "bottom": 791
         }
       },
@@ -7792,7 +7748,7 @@
         "bounds": {
           "left": 16,
           "top": 146,
-          "right": 68,
+          "right": 156,
           "bottom": 654
         }
       },
@@ -7814,7 +7770,7 @@
         "bounds": {
           "left": 11,
           "top": 180,
-          "right": 68,
+          "right": 548,
           "bottom": 764
         }
       },
@@ -7836,7 +7792,7 @@
         "bounds": {
           "left": 11,
           "top": 180,
-          "right": 543,
+          "right": 548,
           "bottom": 764
         }
       },
@@ -7924,7 +7880,7 @@
         "bounds": {
           "left": 11,
           "top": 180,
-          "right": 68,
+          "right": 548,
           "bottom": 764
         }
       },
@@ -7946,7 +7902,7 @@
         "bounds": {
           "left": 16,
           "top": 47,
-          "right": 68,
+          "right": 543,
           "bottom": 627
         }
       },
@@ -7968,7 +7924,7 @@
         "bounds": {
           "left": 11,
           "top": 180,
-          "right": 68,
+          "right": 548,
           "bottom": 764
         }
       },
@@ -7990,7 +7946,7 @@
         "bounds": {
           "left": 11,
           "top": 180,
-          "right": 543,
+          "right": 548,
           "bottom": 764
         }
       },
@@ -8034,7 +7990,7 @@
         "bounds": {
           "left": 11,
           "top": 180,
-          "right": 68,
+          "right": 548,
           "bottom": 764
         }
       },
@@ -8056,7 +8012,7 @@
         "bounds": {
           "left": 16,
           "top": 47,
-          "right": 68,
+          "right": 543,
           "bottom": 627
         }
       },
@@ -8102,7 +8058,7 @@
         "bounds": {
           "left": 20,
           "top": 292,
-          "right": 72,
+          "right": 160,
           "bottom": 827
         }
       },
@@ -8146,7 +8102,7 @@
         "bounds": {
           "left": 20,
           "top": 292,
-          "right": 72,
+          "right": 160,
           "bottom": 827
         }
       },
@@ -8168,7 +8124,7 @@
         "bounds": {
           "left": 20,
           "top": 150,
-          "right": 72,
+          "right": 160,
           "bottom": 686
         }
       },
@@ -8190,7 +8146,7 @@
         "bounds": {
           "left": 16,
           "top": 282,
-          "right": 80,
+          "right": 156,
           "bottom": 794
         }
       },
@@ -8234,7 +8190,7 @@
         "bounds": {
           "left": 16,
           "top": 282,
-          "right": 80,
+          "right": 156,
           "bottom": 794
         }
       },
@@ -8256,7 +8212,7 @@
         "bounds": {
           "left": 16,
           "top": 144,
-          "right": 80,
+          "right": 156,
           "bottom": 657
         }
       },
@@ -8278,7 +8234,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 80,
+          "right": 548,
           "bottom": 766
         }
       },
@@ -8300,7 +8256,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 543,
+          "right": 548,
           "bottom": 766
         }
       },
@@ -8322,7 +8278,7 @@
         "bounds": {
           "left": 11,
           "top": 172,
-          "right": 79,
+          "right": 548,
           "bottom": 787
         }
       },
@@ -8344,7 +8300,7 @@
         "bounds": {
           "left": 11,
           "top": 172,
-          "right": 79,
+          "right": 548,
           "bottom": 787
         }
       },
@@ -8366,7 +8322,7 @@
         "bounds": {
           "left": 11,
           "top": 172,
-          "right": 79,
+          "right": 548,
           "bottom": 787
         }
       },
@@ -8388,7 +8344,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 80,
+          "right": 548,
           "bottom": 766
         }
       },
@@ -8410,7 +8366,7 @@
         "bounds": {
           "left": 16,
           "top": 46,
-          "right": 80,
+          "right": 543,
           "bottom": 629
         }
       },
@@ -8432,7 +8388,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 80,
+          "right": 548,
           "bottom": 766
         }
       },
@@ -8454,7 +8410,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 543,
+          "right": 548,
           "bottom": 766
         }
       },
@@ -8476,7 +8432,7 @@
         "bounds": {
           "left": 11,
           "top": 172,
-          "right": 79,
+          "right": 548,
           "bottom": 793
         }
       },
@@ -8498,7 +8454,7 @@
         "bounds": {
           "left": 11,
           "top": 178,
-          "right": 80,
+          "right": 548,
           "bottom": 766
         }
       },
@@ -8520,7 +8476,7 @@
         "bounds": {
           "left": 16,
           "top": 46,
-          "right": 80,
+          "right": 543,
           "bottom": 629
         }
       },
@@ -8566,7 +8522,7 @@
         "bounds": {
           "left": 20,
           "top": 290,
-          "right": 84,
+          "right": 160,
           "bottom": 830
         }
       },
@@ -8610,7 +8566,7 @@
         "bounds": {
           "left": 20,
           "top": 290,
-          "right": 84,
+          "right": 160,
           "bottom": 830
         }
       },
@@ -8632,7 +8588,7 @@
         "bounds": {
           "left": 20,
           "top": 148,
-          "right": 84,
+          "right": 160,
           "bottom": 689
         }
       },

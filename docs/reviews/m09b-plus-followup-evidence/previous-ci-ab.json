@@ -1,0 +1,336 @@
+{
+  "status": "measured",
+  "platform": "linux-x64",
+  "mainCommit": "0b3b452c46096e852248ca11872f9697888c621e",
+  "candidateCommit": "7613073532a3c7c03a0535d812b42f96bd29bd1e",
+  "pairs": [
+    {
+      "order": ["main", "candidate"],
+      "main": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.5,
+          "mountMS": 6.600000000005821,
+          "editMS": 29.5,
+          "themeMS": 10.69999999999709,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 4.600000000005821,
+          "mountMS": 31,
+          "editMS": 75.70000000001164,
+          "themeMS": 58.10000000000582,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 8.60000000000582,
+          "mountMS": 61,
+          "editMS": 163.79999999998836,
+          "themeMS": 115.39999999999418,
+          "processorRuns": 650
+        }
+      ],
+      "candidate": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.5,
+          "mountMS": 7,
+          "editMS": 44.79999999998836,
+          "themeMS": 11.299999999988358,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 4.900000000023283,
+          "mountMS": 33.5,
+          "editMS": 101.79999999998836,
+          "themeMS": 62.89999999999418,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 10.10000000000582,
+          "mountMS": 66.20000000001164,
+          "editMS": 227.60000000000582,
+          "themeMS": 130.5,
+          "processorRuns": 650
+        }
+      ]
+    },
+    {
+      "order": ["main", "candidate"],
+      "main": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.5,
+          "mountMS": 6.600000000005821,
+          "editMS": 30.89999999999418,
+          "themeMS": 10.60000000000582,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 4.7000000000116415,
+          "mountMS": 30.60000000000582,
+          "editMS": 72.39999999999418,
+          "themeMS": 54.30000000001746,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 8.200000000011642,
+          "mountMS": 61.70000000001164,
+          "editMS": 165.09999999997672,
+          "themeMS": 114.30000000001746,
+          "processorRuns": 650
+        }
+      ],
+      "candidate": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.6000000000058208,
+          "mountMS": 7.100000000005821,
+          "editMS": 42.89999999999418,
+          "themeMS": 11.39999999999418,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 4.600000000005821,
+          "mountMS": 30.5,
+          "editMS": 102.59999999997672,
+          "themeMS": 58.40000000002328,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 9.400000000023283,
+          "mountMS": 62.80000000001746,
+          "editMS": 211.39999999999418,
+          "themeMS": 124.29999999998836,
+          "processorRuns": 650
+        }
+      ]
+    },
+    {
+      "order": ["main", "candidate"],
+      "main": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.6000000000058208,
+          "mountMS": 6.7999999999883585,
+          "editMS": 33.30000000001746,
+          "themeMS": 10.800000000017462,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 4.7999999999883585,
+          "mountMS": 30.300000000017462,
+          "editMS": 73.20000000001164,
+          "themeMS": 56.39999999999418,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 8.400000000023283,
+          "mountMS": 60.5,
+          "editMS": 162.79999999998836,
+          "themeMS": 111.39999999999418,
+          "processorRuns": 650
+        }
+      ],
+      "candidate": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.6000000000058208,
+          "mountMS": 6.7999999999883585,
+          "editMS": 42.5,
+          "themeMS": 11.300000000017462,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 4.900000000023283,
+          "mountMS": 31.400000000023283,
+          "editMS": 99.40000000002328,
+          "themeMS": 60.40000000002328,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 10,
+          "mountMS": 64.5,
+          "editMS": 222.10000000000582,
+          "themeMS": 124.79999999998836,
+          "processorRuns": 650
+        }
+      ]
+    },
+    {
+      "order": ["main", "candidate"],
+      "main": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.7000000000116415,
+          "mountMS": 6.899999999994179,
+          "editMS": 33.89999999999418,
+          "themeMS": 11.300000000017462,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 4.600000000005821,
+          "mountMS": 33.19999999998254,
+          "editMS": 73.60000000000582,
+          "themeMS": 56.60000000000582,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 9.199999999982538,
+          "mountMS": 60.5,
+          "editMS": 162.39999999999418,
+          "themeMS": 113,
+          "processorRuns": 650
+        }
+      ],
+      "candidate": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.5,
+          "mountMS": 7.7999999999883585,
+          "editMS": 43.89999999999418,
+          "themeMS": 11.699999999982538,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 5.2000000000116415,
+          "mountMS": 31.89999999999418,
+          "editMS": 101.29999999998836,
+          "themeMS": 62.10000000000582,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 11.39999999999418,
+          "mountMS": 66.20000000001164,
+          "editMS": 230.20000000001164,
+          "themeMS": 131.30000000001746,
+          "processorRuns": 650
+        }
+      ]
+    },
+    {
+      "order": ["main", "candidate"],
+      "main": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.5,
+          "mountMS": 6.899999999994179,
+          "editMS": 33.19999999998254,
+          "themeMS": 10.799999999988358,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 4.699999999982538,
+          "mountMS": 30.20000000001164,
+          "editMS": 73.70000000001164,
+          "themeMS": 55.60000000000582,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 9.10000000000582,
+          "mountMS": 65.60000000000582,
+          "editMS": 167.60000000000582,
+          "themeMS": 117.10000000000582,
+          "processorRuns": 650
+        }
+      ],
+      "candidate": [
+        {
+          "count": 100,
+          "samples": 15,
+          "compileMS": 1.8000000000174623,
+          "mountMS": 7.399999999994179,
+          "editMS": 46.30000000001746,
+          "themeMS": 12.60000000000582,
+          "processorRuns": 650
+        },
+        {
+          "count": 500,
+          "samples": 15,
+          "compileMS": 4.7000000000116415,
+          "mountMS": 32.89999999999418,
+          "editMS": 105.5,
+          "themeMS": 65.70000000001164,
+          "processorRuns": 650
+        },
+        {
+          "count": 1000,
+          "samples": 15,
+          "compileMS": 9.600000000034925,
+          "mountMS": 64.79999999998836,
+          "editMS": 216,
+          "themeMS": 127.19999999995343,
+          "processorRuns": 650
+        }
+      ]
+    }
+  ],
+  "ratios": [
+    {
+      "count": 100,
+      "compileMS": 1,
+      "mountMS": 1.0724637681160032,
+      "editMS": 1.38834951456318,
+      "themeMS": 1.0560747663543395
+    },
+    {
+      "count": 500,
+      "compileMS": 1.0208333333406598,
+      "mountMS": 1.0363036303632074,
+      "editMS": 1.376358695651907,
+      "themeMS": 1.0826161790015125
+    },
+    {
+      "count": 1000,
+      "compileMS": 1.1744186046510448,
+      "mountMS": 1.0661157024793388,
+      "editMS": 1.3642506142507476,
+      "themeMS": 1.1202872531417853
+    }
+  ]
+}

@@ -484,3 +484,32 @@ test("quick-add roves with canvas selection and Space activates the marker inste
     outline.locator('[role="treeitem"][data-drag-id="phone"]'),
   ).toBeFocused();
 });
+
+test("completed command loading clears the live region and later commands announce normally", async ({
+  page,
+}) => {
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route(/\/features\/commands\.js(?:\?|$)/, async (route) => {
+    await held;
+    await route.continue();
+  });
+  await page.goto("/builder.html?approved&settingsPreload=none");
+  await page.locator('#canvas [data-field-id="email"]').focus();
+  await page.keyboard.press("ControlOrMeta+k");
+  const status = page.locator(".of-builder-status");
+  await expect(status).toHaveText("Loading Commands…");
+  release();
+  await expect(
+    page
+      .getByRole("dialog", { name: "Commands", exact: true })
+      .getByRole("searchbox"),
+  ).toBeVisible();
+  await expect(status).toHaveText("");
+  await expect(page.locator(".of-builder-toast")).toBeHidden();
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("ControlOrMeta+z");
+  await expect(status).toHaveText("Nothing to undo");
+});

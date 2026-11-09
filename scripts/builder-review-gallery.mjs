@@ -90,8 +90,8 @@ function reason(file) {
     ];
   if (/builder-hosts\.spec/.test(file))
     return [
-      "Unexplained preview capture changes",
-      "Not attributed to an approved polish item. These host Preview captures submit no errors; reviewed Base examples differ in input hover border and subpixel crop/text rasterization. Main and after are shown for explicit owner review.",
+      "Host preview capture audit",
+      "Owner follow-up 2026-11-09: park the pointer outside the form before capture. These Preview captures submit no errors; main/cc05111/after pixel audits are recorded in m09b-plus-owner-followup.md. Capture-only hover borders and subpixel rasterization are reviewed separately from product changes.",
     ];
   if (/bootstrap[45]/.test(file))
     return [
@@ -137,7 +137,7 @@ function comparison(beforeBytes, afterBytes) {
         count++;
         left = Math.min(left, x);
         top = Math.min(top, y);
-        right = x;
+        right = Math.max(right, x);
         bottom = y;
       }
       const gray = Math.round((sum / 3) * 0.2 + 204);

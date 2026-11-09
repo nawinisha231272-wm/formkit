@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "verifiedParent": "cc05111b3498668af0314e65a7cb8b3217ea6a3b",
+  "toolchain": {
+    "node": "v22.22.3",
+    "platform": "darwin",
+    "arch": "arm64",
+    "pnpm": "pnpm/10.10.0 npm/? node/v22.22.3 darwin arm64"
+  },
+  "exitCode": 0,
+  "unit": 341,
+  "browser": 1605,
+  "packageSizeGates": 17,
+  "consumerSizeGates": 19,
+  "runtimeCountTests": 9,
+  "allCeilingsUnchanged": true,
+  "ui": 31769,
+  "builderCore": 7120,
+  "fullInitial": 67674,
+  "limits": [31800, 7300, 67700],
+  "nativeLinuxSizesMatch": true,
+  "sourceBeforeAfterIdentical": true,
+  "sourceManifestSHA256": "5d6342aca0a49fff14942444475c006e2e8c5e22de6e2b3659b549f8d40e9247",
+  "baselines": {
+    "changed": 43,
+    "new": 0,
+    "unchanged": 429
+  },
+  "linuxFocusedCases": 15,
+  "linuxMenuSelectionComparisons": 50,
+  "linuxCompletedLoadingCases": 9,
+  "index500": {
+    "platform": "darwin-arm64",
+    "fields": 500,
+    "milliseconds": 13.900000095367432,
+    "nodes": 500,
+    "visits": 500,
+    "cached": true,
+    "advisoryTargetMilliseconds": 50,
+    "advisoryTargetMet": true
+  },
+  "ciEvidence": "PR #16 current-head first-attempt runs; linked in the PR and final delivery report after pushing. No CI reruns or merge authorized."
+}

@@ -100,6 +100,11 @@ export class Canvas {
     root.addEventListener(
       "pointerdown",
       (event) => {
+        if (event.button === 2) {
+          // A context gesture must not focus a row and collapse its selection first.
+          event.preventDefault();
+          return;
+        }
         if (!(event.shiftKey || event.ctrlKey || event.metaKey)) return;
         const target = (event.target as Element).closest<HTMLElement>(
           "[data-field-id],[data-drag-id]",
@@ -289,10 +294,11 @@ export class Canvas {
       "contextmenu",
       (event) => {
         const target = event.target as Element;
-        const slotRow = target.closest<HTMLElement>(
-          '[role="treeitem"][data-builder-slot]',
-        );
-        if (slotRow && this._ofbOutline.contains(slotRow)) {
+        const slotRow = target.closest<HTMLElement>('[role="treeitem"]');
+        if (
+          slotRow?.dataset.builderSlot &&
+          this._ofbOutline.contains(slotRow)
+        ) {
           event.preventDefault();
           this._ofbSelectTreeRow(slotRow);
           return;
@@ -304,6 +310,13 @@ export class Canvas {
         const node = this._ofbEntries().find((e) => e.node.id === id)?.node;
         if (!node || target.closest("dialog,.ofb-settings")) return;
         event.preventDefault();
+        if (
+          ui.builder.lockLevel(node.id) !== "all" &&
+          !this._ofbSelectionSet._ofbMembers.includes(node.id)
+        ) {
+          this._ofbSelectionSet.select(node.id);
+          ui.builder.select(node.id);
+        }
         this._ofbActions._ofbOpenMenu(
           node,
           target.closest<HTMLElement>("[data-field-id],[data-drag-id]") ??

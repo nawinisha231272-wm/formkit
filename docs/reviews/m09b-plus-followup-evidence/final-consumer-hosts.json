@@ -1,0 +1,356 @@
+{
+  "generatedAt": "2026-11-09T18:08:11.504Z",
+  "method": {
+    "compression": "node:zlib Brotli defaults",
+    "closure": "production HTML entry plus static imports/modulepreloads; dynamic imports excluded until activated; every shared file counted once",
+    "note": "Framework consumer totals include host/framework code. ADR-0018 gates remain the canonical builder-owned and full minimal-consumer measurements from builder-size-gate.mjs."
+  },
+  "consumers": {
+    "vite-vanilla": {
+      "files": [
+        {
+          "file": "apps/vanilla-example/dist/assets/builder-COyGUUP8.js",
+          "raw": 4337,
+          "brotli": 1466
+        },
+        {
+          "file": "apps/vanilla-example/dist/assets/index-p3rOCcFg.js",
+          "raw": 294090,
+          "brotli": 70797
+        }
+      ],
+      "raw": 298427,
+      "brotli": 72263
+    },
+    "vite-react": {
+      "files": [
+        {
+          "file": "apps/react-example/dist/assets/builder-CsXecD3e.js",
+          "raw": 3510,
+          "brotli": 1281
+        },
+        {
+          "file": "apps/react-example/dist/assets/index-CiLLQcFB.js",
+          "raw": 484842,
+          "brotli": 121924
+        }
+      ],
+      "raw": 488352,
+      "brotli": 123205
+    },
+    "angular-cli": {
+      "files": [
+        {
+          "file": "apps/angular-cli-example/dist/browser/main-OAOKBI2A.js",
+          "raw": 359546,
+          "brotli": 98652
+        }
+      ],
+      "raw": 359546,
+      "brotli": 98652
+    }
+  },
+  "scriptTag": {
+    "all-themes": {
+      "files": [
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-4VRVGUWU.js",
+          "raw": 7807,
+          "brotli": 1963
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-A7AARLA3.js",
+          "raw": 7227,
+          "brotli": 1693
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-C7A4VB4P.js",
+          "raw": 7129,
+          "brotli": 1689
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-L37WC6UX.js",
+          "raw": 19878,
+          "brotli": 6906
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-NMFXZEMD.js",
+          "raw": 4966,
+          "brotli": 1241
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-Q6HJIDIE.js",
+          "raw": 130640,
+          "brotli": 34516
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-QXL4U22U.js",
+          "raw": 6314,
+          "brotli": 1519
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-RNLUE6RG.js",
+          "raw": 587,
+          "brotli": 334
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XAQAJNHV.js",
+          "raw": 67708,
+          "brotli": 19477
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XDJNHVUH.js",
+          "raw": 24165,
+          "brotli": 7272
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-YBLNN5FU.js",
+          "raw": 43,
+          "brotli": 47
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/ourform-builder.all-themes.min.js",
+          "raw": 891,
+          "brotli": 364
+        }
+      ],
+      "raw": 277355,
+      "brotli": 77021
+    },
+    "base": {
+      "files": [
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-4VRVGUWU.js",
+          "raw": 7807,
+          "brotli": 1963
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-L37WC6UX.js",
+          "raw": 19878,
+          "brotli": 6906
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-Q6HJIDIE.js",
+          "raw": 130640,
+          "brotli": 34516
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-RNLUE6RG.js",
+          "raw": 587,
+          "brotli": 334
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XAQAJNHV.js",
+          "raw": 67708,
+          "brotli": 19477
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XDJNHVUH.js",
+          "raw": 24165,
+          "brotli": 7272
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-YBLNN5FU.js",
+          "raw": 43,
+          "brotli": 47
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/ourform-builder.base.min.js",
+          "raw": 650,
+          "brotli": 304
+        }
+      ],
+      "raw": 251478,
+      "brotli": 70819
+    },
+    "bootstrap4": {
+      "files": [
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-4VRVGUWU.js",
+          "raw": 7807,
+          "brotli": 1963
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-A7AARLA3.js",
+          "raw": 7227,
+          "brotli": 1693
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-L37WC6UX.js",
+          "raw": 19878,
+          "brotli": 6906
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-Q6HJIDIE.js",
+          "raw": 130640,
+          "brotli": 34516
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-RNLUE6RG.js",
+          "raw": 587,
+          "brotli": 334
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XAQAJNHV.js",
+          "raw": 67708,
+          "brotli": 19477
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XDJNHVUH.js",
+          "raw": 24165,
+          "brotli": 7272
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/ourform-builder.bootstrap4.min.js",
+          "raw": 675,
+          "brotli": 322
+        }
+      ],
+      "raw": 258687,
+      "brotli": 72483
+    },
+    "bootstrap5": {
+      "files": [
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-4VRVGUWU.js",
+          "raw": 7807,
+          "brotli": 1963
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-C7A4VB4P.js",
+          "raw": 7129,
+          "brotli": 1689
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-L37WC6UX.js",
+          "raw": 19878,
+          "brotli": 6906
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-Q6HJIDIE.js",
+          "raw": 130640,
+          "brotli": 34516
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-RNLUE6RG.js",
+          "raw": 587,
+          "brotli": 334
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XAQAJNHV.js",
+          "raw": 67708,
+          "brotli": 19477
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XDJNHVUH.js",
+          "raw": 24165,
+          "brotli": 7272
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/ourform-builder.bootstrap5.min.js",
+          "raw": 675,
+          "brotli": 323
+        }
+      ],
+      "raw": 258589,
+      "brotli": 72480
+    },
+    "material": {
+      "files": [
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-4VRVGUWU.js",
+          "raw": 7807,
+          "brotli": 1963
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-L37WC6UX.js",
+          "raw": 19878,
+          "brotli": 6906
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-NMFXZEMD.js",
+          "raw": 4966,
+          "brotli": 1241
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-Q6HJIDIE.js",
+          "raw": 130640,
+          "brotli": 34516
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-RNLUE6RG.js",
+          "raw": 587,
+          "brotli": 334
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XAQAJNHV.js",
+          "raw": 67708,
+          "brotli": 19477
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XDJNHVUH.js",
+          "raw": 24165,
+          "brotli": 7272
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-YBLNN5FU.js",
+          "raw": 43,
+          "brotli": 47
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/ourform-builder.material.min.js",
+          "raw": 715,
+          "brotli": 316
+        }
+      ],
+      "raw": 256509,
+      "brotli": 72072
+    },
+    "tailwind": {
+      "files": [
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-4VRVGUWU.js",
+          "raw": 7807,
+          "brotli": 1963
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-L37WC6UX.js",
+          "raw": 19878,
+          "brotli": 6906
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-Q6HJIDIE.js",
+          "raw": 130640,
+          "brotli": 34516
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-QXL4U22U.js",
+          "raw": 6314,
+          "brotli": 1519
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-RNLUE6RG.js",
+          "raw": 587,
+          "brotli": 334
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XAQAJNHV.js",
+          "raw": 67708,
+          "brotli": 19477
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/chunks/chunk-XDJNHVUH.js",
+          "raw": 24165,
+          "brotli": 7272
+        },
+        {
+          "file": "apps/script-tag-example/dist/assets/ourform-builder.tailwind.min.js",
+          "raw": 671,
+          "brotli": 316
+        }
+      ],
+      "raw": 257770,
+      "brotli": 72303
+    }
+  }
+}

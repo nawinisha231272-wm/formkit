@@ -1,0 +1,8 @@
+{
+  "stringLiteralMultisetUnchanged": true,
+  "literalCount": 268,
+  "cssFilesChangedByCompaction": 0,
+  "testFilesChangedByCompaction": 0,
+  "focusCallsBefore": 2,
+  "sharedRestoreCallsAfter": 2
+}

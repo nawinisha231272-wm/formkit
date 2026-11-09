@@ -353,3 +353,40 @@ test("locked bulk refusal names its members and offers Deselect locked component
     ),
   ).toBe(0);
 });
+
+for (const surface of ["canvas", "outline"] as const)
+  test(`context-click ${surface} preserves selected members and replaces selection outside it`, async ({
+    page,
+  }) => {
+    await page.goto("/builder.html?approved&settingsPreload=none");
+    const before = await schema(page);
+    await selectPair(page);
+    const target = (id: string) =>
+      surface === "canvas"
+        ? page.locator(`#canvas [data-field-id="${id}"] > label`)
+        : row(page, id).locator(".of-builder-tree-name");
+    await target("email").click({ button: "right" });
+    expect(await selected(page)).toEqual(["email", "customerType"]);
+    const menu = page.locator(".ofb-action-menu");
+    await expect(
+      menu.getByRole("menuitem", { name: "Delete 2 components", exact: true }),
+    ).toBeVisible();
+    await expect(
+      menu.getByRole("menuitem", {
+        name: "Duplicate 2 components",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
+    await target("fullName").click({ button: "right" });
+    expect(await selected(page)).toEqual(["fullName"]);
+    await expect(
+      menu.getByRole("menuitem", { name: "Delete", exact: true }),
+    ).toBeVisible();
+    expect(await schema(page)).toBe(before);
+    expect(
+      await page.evaluate(
+        () => window.miniBuilder.builder.getState().history.past.length,
+      ),
+    ).toBe(0);
+  });

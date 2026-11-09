@@ -293,3 +293,42 @@ consumer host reports and full logs are alongside it. The older November 6 files
 historical evidence for pushed head 3bdf034. Its two first-attempt Verify failures remain recorded.
 New-head first-attempt CI must pass after push; local PASS does not imply CI PASS. PR #16 stays open
 for owner delivery/image review. **Do not merge or start M09c/M09d.**
+
+### Owner review follow-up measurement — 2026-11-09
+
+Same consumer method and unchanged ceilings: **31,746 / 31,800 UI**, **7,209 / 7,300 builder-core**,
+**67,699 / 67,700 full initial** Brotli bytes. Delta from `cc05111` **+13 / +41 / +42**. No code was
+moved, deferred or relabeled; builder-core source is unchanged and its marginal measurement changes
+through compression/chunk accounting. Linux and native values match. Existing lazy budgets remain.
+[Owner follow-up](../reviews/m09b-plus-owner-followup.md) retains the original advisory, measured cause,
+negative control and production A/B fix results; final verification/CI do not imply merge approval.
+
+Final loading audit (same follow-up): lazy-theme completion also needs the owned announcement
+cleanup. Current native UI/core/full **31,730 / 7,223 / 67,726**, full **26 bytes over** the fixed
+67,700 ceiling. Earlier 31,746 / 7,209 / 67,699 is a retained pre-theme checkpoint. No ceiling
+change, push or new CI. Fifteen focused browser cases pass; targeted announcement/theme bookkeeping
+compaction authorization is pending under the owner's no-more-byte-hunting restriction.
+
+Owner compaction approval and result (2026-11-09): behavior-preserving compaction is authorized for
+M09b+, removing no CSS rule/selector, ARIA attribute, message or test. Full browser plus menu/selection
+visual checks remain mandatory. Share the identical theme focus-restoration callback at the same
+success/failure call sites: UI/core/full **31,769 / 7,120 / 67,674**, delta **+39 / −103 / −52** from
+the blocked candidate. All fixed ceilings pass. A unique request-object alternative grew full by 50
+and exceeded core, so it was discarded. No code moved/deferred, no ceiling or API/JSON change.
+See the [compaction ledger](../reviews/m09b-plus-owner-followup.md); full verification/CI are pending.
+
+### Final owner-follow-up local proof — 2026-11-09
+
+Final single measurement set: **31,769 UI / 7,120 builder-core / 67,674 full initial**,
+fixed **31,800 / 7,300 / 67,700** ceilings, identical native/pinned Linux; standalone 31,600
+and all lazy limits unchanged. Delta from cc05111 **+36 / −48 / +17**. Full pinned verify PASS:
+341 unit, 1,605 browser, 36 size and nine runtime count checks; unchanged-source fingerprints.
+Linux 15 focused, 50 menu/selection visual and nine completed-loading checks PASS. The kept
+shared-focus helper saves 52 full bytes (UI +39/core −103); the growing request-object probe
+was discarded. No code moved between packages or deferred, no CSS/selector/ARIA/message removal,
+no API/JSON or ceiling change. Only 43 requested host captures changed; 429 unchanged.
+Three old stale-loading assertions were corrected explicitly for the owner's requested behavior;
+ordinary toast expiry assertions and all deadlines/thresholds remain. Earlier pending/STOP
+measurements above are historical. [Canonical proof](../reviews/m09b-plus-owner-followup.md)
+records logs, sizes and compactions. PR #16/final report carry immutable first-attempt CI evidence
+after push; local PASS does not imply remote success or owner merge approval. Do not merge.

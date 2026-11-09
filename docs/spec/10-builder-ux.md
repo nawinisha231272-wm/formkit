@@ -269,3 +269,15 @@ labels and tooltips name a multi-selection's count. Inline caption commits annou
 Delivery evidence shows before (main), after and diff for each changed image, grouped by approved
 reason with group counts; unexplained changes are listed explicitly. Recording a baseline is not owner
 approval. The current draft is stopped at the unchanged size gates; see the current progress question.
+
+### Owner review follow-up — 2026-11-09
+
+Context-clicking any member of a multi-selection preserves the entire set and gives the menu the
+same count-aware actions as its toolbar. Context-clicking an outside component selects only that
+component. The context gesture must not first focus a row and collapse the set; nested component rows
+must not be mistaken for their ancestor slot. Existing lock refusals still apply.
+
+When a lazy feature mounts (or its activation is cancelled), clear its matching loading live-region
+message and loading toast. A completed older request must not clear newer feedback. This cancellation
+is distinct from ordinary toast expiry, which must continue to preserve the independent screen-reader
+announcement.

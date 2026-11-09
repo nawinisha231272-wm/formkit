@@ -212,8 +212,8 @@ for (const feature of ["commands", "quick-add", "bulk-editor"]) {
               .getByLabel("Description", { exact: true });
     await expect(mounted).toBeVisible();
     await expect(toast).toBeHidden();
-    // Removing a visible loading toast does not clear the independent polite message.
-    await expect(page.locator(".of-builder-status")).toContainText("Loading");
+    // Completed loading clears its message; ordinary toast expiry preserves announcements.
+    await expect(page.locator(".of-builder-status")).toHaveText("");
   });
 }
 

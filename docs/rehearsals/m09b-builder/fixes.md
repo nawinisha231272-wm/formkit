@@ -250,3 +250,55 @@ No geometry assertion or threshold was relaxed. Builder 29,982 bytes remains bel
 affected PNGs changed, 374 remain identical, including phone views. All 32 immutable trial files match.
 Final logs/metadata are in `docs/reviews/m09b-round5-evidence/`; images in the round-5 review index.
 Owner image approval and first-attempt green current-head CI remain required; no merge is claimed.
+
+## M09b+ owner follow-up — completed loading (2026-11-09)
+
+The owner now requires the loading live region to clear when a lazy feature mounts.
+Three existing parameterized cases in `builder-review-menus.spec.ts` (Commands, quick-add,
+bulk editor) expected the old behavior. Their final assertion changes explicitly:
+
+Before:
+
+```ts
+await expect(page.locator(".of-builder-status")).toContainText("Loading");
+```
+
+After:
+
+```ts
+await expect(page.locator(".of-builder-status")).toHaveText("");
+```
+
+All preceding waiting/mount/hidden-toast assertions, deadlines and retries stay unchanged.
+Ordinary five/eight-second toast expiry tests still preserve the independent polite announcement.
+This updates the owner-changed behavior, not a compaction or a weakened assertion. The native
+full verification was interrupted (165 browser passes, exit 130) to apply this correction; the
+Linux menu/visual matrix exposed these three obsolete assertions. Both logs are retained, and
+full pinned verification restarts with the corrected tests. The trial report remains verbatim.
+
+### Virtual-slot locator correction — 2026-11-09
+
+The full native run ended with 1,602 passes and three failures of the virtual-slot context test.
+A capture-phase `contextmenu` probe confirms the old locator clicks the expanded Column 2
+container's child Experience (`data-drag-id="rating"`) in Chromium, Firefox and WebKit. The old
+implementation mistakenly classified every descendant as its ancestor slot, masking this error.
+The product must distinguish a real component from a virtual slot. Correct the locator to the
+slot's own visible row label; all assertions (no menu, Delete refusal, unchanged schema/history),
+deadlines and test intent are unchanged. No raw/hidden controls or expectation changes are used.
+
+Before:
+
+```ts
+await column.click({ button: "right" });
+```
+
+After:
+
+```ts
+await column
+  .locator(":scope > .of-builder-tree-name")
+  .click({ button: "right" });
+```
+
+Raw click-target probe and failed full run are retained in the owner-follow-up evidence directory.
+Full pinned verification restarts after this locator correction; the failed run is never called PASS.

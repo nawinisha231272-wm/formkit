@@ -1,0 +1,101 @@
+[
+  {
+    "source": "previousLinux",
+    "platform": "linux-x64",
+    "fields": 100,
+    "editsPerSample": 25,
+    "mainMS": 33.19999999998254,
+    "branchMS": 43.89999999999418,
+    "mainPerEditMS": 1.3279999999993015,
+    "branchPerEditMS": 1.755999999999767,
+    "medianPairedRatio": 1.38834951456318
+  },
+  {
+    "source": "previousLinux",
+    "platform": "linux-x64",
+    "fields": 500,
+    "editsPerSample": 25,
+    "mainMS": 73.60000000000582,
+    "branchMS": 101.79999999998836,
+    "mainPerEditMS": 2.9440000000002327,
+    "branchPerEditMS": 4.071999999999535,
+    "medianPairedRatio": 1.376358695651907
+  },
+  {
+    "source": "previousLinux",
+    "platform": "linux-x64",
+    "fields": 1000,
+    "editsPerSample": 25,
+    "mainMS": 163.79999999998836,
+    "branchMS": 222.10000000000582,
+    "mainPerEditMS": 6.551999999999534,
+    "branchPerEditMS": 8.884000000000233,
+    "medianPairedRatio": 1.3642506142507476
+  },
+  {
+    "source": "fixedNative",
+    "platform": "darwin-arm64",
+    "fields": 100,
+    "editsPerSample": 25,
+    "mainMS": 42.30000019073486,
+    "branchMS": 41.90000009536743,
+    "mainPerEditMS": 1.6920000076293946,
+    "branchPerEditMS": 1.6760000038146972,
+    "medianPairedRatio": 0.9905213360109435
+  },
+  {
+    "source": "fixedNative",
+    "platform": "darwin-arm64",
+    "fields": 500,
+    "editsPerSample": 25,
+    "mainMS": 102.5,
+    "branchMS": 103,
+    "mainPerEditMS": 4.1,
+    "branchPerEditMS": 4.12,
+    "medianPairedRatio": 1.0078277858283577
+  },
+  {
+    "source": "fixedNative",
+    "platform": "darwin-arm64",
+    "fields": 1000,
+    "editsPerSample": 25,
+    "mainMS": 238.2999997138977,
+    "branchMS": 240.80000019073486,
+    "mainPerEditMS": 9.531999988555908,
+    "branchPerEditMS": 9.632000007629394,
+    "medianPairedRatio": 1.005847953612405
+  },
+  {
+    "source": "fixedLinuxEmulated",
+    "platform": "linux-x64",
+    "fields": 100,
+    "editsPerSample": 25,
+    "mainMS": 94.69999999995343,
+    "branchMS": 86.20000000006985,
+    "mainPerEditMS": 3.7879999999981373,
+    "branchPerEditMS": 3.448000000002794,
+    "medianPairedRatio": 0.9714889123552823
+  },
+  {
+    "source": "fixedLinuxEmulated",
+    "platform": "linux-x64",
+    "fields": 500,
+    "editsPerSample": 25,
+    "mainMS": 196.59999999997672,
+    "branchMS": 171.69999999995343,
+    "mainPerEditMS": 7.863999999999069,
+    "branchPerEditMS": 6.867999999998137,
+    "medianPairedRatio": 0.8733468972531728
+  },
+  {
+    "source": "fixedLinuxEmulated",
+    "platform": "linux-x64",
+    "fields": 1000,
+    "editsPerSample": 25,
+    "mainMS": 367.4000000000233,
+    "branchMS": 368.30000000004657,
+    "mainPerEditMS": 14.69600000000093,
+    "branchPerEditMS": 14.732000000001863,
+    "medianPairedRatio": 1.0632250580047669
+  }
+]
