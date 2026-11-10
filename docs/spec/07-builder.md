@@ -353,3 +353,31 @@ Use the fixed self-hosted assets under `assetBase`; all three browsers must cove
 CSP/local offline and lifecycle cases. Preload imports without mounting or changing schema/history.
 Consumer gates are UI 31,600, builder-core 7,300, full 67,400; standalone builder 31,600. New lazy
 ceilings: planning 1,750 and Data 300 (Retry included per closure); prior lazy ceilings stay unchanged.
+
+## M09c authoring and loading (ADR-0022, owner accepted 2026-11-10)
+
+Builder setup **always registers @ourform/core/logic** in its engine before compiling/previewing
+root rules. Ordinary form hosts remain opt-in. Headless commands enforce locks/reference validity,
+produce one atomic JSON Patch/history entry per edit and preserve selection/focus. Build badges/info
+chips remain initial, use compiled summaries and never lay out a graph or validate a whole form per
+render. Component read/target-rule lists and Add logic stay in the generated lazy Settings Logic tab.
+
+Root Logic list/editor, nested sentence/expression controls and isolated test panel are lazy.
+**After Logic mounts and becomes interactive, automatically fetch the separate dependency-map
+entry**, with a loading state in the right pane. The map does not block editing; failure shows reason/
+Retry locally, without losing focus, state or history. Once loaded the split matches approved screen 3.
+Idle preload imports Logic/JSON only and must never fetch the map; importing a module does not mount
+its UI. Test initial/idle/first-open ordering, retry, stale navigation, destroy and isolated builders
+in all browsers/hosts under strict CSP, local/offline assets and custom assetBase.
+
+UI initial maximum **32,600**; builder-core consumer contribution **8,300**. No-logic full consumer
+maximum **68,500**; builder always registers logic, so its real closure is **logic-enabled**, measured
+and reported separately. Stop at prototype measurement for owner approval of the new logic-enabled
+numeric ceiling before shipping (expected entry increment ≤6,000 over matched no-logic form consumer).
+Logic/map stay 10,000 each, JSON 8,000, their union 28,000; Settings 8,000 and combined union 36,000.
+Other lazy/runtime-package/standalone ceilings stay unchanged; preserve existing measurement methods,
+report actual complete closures and shared chunks once. Do not hide required code through externals.
+
+The prototype budget gate precedes feature delivery; the final screenshot/delivery gate needs owner
+approval after full pinned verify and first-attempt green CI. Form.io import is deferred post-1.0;
+no converter or later milestone is included. These contracts are accepted; the plan PR implements no SDK/runtime behavior.

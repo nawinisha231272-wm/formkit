@@ -11,8 +11,11 @@ show Company details, require VAT number and set Invoice type" — as data, with
 form, evaluated identically in the browser and in customer-run Node validation, and shown visually as
 rules and a dependency map.
 
-Existing `visibleWhen`, `disabledWhen` and `calculate` (spec 01/03) stay. They are shorthand for
-single-target rules and compile into the same engine.
+Existing visibleWhen, disabledWhen and calculate (spec 01/03) stay on the legacy root-core path.
+Root rules use the pay-for-use **@ourform/core/logic** entry, explicitly registered at createEngine
+in browser and customer Node. Root logic without registration fails **missing-logic** (even an empty
+declared list); never ignore it. Builder always registers the entry. The execution entry is distinct
+from the lazy Logic/map UI; importing root core or SDK must not pull it in. See accepted ADR-0022.
 
 ## Format
 
@@ -84,7 +87,12 @@ Targets are component ids; a container target applies to the whole subtree (show
 3. **`otherwise: "revert"`** removes the rule's state contributions when `when` is false and clears
    values the rule set, unless the user has since edited them.
 4. **Effects** (`refreshOptions`, `focus`, `emit`, `call`) run once per trigger edge; Node validation
-   skips `focus` and `emit`, and runs `call` only for functions marked `availableInNode`.
+   skips focus/emit and runs call only for functions marked availableInNode. Typed StatePatch effects
+   and session triggerLogicEvent bridge trusted host/Button events. An async call starts after its
+   patch, cannot mutate the frozen invocation snapshot or silently write results, and is cancelled
+   on dispose/destroy. Node submit/validation awaits allowed calls with host-configurable timeout,
+   **default 5,000 ms**, returning a diagnostic on expiry; late results cannot publish. Explicit later
+   writes are separate transactions. See spec 02 for registration and Node timeout configuration.
 5. **Ordering per change:** normalize → calculate → rules (in list order, cascading) → visibility →
    clear-on-hide → validate → one StatePatch (spec 02). A cascade (a `setValue` triggering another rule)
    continues up to depth 10; deeper is a runtime diagnostic and the change stops cascading.
@@ -94,8 +102,11 @@ Targets are component ids; a container target applies to the whole subtree (show
 7. **Hidden by rule** behaves exactly like hidden by `visibleWhen`: excluded from validation,
    `clearOnHide` applies.
 8. **Parity:** `validateSubmission` evaluates the same rules on the submitted data (load trigger, then
-   final state) so requiredness, visibility and calculated/set values are enforced server-side.
-   A submission whose rule-set values disagree with the rules is rejected like a forged calculation.
+   submit phase and final state) to enforce requiredness, visibility and authoritative results.
+   State actions (show/hide/enable/disable/require/optional/readOnly/setProperty) are always enforced
+   server-side. Calculations and load/submit-triggered assignments are authoritative; disagreeing
+   authoritative results are rejected. Change/event setValue/clear remain user-editable and are not
+   forgery. Node does not infer prior client event history; ordinary canonical/unknown-key checks stay.
 
 ## Builder: Logic mode (approved screen 3)
 
@@ -106,24 +117,29 @@ Targets are component ids; a container target applies to the whole subtree (show
   "Write as expression" for the raw compact format. Actions reorder by drag or Alt+arrows.
 - "Test this rule": pick sample values; the panel runs the rule in a throwaway session and lists the
   resulting state changes.
-- Right: dependency map built from the compiled graph: sources → targets with the action verb;
+- Right: dependency map automatically requested as a **separate lazy entry right after Logic mounts
+  and is interactive**. Show a loading pane, keep editing usable, preserve focus and offer reason/Retry
+  on failure. Idle preload never fetches the map; only an actual mount triggers it. Built from the compiled graph: sources → targets with the action verb;
   selected rule highlighted; click opens the field or rule; reports cycles, conflicts and unused rules.
 - In Build mode: logic badge on driving fields ("Controls 3 fields"), info chip on conditionally shown
   components, Logic tab in the edit dialog listing rules that read or target the component, with
   "Add logic" pre-filling the trigger.
 - Every rule edit is a builder-core command (one undo step) emitting JSON Patch.
 
-## Import
+## Import — post-1.0 backlog, not M09c
 
-`fromFormio` maps Form.io component `logic` where possible: simple and JSON-logic triggers → `when`;
-property actions (hidden, disabled, required, label …) → state actions; value actions with a static or
-JSON-logic value → `setValue`. JavaScript triggers/values and custom actions produce diagnostics
-(spec 01 import rules); they are never executed.
+All Form.io import is deferred to the **post-1.0 importer backlog** ([backlog](../post-1.0-backlog.md)), including simple/JSON-logic
+triggers, property/static-value mappings and the previously proposed narrow helper. No fromFormio
+entry or new Form.io converter is delivered in M09c. Existing fromJsonLogic expression conversion
+retains its current behavior. Future importers must diagnose unsupported JavaScript/custom actions
+without executing them. This resolves the earlier conflict with architecture 00's importer exclusion.
 
 ## Acceptance (M09c)
 
 - [ ] Schema, meta-schema and migrations for `logic`; `visibleWhen`/`disabledWhen`/`calculate` compile
-      into the same engine with no behaviour change (all existing tests pass unchanged).
+      on their existing legacy path with no behaviour change or opt-in requirement (old tests unchanged).
+- [ ] Root rules require registered core/logic in browser/Node; missing registration returns missing-logic;
+      builder always registers it and no-logic consumers do not import/request its implementation.
 - [ ] Engine tests for every action, trigger, precedence, edge vs state semantics, revert, cascade limit,
       cycle and conflict diagnostics, per-row rules in arrays (once M10a arrays exist; until then, objects).
 - [ ] Browser and customer Node produce identical state and validation results for all logic fixtures,
@@ -133,12 +149,21 @@ JSON-logic value → `setValue`. JavaScript triggers/values and custom actions p
 - [ ] The dependency map reflects the compiled graph for the onboarding fixture; cycles and conflicts appear.
 - [ ] A fresh Codex session builds the "Business customers" rule from the docs alone.
 
-## M09c implementation planning — owner review pending
+## Accepted M09c delivery gates (owner, 2026-11-10)
 
-The plan is [M09c](../milestones/M09c.md) and
-[proposed ADR-0022](../adr/0022-logic-engine-and-authoring-plan.md). The runtime belongs in headless
-core; the root Logic authoring body and dependency-map visualization use separate lazy boundaries.
-Build badges/info chips remain initial. The ADR explicitly requests decisions on submission replay
-of editable edge values, effect/event/async-call contracts and the narrow import boundary before
-implementation. Its initial-byte allowances and explicit map activation are proposals, not changes
-to this normative spec or the enforced ADR-0018 budgets. No M09c behavior is implemented in the plan PR.
+[Milestone](../milestones/M09c.md) and [accepted ADR-0022](../adr/0022-logic-engine-and-authoring-plan.md)
+record the delivery order. Root execution is opt-in; legacy path retained; Build badges/chips initial;
+Logic/map authoring lazy with automatic post-interactive map request. UI maximum 32,600, builder-core
+8,300, **no-logic full 68,500** (≤+826 versus historical full baseline). The actual logic-enabled
+consumer/builder closure needs prototype measurement and a proposed numeric ceiling, **owner approved
+before shipping**, with expected increment ≤6,000 over a matched no-logic consumer. Never classify a
+builder as no-logic when it always registers the entry. Shared chunks count once; report fixtures,
+packages, initial/route assets and deltas. Logic/map stay **10,000 each**, runtime-package budgets
+unchanged; existing aggregate/Settings/other lazy caps remain. No gate code changes in the plan PR.
+
+Performance acceptance applies separately to both no-logic and legacy-condition/calculation fixtures:
+≤1.10 form-edit ratio against immutable merged main at 100/500/1,000 fields, absolute ms and at least
+five same-runner alternating production-build pairs. Timing CI remains advisory; delivery GO still
+requires ≤10% evidence. Exact rule-evaluation/index/action/writer/write/effect/cascade and existing
+processor/patch/render/DOM counts remain hard gates, with zero unrelated rule work. Final five-theme
+screenshots/delivery require owner approval; do not pull M09d or Form.io import into this milestone.

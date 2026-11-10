@@ -348,3 +348,17 @@ consumer baseline remains **31,769 UI / 7,120 builder-core / 67,674 full initial
 [ADR-0022](0022-logic-engine-and-authoring-plan.md) proposes M09c engine/loading/initial allowances
 for owner review. It is not accepted and does not amend these enforced ceilings. Logic/map retain
 10,000 each; Logic/JSON/map 28,000 and that union with Settings 36,000 remain unchanged.
+
+## Accepted M09c amendment — owner 2026-11-10 (ADR-0022)
+
+The owner accepted maximums **UI 32,600 / builder-core 8,300 / no-logic full 68,500** (≤+826 versus
+historical 67,674). Legacy execution stays root; root-rule runtime opts in through core/logic and
+builder always registers it. Actual logic-enabled consumer closures require prototype measurement
+and a separately proposed **owner-approved ceiling before shipping**, expected ≤6,000 increment over
+matched no-logic. Report actual enabled builder and matched real form consumers without relabeling or
+externalizing required code. Historical M09b+ gates/evidence remain; the plan PR changes no size script.
+Logic/map 10,000 each, runtime-package and other lazy/aggregate/standalone limits stay unchanged.
+The map now auto-loads as a separate request after interactive Logic mount, never idle preload.
+See [accepted ADR-0022](0022-logic-engine-and-authoring-plan.md) for replay/effects, 5 s default Node
+call timeout/cancellation, no importer, performance gates and delivery stops. Earlier proposed 75,700
+and manual map activation are superseded. Do not treat accepted caps as an implementation PASS.

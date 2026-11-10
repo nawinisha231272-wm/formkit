@@ -82,3 +82,21 @@ row/index paths are diagnosed until M10. The JSONLogic converter supports strict
 `!==`), boolean operations, arithmetic, conditional, membership, concatenation and simple `var` paths
 within these typed expression semantics. Loose equality (`==`, `!=`), variable fallbacks and unknown
 operators return diagnostics. It is a typed conditional subset, not general JSONLogic emulation.
+
+## M09c root-rule boundary (ADR-0022, accepted 2026-11-10)
+
+Legacy visibleWhen/disabledWhen/calculate retain this evaluator and root-core path, without requiring
+core/logic or rewriting their wire expressions. Root-rule conditions/action values use the same safe
+expression semantics through explicitly registered @ourform/core/logic. The root entry never pulls
+in edge actions/revert/cascade/effects/events/provenance; missing registration produces missing-logic.
+Compile reads once into rule/target indexes; no expression parsing or all-rule scan per field edit.
+
+Calculations and load/submit assignments are authoritative. State-action expressions are always
+enforced server-side. Change/event setValue/clear outputs are user-editable, not forged calculations.
+Expression call retains its existing purity/synchronous evaluation contract; root-rule **effect call**
+is distinct: once per trigger, trusted registration only, immutable snapshot, lifecycle-tracked async
+completion, Node availableInNode gate and host timeout default 5 s with diagnostics/destroy cancellation.
+No JSON expression gains executable code or permission to make package-owned network calls.
+
+Existing fromJsonLogic behavior remains; **no new Form.io importer or narrow logic conversion helper**
+is delivered in M09c. All Form.io import work moves to the post-1.0 importer backlog.

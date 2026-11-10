@@ -6,7 +6,50 @@ deviations from spec, open questions.
 
 ## Current state
 
-## M09b+ owner approval and merge; M09c plan — 2026-11-09
+## M09c plan accepted with amendments — 2026-11-10
+
+Local verification follow-up (owner authorized, 2026-11-10): add a read-only macOS power preflight
+before browser runs, recording active Low Power Mode, display/idle sleep, source and prevention
+assertions in the verify log; warn without changing settings/deadlines/retries. Tests cover macOS
+on/off/unknown and non-macOS behavior. The first amended native proof failed the unchanged WebKit
+keyboard author task at 30 seconds (341 unit and 1,604 browser checks passed); its isolated diagnostic
+passed in 16.3 seconds with the same assertions/deadline. Runtime and test sources then matched main
+exactly. Both power profiles reported Low Power Mode on, so reduced power is a hypothesis, not a
+proven cause. Owner requested an off-state controlled comparison then full pinned verify. The owner then disabled Low Power Mode on the active AC profile: `pmset -g` reports 0. The same
+isolated DEBUG task passed in 13.9 seconds versus 16.3 with power saving on; this single, unrandomized
+comparison does not establish causation. Preflight tests (four), typecheck and lint pass. Preserve the
+failed proof and do not push until full verification passes. See the [power evidence and proof protocol](reviews/m09c-local-power-preflight.md).
+
+Owner accepted ADR-0022/PR #18 with amendments. Update ADR/specs 01/02/03/04/07/11 and milestone,
+verify pinned/frozen, push, then merge **only on first-attempt green CI at the amended head**. The old
+c85e67a PR/push Verify runs (42722192954 / 42722184210) and advisory 42722192996 succeeded attempt 1;
+those old-head results do not approve the next commit. Plan PR adds only the owner-requested local power preflight alongside the plan; size gate scripts still
+use M09b+ limits until the approved implementation introduces the new consumer fixtures/gates.
+
+Accepted: preserve legacy root-core execution; opt-in **@ourform/core/logic** at createEngine and in
+customer Node; **missing-logic** if root logic lacks registration; builder always registers. Root
+runtime (edge actions, otherwise/revert/cascade/effects/events/provenance) must not enter no-logic apps.
+Map auto-fetches separately **after interactive Logic mount**, with pane loading/Retry; idle import
+never fetches it. State always enforced server-side; calculations/load/submit assignments authoritative;
+change/event assignments editable/not forgery. Typed StatePatch effects/session event API accepted;
+Node call timeout configurable/default 5 s with diagnostics, dispose/destroy cancels pending work.
+All Form.io import moves to post-1.0 backlog, including the proposed narrow helper.
+
+Accepted maximums: **UI 32,600 / builder-core 8,300 / no-logic full 68,500** (≤+826 against historical
+67,674 full baseline). **Logic-enabled ceiling pending measured prototype/owner approval**, expected
+≤6,000 over matched no-logic. Report actual builder as enabled, genuine matched form consumers and
+historical measurements distinctly; no relabeling/externalizing required code. Logic/map 10,000 each,
+all aggregate/other lazy/runtime-package caps unchanged. The original unconditional 75,700 full
+proposal is superseded, not approved. ≤1.10 edits applies to both no-logic and legacy-condition fixtures
+at 100/500/1,000 fields with deterministic actual rule-work counts and isolated paired timings.
+
+After plan merge: opt-in runtime prototype/hooks → measured consumer/package/loading/work/timing
+report → **STOP for enabled-closure budget approval before shipping** → complete runtime/parity and
+hosts/commands → lazy Logic/map → five-theme/author/verify/CI → **owner delivery gate**. No M09d.
+Risk: preserve comparable consumer accounting as builder becomes always logic-enabled; maintain
+legacy performance and async timeout/cancellation without contaminating the root entry.
+
+## Historical M09b+ merge and original M09c proposal — 2026-11-09
 
 **M09b+ APPROVED and MERGED.** The owner explicitly approved screenshots and delivery at
 `a9899587bd9369589e2cc9729dbc73238c33e7df`. Immediately before merge, PR #16 still had that head,
@@ -77,12 +120,12 @@ Owner follow-up (2026-11-09), cc05111 not approved to merge: preserve context-cl
 
 ## Open questions
 
-**M09c plan review (2026-11-09; no implementation):** ADR-0022 proposes the initial allowance
-above and records three spec boundaries to resolve before coding: authoritative load/submit replay
-versus user-editable change/event values; the typed effect/event API and async-call lifecycle; and
-spec 11's narrow Form.io logic conversion versus architecture 00's deferred general importer.
-The separately opened lazy map and additive optional format-1.0 logic handling also need plan sign-off.
-Current size gates remain unchanged; these are proposals, not accepted contract changes.
+**M09c original plan questions resolved by owner on 2026-11-10:** pay-for-use runtime, authoritative
+versus editable-edge replay, typed effects/events with Node timeout/default 5 s/destroy cancellation,
+auto-map after Logic interactivity, and importer fully deferred post-1.0. ADR-0022/specs record them.
+The next required owner decision is the **measured logic-enabled consumer closure ceiling** at the
+prototype gate; no enabled ceiling is inferred from the expected ≤6,000 increment. No implementation
+PASS claimed by the docs-only plan. Original 75,700 proposal and manual map gate are historical.
 
 **Owner decision — compaction (2026-11-09):** targeted announcement/theme-request compaction is approved, and behavior-preserving compaction may continue for the rest of M09b+ without asking. Remove no CSS rule, selector, ARIA attribute, message or test; retain every ceiling and pass the full browser suite plus menu/selection baselines. Report each compaction and its UI/core/full byte delta. Implemented: the request-object probe was discarded, the shared-focus helper fits, and final full verification plus Linux menu/selection checks pass. Immutable first-attempt CI is recorded in PR #16 after push; no merge.
 

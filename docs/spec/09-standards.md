@@ -86,3 +86,14 @@ The deadline is twice its measured branch duration, rounded up to 10 seconds, ca
 **120/120/120 seconds, sum 360 versus the former collective 180**. Generated browser workers return
 from two to main's one; every browser case remains at 30 seconds with zero retries. See the
 [phase report](../reviews/m09b-plus-scaffold-phases.md) and raw evidence for the exact measurements.
+
+## Local browser preflight (owner decision, 2026-11-10)
+
+Before long browser runs, `pnpm test:e2e` (including its invocation from `pnpm verify`) logs a
+UTC-stamped, read-only macOS power snapshot: active settings from `pmset -g`, current power source
+and sleep-prevention assertions. It records Low Power Mode, display sleep and idle sleep, warning
+when Low Power Mode is enabled or configured sleep lacks a recorded prevention assertion. An
+unavailable probe is explicitly unknown, never reported as off. Other platforms skip macOS probes.
+The snapshot and warnings stay in the normal verify log so timeout investigations can compare host
+conditions. The preflight never changes system settings, test deadlines, retries or check outcomes;
+a warning is evidence, not a substitute for passing verification.

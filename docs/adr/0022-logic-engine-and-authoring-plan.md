@@ -1,8 +1,8 @@
 # ADR-0022 — Logic engine placement, lazy authoring and M09c allowances
 
-Status: **proposed — owner review required before implementation**
+Status: **accepted by the owner on 2026-11-10, with the amendments below**
 Date: 2026-11-09
-Milestone: M09c (plan only)
+Milestone: M09c (accepted plan; implementation evidence remains pending)
 
 ## Context
 
@@ -14,40 +14,44 @@ M09b+ already provides reserved Logic/map entries, accessible feature loading, c
 editors, command history, Build condition chips and all five themes. The reserved entries are stubs,
 not an implemented rule engine or usable Logic screen.
 
-The final consumer build measures **31,769 UI / 7,120 builder-core / 67,674 full initial** Brotli
-bytes. Current ceilings are **31,800 / 7,300 / 67,700**, leaving **31 / 180 / 26 bytes**.
-Adding a headless engine cannot honestly be called a zero-initial-byte UI feature. The owner requires
-an allowance proposal for each milestone starting with M09c. Nothing in this ADR changes the size
-scripts, adopts a proposed ceiling automatically or starts implementation.
+The M09b+ consumer baseline is **31,769 UI / 7,120 builder-core / 67,674 full initial** Brotli
+bytes, under **31,800 / 7,300 / 67,700**. The owner rejected unconditional root-rule cost and the
+original proposed 75,700-byte full ceiling. Root rules are now an explicit pay-for-use runtime entry;
+the legacy engine stays in the root entry. The approved M09c maxima are **32,600 UI / 8,300
+builder-core / 68,500 no-logic full initial**. The logic-enabled closure needs a measured prototype
+and a separate owner-approved numeric ceiling before shipping. This plan PR changes no gate script
+or runtime code; implementation must add the accepted gates and stop at that measurement review.
 
 Baseline evidence: [final consumer measurement](../reviews/m09b-plus-followup-evidence/final-consumer-size.json),
 [full proof and performance diagnosis](../reviews/m09b-plus-owner-followup.md),
 [PR #16](https://github.com/nawinisha231272-wm/formkit/pull/16).
 
-## Options considered
+## Options considered and accepted placement
 
-1. Put execution in builder or a lazy Logic view. Rejected: runtime forms and customer Node must
-   enforce the same rules without loading a builder or DOM package.
-2. Duplicate rules in validation. Rejected: it would create different ordering, hidden-field and
-   forged-value behavior between browser and Node.
-3. Extend the existing core compiler/session graph; keep authoring and graph visualization lazy.
-   Proposed: one execution pipeline, no browser dependency in headless packages and indexed edits.
-4. Rescan every rule on every edit. Rejected: derived state can be recomputed from cached ordered
-   contributions without re-evaluating unrelated expressions or regressing sparse updates.
+Unconditional execution in the root core entry was amended by the owner. Execution in the builder
+or a lazy UI is also unsuitable: browser forms and customer Node must enforce the same rules without
+loading a builder or DOM package. A second interpreter in validation is rejected.
 
-## Proposed placement
+Keep legacy `visibleWhen` / `disabledWhen` / `calculate` execution in `@ourform/core`. Ship root-rule
+compilation/execution as **`@ourform/core/logic`**, installed explicitly at `createEngine` in browser
+and customer Node. The root entry exports only the small typed registration hook; it never imports
+or re-exports the runtime implementation. Registrations and execution state are instance-local.
+A definition declaring root `logic` without registration fails compile with **`missing-logic`**;
+never ignore its rules, silently validate it as a legacy form or auto-download an entry.
+The builder always registers the entry before compiling/previewing definitions.
 
-| Layer                  | Responsibility                                                                                                                                                 | Loading                                                           |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| schema                 | Root `logic` wire types, structural validation/meta-schema, safe migration and submission-schema annotations                                                   | Initial when schema/core is used                                  |
-| core                   | Compile expressions/rules, read/write/trigger indexes, graph/cycle/conflict diagnostics, scheduling, state contributions, value provenance and effect requests | Initial runtime; no builder or DOM                                |
-| validation             | Reuse the same core session for load/submit processing and canonical/forged-value checks                                                                       | Existing validation entry, no second interpreter                  |
-| sdk/components         | Typed `logicSettable` property metadata and trusted registrations; controls keep consuming ordinary state/config                                               | Existing descriptors; no Logic UI import                          |
-| builder-core           | Atomic rule commands, lock checks, patches/history and reference diagnostics                                                                                   | Initial headless commands, within its own consumer gate           |
-| builder initial UI     | Build badges/info chips and navigation into Logic; existing immediate frames/focus/loading/Retry and dispatch hooks                                            | Initial; no graph-layout or rule-editor code                      |
-| Logic feature          | Rule list/editor, sentence pickers, nested All/Any, synchronized expression view, sample-input test panel and feature CSS                                      | Lazy on Logic activation; optional existing idle policy           |
-| dependency-map feature | Graph layout/rendering, pan/navigation, selection and diagnostic presentation                                                                                  | Separate lazy entry, only when the map is opened                  |
-| generated Settings     | Component Logic tab, read/target rule lists and Add logic affordance                                                                                           | Existing lazy Settings entry; still within its 8,000-byte ceiling |
+| Layer              | Responsibility                                                                                                  | Loading                                                                      |
+| ------------------ | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| schema             | Root `logic` wire types, shape validation/meta-schema, safe migration and submission-schema annotations         | Shared format support; no import of the execution entry                      |
+| core root          | Existing legacy compiler/session path and minimal optional registration/diagnostic hooks                        | Initial legacy runtime; no root-rule implementation                          |
+| core/logic         | Root-rule compiler, indexes, priority, edge actions, otherwise/revert, cascades, provenance, effects and events | Explicit runtime opt-in at engine creation; always included by builder setup |
+| validation         | Reuse the runtime attached to the compiled form in the customer-Node engine                                     | No second interpreter or automatic runtime import                            |
+| sdk/components     | Typed logic-settable metadata and trusted registrations                                                         | Existing descriptors; no execution/UI import                                 |
+| builder-core       | Atomic rule commands, locks, patches/history and reference diagnostics                                          | Initial headless commands                                                    |
+| builder initial UI | Build logic badges/info chips, navigation and existing immediate frames/focus/loading/Retry                     | Initial; no rule-editor or graph-layout body                                 |
+| Logic feature      | Rule list/editor, sentence pickers, nested All/Any, expression view, isolated test panel and CSS                | Lazy Logic activation; optional existing idle preload                        |
+| map feature        | Compiled-graph layout/rendering, navigation and diagnostics                                                     | Separate request automatically after Logic mounts and is interactive         |
+| Settings           | Component Logic tab/read-target lists/Add logic                                                                 | Existing lazy Settings body, still ≤8,000 bytes                              |
 
 No new runtime dependency is planned. The map starts with an accessible DOM/SVG representation and
 uses a text/list alternative for keyboard access; adding a graph library would require a measured
@@ -60,9 +64,9 @@ cannot mutate the builder's answers or contact providers without explicit host c
 ### Compiler and runtime design
 
 - Keep legacy `visibleWhen`, `disabledWhen` and `calculate` source JSON intact. Compile them into
-  the common execution representation; do not rewrite old definitions into root rules. Optional
-  root logic is additive to format 1.0; migration preserves absent logic and is idempotent. This
-  versioning treatment is a proposal for review, not a code change.
+  their existing legacy path; do not rewrite old definitions into root rules or require the opt-in
+  entry for legacy forms. Root rules compose with that path through the registered execution hook.
+  Optional root logic is additive to format 1.0; migration preserves absent logic and is idempotent.
 - Compile each expression once. Record reads from `when`, action values/calculations and arguments,
   explicit trigger refs and object-scope paths. Build stable rule-id/component-id edges and reverse
   indexes once; precompute execution rank and ordered writers for each target property.
@@ -83,82 +87,91 @@ cannot mutate the builder's answers or contact providers without explicit host c
   potentially overlapping property writers conservatively as warnings, without claiming to solve
   arbitrary expression satisfiability.
 - Static/inherited protection and host read-only mode remain stronger than a rule's request to
-  enable or make a field writable. Proposed internal rule writes are trusted transaction writes:
+  enable or make a field writable. Internal rule writes are trusted transaction writes:
   they normalize, become dirty and revalidate like edits, but are not rejected as attempted UI writes
   to a protected control. External user/API write contracts remain unchanged (ADR-0012/0017).
-- Effects are headless requests, not DOM operations or package-owned network calls. Proposed API:
+- Effects are headless requests, not DOM operations or package-owned network calls. Accepted API:
   optional typed effect data on StatePatch plus a session `triggerLogicEvent(name, payload?)` method
   for trusted host/Button events. The renderer/adapters deliver focus and host emit requests;
   refreshOptions reaches an explicitly configured provider/control hook. Node skips focus/emit,
   and trusted call functions execute only when `availableInNode` permits. Add README/spec/changeset
-  and all-host tests before any approved API is implemented. No function comes from JSON.
+  and all-host tests when the API is implemented. No function comes from JSON.
 - Customer Node runs the shared pipeline, including load and submit phases, canonicalizes values and
   rejects forged non-overridable calculations/rule-set results. Test required/visibility/revert and
-  user-overridable edge assignments separately: a legitimate later user edit is not automatically
-  a forged rule output. The exact canonical replay policy needs the decision below before coding.
+  user-overridable edge assignments separately. Calculations and load/submit assignments are
+  authoritative; state actions are always enforced server-side. Change/event setValue/clear remain
+  user-editable and their submitted values are not rejected as forgery merely for differing from a
+  past edge result. Validation cannot infer a client's event history.
 - Rule creation/reorder/enable/delete/actions use commands. Check rule ids, target refs, type/property
   compatibility and locks before committing. Property metadata must explicitly permit logic writes;
   reject structural/key/type/slot/prototype writes. Existing definitions and answers are immutable.
 
-### Proposed contract decisions still requiring owner review
+### Accepted owner contract decisions — 2026-11-10
 
-Spec 11 supplies the actions and ordering; it does not settle these interaction boundaries. Record
-and resolve them before implementation rather than inventing behavior in code:
+1. **Replay:** calculations and load/submit-triggered assignments are authoritative. Always recompute
+   show/hide, enable/disable, required/optional, readOnly and permitted setProperty state in Node.
+   Change/event setValue/clear are user-editable and are not forgery; a later authoritative assignment
+   is still enforced. Use the shared registered runtime, not client state or claimed event history.
+2. **Effects:** typed StatePatch effects and `session.triggerLogicEvent` are accepted. Invoke each
+   effect once after its transaction. Async call does not hold up that patch, cannot mutate its frozen
+   snapshot and cannot silently write data on completion. Node awaits permitted calls during submit/
+   validation, with a host-configurable timeout **default 5,000 ms** producing a diagnostic. Cancel
+   pending work on dispose/destroy and prevent stale results/effects. Explicit subsequent session
+   writes are separate transactions. Browser-only focus/emit are skipped by Node; call requires
+   `availableInNode`. Packages do not make unconfigured network calls.
+3. **Import:** all Form.io import, including the previously proposed narrow logic converter, is
+   **out of M09c**. Move it to the **post-1.0 importer backlog**. Existing expression conversion APIs
+   keep their current behavior; no new Form.io conversion helper ships in M09c. Never execute
+   imported JavaScript or custom actions.
 
-1. **Submission replay versus editable edge values.** `setValue` may be overwritten by a user, while
-   parity says disagreeing rule-set submissions are rejected. Proposed split: replay load/submit
-   assignments and continuous calculations as authoritative; change/event assignments remain editable
-   unless the same assignment is enforced again by load/submit. A customer-Node validator cannot
-   infer a client's event history from submission JSON. Confirm this distinction and its error cases.
-2. **Trusted effects and asynchronous calls.** Approve the optional effect/event API above and define
-   how an asynchronous `call` reports failure/cancellation. Proposal: invocation occurs once after
-   the originating transaction; a returned Promise is lifecycle-tracked, does not delay its patch,
-   cannot mutate the frozen invocation snapshot, and yields diagnostics rather than a late implicit
-   data write. Node awaits allowed calls during submit/validation. Explicit later session writes
-   start a separate transaction. Unknown names or unavailable required functions are diagnostics.
-3. **Import boundary.** Spec 11 mentions `fromFormio`, while architecture 00 defers a general Form.io
-   importer. Proposed M09c scope is a narrowly documented logic-conversion helper for the specified
-   simple/JSON-logic/property/static-value subset, using existing expression conversion. Unsupported
-   JS/custom actions yield diagnostics without execution. A general schema/layout importer stays out.
+The registration shape is specified in spec 02. Public APIs get typed exports, README/spec/changeset
+and Node/browser tests with implementation. These decisions close the original plan questions.
 
-These are plan-review questions, not implemented exceptions to spec 11. Owner acceptance must be
-reflected in specs 01/02/03/04/07/11 and this ADR before the first implementation commit.
+## Accepted size allowances and prototype review gate
 
-## Proposed size allowance (unmeasured implementation)
+All numbers are **Brotli bytes** under the established production consumer method, counting shared
+chunks once. They are allowances, not measured implementation PASS results. Keep the original
+M09b+ measurement artifacts/failed probes and disclose any moved code on both sides.
 
-All numbers are **Brotli bytes**, using the existing production consumer method. The measured
-baseline comes from the merged build; proposed growth is an engineering allowance, not a predicted
-measurement or a PASS. The current gate scripts remain unchanged in the plan PR.
+| Scope                                       | M09b+ baseline / prior gate                    | Accepted M09c ceiling or next gate                                                                                                                 |
+| ------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Builder UI initial (excludes builder-core)  | 31,769 / 31,800                                | **32,600 maximum**                                                                                                                                 |
+| Builder-core marginal consumer contribution | 7,120 / 7,300                                  | **8,300 maximum**                                                                                                                                  |
+| No-logic consumer full initial closure      | Historical full baseline 67,674 / prior 67,700 | **68,500**, at most **+826** against that historical full baseline                                                                                 |
+| Logic-enabled consumer full initial closure | New gate; no prototype measurement yet         | **Measure and propose a numeric ceiling; owner approval before shipping**. Expected opt-in increment **≤6,000 over the matched no-logic consumer** |
 
-| Initial gate                                | M09b+ measured | Current ceiling | Proposed M09c maximum growth from baseline | Proposed M09c ceiling |
-| ------------------------------------------- | -------------: | --------------: | -----------------------------------------: | --------------------: |
-| Builder UI initial (excludes builder-core)  |         31,769 |          31,800 |                                       +800 |                32,600 |
-| Builder-core marginal consumer contribution |          7,120 |           7,300 |                                     +1,000 |                 8,300 |
-| Full initial consumer closure               |         67,674 |          67,700 |                                     +8,000 |                75,700 |
+A no-logic consumer imports/registers **no root-rule runtime**; absence of root rules in its current
+JSON is insufficient if the runtime is still bundled. A builder always registers root logic, so its
+actual closure is logic-enabled and must be reported as such. Measure genuine matched form consumers
+with/without registration, and the actual canonical builder/host closures separately. Keep the
+historical 67,674-byte builder artifact as history, not a relabeled new no-logic measurement. Never
+externalize a required module and call the result a complete running consumer. Report emitted assets,
+shared attribution and both comparable deltas; do not compare mismatched host/framework entries as
+though their difference were the entry's cost. The prototype report must make all fixtures explicit
+so the owner can approve the new logic-enabled gate for the actual consumers before shipping.
 
-The proposal therefore asks for ceiling changes of **+800 UI / +1,000 builder-core / +8,000 full**.
-Enforce both the reviewed maximum growth and absolute ceilings during implementation; unused
-allowance is not permission to add other milestones. The full allowance includes shared core/schema
-runtime and all initial glue. A preliminary allocation is up to 6,000 for core execution, 1,000 for
-headless authoring and 800 for Build summaries/activation, leaving 200 for other shared changes.
-Compressed marginal measurements are non-additive; the actual joint consumer build is authoritative.
-No code is relabeled to escape a gate. Moving any existing code requires a before/after ledger.
-If the prototype does not fit, stop with measured options; do not raise ceilings automatically.
+Only registration/diagnostic hooks and shared format support may affect consumers that do not opt in;
+edge actions, otherwise/revert, cascade, effects/events and provenance stay entirely in the subpath.
+The original proposed **75,700** full ceiling and unconditional core execution are superseded, not
+approved. No automatic budget increase is authorized. Stop at the prototype report with measured
+logic-enabled closure/ceiling, initial gate deltas, entry assets and work/performance evidence.
 
-| Runtime/package scope             |           Merged package measurement | Existing ceiling | Proposal                                                                                  |
-| --------------------------------- | -----------------------------------: | ---------------: | ----------------------------------------------------------------------------------------- |
-| core                              | 12.13 kB (rounded size-limit output) |           30,000 | Keep ceiling; target rule-engine delta ≤6,000, report exact production bytes before/after |
-| schema                            |                    5.66 kB (rounded) |           30,000 | Keep ceiling; report rule types/validation/meta-schema delta                              |
-| validation                        |                    1.16 kB (rounded) |           30,000 | Keep ceiling; report shared-pipeline/forgery delta                                        |
-| sdk / components / renderer-dom   |      4.79 / 3.23 / 9.42 kB (rounded) |      30,000 each | Keep ceilings; report metadata/effect-delivery delta                                      |
-| standalone builder / builder-core |            30.19 / 9.73 kB (rounded) |  31,600 / 30,000 | Keep ceilings; these do not replace consumer gates                                        |
+| Runtime/package scope             |           Merged package measurement | Existing ceiling | Proposal                                                                                 |
+| --------------------------------- | -----------------------------------: | ---------------: | ---------------------------------------------------------------------------------------- |
+| core                              | 12.13 kB (rounded size-limit output) |           30,000 | Keep root package ceiling; report separate logic entry/consumer bytes and no-logic delta |
+| schema                            |                    5.66 kB (rounded) |           30,000 | Keep ceiling; report rule types/validation/meta-schema delta                             |
+| validation                        |                    1.16 kB (rounded) |           30,000 | Keep ceiling; report shared-pipeline/forgery delta                                       |
+| sdk / components / renderer-dom   |      4.79 / 3.23 / 9.42 kB (rounded) |      30,000 each | Keep ceilings; report metadata/effect-delivery delta                                     |
+| standalone builder / builder-core |            30.19 / 9.73 kB (rounded) |  31,600 / 30,000 | Keep ceilings; these do not replace consumer gates                                       |
 
 Package measurements above are historical rounded output from the final merged pinned verify,
 not exact consumer attribution. Implementation reports include exact package values plus all three
-consumer gates. Runtime code is counted in the full initial closure even when UI is closed, because
-ordinary forms/Node must enforce logic without downloading a builder feature.
+consumer gates. Root-rule runtime code counts in every logic-enabled initial closure even while Logic UI is closed.
+No-logic apps must not import/request it. Publish the root and opt-in entry assets separately; the
+new logic entry's consumer ceiling remains subject to prototype review, not inherited from the root
+package's 30,000-byte limit.
 
-| Lazy closure / union                        | Merged builder-owned measurement | Existing ADR-0018 ceiling | M09c proposal                                                              |
+| Lazy closure / union                        | Merged builder-owned measurement | Existing ADR-0018 ceiling | Accepted M09c rule                                                         |
 | ------------------------------------------- | -------------------------------: | ------------------------: | -------------------------------------------------------------------------- |
 | Logic mode                                  |                        37 (stub) |                    10,000 | Keep ≤10,000; includes editor/test UI, CSS and owned shared dependencies   |
 | Dependency map                              |                        37 (stub) |                    10,000 | Keep ≤10,000; includes layout/rendering, CSS and owned shared dependencies |
@@ -182,16 +195,18 @@ outside theme configuration changes. Existing M09b+ ceilings are not retrospecti
 
 ## Loading contract and initial behavior
 
-Initial Build imports neither Logic nor map bodies/styles. Build badges/chips, selection, keyboard
-navigation, PointerDrag, context menu, clipboard, Delete/Required and command-bar activation remain
-initial. Opening Logic immediately shows the existing accessible frame and lazy loading state; opening
-the map loads its independent body only. The Logic screen initially offers an Open dependency map
-control/placeholder; it does not fetch the right-hand visualization merely by selecting Logic. After
-activation, its split view matches approved screen 3. This explicit map activation preserves ADR-0018's
-separate first-open boundary and is part of the proposal for owner review.
+Initial Build imports neither Logic nor map **UI bodies/styles**; builder runtime registration is
+separate and initial. Build badges/chips, selection, keyboard navigation, PointerDrag, context menu,
+clipboard, Delete/Required and command-bar activation stay initial. Logic activation shows its frame
+immediately and mounts an interactive editor first. **Right after Logic mounts, automatically request
+the separate map entry**; show an accessible loading state in the right pane, then render the approved
+screen-3 split view. Map download/failure never blocks Logic editing; show reason/Retry in that pane.
+Do not steal focus. Navigation/destroy cancels pending pane activation; reopening reuses loaded code.
+This replaces the originally proposed manual Open dependency map gate.
 
 Keep `preload: 'none' | 'idle'`, default `none`: none makes no Logic/JSON requests; idle fetches only
-Logic/JSON bodies, not map, command bar or History. Existing Settings/planning/Data idle policies
+Logic/JSON bodies, not map, command bar or History. Preloading an imported Logic module must not
+mount it or trigger its map request; only actual interactive Logic mounting starts that request. Existing Settings/planning/Data idle policies
 remain separate. Publish initial versus idle versus first-open/reopen requests independently.
 
 Use the existing frame/focus/loading/reason/Retry lifecycle, clear only the completed loading
@@ -205,7 +220,8 @@ eval, unsafe-eval, injected executable JSON or external fonts/assets are require
 The reference is immutable merged main `cd6d0b679027da328da9f5e4f63480437d6c765b`, not a moving
 branch or the older pre-M09b+ runtime. Preserve the prior CSP-write negative control and failed-run
 records. M09c acceptance requires **median paired form-runtime edit ratio ≤1.10** at each of
-**100 / 500 / 1,000 fields**, with absolute main/candidate milliseconds and workload disclosed.
+**100 / 500 / 1,000 fields** for **both no-logic and legacy-condition/calculation fixtures**, with
+absolute main/candidate milliseconds and workload disclosed.
 This is form-runtime edit latency, not builder command latency. Keep both no-root-rule fixtures and
 semantically equivalent legacy visibility/calculation fixtures runnable on main and the candidate.
 New root-rule-only features have no honest main equivalent; report their absolute timing and indexed
@@ -239,23 +255,37 @@ Initialization/compile and steady-state edit counts are reported separately.
 
 ## Delivery sequence and review gates
 
-1. Owner reviews this ADR, size allowance and the contract questions. Merge the plan PR only after
-   explicit plan approval and first-attempt green CI. Do not begin implementation in that PR.
-2. Approve/update precise wire/runtime/effect/import contracts and fixtures. Implement schema and
-   indexed compiler/session execution with Node/browser parity before any authoring screen.
-3. Add effect delivery and model metadata through public SDK/adapters; typed APIs, package READMEs,
-   changesets and conformance accompany API additions. Keep no-DOM coverage ≥90% in core/validation.
-4. Add rule commands/locks/history, then lazy Logic editors/test panel and separate lazy map. Maintain
-   every existing conditional/calculation behavior and all owner-protected initial interactions.
-5. Measure all three initial gates, each package/lazy closure/union, consumer-host route loading and
-   edit A/B/count evidence. Any unmet allowance or unresolved semantic question stops shipping.
-6. Five-theme axe/keyboard/native-host/visual checks, onboarding map and fresh no-context author trial.
-   Preserve the prompt/report verbatim, fix every gap separately, full pinned verify, first-attempt
-   green current-head CI and owner screenshot/delivery review. Stop; no M09d work.
+1. Apply the owner's accepted amendments to ADR/specs 01/02/03/04/07/11, full pinned verify, then
+   merge the amended plan PR only after first-attempt green CI on its final head. No runtime code
+   or test/threshold changes belong in the plan PR; old-head success does not approve a new head.
+2. Build the opt-in schema/runtime prototype and minimal hooks, preserving the legacy root path.
+   Measure no-logic/logic-enabled/builder closures, package/lazy sizes, deterministic work and paired
+   edit timing. **Stop for owner approval of the measured logic-enabled ceiling before shipping.**
+3. Complete indexed rules, state/value/revert/cascade/authoritative replay, async calls with timeout/
+   destroy cancellation, and Node/browser parity. Add typed SDK/adapter effects, READMEs, changesets
+   and conformance; core/validation retain ≥90% line coverage and no DOM types.
+4. Atomic commands/locks/history, initial Build badges/chips, lazy Logic/test panel and automatic
+   separately requested map after interactivity. No Form.io import. Keep all old conditions and
+   owner-protected initial interactions. Stop at any unmet ceiling/contract/correctness gate.
+5. All consumer hosts/themes/CSP/offline/assetBase and lazy lifecycles, exact counts and ≤1.10 edit
+   acceptance, five-theme axe/keyboard/visuals, onboarding map and fresh guide-only author trial.
+   Preserve the prompt/report verbatim, fix gaps separately, full verify and first-attempt CI.
+6. **Owner screenshot/delivery review gate**, then stop. No M09d implementation until authorized.
 
 ## Consequences
 
-Execution is shared and unavoidable for runtime correctness; only authoring and visualization are
-lazy. The graph and diagnostic metadata have one source of truth. The proposed initial allowance is
-explicit, bounded and not yet approved; runtime package and lazy ceilings do not silently grow.
-Plan status is not a GO decision for rule behavior, screenshots, performance or implementation.
+Legacy forms pay for their existing runtime plus bounded registration/format hooks, not root-rule
+execution. Root-rule forms and the builder explicitly pay for the shared headless entry. Authoring
+and map visualization remain separate lazy bodies. There is no second Node interpreter, no skipped
+server state enforcement and no inferred client event history. The owner's accepted maximums do not
+approve an unmeasured logic-enabled ceiling or mark implementation/performance/screenshots PASS.
+
+## Amendment record
+
+Owner approval on **2026-11-10** supersedes the original unconditional runtime/75,700 full proposal,
+manual map activation and narrow Form.io converter. Accepted instead: pay-for-use core/logic,
+missing-logic, builder registration, 68,500 no-logic full, 32,600 UI/8,300 builder-core maximums,
+measured logic-enabled budget review (expected ≤6,000 incremental), automatic map after Logic
+interactivity, authoritative versus editable-edge replay, typed effects/events, Node timeout 5 s
+and destroy cancellation, post-1.0 importer backlog, and unchanged lazy/runtime-package limits.
+Original proposal remains available in PR #18's earlier commit `c85e67a`; failed runs/baselines remain.

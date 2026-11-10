@@ -734,3 +734,25 @@ the same meaning. Panel and Fieldset continue to use `node.label` for their head
 Inline editing is available only when the caption is visibly rendered. Enter or blur commits one
 trimmed update, Escape cancels, and an empty caption is refused with a visible reason. A `labelKey`
 opens Settings; editing never changes the data key.
+
+## M09c logic registration and model capabilities (ADR-0022, accepted 2026-11-10)
+
+Trusted model/property metadata explicitly declares which config/display properties are logicSettable;
+unmarked, structural, identity/key/type/slot and unsafe prototype paths cannot be targeted. Generated
+editors expose only valid actions/properties from this metadata, using ordinary property types/defaults
+and diagnostics. Runtime state/config overlays do not mutate the registered model or wire definition.
+Core stores only headless metadata; views consume ordinary resolved state/config without importing
+Logic UI. Additive SDK metadata needs typed exports, README, changeset and conformance tests in code.
+
+Hosts opt into root rules at createEngine via the **@ourform/core/logic** entry (spec 02), in browser
+and customer Node. SDK root imports must not pull in its implementation. Builder setup always
+registers it. Legacy-only custom controls/models require no root-rule entry; forms declaring root
+logic without it fail missing-logic. Kits/extensions remain M09d; no executable JSON is introduced.
+
+StatePatch typed effects and session triggerLogicEvent bridge trusted Button/host events. Effects
+must be delivered once, preserve immutable snapshots and cancel pending async work on destroy.
+Customer Node call uses availableInNode and a configurable timeout (default 5 s) returning diagnostics.
+Calculated/load/submit values and derived state are enforced server-side; change/event assignments
+remain editable. All five themes/hosts keep the same control, accessibility and state contracts.
+Form.io import is post-1.0 backlog, not an SDK addition in M09c. This section describes the accepted
+implementation target; no new API implementation ships in the plan PR.
