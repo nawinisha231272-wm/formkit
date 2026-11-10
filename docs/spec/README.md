@@ -28,3 +28,7 @@ M10 is split into [M10a](../milestones/M10a.md) (data structures) and
 Planned order: **M09b+ → M09c → [M09d](../milestones/M09d.md) → M10a → M10b**.
 M09d is accepted with owner amendments, plan only, under [ADR-0019](../adr/0019-extension-and-configuration.md).
 Its labeled sections in specs 04/07 describe future APIs; implementation starts only after M09c.
+
+M09c's accepted pay-for-use/root-rule and lazy-map amendments are recorded in
+[ADR-0022](../adr/0022-logic-engine-and-authoring-plan.md). Form.io import is excluded from M09c;
+it is tracked in the [post-1.0 backlog](../post-1.0-backlog.md).

@@ -190,3 +190,63 @@ ComponentNode.disabled combines with disabledWhen and ancestor disabled state. C
 combines with ancestor read-only state and the host's read-only mode. A child cannot clear inherited
 protection. Protected user writes emit a refresh for the stored value without normalization, processors
 or dirty state changes; API writes continue to propagate normally. No DOM dependency enters core.
+
+## M09c pay-for-use rule execution (ADR-0022, accepted 2026-11-10)
+
+Keep the existing visibleWhen/disabledWhen/calculate compiler/session path in the root core entry.
+Root-rule execution lives only in **@ourform/core/logic**, with an explicit per-engine registration:
+
+```ts
+import { createEngine } from "@ourform/core";
+import { createLogic } from "@ourform/core/logic";
+
+const engine = createEngine({ logic: createLogic() });
+// Customer Node uses the same registration before compileForm/validateSubmission:
+const nodeEngine = createEngine({
+  logic: createLogic({ nodeCallTimeoutMs: 5_000 }),
+});
+```
+
+`EngineOptions.logic?: LogicRegistration` is an optional typed hook. `createLogic` is a named export
+of the opt-in subpath only, never a runtime re-export/import of core's root. Root core may expose
+registration types without pulling in the implementation. No global registry or DOM detection.
+Registration/compiled/session state is isolated per engine. The builder always registers it before
+compilation/preview; ordinary form and customer-Node hosts must explicitly opt in. Validation reuses
+the registration attached to the compiled form rather than auto-importing or duplicating execution.
+Any root `logic` without registration fails compile with **missing-logic**, never silent fallback.
+
+Only small registration/diagnostic hooks affect no-logic consumers. Edge actions, otherwise/revert,
+cascading, effect/event processing and value provenance stay in the opt-in entry. Composition with
+legacy calculations/state preserves existing behavior and one synchronous StatePatch per transaction;
+async validation completions retain their existing lifecycle. Indexed rules evaluate only affected
+conditions/targets, preserving ordered state priority and legacy conditions at implicit position zero.
+
+### Replay and effects
+
+State actions are always recomputed/enforced in browser and Node. Calculations and load/submit-triggered
+assignments are authoritative; reject forged authoritative results. Change/event setValue/clear remain
+user-editable and are not forgery; Node does not guess prior client events. Authoritative replay can
+still assign the same target later. Required/hidden clearing, unknown keys and adapter safety remain.
+
+StatePatch gains optional typed `effects`; session gains `triggerLogicEvent(name, payload?)`. Effects
+run once per originating transaction after state publication, with immutable invocation snapshots.
+Hosts deliver browser focus/emit and configured refresh hooks; Node skips focus/emit and invokes call
+only for trusted functions marked availableInNode. An async call never delays the originating patch
+or implicitly mutates data. Explicit subsequent writes begin their own transaction.
+
+During customer-Node submit/validation, await permitted calls with host-configurable
+`createLogic({ nodeCallTimeoutMs })`, **default 5,000 ms**. Timeout returns a diagnostic, not a hang or
+success; pending work is cancelled on session dispose/host destroy, and late results cannot publish
+or apply effects. Host implementations receive cancellation; no browser global enters headless core.
+Add package READMEs, typed exports, changeset and Node/browser/all-host lifecycle tests with code.
+These are accepted M09c contracts, not APIs implemented by the plan PR.
+
+### Runtime acceptance and initial cost
+
+No-logic and legacy-condition/calculation fixtures each stay ≤1.10 paired edit ratio versus immutable
+merged main at 100/500/1,000 fields. Exact rule-index/condition/action/writer/write/effect/cascade work
+counts are hard gates; timings remain advisory CI but a delivery GO requires the ≤10% evidence.
+No-logic full ceiling is 68,500 Brotli bytes; the logic-enabled consumer closure needs a measured
+prototype and separate owner-approved ceiling (expected ≤6,000 incremental) before shipping. Existing
+runtime package budgets remain unchanged. Actual builder closures are logic-enabled because builder
+always registers the runtime; report them rather than externalizing required code from a full build.

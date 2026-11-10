@@ -338,3 +338,27 @@ ordinary toast expiry assertions and all deadlines/thresholds remain. Earlier pe
 measurements above are historical. [Canonical proof](../reviews/m09b-plus-owner-followup.md)
 records logs, sizes and compactions. PR #16/final report carry immutable first-attempt CI evidence
 after push; local PASS does not imply remote success or owner merge approval. Do not merge.
+
+## M09b+ closure and M09c proposal — 2026-11-09
+
+The owner approved M09b+ at `a9899587bd9369589e2cc9729dbc73238c33e7df`; PR #16 merged as
+`cd6d0b679027da328da9f5e4f63480437d6c765b` after first-attempt green correctness CI. The final
+consumer baseline remains **31,769 UI / 7,120 builder-core / 67,674 full initial** against
+**31,800 / 7,300 / 67,700**. Earlier pending/no-merge checkpoints above are historical.
+[ADR-0022](0022-logic-engine-and-authoring-plan.md) proposes M09c engine/loading/initial allowances
+for owner review. It is not accepted and does not amend these enforced ceilings. Logic/map retain
+10,000 each; Logic/JSON/map 28,000 and that union with Settings 36,000 remain unchanged.
+
+## Accepted M09c amendment — owner 2026-11-10 (ADR-0022)
+
+The owner accepted maximums **UI 32,600 / builder-core 8,300 / no-logic full 68,500** (≤+826 versus
+historical 67,674). Legacy execution stays root; root-rule runtime opts in through core/logic and
+builder always registers it. Actual logic-enabled consumer closures require prototype measurement
+and a separately proposed **owner-approved ceiling before shipping**, expected ≤6,000 increment over
+matched no-logic. Report actual enabled builder and matched real form consumers without relabeling or
+externalizing required code. Historical M09b+ gates/evidence remain; the plan PR changes no size script.
+Logic/map 10,000 each, runtime-package and other lazy/aggregate/standalone limits stay unchanged.
+The map now auto-loads as a separate request after interactive Logic mount, never idle preload.
+See [accepted ADR-0022](0022-logic-engine-and-authoring-plan.md) for replay/effects, 5 s default Node
+call timeout/cancellation, no importer, performance gates and delivery stops. Earlier proposed 75,700
+and manual map activation are superseded. Do not treat accepted caps as an implementation PASS.

@@ -13,7 +13,7 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "test": "vitest run --coverage",
-    "test:e2e": "playwright test",
+    "test:e2e": "node scripts/verify-preflight.mjs && playwright test",
     "size": "size-limit && node scripts/builder-size-gate.mjs && node scripts/builder-consumer-report.mjs",
     "size:builder-consumers": "node scripts/builder-consumer-report.mjs",
     "verify": "pnpm lint && pnpm build && pnpm typecheck && pnpm test && pnpm test:e2e && pnpm size && pnpm benchmark:counts",

@@ -16,6 +16,7 @@ export interface FormDefinition {
   requires?: { plugin: string; version: string }[]; // semver range
   settings?: { locale?: string; validateOn?: "change" | "blur" | "submit" }; // default 'blur'
   components: ComponentNode[];
+  logic?: LogicRule[]; // M09c root rules; requires explicit core/logic registration (spec 11)
 }
 
 export interface ComponentNode {
@@ -175,3 +176,20 @@ M09b owner review (ADR-0017) adds optional presentation/static-protection fields
 existing definitions. Prefix/suffix are literal text, never HTML. Tooltip is a native title. User writes
 to protected fields restore stored values; API writes remain permitted. These fields are typed by the
 definition meta-schema, and static flags inherit through layouts.
+
+## M09c root logic contract (ADR-0022, owner accepted 2026-11-10)
+
+Root `logic?: LogicRule[]` is optional data in format 1.0; its trigger/action/expression shapes are
+specified in spec 11. Migration preserves absent logic and never rewrites legacy visibleWhen,
+disabledWhen or calculate into root rules. Schema validates the safe JSON shape without importing
+an execution package. Semantic compilation of any declared root logic requires engine registration
+from `@ourform/core/logic`; otherwise return **missing-logic**, including for an empty declared list.
+Never drop or silently ignore unregistered rules. Existing legacy-only definitions need no entry.
+
+Server validation always enforces derived rule state (visibility, enabled/disabled, required,
+readOnly and permitted properties). Calculations and load/submit assignments are authoritative;
+change/event setValue/clear can be changed by the user and are not forgery. Submission-schema output
+must annotate dynamic logic it cannot express rather than silently omitting it; use registered
+runtime validation for enforcement. Unknown-key policy and canonical adapter checks stay unchanged.
+Form.io import is outside M09c and moves to the post-1.0 importer backlog. This is an accepted
+implementation contract; the docs-only plan PR does not implement the root-rule schema or engine.
