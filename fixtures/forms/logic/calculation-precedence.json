@@ -1,0 +1,30 @@
+{
+  "$formVersion": "1.0",
+  "id": "calculation-precedence",
+  "display": "form",
+  "components": [
+    {
+      "id": "source",
+      "key": "source",
+      "type": "text",
+      "label": "Source",
+      "defaultValue": "yes"
+    },
+    {
+      "id": "target",
+      "key": "target",
+      "type": "number",
+      "label": "Target",
+      "calculate": { "expr": 2, "allowOverride": false },
+      "validation": { "min": 0 }
+    }
+  ],
+  "logic": [
+    {
+      "id": "conditional-calculation",
+      "trigger": { "on": "change", "refs": ["source"] },
+      "when": ["eq", { "ref": "source" }, "yes"],
+      "then": [{ "action": "calculate", "target": "target", "expr": 3 }]
+    }
+  ]
+}

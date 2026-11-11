@@ -1,0 +1,42 @@
+{
+  "$formVersion": "1.0",
+  "id": "load-initializer",
+  "display": "form",
+  "components": [
+    {
+      "id": "source",
+      "key": "source",
+      "type": "text",
+      "label": "Source",
+      "defaultValue": "A"
+    },
+    {
+      "id": "target",
+      "key": "target",
+      "type": "text",
+      "label": "Target",
+      "validation": { "required": true }
+    },
+    { "id": "details", "key": "details", "type": "text", "label": "Details" }
+  ],
+  "logic": [
+    {
+      "id": "copy-at-load",
+      "trigger": { "on": "load" },
+      "then": [
+        {
+          "action": "setValue",
+          "target": "target",
+          "value": { "ref": "source" }
+        }
+      ]
+    },
+    {
+      "id": "derived-state",
+      "trigger": { "on": "load" },
+      "when": ["eq", { "ref": "source" }, "B"],
+      "then": [{ "action": "require", "target": "details" }],
+      "otherwise": "none"
+    }
+  ]
+}

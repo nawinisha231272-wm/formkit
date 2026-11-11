@@ -1,0 +1,31 @@
+{
+  "$formVersion": "1.0",
+  "id": "interleaved",
+  "display": "form",
+  "settings": { "validateOn": "change" },
+  "components": [
+    { "id": "source", "key": "source", "type": "text", "label": "Source" },
+    { "id": "bridge", "key": "bridge", "type": "number", "label": "Bridge" },
+    {
+      "id": "derived",
+      "key": "derived",
+      "type": "number",
+      "label": "Derived",
+      "calculate": { "expr": ["mul", { "ref": "bridge" }, 2] }
+    },
+    { "id": "target", "key": "target", "type": "text", "label": "Result" }
+  ],
+  "logic": [
+    {
+      "id": "first",
+      "trigger": { "on": "change", "refs": ["source"] },
+      "then": [{ "action": "setValue", "target": "bridge", "value": 4 }]
+    },
+    {
+      "id": "second",
+      "trigger": { "on": "change", "refs": ["source"] },
+      "when": ["eq", { "ref": "derived" }, 8],
+      "then": [{ "action": "setValue", "target": "target", "value": "ready" }]
+    }
+  ]
+}

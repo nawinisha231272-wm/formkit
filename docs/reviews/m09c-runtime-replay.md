@@ -94,3 +94,14 @@ full attempts and the original action-count test failure are also preserved as c
 
 New-head push CI remains pending; the prior foundation CI covers only 2eb0312. No implementation
 PR, completed M09c gate, owner screenshot approval or merge is claimed.
+
+### Corrective fixture packaging
+
+The first checkpoint commit 561050f omitted four new JSON fixtures used by the successful native
+run. The immediate post-push status check caught the untracked files. Push CI
+[43099911940](https://github.com/nawinisha231272-wm/formkit/actions/runs/43099911940) was cancelled,
+not passed or rerun. The corrective commit adds the four exact tested fixtures; no code, assertion,
+baseline or deadline changes. The corrective full pinned verify also passed: **398 unit / 1,632 browser / all size gates / nine
+exact runtime counts**, with an unchanged source fingerprint and the identical size table.
+[Corrective full log](m09c-runtime-replay-evidence/packaging-full-pinned-verify.log.gz). The complete tested
+manifest is checked against the staged/committed tree before push.

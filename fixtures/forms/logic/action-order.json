@@ -1,0 +1,40 @@
+{
+  "$formVersion": "1.0",
+  "id": "ordered-root-actions",
+  "display": "form",
+  "components": [
+    { "id": "source", "key": "source", "type": "text", "label": "Source" },
+    {
+      "id": "bridge",
+      "key": "bridge",
+      "type": "number",
+      "label": "Bridge",
+      "defaultValue": 2
+    },
+    {
+      "id": "derived",
+      "key": "derived",
+      "type": "number",
+      "label": "Derived",
+      "calculate": {
+        "expr": ["mul", { "ref": "bridge" }, 2],
+        "allowOverride": true
+      }
+    },
+    { "id": "result", "key": "result", "type": "number", "label": "Result" }
+  ],
+  "logic": [
+    {
+      "id": "ordered-values",
+      "trigger": { "on": "change", "refs": ["source"] },
+      "then": [
+        { "action": "setValue", "target": "bridge", "value": 3 },
+        {
+          "action": "setValue",
+          "target": "result",
+          "value": { "ref": "derived" }
+        }
+      ]
+    }
+  ]
+}

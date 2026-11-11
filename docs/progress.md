@@ -8,6 +8,15 @@ deviations from spec, open questions.
 
 ## M09c scheduling and owner-corrected replay — 2026-11-11 (working checkpoint)
 
+**Push packaging correction:** checkpoint 561050f accidentally omitted four new JSON fixtures that
+were present during the successful native proof. The post-push untracked-file check caught this;
+[push run 43099911940](https://github.com/nawinisha231272-wm/formkit/actions/runs/43099911940) was
+cancelled, not passed or rerun. The fixture-only corrective commit includes all four files and is
+verified again with full pinned PASS: **398 unit / 1,632 browser / all size gates / nine counts**.
+The tested source fingerprint is unchanged throughout the corrective run. Future pre-push checks compare the complete tested
+source manifest with the staged/committed tree so untracked implementation/test fixtures cannot be
+omitted. No CI success or completed delivery is inferred for the incomplete head.
+
 Focused current-draft proof: **43 targeted unit / 158 core+validation / 27 three-browser** checks pass.
 Consumer UI/core/enabled full **31,780 / 7,161 / 73,221**; matched no-logic **28,812** and opt-in
 **4,217**, all within unchanged gates. Five isolated alternating runtime A/B pairs pass all six

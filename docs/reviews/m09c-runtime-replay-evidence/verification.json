@@ -24,5 +24,30 @@
   },
   "baselinesChanged": 0,
   "ci": "new-head first-attempt push CI pending",
-  "postVerifyChanges": "documentation and generated verification evidence only; implementation/test sources unchanged"
+  "postVerifyChanges": "documentation and generated verification evidence only; implementation/test sources unchanged",
+  "packagingCorrection": {
+    "status": "PASS",
+    "unitTests": 398,
+    "browserTests": 1632,
+    "runtimeCountTests": 9,
+    "exitCode": 0,
+    "sourceSha256Before": "581297fee1f5e2c343d87683b1537bbe037f16491cbb7eb2821a8840b6e9094b",
+    "sourceSha256After": "581297fee1f5e2c343d87683b1537bbe037f16491cbb7eb2821a8840b6e9094b",
+    "sourceUnchangedDuringVerify": true,
+    "logSha256": "05c135b4cad11069d58bfcd023c7a7996d1876d47c46229c0d08ef332238ac55",
+    "log": "packaging-full-pinned-verify.log.gz",
+    "indexedManifest": {
+      "testedFiles": 2635,
+      "missingFromIndex": [],
+      "untracked": []
+    },
+    "incompletePush": {
+      "head": "561050ffb7a691c5e8fa60836272efb1474414fe",
+      "url": "https://github.com/nawinisha231272-wm/formkit/actions/runs/43099911940",
+      "conclusion": "cancelled",
+      "run_attempt": 1,
+      "reason": "Four tested JSON fixtures were inadvertently omitted from the first checkpoint commit; cancelled before test results, no rerun."
+    },
+    "correctedHeadCi": "pending new push; no success inferred"
+  }
 }
