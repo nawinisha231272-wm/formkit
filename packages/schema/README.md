@@ -1,5 +1,15 @@
 # @ourform/schema
 
+M09c pay-for-use compiler primitives: `validateStructure(input, registry?)` and
+`migrateStructure(input)` validate bounded JSON, component/legacy-expression shapes, scopes,
+properties and migrations while preserving opaque root `logic`. They are **not full rule
+validation** and must not replace engine compilation or `validateDefinition` for untrusted rules.
+The engine rejects missing logic registration before reading rules; the opt-in compiler then
+runs complete wire validation. Full public `validateDefinition`, `migrate` and the deeply frozen
+`formDefinitionSchema` retain their complete contracts. The complete schema composes structural
+and rule definitions without a duplicate manually maintained schema; unused rule metadata is
+tree-shaken from structural consumers. No form JSON changes.
+
 Version 1.0 definition types, Draft 2020-12 meta-schema, diagnostics and migration harness.
 No internal or external runtime dependencies. Runs without browser globals.
 
@@ -80,3 +90,10 @@ disabledWhen, and host read-only cannot be weakened by a node. See spec 01 and A
 `label` is literal text and the English fallback. Optional non-empty `labelKey` explicitly opts a
 component caption into host translation; renderers fall back to `label` when a translator returns the
 key unchanged. Generated builder Settings exposes both fields.
+
+M09c adds optional data-only root `logic` and the exported `LogicRule`, `LogicTrigger` and
+`LogicAction` types (spec 11). The meta-schema validates trigger/action/expression shapes and rejects
+unknown fields; migrations preserve the rules without mutating input and never add them to legacy
+forms. Schema validation does not execute rules or resolve trusted functions. Semantic compilation
+requires the opt-in core/logic registration, including for an explicitly empty list. This prototype's
+execution entry is still under development; wire support alone must never silently enable execution.

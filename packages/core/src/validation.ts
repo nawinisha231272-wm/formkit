@@ -2,10 +2,11 @@ import type { CompiledNode, FieldError } from "./types";
 export function validateValue(
   entry: CompiledNode,
   value: unknown,
+  required = entry.node.validation?.required ?? false,
 ): FieldError[] {
   const rules = entry.node.validation;
   const adapter = entry.model.value;
-  if (!rules || !adapter) return [];
+  if (!adapter) return [];
   const errors: FieldError[] = [];
   const add = (code: string, params?: Record<string, unknown>) =>
     errors.push({
@@ -14,9 +15,10 @@ export function validateValue(
       ...(params ? { params } : {}),
     });
   if (adapter.isEmpty(value)) {
-    if (rules.required) add("required");
+    if (required) add("required");
     return errors;
   }
+  if (!rules) return [];
   if (typeof value === "string") {
     if (
       rules.minLength !== undefined &&

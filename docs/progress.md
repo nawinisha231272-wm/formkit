@@ -6,6 +6,94 @@ deviations from spec, open questions.
 
 ## Current state
 
+## M09c enabled budget approved; pay-for-use tightening — 2026-11-11
+
+**Foundation full pinned verification PASS**, exit 0: **373 unit / 1,608 browser / 17 package
+budgets plus every consumer/lazy gate / nine existing runtime counts**. All three browsers and
+native visual comparisons pass; no baseline changed. Before/after source fingerprint is identical
+(`9b577b4e986ea42634eab0bf2946c19aa8adb5c07ea3a9796ffae35e3607e380`), Node 22.22.3 /
+pnpm 10.10.0 / frozen install, Low Power Mode 0 and command-lifetime caffeinate. Root count fixtures
+are included in unit tests. Canonical bytes remain 31,780 / 7,217 / 71,509; matched no-logic 28,804,
+opt-in 2,767. [Proof](reviews/m09c-pay-for-use-evidence/verification.json). Commit/push and first-attempt
+foundation CI follow; **M09c remains open**, with runtime and all authoring/map delivery work ahead.
+
+Owner approved **74,500 logic-enabled builder full / 32,600 builder UI / 8,300 builder-core**.
+Implement these alongside two hard matched-form gates: **28,832 no-logic** (main 28,232 +600)
+and **6,000 opt-in increment**. Keep no-logic full 68,500, all runtime/lazy ceilings, correctness
+and ≤1.10 edit acceptance. The prototype review below is historical; its pending decision is resolved.
+
+Pay-for-use extraction checkpoint (unpublished): canonical UI/core/enabled full **31,780 / 7,217 /
+71,509**; matched no-logic **28,804** (+572 versus immutable main), enabled **31,571**, increment
+**2,767**. All accepted consumer/lazy gates pass. Wire metadata and execution are absent from the
+no-logic output; enabled output includes both. No accounting boundary changed. Kept: pure full-schema
+factory, separate structural compiler primitives, opt-in store/provenance/error bridge, direct rank
+access and opt-in cycle descriptions. Discarded shared validation-result collection: it grew no-logic
+28,853→28,905 (+52). Exact candidates remain in local evidence. Runtime A/B after extraction: all six
+median paired edit ratios ≤1.10; worst **1.091** (100-field plain fixture), five alternating pairs,
+absolute timings recorded. This is a local checkpoint, not full verify or CI PASS.
+
+The unchanged **30,000 core package** file budget now counts both published root and opt-in logic
+assets together; it does not give each asset a separate 30,000 allowance. No new runtime dependency,
+test expectation, threshold or deadline change. The full pinned foundation proof above now passes.
+
+Ordered work: split full rule metadata/validation from structural compiler primitives and move
+rule-only store/provenance/diagnostic handling into the opt-in capability → verify actual no-logic
+bytes and fail-closed guards → complete indexed scheduling/state/effects/async Node lifecycle →
+commands/locks/history, initial Build summaries, lazy Logic/test and post-interactive map →
+host/theme/CSP/offline/assetBase/onboarding and fresh author exercise → targeted visuals, full pinned
+verify, push and first-attempt CI. No merge or M09d. Risk: no-logic schema/session overhead; if the
+28,832 target cannot be met without violating contracts/performance, stop with measured options.
+
+## M09c prototype budget review — 2026-11-10
+
+**STOP at the planned numeric enabled-closure owner gate; no implementation push.** The uncommitted
+`m09c-logic-rules` prototype now has safe schema/migration, opt-in registration, indexed state/value
+rules, representative browser/Node replay and deterministic counts. Final consumer **UI 31,780 /
+builder-core 7,212 / enabled full 71,036**. Accepted M09c UI/core maxima are 32,600/8,300; the actual
+builder always registers logic, so its full closure needs the still-unapproved enabled ceiling.
+The unchanged historical gate exits 1 solely at 71,036 > 67,700. Propose **74,500 enabled full**,
+retaining 68,500 no-logic full, all package/lazy caps and distinct matched-consumer accounting.
+This is a request, not a granted cap or final implementation forecast.
+
+Matched form consumers: immutable main 28,232 → draft no-logic 29,395 (+1,163); same draft with
+registration 31,306 (+1,911 opt-in). The execution body is absent from no-logic builds. Runtime
+edit timing against immutable M09b+ main passes ≤1.10 at 100/500/1,000 fields for both no-logic
+and legacy-condition fixtures: worst median paired ratio **1.022**, five alternating pairs.
+Three new exact indexed-rule fixtures prove zero unrelated candidate/condition/writer work and
+one affected rule, alongside all nine unchanged processor/DOM/CSP count checks.
+
+Final-source build/typecheck, **369 unit checks**, three-browser prototype parity/identity/axe and
+all **17 standalone package budgets** pass. Existing tests, expression evaluator, shared Expr
+meta-schema, thresholds and deadlines are unchanged. Full pinned verify/Linux/implementation CI
+remain pending this owner gate; no prototype commit/push/PR, M09c completion or M09d work.
+Effects/setProperty and interleaved root→legacy calculation→root scheduling explicitly fail closed
+in this partial runtime. Complete them, annotations, host delivery/async lifecycle, authoring/map,
+five-theme proof and final delivery after the budget decision.
+
+[Measured proposal, timings, work, API additions and remaining scope](reviews/m09c-runtime-prototype.md);
+[raw evidence and reproduction](reviews/m09c-prototype-evidence/README.md).
+
+## M09c prototype started after amended plan merge — 2026-11-10
+
+[PR #18](https://github.com/nawinisha231272-wm/formkit/pull/18) merged at **2026-11-10 19:22:34 UTC**
+as `dcb7550c7990f57a789b4adc9a3563bd9059c221`, from verified head
+`391338d74d51081850659383587be7e102417cb6`. Immediately before merge, head and clean mergeability
+matched; [PR Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/42876499383),
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/42876492548) and separate
+[advisory timings](https://github.com/nawinisha231272-wm/formkit/actions/runs/42876499586) all succeeded
+on **attempt 1**. No rerun. Full pinned native proof PASS: **345 unit / 1,605 browser / 36 size / nine
+runtime count checks**. UI/core/full **31,769 / 7,120 / 67,674**, unchanged; power snapshot OFF,
+unchanged WebKit keyboard task 15.7 s. Controlled isolated comparison: on 16.3 s/off 13.9 s; not causal
+proof. [Evidence and preflight](reviews/m09c-local-power-preflight.md).
+
+Implementation branch: `m09c-logic-rules`. Ordered prototype work: safe root wire/meta-schema and
+fail-closed missing-logic → opt-in registration/compiler/session hooks with legacy path unchanged →
+representative indexed execution/Node parity and deterministic work → matched consumer/builder sizes
+and isolated paired timings → **owner gate for numeric enabled-closure ceiling before shipping**.
+Then complete remaining runtime/effects, authoring/map and delivery only after that gate. Risks remain
+root-entry byte cost, Node replay/async lifecycle and legacy performance. No prototype acceptance,
+new size measurement, root-rule count or timing PASS is claimed yet; no M09d work.
+
 ## M09c plan accepted with amendments — 2026-11-10
 
 Local verification follow-up (owner authorized, 2026-11-10): add a read-only macOS power preflight
@@ -110,15 +198,28 @@ Owner follow-up (2026-11-09), cc05111 not approved to merge: preserve context-cl
 - **M01 complete** — frozen install and full verification pass.
 - **M02 complete** — frozen install and full verification pass (documented starter-test exception below).
 - **M03–M08 complete** — local and Linux evidence is recorded below. **M08 accepted by the owner under the amended author criterion** — SDK 0.x freeze accepted; closure PR #6 merged on first-run green CI. Human guide usability is required in M11; the owner approved the 24 new Yes/No screenshots. M09 is authorized after the separate plan-amendment PR.
-- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11). **M09b approved and merged**: the owner approved PR #15 screenshots at `79e69f688b1779696449465fbe34869460018cd0`; merge `0b3b452c46096e852248ca11872f9697888c621e` on 2026-10-23. M09b+ is now approved/merged above; M09c is plan-only, and M09d/M10a/M10b implementation is not started.
+- **M09 complete** — declarative slots, nested builder/commands, Tabs and wrappers; PR #10 merged on first-attempt green CI. M09a is merged (PR #11). **M09b approved and merged**: the owner approved PR #15 screenshots at `79e69f688b1779696449465fbe34869460018cd0`; merge `0b3b452c46096e852248ca11872f9697888c621e` on 2026-10-23. M09b+ is approved/merged above; M09c's amended plan and budget are approved; its pay-for-use foundation passes full pinned verification and runtime/authoring implementation continues. M09d/M10a/M10b implementation is not started.
 - Planned order: **M09b+ → M09c → M09d → M10a → M10b → M11 → M12**. The owner approved M09d's
-  plan with six amendments (ADR-0019 accepted). M09c plan is authorized next; stop at owner plan review.
+  plan with six amendments (ADR-0019 accepted). M09c remains open;
+  continue its remaining runtime, authoring and owner delivery gates.
 - `main` includes the reviewed M07 housekeeping bootstrap (PR #1); all milestone branches and
   m00-done…m07-done tags are preserved at their original heads.
 - Housekeeping delivery: [PR #1](https://github.com/nawinisha231272-wm/formkit/pull/1) and
   [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 delivery PR #5 is merged; the gate closure is recorded below under the revised owner decision.
 
 ## Open questions
+
+**Resolved M09c expression question — owner, 2026-11-10:** the literal-array example in spec 11
+was the owner's drafting error. Corrected to OR-of-eq; the Logic editor's is one of picker uses that
+same representation. Expr format/evaluator/in semantics stay unchanged. Any future literal-list
+representation needs a separate explicitly approved spec 03 change, outside M09c. ADR-0022 records
+this decision; the original compiler rejection is preserved in local diagnostic evidence.
+
+**Resolved M09c enabled budget — owner, 2026-11-11:** enabled builder 74,500, UI 32,600,
+builder-core 8,300; matched no-logic 28,832 (+600), opt-in increment 6,000. These are enforced;
+foundation proof passes at 71,509 / 31,780 / 7,217 and matched no-logic 28,804 / increment 2,767.
+No further budget decision is pending. Remaining runtime/authoring work continues; no completed
+M09c or final delivery CI/owner approval is claimed.
 
 **M09c original plan questions resolved by owner on 2026-11-10:** pay-for-use runtime, authoritative
 versus editable-edge replay, typed effects/events with Node timeout/default 5 s/destroy cancellation,

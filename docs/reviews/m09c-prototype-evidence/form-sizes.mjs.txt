@@ -1,0 +1,23 @@
+import { build } from 'esbuild';
+import { brotliCompressSync } from 'node:zlib';
+import { writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+const evidence=resolve('.git/ourform-m09c-prototype-2026-11-10');
+const probe = async (root, enabled) => {
+  const code = `import {createEngine} from '@ourform/core';
+import {createFormController} from '@ourform/renderer-dom';
+import {builtinComponents} from '@ourform/components';
+import {bootstrap5Theme} from '@ourform/themes/bootstrap5';
+${enabled ? "import {createLogic} from '@ourform/core/logic';" : ''}
+export function create(root, schema, data) {
+ const engine=createEngine(${enabled ? '{logic:createLogic()}' : ''});
+ return createFormController(root,{schema,data,engine,fields:builtinComponents,themes:[bootstrap5Theme],theme:'bootstrap5'});
+}`;
+  const result=await build({stdin:{contents:code,resolveDir:root,sourcefile:'form-consumer.js'},bundle:true,format:'esm',target:'es2022',minify:true,write:false,outdir:'/tmp/ourform-logic-form',metafile:true});
+  return {entrySource:code,files:result.outputFiles.map(f=>({file:f.path.split('/').at(-1),raw:f.contents.length,brotli:brotliCompressSync(f.contents).length})),inputs:Object.keys(result.metafile.inputs),hasLogicImplementation:Object.keys(result.metafile.inputs).some(p=>p.endsWith('core/dist/logic/index.js'))};
+};
+const mainNoLogic=await probe(resolve(evidence,'main-src'),false),noLogic=await probe(process.cwd(),false),logicEnabled=await probe(process.cwd(),true);
+const sum=p=>p.files.reduce((n,f)=>n+f.brotli,0);
+const report={method:'esbuild 0.25.12 production consumer with published entries; Node 22.22.3 Brotli, shared files once; identical form fixture except explicit opt-in registration',mainSHA:'cd6d0b679027da328da9f5e4f63480437d6c765b',mainNoLogic,noLogic,logicEnabled,mainNoLogicBytes:sum(mainNoLogic),noLogicBytes:sum(noLogic),logicEnabledBytes:sum(logicEnabled),noLogicDelta:sum(noLogic)-sum(mainNoLogic),increment:sum(logicEnabled)-sum(noLogic)};
+writeFileSync(resolve(evidence,'final-form-sizes.json'),JSON.stringify(report,null,2)+'\n');
+console.log(JSON.stringify({mainNoLogic:sum(mainNoLogic),noLogic:sum(noLogic),noLogicDelta:report.noLogicDelta,enabled:sum(logicEnabled),increment:report.increment,noLogicHasBody:noLogic.hasLogicImplementation,enabledHasBody:logicEnabled.hasLogicImplementation}));

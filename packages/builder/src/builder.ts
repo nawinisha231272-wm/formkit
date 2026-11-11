@@ -1,3 +1,4 @@
+import { createLogic } from "@ourform/core/logic";
 import {
   createBuilder,
   AddComponent,
@@ -48,6 +49,7 @@ export function createBuilderController(
   const phone = document.defaultView!.matchMedia("(max-width: 767px)");
   const events = new AbortController();
   const host = createFormHost(options.fields ?? [], options.engine);
+  if (!host.engine.logic) host.engine.registerLogic(createLogic());
   const core = createBuilder(host.engine, options.schema as FormDefinition, {
     ...(options.historyLimit === undefined
       ? {}

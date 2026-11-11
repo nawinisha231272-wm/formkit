@@ -3,7 +3,8 @@ import type { Providers } from "./validators";
 import type { FieldError } from "./types";
 import { englishMessage } from "./messages";
 import { isRecord } from "@ourform/schema";
-import type { ComponentNode } from "@ourform/schema";
+import type { LogicRuntime, LogicWorkCounts } from "./logic-contract";
+import type { ComponentNode, LogicTrigger } from "@ourform/schema";
 import type {
   CompiledForm,
   CompiledNode,
@@ -24,7 +25,10 @@ import {
 } from "./paths";
 import { validateValue } from "./validation";
 export class FormSession {
-  readonly debug = {
+  readonly debug: {
+    processorRuns: Record<string, number>;
+    logic?: LogicWorkCounts;
+  } = {
     processorRuns: Object.create(null) as Record<string, number>,
   };
   #data: Record<string, unknown> = Object.freeze({});
@@ -32,6 +36,7 @@ export class FormSession {
   #listeners = new Set<(patch: StatePatch) => void>();
   #overrides = new Set<string>();
   #disposed = false;
+  #logic: LogicRuntime | undefined;
   #runs = new Map<string, AbortController>();
   readonly providers: Readonly<Providers>;
   readonly mode: "edit" | "readOnly";
@@ -65,6 +70,8 @@ export class FormSession {
     const data = snapshot(input);
     if (!isRecord(data)) throw new Error("Initial data must be an object.");
     this.cancelAll();
+    this.#logic = undefined;
+    delete this.debug.logic;
     this.#data = Object.freeze({});
     this.#states.clear();
     this.#overrides.clear();
@@ -103,6 +110,61 @@ export class FormSession {
     }
     for (const id of this.form.order)
       this.process(this.form.byId[id]!, false, true);
+    this.#logic = this.form.logic?.create({
+      form: this.form,
+      states: this.#states,
+      context: () => this.context(),
+      data: () => this.#data,
+      updateData: (data) => {
+        this.#data = data;
+      },
+      affected: (ids) => this.affected(ids),
+      stateChanged: (before, after) => this.stateChanged(before, after),
+      process: (id, skipCalculate) =>
+        this.process(this.form.byId[id]!, false, false, skipCalculate),
+    });
+    if (this.#logic) this.debug.logic = this.#logic.counts;
+    this.applyLogic({ on: "load" });
+  }
+  private affected(ids: readonly string[]): string[] {
+    const affected = new Set(ids),
+      queue = [...ids];
+    for (let i = 0; i < queue.length; i++)
+      for (const dependent of this.form.dependents[queue[i]!] ?? [])
+        if (!affected.has(dependent)) {
+          affected.add(dependent);
+          queue.push(dependent);
+        }
+    return [...affected].sort(
+      (a, b) => this.form.ranks[a]! - this.form.ranks[b]!,
+    );
+  }
+  private stateChanged(before: FieldState, after: FieldState): boolean {
+    return (
+      !Object.is(before.value, after.value) ||
+      before.visible !== after.visible ||
+      before.disabled !== after.disabled ||
+      before.readOnly !== after.readOnly ||
+      before.required !== after.required ||
+      before.logic !== after.logic ||
+      before.pending !== after.pending ||
+      JSON.stringify(before.errors) !== JSON.stringify(after.errors)
+    );
+  }
+  private applyLogic(
+    trigger: LogicTrigger,
+    changed?: readonly string[],
+  ): readonly string[] {
+    return this.#logic?.run(trigger, changed) ?? [];
+  }
+
+  triggerLogicEvent(name: string, payload?: unknown): void {
+    this.assertActive();
+    if (typeof name !== "string" || !name)
+      throw new TypeError("Logic event requires a nonempty name.");
+    if (payload !== undefined) snapshot(payload);
+    const changed = this.applyLogic({ on: "event", name }, []);
+    if (changed.length || this.#logic?.diagnostics.length) this.emit(changed);
   }
   private context() {
     return {
@@ -115,6 +177,7 @@ export class FormSession {
     entry: CompiledNode,
     forceValidation: boolean,
     initial = false,
+    skipCalculate = false,
   ): void {
     const id = entry.node.id;
     this.debug.processorRuns[id] = (this.debug.processorRuns[id] ?? 0) + 1;
@@ -125,7 +188,7 @@ export class FormSession {
     let value = readPath(this.#data, entry.path);
     const context = this.context();
     const calc = entry.expressions.calculate;
-    if (calc && !this.#overrides.has(id))
+    if (calc && !skipCalculate && !this.#overrides.has(id))
       value = this.normalize(entry, calc.evaluate(context));
     // Conditions can reference a field's own newly calculated value.
     if (
@@ -133,17 +196,20 @@ export class FormSession {
       !Object.is(value, readPath(this.#data, entry.path))
     )
       this.#data = writePath(this.#data, entry.path, value);
+    const logic = this.#logic?.state(id);
     const visible =
       (parent?.visible ?? true) &&
-      (entry.expressions.visibleWhen
-        ? Boolean(entry.expressions.visibleWhen.evaluate(this.context()))
-        : true);
+      (logic?.visible ??
+        (entry.expressions.visibleWhen
+          ? Boolean(entry.expressions.visibleWhen.evaluate(this.context()))
+          : true));
     const disabled =
       (parent?.disabled ?? false) ||
       entry.node.disabled === true ||
-      (entry.expressions.disabledWhen
-        ? Boolean(entry.expressions.disabledWhen.evaluate(this.context()))
-        : false);
+      (logic?.disabled ??
+        (entry.expressions.disabledWhen
+          ? Boolean(entry.expressions.disabledWhen.evaluate(this.context()))
+          : false));
     if (entry.model.value && entry.node.clearOnHide !== false) {
       if (!visible) value = this.normalize(entry, entry.model.value.empty());
       else if (!old.visible && !calc)
@@ -179,7 +245,9 @@ export class FormSession {
         readOnly:
           this.mode === "readOnly" ||
           entry.node.readOnly === true ||
-          parent?.readOnly === true,
+          parent?.readOnly === true ||
+          logic?.readOnly === true,
+        required: logic?.required ?? entry.node.validation?.required ?? false,
         dirty: initial ? false : old.dirty,
         errors: validation.errors,
         pending: validation.pending,
@@ -205,6 +273,9 @@ export class FormSession {
       changedFields: [...ids],
       changedPaths: paths,
       data: this.#data,
+      ...(this.#logic?.diagnostics.length
+        ? { diagnostics: [...this.#logic!.diagnostics] }
+        : {}),
     });
     for (const listener of [...this.#listeners]) listener(patch);
   }
@@ -256,42 +327,31 @@ export class FormSession {
       return;
     const value = snapshot(normalized);
     this.#data = writePath(this.#data, entry.path, value);
-    const affected = new Set([entry.node.id]);
-    const queue = [entry.node.id];
-    for (let i = 0; i < queue.length; i++)
-      for (const dependent of this.form.dependents[queue[i]!] ?? [])
-        if (!affected.has(dependent)) {
-          affected.add(dependent);
-          queue.push(dependent);
-        }
-    for (const id of affected) this.#overrides.delete(id);
+    const ordered = this.affected([entry.node.id]);
+    for (const id of ordered) this.#overrides.delete(id);
     if (options.source === "user" && entry.node.calculate?.allowOverride)
       this.#overrides.add(entry.node.id);
-    this.#states.set(entry.node.id, freeze({ ...old, dirty: true }));
+    const edited = { ...old, dirty: true };
+    this.#states.set(entry.node.id, freeze(edited));
+    this.#logic?.edited(entry.node.id);
     const changed: string[] = [];
-    // Sort only affected nodes. Ranks avoid scanning the full form on each change.
-    const ordered = [...affected].sort(
-      (a, b) => this.ranks[a]! - this.ranks[b]!,
-    );
     for (const id of ordered) {
       const before = this.#states.get(id)!;
-      const previous = before.value;
       this.process(this.form.byId[id]!, false);
       const after = this.#states.get(id)!;
-      if (
-        id === entry.node.id ||
-        !Object.is(previous, after.value) ||
-        before.visible !== after.visible ||
-        before.disabled !== after.disabled ||
-        before.pending !== after.pending ||
-        JSON.stringify(before.errors) !== JSON.stringify(after.errors)
-      )
+      if (id === entry.node.id || this.stateChanged(before, after))
         changed.push(id);
     }
-    this.emit(changed);
-  }
-  private get ranks(): Readonly<Record<string, number>> {
-    return this.form.ranks;
+    this.emit(
+      this.#logic
+        ? [
+            ...new Set([
+              ...changed,
+              ...this.applyLogic({ on: "change" }, ordered),
+            ]),
+          ]
+        : changed,
+    );
   }
   touch(input: PathInput): void {
     this.assertActive();
@@ -340,14 +400,19 @@ export class FormSession {
     });
     const collect = (results: FieldError[][]): ValidationResult =>
       freeze({
-        valid: results.every((errors) => errors.length === 0),
-        errors: runs.flatMap(({ entry }, i) =>
-          results[i]!.map((error) => ({
-            path: entry.path,
-            componentId: entry.node.id,
-            error,
-          })),
-        ),
+        valid:
+          results.every((errors) => errors.length === 0) &&
+          !this.#logic?.validationErrors().length,
+        errors: [
+          ...(this.#logic?.validationErrors() ?? []),
+          ...runs.flatMap(({ entry }, i) =>
+            results[i]!.map((error) => ({
+              path: entry.path,
+              componentId: entry.node.id,
+              error,
+            })),
+          ),
+        ],
       });
     // Capture synchronous results before notifying re-entrant subscribers (M01 contract).
     const immediate = collect(runs.map((r) => r.errors));
@@ -362,7 +427,11 @@ export class FormSession {
     const id = entry.node.id;
     this.#runs.get(id)?.abort();
     this.#runs.delete(id);
-    const errors = validateValue(entry, value);
+    const errors = validateValue(
+      entry,
+      value,
+      this.#logic?.state(id)?.required,
+    );
     if (
       !entry.model.value ||
       entry.model.value.isEmpty(value) ||
@@ -438,6 +507,8 @@ export class FormSession {
     );
   }
   async submit(): Promise<SubmitResult> {
+    this.assertActive();
+    this.applyLogic({ on: "submit" }, []);
     const submittedData = this.#data;
     const result = await this.validate();
     if (!result.valid) return { ok: false, errors: result.errors };

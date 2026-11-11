@@ -1,14 +1,15 @@
-import schema from "./form-definition.schema.json";
+import schema from "./form-structure.schema.json";
 import { isRecord } from "./json";
 export function shape(
   value: unknown,
   rule: Record<string, unknown>,
   legacyColumns = false,
+  root: Record<string, unknown> = schema,
 ): boolean {
   // The component's two allOf branches apply only to Columns/column collections.
   // Avoid recursively testing both discriminators for every ordinary field.
   const skipColumnRules =
-    rule === schema.$defs.component &&
+    rule === (root.$defs as Record<string, unknown>).component &&
     (legacyColumns ||
       (isRecord(value) &&
         value.type !== "columns" &&
@@ -16,27 +17,34 @@ export function shape(
   if (!skipColumnRules) {
     if (
       Array.isArray(rule.allOf) &&
-      !rule.allOf.every((r) => shape(value, r, legacyColumns))
+      !rule.allOf.every((r) => shape(value, r, legacyColumns, root))
     )
       return false;
-    if (rule.not && isRecord(rule.not) && shape(value, rule.not, legacyColumns))
+    if (
+      rule.not &&
+      isRecord(rule.not) &&
+      shape(value, rule.not, legacyColumns, root)
+    )
       return false;
     if (rule.if && isRecord(rule.if)) {
-      const branch = shape(value, rule.if, legacyColumns)
+      const branch = shape(value, rule.if, legacyColumns, root)
         ? rule.then
         : rule.else;
-      if (isRecord(branch) && !shape(value, branch, legacyColumns))
+      if (isRecord(branch) && !shape(value, branch, legacyColumns, root))
         return false;
     }
   }
   if (typeof rule.$ref === "string")
     return shape(
       value,
-      schema.$defs[rule.$ref.slice(8) as keyof typeof schema.$defs],
+      (root.$defs as Record<string, Record<string, unknown>>)[
+        rule.$ref.slice(8)
+      ] ?? {},
       legacyColumns,
+      root,
     );
   if (Array.isArray(rule.anyOf))
-    return rule.anyOf.some((r) => shape(value, r, legacyColumns));
+    return rule.anyOf.some((r) => shape(value, r, legacyColumns, root));
   if ("const" in rule && value !== rule.const) return false;
   if (Array.isArray(rule.enum) && !rule.enum.includes(value)) return false;
   if (rule.type) {
@@ -82,6 +90,7 @@ export function shape(
         v,
         (r ?? rule.items ?? {}) as Record<string, unknown>,
         legacyColumns,
+        root,
       );
     });
   }
@@ -96,11 +105,11 @@ export function shape(
     const props = isRecord(rule.properties) ? rule.properties : {};
     return Object.entries(value).every(([k, v]) =>
       Object.hasOwn(props, k)
-        ? shape(v, props[k] as Record<string, unknown>, legacyColumns)
+        ? shape(v, props[k] as Record<string, unknown>, legacyColumns, root)
         : rule.additionalProperties === false
           ? false
           : isRecord(rule.additionalProperties)
-            ? shape(v, rule.additionalProperties, legacyColumns)
+            ? shape(v, rule.additionalProperties, legacyColumns, root)
             : true,
     );
   }

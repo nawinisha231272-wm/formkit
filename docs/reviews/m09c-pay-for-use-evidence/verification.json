@@ -1,0 +1,36 @@
+{
+  "scope": "M09c opt-in runtime/pay-for-use foundation, not complete M09c delivery",
+  "baseSHA": "dcb7550c7990f57a789b4adc9a3563bd9059c221",
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "frozenInstall": true,
+  "command": "caffeinate -diu pnpm verify (repository-local pinned pnpm entry)",
+  "exit": 0,
+  "unitTests": 373,
+  "unitFiles": 61,
+  "browserTests": 1608,
+  "browsers": ["chromium", "firefox", "webkit"],
+  "packageBudgets": 17,
+  "consumerAndLazyGates": "all pass",
+  "existingRuntimeCountTests": 9,
+  "coreAndValidationCoverageThresholds": "unchanged >=90%, pass",
+  "sourceSHA256BeforeAndAfter": "9b577b4e986ea42634eab0bf2946c19aa8adb5c07ea3a9796ffae35e3607e380",
+  "sourceChangedDuringVerify": false,
+  "consumerBytes": {
+    "ui": 31780,
+    "builderCore": 7217,
+    "enabledFull": 71509,
+    "matchedNoLogic": 28804,
+    "matchedEnabled": 31571,
+    "optInIncrement": 2767
+  },
+  "limits": {
+    "ui": 32600,
+    "builderCore": 8300,
+    "enabledFull": 74500,
+    "matchedNoLogic": 28832,
+    "optInIncrement": 6000
+  },
+  "noBaselinesChanged": true,
+  "implementationCI": "pending first-attempt push run"
+}

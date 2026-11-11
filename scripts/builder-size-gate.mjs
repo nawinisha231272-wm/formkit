@@ -1,13 +1,17 @@
 import { build } from "esbuild";
 import { brotliCompressSync } from "node:zlib";
 import { resolve } from "node:path";
+import {
+  measureLogicConsumers,
+  checkLogicConsumers,
+} from "./logic-consumer-size.mjs";
 
 const entrySource =
   'import { createBuilder } from "@ourform/builder"; import { bootstrap5Theme } from "@ourform/themes/bootstrap5"; import { bootstrap5BuilderTheme } from "@ourform/builder/themes/bootstrap5"; globalThis.mountOurFormBuilder = [createBuilder, bootstrap5Theme, bootstrap5BuilderTheme];';
 const limits = {
-  builderUiInitial: 31_800,
-  builderCoreInitial: 7_300,
-  fullInitial: 67_700,
+  builderUiInitial: 32_600,
+  builderCoreInitial: 8_300,
+  fullInitial: 74_500,
   logic: 10_000,
   json: 8_000,
   map: 10_000,
@@ -184,6 +188,7 @@ const report = {
       "Marginal compressed initial consumer closure: full build minus otherwise identical build externalizing @ourform/builder-core; bundling and Brotli can change shared output bytes.",
   },
   limits,
+  matchedFormConsumers: await measureLogicConsumers(),
   builderUiInitialExcludingBuilderCore: ownedReport,
   builderCore: {
     contribution: coreContribution,
@@ -258,8 +263,10 @@ for (const [name, limit] of [
 ])
   checks.push([name, ownedReport.features[name].brotli, limit]);
 const failures = checks.filter(([, actual, limit]) => actual > limit);
-if (failures.length) {
+const logicFailures = checkLogicConsumers(report.matchedFormConsumers);
+if (failures.length || logicFailures.length) {
   for (const [name, actual, limit] of failures)
     console.error(`${name}: ${actual} Brotli bytes exceeds ${limit}`);
+  for (const failure of logicFailures) console.error(failure);
   process.exitCode = 1;
 }

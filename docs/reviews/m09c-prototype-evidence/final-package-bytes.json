@@ -1,0 +1,52 @@
+{
+  "note": "Standalone published files, same Node Brotli as file budgets; excludes imports, not a consumer closure. New core/logic body is separately counted in enabled consumers.",
+  "files": [
+    {
+      "file": "packages/core/dist/index.js",
+      "raw": 59830,
+      "brotli": 13193,
+      "mainBrotli": 12135,
+      "delta": 1058
+    },
+    {
+      "file": "packages/core/dist/logic/index.js",
+      "raw": 13094,
+      "brotli": 3069
+    },
+    {
+      "file": "packages/schema/dist/index.js",
+      "raw": 31806,
+      "brotli": 6055,
+      "mainBrotli": 5659,
+      "delta": 396
+    },
+    {
+      "file": "packages/validation/dist/index.js",
+      "raw": 4244,
+      "brotli": 1220,
+      "mainBrotli": 1163,
+      "delta": 57
+    },
+    {
+      "file": "packages/builder/dist/index.js",
+      "raw": 118624,
+      "brotli": 30243,
+      "mainBrotli": 30188,
+      "delta": 55
+    },
+    {
+      "file": "packages/builder-core/dist/index.js",
+      "raw": 46331,
+      "brotli": 9729,
+      "mainBrotli": 9729,
+      "delta": 0
+    },
+    {
+      "file": "packages/renderer-dom/dist/index.js",
+      "raw": 40867,
+      "brotli": 9421,
+      "mainBrotli": 9421,
+      "delta": 0
+    }
+  ]
+}

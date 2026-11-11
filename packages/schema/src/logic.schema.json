@@ -1,0 +1,234 @@
+{
+  "logic": {
+    "type": "array",
+    "items": {
+      "$ref": "#/$defs/logicRule"
+    }
+  },
+  "$defs": {
+    "logicRule": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "trigger": {
+          "$ref": "#/$defs/logicTrigger"
+        },
+        "when": {
+          "$ref": "#/$defs/expr"
+        },
+        "then": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/logicAction"
+          }
+        },
+        "otherwise": {
+          "anyOf": [
+            {
+              "enum": ["revert", "none"]
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/logicAction"
+              }
+            }
+          ]
+        }
+      },
+      "required": ["id", "trigger", "then"],
+      "additionalProperties": false
+    },
+    "logicTrigger": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "on": {
+              "const": "change"
+            },
+            "refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": ["on"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "on": {
+              "enum": ["load", "submit"]
+            }
+          },
+          "required": ["on"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "on": {
+              "const": "event"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["on", "name"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "logicAction": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "enum": [
+                "show",
+                "hide",
+                "enable",
+                "disable",
+                "require",
+                "optional",
+                "clear",
+                "refreshOptions",
+                "focus"
+              ]
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["action", "target"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "const": "setReadOnly"
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "type": "boolean"
+            }
+          },
+          "required": ["action", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "const": "setProperty"
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            },
+            "property": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "$ref": "#/$defs/expr"
+            }
+          },
+          "required": ["action", "target", "property", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "const": "setValue"
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "$ref": "#/$defs/expr"
+            }
+          },
+          "required": ["action", "target", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "const": "calculate"
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expr": {
+              "$ref": "#/$defs/expr"
+            }
+          },
+          "required": ["action", "target", "expr"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "const": "emit"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "payload": {
+              "$ref": "#/$defs/expr"
+            }
+          },
+          "required": ["action", "name"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "const": "call"
+            },
+            "function": {
+              "type": "string",
+              "minLength": 1
+            },
+            "args": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/expr"
+              }
+            }
+          },
+          "required": ["action", "function"],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

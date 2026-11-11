@@ -1,0 +1,139 @@
+{
+  "method": "esbuild 0.25.12 production consumer with published entries; Node 22.22.3 Brotli, shared files once; identical form fixture except explicit opt-in registration",
+  "mainSHA": "cd6d0b679027da328da9f5e4f63480437d6c765b",
+  "mainNoLogic": {
+    "entrySource": "import {createEngine} from '@ourform/core';\nimport {createFormController} from '@ourform/renderer-dom';\nimport {builtinComponents} from '@ourform/components';\nimport {bootstrap5Theme} from '@ourform/themes/bootstrap5';\n\nexport function create(root, schema, data) {\n const engine=createEngine();\n return createFormController(root,{schema,data,engine,fields:builtinComponents,themes:[bootstrap5Theme],theme:'bootstrap5'});\n}",
+    "files": [
+      {
+        "file": "stdin.js",
+        "raw": 97327,
+        "brotli": 28232
+      }
+    ],
+    "inputs": [
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/packages/schema/dist/index.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/debug.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/constants.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/re.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/parse-options.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/identifiers.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/semver.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/parse.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/valid.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/lrucache.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/compare.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/eq.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/neq.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gt.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gte.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lt.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lte.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/cmp.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/comparator.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/range.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/valid.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/satisfies.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/packages/core/dist/index.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/packages/sdk/dist/index.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/packages/renderer-dom/dist/index.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/packages/components/dist/index.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/packages/theme-bootstrap5/dist/index.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/packages/themes/dist/chunk-4XVSMJBB.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/packages/themes/dist/bootstrap5.js",
+      ".git/ourform-m09c-prototype-2026-11-10/main-src/form-consumer.js"
+    ],
+    "hasLogicImplementation": false
+  },
+  "noLogic": {
+    "entrySource": "import {createEngine} from '@ourform/core';\nimport {createFormController} from '@ourform/renderer-dom';\nimport {builtinComponents} from '@ourform/components';\nimport {bootstrap5Theme} from '@ourform/themes/bootstrap5';\n\nexport function create(root, schema, data) {\n const engine=createEngine();\n return createFormController(root,{schema,data,engine,fields:builtinComponents,themes:[bootstrap5Theme],theme:'bootstrap5'});\n}",
+    "files": [
+      {
+        "file": "stdin.js",
+        "raw": 102662,
+        "brotli": 29395
+      }
+    ],
+    "inputs": [
+      "packages/schema/dist/index.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/debug.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/constants.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/re.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/parse-options.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/identifiers.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/semver.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/parse.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/valid.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/lrucache.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/compare.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/eq.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/neq.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gt.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gte.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lt.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lte.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/cmp.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/comparator.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/range.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/valid.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/satisfies.js",
+      "packages/core/dist/index.js",
+      "packages/sdk/dist/index.js",
+      "packages/renderer-dom/dist/index.js",
+      "packages/components/dist/index.js",
+      "packages/theme-bootstrap5/dist/index.js",
+      "packages/themes/dist/chunk-4XVSMJBB.js",
+      "packages/themes/dist/bootstrap5.js",
+      "form-consumer.js"
+    ],
+    "hasLogicImplementation": false
+  },
+  "logicEnabled": {
+    "entrySource": "import {createEngine} from '@ourform/core';\nimport {createFormController} from '@ourform/renderer-dom';\nimport {builtinComponents} from '@ourform/components';\nimport {bootstrap5Theme} from '@ourform/themes/bootstrap5';\nimport {createLogic} from '@ourform/core/logic';\nexport function create(root, schema, data) {\n const engine=createEngine({logic:createLogic()});\n return createFormController(root,{schema,data,engine,fields:builtinComponents,themes:[bootstrap5Theme],theme:'bootstrap5'});\n}",
+    "files": [
+      {
+        "file": "stdin.js",
+        "raw": 108917,
+        "brotli": 31306
+      }
+    ],
+    "inputs": [
+      "packages/schema/dist/index.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/debug.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/constants.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/re.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/parse-options.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/identifiers.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/semver.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/parse.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/valid.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/internal/lrucache.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/compare.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/eq.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/neq.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gt.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/gte.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lt.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/lte.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/cmp.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/comparator.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/classes/range.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/ranges/valid.js",
+      "node_modules/.pnpm/semver@7.8.5/node_modules/semver/functions/satisfies.js",
+      "packages/core/dist/index.js",
+      "packages/sdk/dist/index.js",
+      "packages/renderer-dom/dist/index.js",
+      "packages/components/dist/index.js",
+      "packages/theme-bootstrap5/dist/index.js",
+      "packages/themes/dist/chunk-4XVSMJBB.js",
+      "packages/themes/dist/bootstrap5.js",
+      "packages/core/dist/logic/index.js",
+      "form-consumer.js"
+    ],
+    "hasLogicImplementation": true
+  },
+  "mainNoLogicBytes": 28232,
+  "noLogicBytes": 29395,
+  "logicEnabledBytes": 31306,
+  "noLogicDelta": 1163,
+  "increment": 1911
+}

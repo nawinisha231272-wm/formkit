@@ -87,7 +87,10 @@
     },
     {
       "name": "core",
-      "path": "packages/core/dist/index.js",
+      "path": [
+        "packages/core/dist/index.js",
+        "packages/core/dist/logic/index.js"
+      ],
       "limit": "30 kB"
     },
     {

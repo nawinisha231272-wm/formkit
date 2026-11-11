@@ -2,7 +2,7 @@ import { componentChildren } from "./children";
 import { migrateColumns } from "./migrate-columns";
 import { shape } from "./shape";
 import { validateProperties } from "./properties";
-import schema from "./form-definition.schema.json";
+import schema from "./form-structure.schema.json";
 import { inspectJson, isRecord, isSafeKey } from "./json";
 import type {
   ComponentNode,
@@ -10,21 +10,14 @@ import type {
   Diagnostic,
   FormDefinition,
 } from "./types";
-function freezeSchema(value: unknown): void {
-  if (value !== null && typeof value === "object") {
-    for (const child of Object.values(value)) freezeSchema(child);
-    Object.freeze(value);
-  }
-}
-freezeSchema(schema);
-export const formDefinitionSchema = schema;
-function validateDefinitionInternal(
+export function validateUsing(
   input: unknown,
   registry?: DefinitionRegistry,
+  root: Record<string, unknown> = schema,
 ): Diagnostic[] {
   const diagnostics = inspectJson(input);
   if (diagnostics.length) return diagnostics;
-  if (!shape(input, schema))
+  if (!shape(input, root, false, root))
     return [
       {
         severity: "error",
@@ -147,12 +140,12 @@ function validateDefinitionInternal(
       error("bad-ref", `Unknown component reference: ${ref}`, componentId);
   return diagnostics;
 }
-export function validateDefinition(
+export function validateStructure(
   input: unknown,
   registry?: DefinitionRegistry,
 ): Diagnostic[] {
   try {
-    return validateDefinitionInternal(input, registry);
+    return validateUsing(input, registry);
   } catch {
     return [
       {
@@ -163,7 +156,10 @@ export function validateDefinition(
     ];
   }
 }
-export function migrate(input: unknown): {
+export function migrateUsing(
+  input: unknown,
+  validate: typeof validateStructure,
+): {
   definition: FormDefinition;
   applied: string[];
   diagnostics: Diagnostic[];
@@ -187,7 +183,7 @@ export function migrate(input: unknown): {
     const migrated = migrateColumns(input as FormDefinition);
     return {
       ...migrated,
-      diagnostics: validateDefinition(migrated.definition),
+      diagnostics: validate(migrated.definition),
     };
   } catch {
     return {
@@ -203,3 +199,7 @@ export function migrate(input: unknown): {
     };
   }
 }
+
+/** Component/legacy validation only; the engine checks its root logic capability separately. */
+export const migrateStructure = (input: unknown) =>
+  migrateUsing(input, validateStructure);

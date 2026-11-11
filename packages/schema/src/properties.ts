@@ -1,6 +1,6 @@
 import { isRecord, inspectJson } from "./json";
 import { shape } from "./shape";
-import schema from "./form-definition.schema.json";
+import schema from "./form-structure.schema.json";
 import type { Diagnostic, PropertyDescriptor } from "./types";
 export function validateProperties(
   properties: Record<string, PropertyDescriptor>,

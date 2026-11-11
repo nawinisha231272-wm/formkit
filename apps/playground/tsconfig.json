@@ -11,6 +11,7 @@
     "vite.config.ts",
     "tier1.ts",
     "onboarding.ts",
-    "sdk-extensions.ts"
+    "sdk-extensions.ts",
+    "logic-prototype.ts"
   ]
 }

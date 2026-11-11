@@ -45,3 +45,9 @@ export { englishMessages, englishMessage } from "./messages";
 export { coreVersion } from "./plugins";
 export type { PluginRegistration } from "./plugins";
 export { resolveSlots } from "./slots";
+
+export type {
+  LogicRegistration,
+  LogicProvenance,
+  LogicWorkCounts,
+} from "./logic-contract";

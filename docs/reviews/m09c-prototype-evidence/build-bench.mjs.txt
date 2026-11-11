@@ -1,0 +1,9 @@
+import {build} from 'esbuild';
+import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+const evidence=resolve('.git/ourform-m09c-prototype-2026-11-10');
+for(const [name,root]of[['main',resolve(evidence,'main-src')],['branch',process.cwd()]]){
+ const out=resolve(evidence,`bench-${name}`);mkdirSync(out,{recursive:true});
+ await build({stdin:{contents:readFileSync(resolve(evidence,'bench-source.js'),'utf8'),resolveDir:root,sourcefile:'identical-benchmark-consumer.js'},bundle:true,format:'esm',target:'es2022',minify:true,outfile:resolve(out,'index.js'),metafile:true}).then(result=>writeFileSync(resolve(out,'meta.json'),JSON.stringify(result.metafile,null,2)));
+ writeFileSync(resolve(out,'index.html'),'<!doctype html><html lang="en"><meta charset="utf-8"><title>Isolated timing</title><div id="form"></div><script type="module" src="./index.js"></script></html>');
+}

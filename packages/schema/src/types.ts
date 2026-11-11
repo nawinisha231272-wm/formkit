@@ -75,6 +75,40 @@ export interface ComponentNode {
   meta?: Record<string, unknown>;
 }
 export type FormField = ComponentNode;
+/** Data-only root rule triggers; refs default to the condition reads for change. */
+export type LogicTrigger =
+  | { on: "change"; refs?: string[] }
+  | { on: "load" | "submit" }
+  | { on: "event"; name: string };
+export type LogicAction =
+  | {
+      action:
+        | "show"
+        | "hide"
+        | "enable"
+        | "disable"
+        | "require"
+        | "optional"
+        | "clear"
+        | "refreshOptions"
+        | "focus";
+      target: string;
+    }
+  | { action: "setReadOnly"; target: string; value: boolean }
+  | { action: "setProperty"; target: string; property: string; value: Expr }
+  | { action: "setValue"; target: string; value: Expr }
+  | { action: "calculate"; target: string; expr: Expr }
+  | { action: "emit"; name: string; payload?: Expr }
+  | { action: "call"; function: string; args?: Expr[] };
+export interface LogicRule {
+  id: string;
+  name?: string;
+  enabled?: boolean;
+  trigger: LogicTrigger;
+  when?: Expr;
+  then: LogicAction[];
+  otherwise?: "revert" | "none" | LogicAction[];
+}
 export interface FormDefinition {
   $formVersion: "1.0";
   id: string;
@@ -83,6 +117,7 @@ export interface FormDefinition {
   requires?: { plugin: string; version: string }[];
   settings?: { locale?: string; validateOn?: "change" | "blur" | "submit" };
   components: ComponentNode[];
+  logic?: LogicRule[];
 }
 export interface Diagnostic {
   severity: "error" | "warning";

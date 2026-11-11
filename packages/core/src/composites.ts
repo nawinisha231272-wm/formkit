@@ -1,4 +1,8 @@
-import { inspectJson, validateDefinition, migrate } from "@ourform/schema";
+import {
+  inspectJson,
+  validateStructure,
+  migrateStructure,
+} from "@ourform/schema";
 import type {
   ComponentNode,
   Diagnostic,
@@ -60,7 +64,10 @@ export function expandComposites(
           "Composite expansion must return bounded safe JSON children.",
         );
       // Validate shape before recursion, so malformed callbacks never enter the traversal.
-      const upgraded = migrate({ ...definition, components: children });
+      const upgraded = migrateStructure({
+        ...definition,
+        components: children,
+      });
       children = upgraded.definition.components;
       const shapeErrors = upgraded.diagnostics.filter(
         (d) => d.code !== "bad-ref",
@@ -79,7 +86,7 @@ export function expandComposites(
     const components = visit(definition.components, 0, []);
     if (!diagnostics.length)
       diagnostics.push(
-        ...validateDefinition({ ...definition, components }, registry),
+        ...validateStructure({ ...definition, components }, registry),
       );
     return { components, diagnostics };
   } catch (error) {

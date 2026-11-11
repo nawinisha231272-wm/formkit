@@ -10,10 +10,14 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./logic": {
+      "types": "./dist/logic/index.d.ts",
+      "import": "./dist/logic/index.js"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --sourcemap",
+    "build": "tsup",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

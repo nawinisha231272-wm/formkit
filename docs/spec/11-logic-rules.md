@@ -30,7 +30,11 @@ from the lazy Logic/map UI; importing root core or SDK must not pull it in. See 
       "when": [
         "and",
         ["eq", { "ref": "cmp_customer_type" }, "business"],
-        ["in", { "ref": "cmp_country" }, ["US", "CA"]]
+        [
+          "or",
+          ["eq", { "ref": "cmp_country" }, "US"],
+          ["eq", { "ref": "cmp_country" }, "CA"]
+        ]
       ],
       "then": [
         { "action": "show", "target": "cmp_company_panel" },
@@ -55,6 +59,15 @@ from the lazy Logic/map UI; importing root core or SDK must not pull it in. See 
 - `then`: ordered list of actions. `otherwise`: `"revert"` (default), `"none"`, or an action list.
 - Rows inside repeaters and data grids: a rule whose refs and targets are in the same array scope runs
   per row (`{ "ref" }` resolves within the row, as in spec 03).
+
+### Membership picker (owner correction, 2026-11-10)
+
+The Logic editor's **is one of** picker compiles to an OR of equality checks for M09c, as in the
+country example above. The original literal-array example was an owner drafting error. Expr format
+and evaluator stay unchanged: arrays are prefix operations. A literal list value, such as a future
+`["list", ...]` or `["literal", ...]`, needs a separate explicitly approved spec 03 change and is
+**not part of M09c**. Existing `in` still works with an array value obtained through a supported
+reference/path or trusted expression; this correction does not change that operator.
 
 ## Actions
 
@@ -150,6 +163,13 @@ without executing them. This resolves the earlier conflict with architecture 00'
 - [ ] A fresh Codex session builds the "Business customers" rule from the docs alone.
 
 ## Accepted M09c delivery gates (owner, 2026-11-10)
+
+**Owner budget approval/tightening, 2026-11-11:** the enabled builder full ceiling is **74,500**;
+UI **32,600**, builder-core **8,300**. Enforce an exact matched no-logic form ceiling **28,832**
+(immutable main 28,232 +600) and opt-in increment **6,000**. Keep no-logic full 68,500 and every
+package/lazy limit. Move rule validation/meta-schema and rule-only hooks to the opt-in path;
+ordinary edits and complete validation remain correct. Stop with measured options if the matched
+no-logic target cannot be reached without violating either. This supersedes pending-budget wording.
 
 [Milestone](../milestones/M09c.md) and [accepted ADR-0022](../adr/0022-logic-engine-and-authoring-plan.md)
 record the delivery order. Root execution is opt-in; legacy path retained; Build badges/chips initial;

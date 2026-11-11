@@ -50,3 +50,9 @@ SDK preprocessing. See ADR-0011 and the shared browser/Node policy tests.
 
 Playground: open `/tier1.html`, choose Unknown key policy, and validate the sample with extra keys.
 The demo shows default rejection, opt-in stripping and the unchanged original extra property.
+
+M09c root-rule prototype: compile with an engine explicitly configured with `createLogic()` from
+`@ourform/core/logic`. Validation reuses its compiled runtime, replays load then submit before checking
+canonical values, enforces rule-derived state and rejects forged calculated/load/submit assignments.
+Change/event assignments remain editable, not forgery. No automatic logic runtime import occurs here.
+Full effect/call lifecycle support is not complete in this unshipped prototype.

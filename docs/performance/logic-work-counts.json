@@ -1,0 +1,35 @@
+{
+  "scope": "M09c state/value prototype, headless session only; browser DOM counts and remaining actions are separate acceptance",
+  "fields": [100, 500, 1000],
+  "rulesPerFixture": "fields - 1; the final field is unrelated to every rule",
+  "unrelatedEdit": {
+    "indexReads": 3,
+    "candidates": 0,
+    "conditions": 0,
+    "actionExpressions": 0,
+    "writers": 0,
+    "edges": 0,
+    "writes": 0,
+    "cascades": 0,
+    "effects": 0,
+    "processorRuns": 1,
+    "patches": 1,
+    "changedFields": 1,
+    "triggerReads": 0
+  },
+  "oneRuleEdit": {
+    "indexReads": 3,
+    "candidates": 1,
+    "conditions": 1,
+    "actionExpressions": 0,
+    "writers": 1,
+    "edges": 1,
+    "writes": 0,
+    "cascades": 0,
+    "effects": 0,
+    "processorRuns": 2,
+    "patches": 1,
+    "changedFields": 1,
+    "triggerReads": 1
+  }
+}

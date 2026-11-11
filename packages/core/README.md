@@ -132,3 +132,29 @@ metadata must match those collections in order and count. Columns on non-layout 
 Static `ComponentNode.disabled` and `readOnly` flags inherit through layouts. Disabled also combines
 with disabledWhen; host read-only remains stronger. They use the same protected-user-write refresh
 contract as host mode and dynamic disabled state; API writes continue to work (ADR-0017).
+
+M09c prototype: legacy visibleWhen/disabledWhen/calculate remain on the root entry. A definition
+that declares root logic without the opt-in execution registration fails with `missing-logic`,
+including `logic: []`. Root-rule wire support alone never executes or silently ignores rules.
+The execution entry is partial; accepted pay-for-use consumer gates are enforced. This foundation
+is not a completed M09c runtime or release.
+
+M09c unshipped prototype: import `createLogic` from `@ourform/core/logic` and pass
+`createEngine({logic:createLogic()})`. Root `@ourform/core` exports the registration/provenance/work
+count types only, never the execution factory. Engines expose their optional readonly `logic`
+registration and `registerLogic(registration)` for explicit installation into an existing engine;
+a second installation throws. Builder setup installs the entry only when its engine lacks one,
+preserving a host's existing registration. Capability, compiled indexes and session state are isolated.
+
+The prototype executes show/hide, enable/disable, require/optional, setReadOnly, edge setValue/clear,
+continuous calculate, otherwise/revert, named events and load/submit phases. `session.triggerLogicEvent`
+accepts a nonempty name and optional safe-JSON payload (no new expression payload path). Value
+provenance is optional `FieldState.logic: {ruleId,authoritative}`. Dynamic diagnostics appear on
+`StatePatch.diagnostics`; invalid cascades fail validation. `session.debug.logic` counts actual index
+reads, candidates, condition/action evaluations, cached writers, trigger edges, writes and cascades.
+Effects and setProperty currently produce `unsupported-logic-action` during compile; an unfinished
+root→legacy calculation→root scheduler combination gives `unsupported-logic-interleave` instead of
+using stale intermediate values. No successful compile silently ignores these gaps. They remain
+post-prototype work along with complete host delivery and dynamic submission-schema annotations.
+This is not a completed/released M09c implementation. The owner approved 74,500 enabled builder
+full, 32,600 UI, 8,300 builder-core; matched no-logic 28,832 and opt-in increment 6,000 are enforced.

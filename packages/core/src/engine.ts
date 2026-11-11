@@ -5,7 +5,7 @@ import {
 } from "@ourform/schema";
 import { builtinValidators } from "./validators";
 import type { CompiledValidator, Providers, ValidatorMap } from "./validators";
-import { migrate, validateDefinition } from "@ourform/schema";
+import { migrateStructure, validateStructure } from "@ourform/schema";
 import type { ComponentNode } from "@ourform/schema";
 import type { ComponentModel } from "./model";
 import type {
@@ -55,7 +55,9 @@ export class Registry {
     return [...this.#models.values()];
   }
 }
+import type { LogicRegistration } from "./logic-contract";
 export interface EngineOptions {
+  logic?: LogicRegistration;
   functions?: FunctionMap;
   validators?: ValidatorMap;
   providers?: Providers;
@@ -67,8 +69,22 @@ export class Engine {
   readonly validators: Readonly<ValidatorMap>;
   readonly providers: Readonly<Providers>;
   #forms = new WeakSet<CompiledForm>();
+  #logic?: LogicRegistration;
+  get logic(): LogicRegistration | undefined {
+    return this.#logic;
+  }
+  registerLogic(registration: LogicRegistration): this {
+    if (this.#logic) throw new Error("Duplicate logic registration.");
+    if (!registration || typeof registration.compile !== "function")
+      throw new TypeError("Expected a logic registration.");
+    this.#logic = Object.freeze({
+      compile: registration.compile.bind(registration),
+    });
+    return this;
+  }
   #plugins: ReadonlyMap<string, string>;
   constructor(options: EngineOptions = {}) {
+    if (options.logic) this.registerLogic(options.logic);
     this.#plugins = pluginVersions(options.plugins ?? []);
     const functions: FunctionMap = { ...options.functions };
     const validators: ValidatorMap = { ...options.validators };
@@ -153,16 +169,29 @@ export class Engine {
     }
   }
   private compileDefinition(input: unknown): CompileResult {
-    const migration = migrate(input);
+    const migration = migrateStructure(input);
     const shapeDiagnostics = migration.diagnostics.filter(
       (d) => d.code !== "bad-ref",
     );
     if (shapeDiagnostics.length)
       return { ok: false, diagnostics: shapeDiagnostics };
+    // Format support must never silently enable root-rule execution.
+    if (migration.definition.logic !== undefined && !this.#logic)
+      return {
+        ok: false,
+        diagnostics: [
+          {
+            severity: "error",
+            code: "missing-logic",
+            message:
+              "Root logic requires @ourform/core/logic registration at createEngine.",
+          },
+        ],
+      };
     const definition = snapshot(migration.definition);
     let hasComposites = false;
     // References to generated children are checked after registered composites expand.
-    const diagnostics = validateDefinition(definition, {
+    const diagnostics = validateStructure(definition, {
       get: (type) => {
         const model = this.registry.get(type);
         if (model?.kind === "composite") hasComposites = true;
@@ -408,15 +437,52 @@ export class Engine {
     }
     for (const id of Object.keys(dependents))
       dependents[id] = [...new Set(dependents[id])];
+    const logicResult =
+      definition.logic === undefined
+        ? undefined
+        : this.#logic!.compile({
+            definition,
+            nodes,
+            byId,
+            dependents,
+            expression: (raw) =>
+              compileExpression(raw, {
+                byRef: (id) =>
+                  byId[id] ? dependenciesFor(byId[id]) : undefined,
+                byPath: (path) =>
+                  byPath[pathKey(path)]
+                    ? dependenciesFor(byPath[pathKey(path)]!)
+                    : undefined,
+                functions: this.functions,
+              }),
+          });
+    diagnostics.push(...(logicResult?.diagnostics ?? []));
+    const logic = logicResult?.program;
+    if (
+      logicResult &&
+      !logic &&
+      !logicResult.diagnostics.some((d) => d.severity === "error")
+    )
+      error(
+        "invalid-logic-registration",
+        "Registered logic compiler did not return a program.",
+      );
     const graph = orderGraph(
       nodes.map((n) => n.node.id),
-      dependents,
+      logic?.dependents ?? dependents,
     );
     for (const members of graph.cycles)
       for (const id of members)
-        error("cycle", `Dependency cycle: ${members.join(", ")}`, id);
-    if (diagnostics.length) return { ok: false, diagnostics };
+        error(
+          "cycle",
+          logic?.describeCycle(members) ??
+            `Dependency cycle: ${members.join(", ")}`,
+          id,
+        );
+    if (diagnostics.some((d) => d.severity === "error"))
+      return { ok: false, diagnostics };
     const form = freeze({
+      ...(logic ? { logic } : {}),
       definition,
       nodes,
       byId,

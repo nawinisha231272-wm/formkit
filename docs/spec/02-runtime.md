@@ -243,6 +243,20 @@ These are accepted M09c contracts, not APIs implemented by the plan PR.
 
 ### Runtime acceptance and initial cost
 
+Owner amendment (2026-11-11): enforce **74,500 logic-enabled builder full / 32,600 builder UI /
+8,300 builder-core**. The identical matched no-logic form consumer is at most **28,832** (main
+28,232 +600), and opt-in logic adds at most **6,000**. No-logic full remains 68,500; all package
+and lazy ceilings remain. Earlier prototype-pending text below is historical and superseded.
+
+The no-logic compiler uses schema `validateStructure`/`migrateStructure` primitives and detects a
+root logic declaration without loading its rule wire/meta-schema or execution. These primitives
+keep bounded safe-JSON/component/legacy validation and are not complete root-rule validation.
+The registered `core/logic` compiler runs the complete public definition validation before reading
+any rule. The full public schema/validation/migration APIs preserve their contracts; their complete
+metadata is only retained by consumers requesting it. Rule-only session normalization/provenance,
+diagnostics, store bridging and cycle descriptions live in the opt-in entry. Root session code
+retains generic optional dispatch, protected writes and its unchanged legacy processing contract.
+
 No-logic and legacy-condition/calculation fixtures each stay ≤1.10 paired edit ratio versus immutable
 merged main at 100/500/1,000 fields. Exact rule-index/condition/action/writer/write/effect/cascade work
 counts are hard gates; timings remain advisory CI but a delivery GO requires the ≤10% evidence.
@@ -250,3 +264,17 @@ No-logic full ceiling is 68,500 Brotli bytes; the logic-enabled consumer closure
 prototype and separate owner-approved ceiling (expected ≤6,000 incremental) before shipping. Existing
 runtime package budgets remain unchanged. Actual builder closures are logic-enabled because builder
 always registers the runtime; report them rather than externalizing required code from a full build.
+
+### M09c registration and prototype observability
+
+`Engine.logic` is the optional readonly capability; `engine.registerLogic(registration)` installs it
+on an existing engine and rejects a duplicate. Builder setup uses this explicit per-instance hook
+when the host supplied an engine without the capability; it preserves an existing registration.
+No global registry or implicit root import is introduced. The factory remains a subpath-only export.
+
+Optional `FieldState.logic: {ruleId,authoritative}` records the last root value writer. A later user/API
+edit removes that provenance; authoritative calculations are recomputed. Optional
+`StatePatch.diagnostics` reports root runtime diagnostics, including cascade limit. Prototype
+`session.debug.logic` counts real index reads, candidate rules, conditions, action expressions,
+cached writers, trigger edges, actual writes, cascade rounds and effects. These are not timing gates.
+The prototype rejects unfinished effects/property overlays explicitly; their acceptance remains open.

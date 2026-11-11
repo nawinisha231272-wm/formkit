@@ -1,0 +1,78 @@
+{
+  "status": "prototype owner budget review only; not completed M09c",
+  "head": "dcb7550c7990f57a789b4adc9a3563bd9059c221",
+  "uncommitted": true,
+  "pushed": false,
+  "sourceManifestSHA256": "478e0afc468de8bc5352e4fad446a04aa56366653d2c2003da8fb9e97deb8467",
+  "commands": [
+    {
+      "command": "pnpm lint",
+      "exit": 0
+    },
+    {
+      "command": "pnpm build",
+      "exit": 0,
+      "tasks": 27
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "tasks": 45
+    },
+    {
+      "command": "pnpm test",
+      "exit": 0,
+      "unitTests": 369,
+      "files": 59
+    },
+    {
+      "command": "pnpm test:e2e tests/e2e/logic-prototype.spec.ts",
+      "exit": 0,
+      "tests": 3,
+      "browsers": ["chromium", "firefox", "webkit"]
+    },
+    {
+      "command": "pnpm benchmark:counts",
+      "exit": 0,
+      "tests": 9
+    },
+    {
+      "command": "pnpm exec size-limit",
+      "exit": 0,
+      "budgets": 17
+    },
+    {
+      "command": "node unchanged copy of scripts/builder-size-gate.mjs",
+      "exit": 1,
+      "reason": "enabled full 71036 > historical 67700; new enabled ceiling requires owner approval"
+    }
+  ],
+  "fullVerify": {
+    "run": false,
+    "reason": "required enabled-consumer budget decision precedes shipping/gate implementation"
+  },
+  "implementationCI": {
+    "run": false
+  },
+  "consumerGates": {
+    "ui": {
+      "bytes": 31780,
+      "acceptedM09cMaximum": 32600
+    },
+    "builderCore": {
+      "bytes": 7212,
+      "acceptedM09cMaximum": 8300
+    },
+    "noLogicForm": {
+      "bytes": 29395,
+      "acceptedNoLogicFull": 68500
+    },
+    "actualBuilderEnabledFull": {
+      "bytes": 71036,
+      "approvedCeiling": null,
+      "proposedCeiling": 74500
+    }
+  },
+  "testsWeakened": false,
+  "newRuntimeDependencies": []
+}

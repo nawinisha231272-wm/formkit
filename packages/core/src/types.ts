@@ -3,6 +3,7 @@ import type {
   Diagnostic,
   FormDefinition,
 } from "@ourform/schema";
+import type { LogicProgram, LogicProvenance } from "./logic-contract";
 import type { ComponentModel } from "./model";
 import type { CompiledValidator } from "./validators";
 import type { CompiledExpression } from "./expressions";
@@ -26,8 +27,10 @@ export interface FieldState {
   touched: boolean;
   pending: boolean;
   errors: FieldError[];
+  logic?: LogicProvenance;
 }
 export interface StatePatch {
+  diagnostics?: readonly Diagnostic[];
   changedPaths: Path[];
   changedFields: string[];
   data: unknown;
@@ -60,6 +63,7 @@ export interface CompiledNode {
   validators: readonly CompiledValidator[];
 }
 export interface CompiledForm {
+  logic?: LogicProgram;
   definition: FormDefinition;
   nodes: readonly CompiledNode[];
   byId: Readonly<Record<string, CompiledNode>>;

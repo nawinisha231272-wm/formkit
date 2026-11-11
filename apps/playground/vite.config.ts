@@ -49,6 +49,7 @@ export default defineConfig({
         "authoring.html",
         "boolean-authoring.html",
         "tabs.html",
+        "logic-prototype.html",
       ],
     },
   },

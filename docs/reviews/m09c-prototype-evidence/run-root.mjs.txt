@@ -1,0 +1,30 @@
+import {build} from 'esbuild';
+import {chromium} from '@playwright/test';
+import {createServer} from 'node:http';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+const evidence=resolve('.git/ourform-m09c-prototype-2026-11-10');
+let source=readFileSync(resolve(evidence,'bench-source.js'),'utf8')
+.replace("const engine=createEngine();", "import {createLogic} from '@ourform/core/logic';\nconst engine=createEngine({logic:createLogic()});")
+.replace("const samples=[];", `definition.logic=definition.components.slice(0,-1).map(node=>({id:'rule_'+node.id,trigger:{on:'change'},when:['neq',{ref:node.id},''],then:[{action:'require',target:node.id}]}));\nconst samples=[]; const editId=kind==='unrelated'?'field'+(count-1):'field0';`)
+.replace("const started=performance.now();", "const beforeLogic={...session.debug.logic};\nconst started=performance.now();")
+.replace("session.setValue('field0',", "session.setValue(editId,")
+.replace("(kind==='legacy'?650:25)", "(kind==='active'?50:25)")
+.replace("view.unmount();", `const work=Object.fromEntries(Object.keys(beforeLogic).map(key=>[key,session.debug.logic[key]-beforeLogic[key]]));
+ const expected={indexReads:75,triggerReads:kind==='active'?25:0,candidates:kind==='active'?25:0,conditions:kind==='active'?25:0,actionExpressions:0,writers:kind==='active'?25:0,edges:kind==='active'?25:0,writes:0,cascades:0,effects:0};
+ if(JSON.stringify(work)!==JSON.stringify(expected))throw Error(JSON.stringify({work,expected}));
+ view.unmount();`)
+.replace("processorRuns:kind==='legacy'?650:25", "processorRuns:kind==='active'?50:25");
+writeFileSync(resolve(evidence,'root-bench-source.js'),source);
+const built=await build({stdin:{contents:source,resolveDir:process.cwd(),sourcefile:'root-only-benchmark-consumer.js'},bundle:true,format:'esm',target:'es2022',minify:true,write:false});
+const js=built.outputFiles[0].contents;
+const server=createServer((req,res)=>{res.setHeader('Content-Type',req.url==='/index.js'?'application/javascript':'text/html');res.end(req.url==='/index.js'?js:'<!doctype html><html lang="en"><meta charset="utf-8"><title>Root timing</title><div id="form"></div><script type="module" src="/index.js"></script></html>');});
+await new Promise(r=>server.listen(0,'127.0.0.1',r));
+const browser=await chromium.launch();
+try {
+ const page=await browser.newPage();await page.goto(`http://127.0.0.1:${server.address().port}`);
+ const fixtures=[];
+ for(const kind of ['active','unrelated'])for(const count of [100,500,1000])fixtures.push({kind,...await page.evaluate(({count,kind})=>window.run(count,kind),{count,kind})});
+ const report={platform:`${process.platform}-${process.arch}`,node:process.version,method:'Absolute root-only production browser timings, no main ratio: 3 warmups + 9 measured samples, 25 edits/forced layout; fields-1 indexed require rules. Exact rule-work and identity/focus/DOM/processor assertions in every sample.',fixtures};
+ writeFileSync(resolve(evidence,'root-timings.json'),JSON.stringify(report,null,2)+'\n'); console.log(JSON.stringify(report,null,2));
+}finally{await browser.close();await new Promise(r=>server.close(r));}

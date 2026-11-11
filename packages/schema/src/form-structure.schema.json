@@ -50,7 +50,8 @@
       "items": {
         "$ref": "#/$defs/component"
       }
-    }
+    },
+    "logic": {}
   },
   "required": ["$formVersion", "id", "display", "components"],
   "additionalProperties": false,

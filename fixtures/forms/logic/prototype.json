@@ -1,0 +1,174 @@
+{
+  "$formVersion": "1.0",
+  "id": "logic-prototype",
+  "display": "form",
+  "settings": {
+    "validateOn": "change"
+  },
+  "components": [
+    {
+      "id": "customerType",
+      "key": "customerType",
+      "type": "text",
+      "label": "Customer type"
+    },
+    {
+      "id": "country",
+      "key": "country",
+      "type": "text",
+      "label": "Country"
+    },
+    {
+      "id": "company",
+      "key": "company",
+      "type": "text",
+      "label": "Company"
+    },
+    {
+      "id": "invoice",
+      "key": "invoice",
+      "type": "text",
+      "label": "Invoice type"
+    },
+    {
+      "id": "reference",
+      "key": "reference",
+      "type": "text",
+      "label": "Reference"
+    },
+    {
+      "id": "quantity",
+      "key": "quantity",
+      "type": "number",
+      "label": "Quantity"
+    },
+    {
+      "id": "total",
+      "key": "total",
+      "type": "number",
+      "label": "Total"
+    },
+    {
+      "id": "receipt",
+      "key": "receipt",
+      "type": "text",
+      "label": "Receipt"
+    }
+  ],
+  "logic": [
+    {
+      "id": "business",
+      "name": "Business customers",
+      "trigger": {
+        "on": "change",
+        "refs": ["customerType"]
+      },
+      "when": [
+        "and",
+        [
+          "eq",
+          {
+            "ref": "customerType"
+          },
+          "business"
+        ],
+        [
+          "or",
+          [
+            "eq",
+            {
+              "ref": "country"
+            },
+            "US"
+          ],
+          [
+            "eq",
+            {
+              "ref": "country"
+            },
+            "CA"
+          ]
+        ]
+      ],
+      "then": [
+        {
+          "action": "require",
+          "target": "company"
+        }
+      ]
+    },
+    {
+      "id": "invoice-load",
+      "trigger": {
+        "on": "load"
+      },
+      "when": [
+        "eq",
+        {
+          "ref": "customerType"
+        },
+        "business"
+      ],
+      "then": [
+        {
+          "action": "setValue",
+          "target": "invoice",
+          "value": "company"
+        }
+      ]
+    },
+    {
+      "id": "editable-reference",
+      "trigger": {
+        "on": "change",
+        "refs": ["customerType"]
+      },
+      "when": [
+        "eq",
+        {
+          "ref": "customerType"
+        },
+        "business"
+      ],
+      "then": [
+        {
+          "action": "setValue",
+          "target": "reference",
+          "value": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "total",
+      "trigger": {
+        "on": "change"
+      },
+      "then": [
+        {
+          "action": "calculate",
+          "target": "total",
+          "expr": [
+            "mul",
+            {
+              "ref": "quantity"
+            },
+            10
+          ]
+        }
+      ]
+    },
+    {
+      "id": "receipt-submit",
+      "trigger": {
+        "on": "submit"
+      },
+      "then": [
+        {
+          "action": "setValue",
+          "target": "receipt",
+          "value": "ready"
+        }
+      ]
+    }
+  ]
+}

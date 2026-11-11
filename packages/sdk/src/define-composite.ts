@@ -1,4 +1,8 @@
-import { inspectJson, migrate, componentChildren } from "@ourform/schema";
+import {
+  inspectJson,
+  migrateStructure,
+  componentChildren,
+} from "@ourform/schema";
 import type { ComponentNode, Expr } from "@ourform/schema";
 import type { RegisteredField } from "./native";
 
@@ -12,7 +16,7 @@ export function defineComposite(spec: {
   if (!spec.type || inspectJson(spec.components).length)
     throw new Error("Composite components must be bounded safe JSON.");
   let template = JSON.parse(JSON.stringify(spec.components)) as ComponentNode[];
-  const migration = migrate({
+  const migration = migrateStructure({
     $formVersion: "1.0",
     id: spec.type,
     display: "form",

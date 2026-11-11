@@ -6,6 +6,9 @@ export type {
   ColumnWidth,
   FormField,
   FormDefinition,
+  LogicRule,
+  LogicAction,
+  LogicTrigger,
   ValidationRules,
   Diagnostic,
   DefinitionRegistry,
@@ -14,7 +17,8 @@ export {
   formDefinitionSchema,
   validateDefinition,
   migrate,
-} from "./validate-definition";
+} from "./full-definition";
+export { validateStructure, migrateStructure } from "./validate-definition";
 export { isRecord, isSafeKey, inspectJson } from "./json";
 
 export { validateProperties } from "./properties";

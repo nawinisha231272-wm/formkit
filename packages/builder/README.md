@@ -304,3 +304,9 @@ shows its reason and Retry; a changed schema refuses pending preparation. Data m
 loading/error/Retry contract. Leaving the mode or destroying the builder cancels late mounting.
 Self-host `features/bulk-plan{,-retry}.js` and `features/data{,-retry}.js` with the other emitted assets
 under `assetBase`; they work with offline local assets and strict CSP without executable form JSON.
+
+M09c prototype setup always registers the opt-in core/logic capability on its per-instance engine
+before compiling definitions. Existing host registration is preserved; it is never replaced. This
+runtime inclusion is initial even while the Logic/map authoring screens are closed. Their new UI is
+not delivered by the runtime prototype. Owner-approved consumer gates are enforced; the enabled full
+ceiling is 74,500, builder UI 32,600 and builder-core 8,300. Delivery review remains pending.

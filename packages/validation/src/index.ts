@@ -118,15 +118,20 @@ export async function validateSubmission(
     return { valid: false, errors };
   }
   try {
+    // Root submit replay must finish before inspecting authoritative provenance.
+    const submitted = form.logic ? await session.submit() : undefined;
+    const rootResult = submitted
+      ? { valid: submitted.ok, errors: submitted.ok ? [] : submitted.errors }
+      : undefined;
     for (const entry of leaves) {
       const state = session.getFieldState(entry.node.id);
       if (!state.visible) continue;
       const raw = read(data, entry.path);
-      if (raw === undefined && state.required)
+      if (raw === undefined && state.required && !state.logic?.authoritative)
         add(entry.node.id, entry.path, "required");
       if (
-        entry.node.calculate &&
-        !entry.node.calculate.allowOverride &&
+        ((entry.node.calculate && !entry.node.calculate.allowOverride) ||
+          state.logic?.authoritative) &&
         raw !== undefined &&
         !equal(
           raw,
@@ -137,7 +142,7 @@ export async function validateSubmission(
       )
         add(entry.node.id, entry.path, "calculated");
     }
-    const result = await session.validate();
+    const result = rootResult ?? (await session.validate());
     for (const entry of result.errors)
       if (
         !errors.some(

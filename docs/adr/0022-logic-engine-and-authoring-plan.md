@@ -1,10 +1,32 @@
 # ADR-0022 — Logic engine placement, lazy authoring and M09c allowances
 
-Status: **accepted by the owner on 2026-11-10, with the amendments below**
+Status: **accepted by the owner on 2026-11-10; budget amendment accepted 2026-11-11**
 Date: 2026-11-09
 Milestone: M09c (accepted plan; implementation evidence remains pending)
 
 ## Context
+
+### Owner budget amendment — accepted 2026-11-11
+
+The owner approved **74,500** for the actual logic-enabled builder closure (=68,500+6,000),
+with UI **32,600** and builder-core **8,300** maximums. Also enforce **28,832** for the exact
+matched no-logic form consumer (immutable main **28,232**, at most **+600**) and **6,000** for
+its matched opt-in increment. No-logic full remains 68,500; runtime package/lazy limits unchanged.
+The earlier prototype's pending-budget statements below describe its historical review, now resolved.
+
+Wire/meta-schema validation and rule-only session state/provenance/diagnostics move out of the
+no-logic engine path. The full public `formDefinitionSchema`, `validateDefinition` and `migrate`
+keep their complete format validation; pure construction makes this metadata removable when unused.
+The engine and local composite template processing use bounded component-structure primitives
+`validateStructure`/`migrateStructure`; the registered core/logic compiler validates the entire
+root wire before reading any rule. A no-logic engine detects a declared logic key and fails
+missing-logic. Structural primitives are not a replacement for engine/full definition validation.
+No duplicate schema truth: compose the complete meta-schema from structural and rule definitions.
+
+Move rule-only store bridging into the opt-in entry; leave only optional capability dispatch and
+the legacy processors in the root. Keep every existing test's intent, safety checks and edit
+performance. If the matched target cannot be met without breaking those contracts, stop with
+measured options rather than increasing the target or hiding code outside accounting.
 
 The owner approved M09b+ at `a9899587bd9369589e2cc9729dbc73238c33e7df`.
 PR #16 merged as `cd6d0b679027da328da9f5e4f63480437d6c765b` after both Verify
@@ -133,12 +155,12 @@ All numbers are **Brotli bytes** under the established production consumer metho
 chunks once. They are allowances, not measured implementation PASS results. Keep the original
 M09b+ measurement artifacts/failed probes and disclose any moved code on both sides.
 
-| Scope                                       | M09b+ baseline / prior gate                    | Accepted M09c ceiling or next gate                                                                                                                 |
-| ------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Builder UI initial (excludes builder-core)  | 31,769 / 31,800                                | **32,600 maximum**                                                                                                                                 |
-| Builder-core marginal consumer contribution | 7,120 / 7,300                                  | **8,300 maximum**                                                                                                                                  |
-| No-logic consumer full initial closure      | Historical full baseline 67,674 / prior 67,700 | **68,500**, at most **+826** against that historical full baseline                                                                                 |
-| Logic-enabled consumer full initial closure | New gate; no prototype measurement yet         | **Measure and propose a numeric ceiling; owner approval before shipping**. Expected opt-in increment **≤6,000 over the matched no-logic consumer** |
+| Scope                                       | M09b+ baseline / prior gate                      | Accepted M09c ceiling or next gate                                                            |
+| ------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| Builder UI initial (excludes builder-core)  | 31,769 / 31,800                                  | **32,600 maximum**                                                                            |
+| Builder-core marginal consumer contribution | 7,120 / 7,300                                    | **8,300 maximum**                                                                             |
+| No-logic consumer full initial closure      | Historical full baseline 67,674 / prior 67,700   | **68,500**, at most **+826** against that historical full baseline                            |
+| Logic-enabled consumer full initial closure | Prototype 71,036; final review before completion | **74,500 enabled full**; matched form opt-in increment **≤6,000** (owner approved 2026-11-11) |
 
 A no-logic consumer imports/registers **no root-rule runtime**; absence of root rules in its current
 JSON is insufficient if the runtime is still bundled. A builder always registers root logic, so its
@@ -289,3 +311,30 @@ measured logic-enabled budget review (expected ≤6,000 incremental), automatic 
 interactivity, authoritative versus editable-edge replay, typed effects/events, Node timeout 5 s
 and destroy cancellation, post-1.0 importer backlog, and unchanged lazy/runtime-package limits.
 Original proposal remains available in PR #18's earlier commit `c85e67a`; failed runs/baselines remain.
+
+### Owner expression correction — 2026-11-10
+
+The owner confirmed spec 11's literal `['US','CA']` list was a drafting error. Correct its example to
+OR-of-eq and compile the Logic editor's **is one of** picker to OR-of-eq for now. Expr format,
+evaluator and existing in semantics remain unchanged. Literal-list syntax (`list`, `literal` or
+another representation) requires a separate explicitly approved spec 03 decision; it is outside M09c.
+
+### Prototype measurement checkpoint — 2026-11-10, enabled gate proposed
+
+The unpublished prototype measures **31,780 builder UI / 7,212 builder-core / 71,036 actual
+logic-enabled builder full initial**. Matched real form consumers measure **29,395 no-logic /
+31,306 enabled**, an opt-in increment of **1,911**; immutable main's same no-logic form is 28,232.
+The root execution body is absent from no-logic consumers. The actual builder always registers it;
+no externalized or relabelled builder is presented as a complete no-logic build.
+
+**Request owner approval of a 74,500-byte enabled full closure**, retaining accepted 68,500
+no-logic, 32,600 UI, 8,300 builder-core and every package/lazy limit. This proposed ceiling leaves
+3,464 bytes above the partial prototype for unmeasured remaining runtime and integration. It is
+not accepted by this checkpoint, not a forecast that completion fits, and not permission to raise
+the gate automatically. Existing gate code still uses historical limits. Stop before shipping.
+
+[Prototype evidence](../reviews/m09c-runtime-prototype.md) records exact bytes, five alternating
+main/draft timing pairs (all six median ratios ≤1.10), actual indexed work, verification and API
+additions. Effects/property overlays, complete interleaved scheduling and submission annotations
+remain explicit gaps, alongside all authoring/map and final delivery work. No M09c completion or
+full pinned verification of the draft is claimed.
