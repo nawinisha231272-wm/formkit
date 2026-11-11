@@ -752,7 +752,7 @@ logic without it fail missing-logic. Kits/extensions remain M09d; no executable 
 StatePatch typed effects and session triggerLogicEvent bridge trusted Button/host events. Effects
 must be delivered once, preserve immutable snapshots and cancel pending async work on destroy.
 Customer Node call uses availableInNode and a configurable timeout (default 5 s) returning diagnostics.
-Calculated/load/submit values and derived state are enforced server-side; change/event assignments
+Non-overridable calculated/submit values and derived state are enforced server-side; load/change/event assignments
 remain editable. All five themes/hosts keep the same control, accessibility and state contracts.
 Form.io import is post-1.0 backlog, not an SDK addition in M09c. This section describes the accepted
 implementation target; no new API implementation ships in the plan PR.

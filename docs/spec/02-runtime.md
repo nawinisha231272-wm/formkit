@@ -223,10 +223,20 @@ conditions/targets, preserving ordered state priority and legacy conditions at i
 
 ### Replay and effects
 
-State actions are always recomputed/enforced in browser and Node. Calculations and load/submit-triggered
-assignments are authoritative; reject forged authoritative results. Change/event setValue/clear remain
-user-editable and are not forgery; Node does not guess prior client events. Authoritative replay can
-still assign the same target later. Required/hidden clearing, unknown keys and adapter safety remain.
+State actions are always recomputed/enforced in browser and Node, including load-rule state actions
+computed from final submission data. Only non-overridable continuous calculations and submit-triggered
+assignments are authoritative; reject forged results. Load setValue/clear are one-time editable
+initializers and are not replayed by Node. Change/event writes are editable too. Node never guesses
+prior client events. Browser submit applies its submit rules before capturing the payload, without
+extra canonicalization or replaying effects. Required/hidden clearing, unknown keys and adapter safety remain.
+
+`validateSubmission` uses the compiled opt-in program's `replay()` capability in a private session,
+without mutating the original compiled form or detecting a browser/global. Reset retains this policy.
+The replay program prepares initial allowed-override ids before legacy initialization; root load
+rules still execute after legacy calculations. Supplied allowOverride:true values remain editable;
+omitted values calculate normally. This policy lives in the opt-in entry, not no-logic sessions.
+Root setValue/clear to non-overridable calculated targets fail with logic-calculation-conflict naming
+the rule and field; root continuous calculate targets are protected unless the field allows overrides.
 
 StatePatch gains optional typed `effects`; session gains `triggerLogicEvent(name, payload?)`. Effects
 run once per originating transaction after state publication, with immutable invocation snapshots.
@@ -278,3 +288,28 @@ edit removes that provenance; authoritative calculations are recomputed. Optiona
 `session.debug.logic` counts real index reads, candidate rules, conditions, action expressions,
 cached writers, trigger edges, actual writes, cascade rounds and effects. These are not timing gates.
 The prototype rejects unfinished effects/property overlays explicitly; their acceptance remains open.
+
+### M09c scheduling and work-count implementation
+
+Affected rules follow compiled dependency ranks; legacy calculations settle between dependent root
+rules, including when the wire rule order is reversed. State writer priority stays in definition
+order. Filter actual value changes before trigger evaluation; unchanged legacy results and hidden
+writes cleared back to the stored value do not create value edges. One transaction publishes one
+settled synchronous StatePatch; cascade/cycle safety and existing async validation patches remain.
+
+Rule work includes sourceChecks (actual-source filtering) and valueChecks (write/final-value
+comparisons), alongside index/candidate/condition/action/writer/edge/write/effect/cascade counts.
+Source filtering cannot hide an O(N) scan behind zero candidate counts. Baseline evolution rejects
+increases, missing metrics or changed fixed fixture scale. New comparison metrics add coverage;
+existing fixture expectations do not increase. Root JSON Schema delegates data-only dynamic annotations
+to the attached capability without pulling the schema generator into every enabled form consumer.
+
+### Combined calculations — owner correction, 2026-11-11
+
+The field formula is position zero and active root calculate contributions fold in rule order. When
+none is active the field formula applies again; revert never clears it while a preceding writer
+exists. The field's allowOverride setting controls the combined result, including Node authority.
+Allowed submitted overrides are validated directly, not recalculated/enforced. With no own formula,
+existing otherwise/revert applies. Opt-in compiled calculation overlays reuse the affected-node
+processor and finalize immutable provenance; they never mutate the wire/registered model. Legacy
+no-logic sessions retain their prior calculation path.

@@ -1,0 +1,21 @@
+import { createEngine } from '@ourform/core';
+import { createLogic } from '@ourform/core/logic';
+import { textField, numberField } from '@ourform/components';
+import { validateSubmission } from '@ourform/validation';
+import { writeFileSync } from 'node:fs';
+const base = {$formVersion:'1.0',id:'replay',display:'form',components:[]};
+async function check(name, definition, data, edit) {
+ const engine=createEngine({logic:createLogic()}).register(textField.model).register(numberField.model);
+ const compiled=engine.compile(definition); if(!compiled.ok)throw Error(JSON.stringify(compiled.diagnostics));
+ const client=engine.createSession(compiled.form,{data});
+ const initial=client.getData();client.setValue(edit.path,edit.value,{source:'user'});
+ const beforeSubmit=client.getData(); const submitted=await client.submit();
+ const server=submitted.ok?await validateSubmission(compiled.form,submitted.data):null;
+ client.dispose();return{name,definition,initial,edit,beforeSubmit,submitted,server};
+}
+const examples=[];
+examples.push(await check('load copies editable source; legitimate client payload disagrees with authoritative Node replay', {...base,components:[{id:'source',key:'source',type:'text'},{id:'target',key:'target',type:'text'}],logic:[{id:'copy-on-load',trigger:{on:'load'},then:[{action:'setValue',target:'target',value:{ref:'source'}}]}]},{source:'A'},{path:'source',value:'B'}));
+examples.push(await check('change edge writes calculated target; legitimate client payload fails Node calculation check', {...base,components:[{id:'source',key:'source',type:'text'},{id:'total',key:'total',type:'number',calculate:{expr:2}}],logic:[{id:'edge',trigger:{on:'change',refs:['source']},then:[{action:'setValue',target:'total',value:99}]}]},{},{path:'source',value:'go'}));
+const report={node:process.version,baseSHA:'2eb031278bc9473638cf9564d474b4345f37bdf3',workingDraft:true,examples};
+writeFileSync('.git/ourform-m09c-replay-question-2026-11-11/results.json',JSON.stringify(report,null,2)+'\n');
+console.log(JSON.stringify(report,null,2));

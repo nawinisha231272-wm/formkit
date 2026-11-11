@@ -187,9 +187,25 @@ from `@ourform/core/logic`; otherwise return **missing-logic**, including for an
 Never drop or silently ignore unregistered rules. Existing legacy-only definitions need no entry.
 
 Server validation always enforces derived rule state (visibility, enabled/disabled, required,
-readOnly and permitted properties). Calculations and load/submit assignments are authoritative;
-change/event setValue/clear can be changed by the user and are not forgery. Submission-schema output
+readOnly and permitted properties). Non-overridable continuous calculations and submit assignments are authoritative. Load setValue/clear
+are one-time editable initializers; Node never replays them. Change/event values are editable too.
+Assignments to non-overridable calculated fields fail compilation with logic-calculation-conflict
+naming the rule and field; allowOverride:true accepts ordinary editable writes. Submission-schema output
 must annotate dynamic logic it cannot express rather than silently omitting it; use registered
 runtime validation for enforcement. Unknown-key policy and canonical adapter checks stay unchanged.
 Form.io import is outside M09c and moves to the post-1.0 importer backlog. This is an accepted
 implementation contract; the docs-only plan PR does not implement the root-rule schema or engine.
+
+## M09c compiled submission-schema annotations
+
+The complete public meta-schema/validateDefinition/migrate contracts include root logic. Structural
+compiler primitives preserve bounded opaque rules; only registered core/logic validates/executes the
+root wire. No-logic consumers can omit that metadata/execution under ADR-0022's matched gates.
+
+`toSubmissionSchema` on a root-rule compiled form includes data-only `x-ourform-logic`. Affected
+conditional requiredness, subtree visibility, property constraints and authoritative server-filled
+fields defer dynamic requirements/constraints to runtime annotations; unaffected fields keep existing
+static JSON Schema constraints and canonical adapter hints. JSON Schema does not execute rules or
+replace validateSubmission's authoritative replay/forgery checks. Generated annotations are cloned,
+so editing them cannot change the definition. The structural compiled source's optional schema
+capability/dynamicValidation flag is not a new wire property or migration.

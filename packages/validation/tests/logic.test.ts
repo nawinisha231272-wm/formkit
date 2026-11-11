@@ -41,9 +41,9 @@ test("shared root-rule session and customer Node accept the same canonical submi
   session.dispose();
 });
 
-test("Node enforces rule-required state and authoritative load/submit/calculation values, preserving editable edge values", async () => {
+test("Node enforces rule-required state and authoritative submit/calculation values, preserving editable load and edge values", async () => {
   const { form } = compile();
-  for (const target of ["invoice", "receipt", "total"] as const) {
+  for (const target of ["receipt", "total"] as const) {
     const result = await validateSubmission(form, {
       ...good,
       [target]: target === "total" ? 19 : "forged",
@@ -55,6 +55,14 @@ test("Node enforces rule-required state and authoritative load/submit/calculatio
       ),
     ).toBe(true);
   }
+  expect(
+    (
+      await validateSubmission(form, {
+        ...good,
+        invoice: "a later user answer",
+      })
+    ).valid,
+  ).toBe(true);
   const missing = await validateSubmission(form, { ...good, company: "" });
   expect(
     missing.errors.some(

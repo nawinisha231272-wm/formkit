@@ -118,22 +118,31 @@ cannot mutate the builder's answers or contact providers without explicit host c
   refreshOptions reaches an explicitly configured provider/control hook. Node skips focus/emit,
   and trusted call functions execute only when `availableInNode` permits. Add README/spec/changeset
   and all-host tests when the API is implemented. No function comes from JSON.
-- Customer Node runs the shared pipeline, including load and submit phases, canonicalizes values and
-  rejects forged non-overridable calculations/rule-set results. Test required/visibility/revert and
-  user-overridable edge assignments separately. Calculations and load/submit assignments are
-  authoritative; state actions are always enforced server-side. Change/event setValue/clear remain
-  user-editable and their submitted values are not rejected as forgery merely for differing from a
-  past edge result. Validation cannot infer a client's event history.
+- Customer Node runs the shared pipeline, derives load-rule state from final data and applies submit
+  assignments. It rejects forged non-overridable calculations/submit results. Load value assignments
+  are one-time editable initializers, never replayed in Node. All state actions remain enforced.
+  Change/event writes and allowOverride:true values are editable; validation cannot infer client history.
 - Rule creation/reorder/enable/delete/actions use commands. Check rule ids, target refs, type/property
   compatibility and locks before committing. Property metadata must explicitly permit logic writes;
   reject structural/key/type/slot/prototype writes. Existing definitions and answers are immutable.
 
 ### Accepted owner contract decisions — 2026-11-10
 
-1. **Replay:** calculations and load/submit-triggered assignments are authoritative. Always recompute
-   show/hide, enable/disable, required/optional, readOnly and permitted setProperty state in Node.
-   Change/event setValue/clear are user-editable and are not forgery; a later authoritative assignment
-   is still enforced. Use the shared registered runtime, not client state or claimed event history.
+1. **Replay, corrected by owner 2026-11-11:** non-overridable continuous calculations and submit
+   assignments are authoritative. Always recompute show/hide, enable/disable, required/optional,
+   readOnly and permitted setProperty state from final data in Node, including load-rule state.
+   Load setValue/clear are one-time editable initializers and MUST NOT be replayed/enforced in Node;
+   this explicitly supersedes the 2026-11-10 load-authority decision. Change/event writes remain
+   editable too. Browser submit already runs submit rules before payload capture: no additional
+   canonicalization or effect replay. Reject setValue/clear to a non-overridable calculated field
+   at compile with logic-calculation-conflict naming rule and field, exposed in Issues/Logic.
+   Omitted allowOverride means false; allowOverride:true accepts ordinary editable writes. Root
+   continuous calculate targets are protected unless the field explicitly allows overrides. validateSubmission selects the opt-in program's
+   replay() capability in a private session, preserving the original program and requiring no new
+   host option or environment probe. Replay policy stays in core/logic; no-logic legacy sessions
+   retain their existing behavior.
+   Regression evidence must cover retained A after source B, load state enforced on final data,
+   compile refusal of change-rule 99 into calculated 2, and validation of editable override values.
 2. **Effects:** typed StatePatch effects and `session.triggerLogicEvent` are accepted. Invoke each
    effect once after its transaction. Async call does not hold up that patch, cannot mutate its frozen
    snapshot and cannot silently write data on completion. Node awaits permitted calls during submit/
@@ -338,3 +347,20 @@ main/draft timing pairs (all six median ratios ≤1.10), actual indexed work, ve
 additions. Effects/property overlays, complete interleaved scheduling and submission annotations
 remain explicit gaps, alongside all authoring/map and final delivery work. No M09c completion or
 full pinned verification of the draft is claimed.
+
+## Owner amendment — calculation precedence, 2026-11-11
+
+Accept the existing field calculate as position zero; active root calculate actions fold over it in
+rule order, later active rule winning. When no root contribution is active, the field formula applies
+again. Revert never clears to null while a preceding writer exists. The owner's reported browser null
+and Node rejection are both bugs; do not reject the competing calculation at compile or add client
+canonicalization. The field's allowOverride governs the combined result: false is authoritative and
+forged results are rejected; true permits user override and Node validates that submitted value without
+enforcing the derived formula. With no own formula, otherwise/revert retains its existing behavior.
+
+Use the existing affected-node processor for combined derived expressions, with per-session opt-in
+calculation contributions and immutable provenance. Small typed calculate/finalize hooks reuse the
+existing LogicState lookup; they do not move rule execution into root core. Compiled graph traversal
+and writer grouping stay opt-in. Test active=3, inactive=2, allowed user override accepted in Node and
+non-overridable forgery rejected, including browser checks. Existing budgets, legacy no-logic behavior,
+canonical validation and all correctness thresholds remain unchanged.

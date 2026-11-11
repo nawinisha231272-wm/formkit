@@ -5,7 +5,13 @@ export type JSONSchema = Record<string, unknown>;
 /** Structural input avoids a schema → core dependency. CompiledForm satisfies this contract. */
 export interface SubmissionSchemaSource {
   definition: { id: string; title?: string };
+  logic?: {
+    submissionSchema(
+      build: (source: SubmissionSchemaSource) => JSONSchema,
+    ): JSONSchema;
+  };
   nodes: readonly {
+    dynamicValidation?: boolean;
     node: ComponentNode;
     path: readonly (string | { row: string })[];
     parentId?: string;
@@ -27,6 +33,12 @@ function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
 export function toSubmissionSchema(form: SubmissionSchemaSource): JSONSchema {
+  if (form.logic) {
+    const schema = form.logic.submissionSchema(toSubmissionSchema);
+    if (!isRecord(schema) || inspectJson(schema).length)
+      throw new Error("Logic schema annotations must be safe JSON.");
+    return clone(schema);
+  }
   const root: JSONSchema = {
     $schema: "https://json-schema.org/draft/2020-12/schema",
     type: "object",
@@ -54,6 +66,7 @@ export function toSubmissionSchema(form: SubmissionSchemaSource): JSONSchema {
         componentId: e.node.id,
         visibleWhen: e.node.visibleWhen,
       }));
+    const dynamic = conditions.length > 0 || entry.dynamicValidation === true;
     const config = Object.fromEntries(
       Object.entries(entry.model.properties ?? {}).map(([key, p]) => [
         key,
@@ -122,7 +135,7 @@ export function toSubmissionSchema(form: SubmissionSchemaSource): JSONSchema {
       const nonempty: JSONSchema = {
         allOf: [field, constraints, { not: emptySchema }],
       };
-      field = conditions.length
+      field = dynamic
         ? { ...field, "x-ourform-validation": rules }
         : rules.required
           ? nonempty
@@ -153,7 +166,7 @@ export function toSubmissionSchema(form: SubmissionSchemaSource): JSONSchema {
           properties: {},
           additionalProperties: false,
         };
-      if (entry.node.validation?.required && !conditions.length) {
+      if (entry.node.validation?.required && !dynamic) {
         const required = (target.required ??= []) as string[];
         if (!required.includes(key)) required.push(key);
       }

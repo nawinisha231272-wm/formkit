@@ -108,9 +108,9 @@ export class FormSession {
       );
       this.debug.processorRuns[entry.node.id] = 0;
     }
-    for (const id of this.form.order)
-      this.process(this.form.byId[id]!, false, true);
     this.#logic = this.form.logic?.create({
+      initialData: data,
+      overrides: this.#overrides,
       form: this.form,
       states: this.#states,
       context: () => this.context(),
@@ -123,6 +123,8 @@ export class FormSession {
       process: (id, skipCalculate) =>
         this.process(this.form.byId[id]!, false, false, skipCalculate),
     });
+    for (const id of this.form.order)
+      this.process(this.form.byId[id]!, false, true);
     if (this.#logic) this.debug.logic = this.#logic.counts;
     this.applyLogic({ on: "load" });
   }
@@ -187,7 +189,8 @@ export class FormSession {
       : undefined;
     let value = readPath(this.#data, entry.path);
     const context = this.context();
-    const calc = entry.expressions.calculate;
+    const logic = this.#logic?.state(id);
+    const calc = logic?.calculate ?? entry.expressions.calculate;
     if (calc && !skipCalculate && !this.#overrides.has(id))
       value = this.normalize(entry, calc.evaluate(context));
     // Conditions can reference a field's own newly calculated value.
@@ -196,7 +199,6 @@ export class FormSession {
       !Object.is(value, readPath(this.#data, entry.path))
     )
       this.#data = writePath(this.#data, entry.path, value);
-    const logic = this.#logic?.state(id);
     const visible =
       (parent?.visible ?? true) &&
       (logic?.visible ??
@@ -237,7 +239,7 @@ export class FormSession {
         : { errors: old.errors, pending: false };
     this.#states.set(
       id,
-      freeze({
+      (logic?.finalize ?? freeze)({
         ...old,
         value,
         visible,
@@ -273,9 +275,7 @@ export class FormSession {
       changedFields: [...ids],
       changedPaths: paths,
       data: this.#data,
-      ...(this.#logic?.diagnostics.length
-        ? { diagnostics: [...this.#logic!.diagnostics] }
-        : {}),
+      ...this.#logic?.patch(),
     });
     for (const listener of [...this.#listeners]) listener(patch);
   }

@@ -1,0 +1,147 @@
+{
+  "node": "v22.22.3",
+  "baseSHA": "2eb031278bc9473638cf9564d474b4345f37bdf3",
+  "workingDraft": true,
+  "examples": [
+    {
+      "name": "load copies editable source; legitimate client payload disagrees with authoritative Node replay",
+      "definition": {
+        "$formVersion": "1.0",
+        "id": "replay",
+        "display": "form",
+        "components": [
+          {
+            "id": "source",
+            "key": "source",
+            "type": "text"
+          },
+          {
+            "id": "target",
+            "key": "target",
+            "type": "text"
+          }
+        ],
+        "logic": [
+          {
+            "id": "copy-on-load",
+            "trigger": {
+              "on": "load"
+            },
+            "then": [
+              {
+                "action": "setValue",
+                "target": "target",
+                "value": {
+                  "ref": "source"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "initial": {
+        "source": "A",
+        "target": "A"
+      },
+      "edit": {
+        "path": "source",
+        "value": "B"
+      },
+      "beforeSubmit": {
+        "source": "B",
+        "target": "A"
+      },
+      "submitted": {
+        "ok": true,
+        "data": {
+          "source": "B",
+          "target": "A"
+        }
+      },
+      "server": {
+        "valid": false,
+        "errors": [
+          {
+            "componentId": "target",
+            "path": ["target"],
+            "error": {
+              "code": "calculated",
+              "messageKey": "of.validation.calculated"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "change edge writes calculated target; legitimate client payload fails Node calculation check",
+      "definition": {
+        "$formVersion": "1.0",
+        "id": "replay",
+        "display": "form",
+        "components": [
+          {
+            "id": "source",
+            "key": "source",
+            "type": "text"
+          },
+          {
+            "id": "total",
+            "key": "total",
+            "type": "number",
+            "calculate": {
+              "expr": 2
+            }
+          }
+        ],
+        "logic": [
+          {
+            "id": "edge",
+            "trigger": {
+              "on": "change",
+              "refs": ["source"]
+            },
+            "then": [
+              {
+                "action": "setValue",
+                "target": "total",
+                "value": 99
+              }
+            ]
+          }
+        ]
+      },
+      "initial": {
+        "source": "",
+        "total": 2
+      },
+      "edit": {
+        "path": "source",
+        "value": "go"
+      },
+      "beforeSubmit": {
+        "source": "go",
+        "total": 99
+      },
+      "submitted": {
+        "ok": true,
+        "data": {
+          "source": "go",
+          "total": 99
+        }
+      },
+      "server": {
+        "valid": false,
+        "errors": [
+          {
+            "componentId": "total",
+            "path": ["total"],
+            "error": {
+              "code": "calculated",
+              "messageKey": "of.validation.calculated"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

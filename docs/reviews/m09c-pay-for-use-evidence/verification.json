@@ -32,5 +32,14 @@
     "optInIncrement": 6000
   },
   "noBaselinesChanged": true,
-  "implementationCI": "pending first-attempt push run"
+  "implementationCI": {
+    "scope": "foundation only; newer local draft not covered",
+    "headSHA": "2eb031278bc9473638cf9564d474b4345f37bdf3",
+    "url": "https://github.com/nawinisha231272-wm/formkit/actions/runs/43048423537",
+    "conclusion": "success",
+    "runAttempt": 1,
+    "unitTests": 373,
+    "browserTests": 1608,
+    "runtimeCountTests": 9
+  }
 }

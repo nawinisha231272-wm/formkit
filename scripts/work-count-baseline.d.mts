@@ -6,3 +6,7 @@ export function checkAuthoringCountBaselineEvolution(
   previous: unknown,
   current: unknown,
 ): void;
+export function checkLogicCountBaselineEvolution(
+  previous: unknown,
+  current: unknown,
+): void;

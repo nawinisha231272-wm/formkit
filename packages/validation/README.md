@@ -52,7 +52,19 @@ Playground: open `/tier1.html`, choose Unknown key policy, and validate the samp
 The demo shows default rejection, opt-in stripping and the unchanged original extra property.
 
 M09c root-rule prototype: compile with an engine explicitly configured with `createLogic()` from
-`@ourform/core/logic`. Validation reuses its compiled runtime, replays load then submit before checking
-canonical values, enforces rule-derived state and rejects forged calculated/load/submit assignments.
-Change/event assignments remain editable, not forgery. No automatic logic runtime import occurs here.
+`@ourform/core/logic`. Validation reuses its compiled runtime through its compiled `replay()` capability. It derives load-rule
+state from submitted data but never replays load setValue/clear initializers. It applies submit rules,
+enforces derived state and rejects forged non-overridable calculated/submit assignments. Load/change/
+event assignments and allowOverride:true values remain editable, not forgery. A setValue/clear rule
+writing a non-overridable calculated target fails compilation with logic-calculation-conflict. No automatic logic runtime import occurs here.
 Full effect/call lifecycle support is not complete in this unshipped prototype.
+
+Root-rule JSON Schema output carries `x-ourform-logic`; dynamic required/visibility/constraint and
+server-filled fields are annotations, not unconditional JSON Schema requirements. Static fields and
+canonical type hints remain. JSON Schema alone does not run these rules or reject all forged values;
+`validateSubmission` with the same registered engine remains authoritative.
+
+Combined calculations use the field formula at position zero, with active root formulas folded in
+rule order. If no root formula is active, the field formula returns. Its allowOverride governs the
+combined result: allowed user overrides are accepted and validated in Node; protected results reject
+forgery. With no own formula, existing otherwise/revert clearing and later user edits are preserved.

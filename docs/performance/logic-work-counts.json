@@ -15,7 +15,10 @@
     "processorRuns": 1,
     "patches": 1,
     "changedFields": 1,
-    "triggerReads": 0
+    "triggerReads": 0,
+    "sourceChecks": 1,
+    "valueChecks": 0,
+    "overrideInvalidations": 0
   },
   "oneRuleEdit": {
     "indexReads": 3,
@@ -30,6 +33,10 @@
     "processorRuns": 2,
     "patches": 1,
     "changedFields": 1,
-    "triggerReads": 1
-  }
+    "triggerReads": 1,
+    "sourceChecks": 1,
+    "valueChecks": 0,
+    "overrideInvalidations": 0
+  },
+  "version": 1
 }

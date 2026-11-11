@@ -109,10 +109,13 @@ export async function validateSubmission(
   if (errors.length) return { valid: false, errors };
   let session: FormSession;
   try {
-    session = new FormSession(form, {
-      data,
-      ...(options.providers ? { providers: options.providers } : {}),
-    });
+    session = new FormSession(
+      form.logic ? { ...form, logic: form.logic.replay() } : form,
+      {
+        data,
+        ...(options.providers ? { providers: options.providers } : {}),
+      },
+    );
   } catch {
     add(form.definition.id, [], "submission");
     return { valid: false, errors };

@@ -3,6 +3,8 @@ import type {
   Expr,
   FormDefinition,
   LogicTrigger,
+  JSONSchema,
+  SubmissionSchemaSource,
 } from "@ourform/schema";
 import type { CompiledExpression, ExpressionContext } from "./expressions";
 import type {
@@ -17,6 +19,9 @@ export interface LogicProvenance {
   authoritative: boolean;
 }
 export interface LogicWorkCounts {
+  sourceChecks: number;
+  valueChecks: number;
+  overrideInvalidations: number;
   indexReads: number;
   triggerReads: number;
   candidates: number;
@@ -29,13 +34,17 @@ export interface LogicWorkCounts {
   effects: number;
 }
 export interface LogicState {
+  calculate?: CompiledExpression | undefined;
+  finalize?: (state: FieldState) => FieldState;
   visible?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
   required?: boolean;
 }
 export interface LogicHost {
+  readonly submission: boolean | undefined;
   context(): ExpressionContext;
+  equal(id: string, left: unknown, right: unknown): boolean;
   write(
     id: string,
     value: unknown,
@@ -47,10 +56,13 @@ export interface LogicHost {
   process(
     ids: readonly string[],
     skipCalculate: ReadonlySet<string>,
+    changed: ReadonlySet<string>,
   ): readonly string[];
   diagnostic(diagnostic: Diagnostic): void;
 }
 export interface LogicSession {
+  readonly initialData: Record<string, unknown>;
+  readonly overrides: Set<string>;
   readonly form: CompiledForm;
   readonly states: Map<string, FieldState>;
   context(): ExpressionContext;
@@ -63,12 +75,17 @@ export interface LogicSession {
 export interface LogicRuntime {
   readonly counts: LogicWorkCounts;
   readonly diagnostics: Diagnostic[];
+  patch(): { diagnostics?: Diagnostic[] };
   validationErrors(): ValidationResult["errors"];
   state(id: string): Readonly<LogicState> | undefined;
   edited(id: string): void;
   run(trigger: LogicTrigger, changed?: readonly string[]): readonly string[];
 }
 export interface LogicProgram {
+  replay(): LogicProgram;
+  submissionSchema(
+    build: (source: SubmissionSchemaSource) => JSONSchema,
+  ): JSONSchema;
   readonly dependents: Readonly<Record<string, readonly string[]>>;
   readonly edges: readonly { source: string; target: string; ruleId: string }[];
   describeCycle(members: readonly string[]): string;

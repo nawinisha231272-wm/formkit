@@ -97,3 +97,11 @@ unknown fields; migrations preserve the rules without mutating input and never a
 forms. Schema validation does not execute rules or resolve trusted functions. Semantic compilation
 requires the opt-in core/logic registration, including for an explicitly empty list. This prototype's
 execution entry is still under development; wire support alone must never silently enable execution.
+
+M09c submission schemas include `x-ourform-logic` when compiled with root rules. Dynamic visibility,
+requiredness/properties and authoritative assignments keep canonical adapter hints and annotate
+constraints instead of imposing a static required/value rule that can reject valid conditional data.
+Static fields keep their existing schema constraints. Extensions are data and do not execute rules:
+use `validateSubmission` with the registered runtime for complete validation. Output annotations are
+cloned and cannot mutate the definition. `SubmissionSchemaSource` accepts an optional trusted schema
+capability and per-node dynamic-validation flag; neither is a form-JSON property.

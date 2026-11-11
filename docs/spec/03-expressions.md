@@ -91,7 +91,8 @@ expression semantics through explicitly registered @ourform/core/logic. The root
 in edge actions/revert/cascade/effects/events/provenance; missing registration produces missing-logic.
 Compile reads once into rule/target indexes; no expression parsing or all-rule scan per field edit.
 
-Calculations and load/submit assignments are authoritative. State-action expressions are always
+Non-overridable continuous calculations and submit assignments are authoritative. Load setValue/clear
+are one-time editable initializers, not replayed by Node (owner correction, 2026-11-11). State-action expressions are always
 enforced server-side. Change/event setValue/clear outputs are user-editable, not forged calculations.
 Expression call retains its existing purity/synchronous evaluation contract; root-rule **effect call**
 is distinct: once per trigger, trusted registration only, immutable snapshot, lifecycle-tracked async

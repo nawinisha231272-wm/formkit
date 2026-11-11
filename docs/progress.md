@@ -6,7 +6,86 @@ deviations from spec, open questions.
 
 ## Current state
 
+## M09c scheduling and owner-corrected replay — 2026-11-11 (working checkpoint)
+
+Focused current-draft proof: **43 targeted unit / 158 core+validation / 27 three-browser** checks pass.
+Consumer UI/core/enabled full **31,780 / 7,161 / 73,221**; matched no-logic **28,812** and opt-in
+**4,217**, all within unchanged gates. Five isolated alternating runtime A/B pairs pass all six
+plain/legacy 100/500/1,000 fixtures; worst paired ratio **1.0283** (500 legacy). Exact processors,
+focus/identity and leak checks pass. [Checkpoint and evidence](reviews/m09c-runtime-replay.md).
+**Full pinned verify PASS, exit 0: 398 unit / 1,632 browser / all 17 package and every consumer/lazy
+gate / nine exact runtime counts**. Source fingerprint identical before/after; no baseline changed.
+[Full proof](reviews/m09c-runtime-replay-evidence/verification.json). First-attempt new-head push CI
+remains pending; this is a verified runtime checkpoint, not completed M09c delivery.
+
+Implemented the owner's replay correction in spec 11/ADR-0022 and related specs/READMEs. Load values
+initialize once and remain editable; Node replays state, continuous calculations and submit writes,
+without rerunning load values or effects. Protected calculated targets reject setValue/clear at
+compile, including otherwise lists/all triggers; explicit allowed overrides remain editable and
+validate their submitted constraints. Replay policy is entirely in the opt-in program capability,
+with a private per-validation session; no new host option, form JSON or legacy no-logic policy.
+
+Additional scheduling checks preserve later wire-writer priority despite dependency evaluation order
+and keep per-action reads from creating false cycles across a sequential action list. Conflict
+warnings now distinguish the written property and include competing value writers. The same value
+normalization, hidden clearing, single settled patch and indexed work guards remain. A follow-up
+regression proved that reverting an inactive higher writer must not reserve priority over an active
+lower writer. Fixed for both edge assignments and continuous calculations, with one resulting patch.
+The initial full proof was deliberately interrupted after this clear product repro; its partial
+results are preserved, not claimed as a full pass. Further action-order regressions proved that legacy calculations must settle between sequential
+value actions and root dependency changes must expire allowed user overrides, matching public
+setValue semantics. Both now pass with one published patch. Added overrideInvalidations=0 to the
+existing indexed state fixtures; no prior metric increased. A second full proof was deliberately
+interrupted after those independent reproductions (390 units passed, browser partial). No partial
+run is counted as a full PASS. Both replay/calculation contract questions are now resolved by the
+owner; the final full proof follows the combined-calculation implementation below.
+
+Disclosed test changes: the Node prototype's old authoritative targets `invoice/receipt/total` now
+check only `receipt/total`, with an explicit assertion accepting the editable invoice initializer.
+The schema projection test switches its server-filled writer from load to submit. These changes
+implement the owner's explicit reversal, not a relaxed forgery check. The old core normalization
+regression is renamed from authoritative normalization to failed load initialization; all its error
+assertions remain. New replay/conflict cases cover the original A→B mismatch, explicit override
+constraints, clear initializers, original-program isolation and all four trigger kinds. Browser
+parity cases now pass on the current draft in Chromium, Firefox and WebKit: **27/27** via
+`playwright test tests/e2e/logic-prototype.spec.ts`. Focused owner replay/scheduling/calculation and
+count-baseline tests pass **43/43**. These are focused checks, not a full verify. Full pinned verification now passes for this runtime checkpoint; commit/push and first-attempt new-head CI follow.
+Calculation precedence now follows the owner's position-zero decision: the field formula is the
+fallback; active root formulas fold in wire order; allowOverride governs the combined value in the
+browser and Node. The four requested parity cases pass (active 3, inactive 2, accepted editable 99,
+rejected forged protected 99), including submitted override validation. New tests also cover invalid
+root results, sequential root-calculated dependencies, no-formula revert/none, and restoring a
+hidden field's default when its root formula is inactive. Both original question reproductions and
+rejected recommendations remain preserved; no extra client canonicalization was added.
+
+Disclosed new-test correction: the action-order browser test subscribed before moving focus from
+Derived to Source, so its one-edit count included a blur patch (18 passed / 3 failed). It now focuses
+Source before subscribing. The exact one-patch assertion is unchanged; the final 27-case three-browser
+run passes. Original failing log is retained with the other interrupted proof logs.
+
+No M09c delivery or M09d claim; effects/property overlays/async, authoring and map remain ahead.
+
 ## M09c enabled budget approved; pay-for-use tightening — 2026-11-11
+
+**Foundation Linux push Verify PASS**, first attempt, at **2eb031278bc9473638cf9564d474b4345f37bdf3**:
+[run 43048423537](https://github.com/nawinisha231272-wm/formkit/actions/runs/43048423537), completed
+2026-11-11 16:06:14 UTC. **373 unit / 1,608 browser / all size gates / nine runtime counts**.
+No rerun. This correctness run covers the pushed foundation, not newer local scheduling/schema
+changes. No PR/advisory run or final M09c delivery approval is inferred. The replay question is now resolved by the owner below; runtime implementation continues. No merge/M09d.
+
+Foundation committed/pushed as **2eb031278bc9473638cf9564d474b4345f37bdf3** after full pinned PASS;
+[push Verify](https://github.com/nawinisha231272-wm/formkit/actions/runs/43048423537) passed attempt 1 (link/evidence above). No rerun, merge or completed M09c claim. Subsequent local scheduling/
+annotation work is uncommitted and is not covered by that CI run.
+
+Next runtime checkpoint: topological rule scheduling settles legacy calculations between rules;
+actual-value filtering prevents unchanged legacy results/cleared hidden writes from firing edges.
+Added generated-composite reference coverage, dynamic submission-schema annotations and hard rule
+count evolution checks. The temporary prototype interleave guard test is explicitly upgraded:
+**before** compile false + `unsupported-logic-interleave`; **after** compile true + exact resulting
+data and one StatePatch in both rule orders. No legacy expectation changed. Added sourceChecks=1 and
+valueChecks=0 to the existing indexed state fixtures, without increasing any prior metric. Full
+verification of this next checkpoint remains pending; effects/property overlays/async and authoring
+remain open.
 
 **Foundation full pinned verification PASS**, exit 0: **373 unit / 1,608 browser / 17 package
 budgets plus every consumer/lazy gate / nine existing runtime counts**. All three browsers and
@@ -208,6 +287,28 @@ Owner follow-up (2026-11-09), cc05111 not approved to merge: preserve context-cl
   [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 delivery PR #5 is merged; the gate closure is recorded below under the revised owner decision.
 
 ## Open questions
+
+**Resolved M09c competing calculations — owner, 2026-11-11.** Keep the field calculate at position
+zero; active root formulas fold over it in rule order and fall back to it when inactive. Revert must
+not clear while a preceding writer exists. Field allowOverride governs the combined result: false
+is enforced, true allows user override and Node must validate that actual submitted value. Without a
+field formula preserve existing otherwise/revert semantics. The prior recommendation to reject the
+second formula was rejected; the original failure evidence is preserved. Implementation and the four
+requested parity checks pass in unit and three-browser runs, including the full pinned verify.
+New-head CI and remaining M09c delivery work are still open.
+No extra client canonicalization or format change.
+[Original reproduction/accepted answer](reviews/m09c-calculation-conflict-question.md).
+
+**Resolved M09c replay contract — owner decision, 2026-11-11.** Load setValue/clear are one-time
+editable initializers and are not replayed/enforced by Node. Node still recomputes all state actions
+from final data, including load-derived state. Non-overridable continuous calculations and submit
+assignments remain authoritative. Browser submit applies submit rules before payload capture; no
+extra canonicalization/effect replay. Reject setValue/clear to non-overridable calculated targets
+at compile with a diagnostic naming rule and field; allowOverride:true writes remain editable.
+This reverses the earlier load-authority decision in ADR-0022. The original failures remain in
+[question evidence](reviews/m09c-authoritative-replay-question.md); the recommended client replay
+was **not accepted** and is not implemented. Implementation and parity verification continue;
+no question remains pending on this contract. No claim that the local draft is fully verified/CI green.
 
 **Resolved M09c expression question — owner, 2026-11-10:** the literal-array example in spec 11
 was the owner's drafting error. Corrected to OR-of-eq; the Logic editor's is one of picker uses that
@@ -2875,3 +2976,9 @@ runtime packages/apps/scripts match 80b4dfa; byte delta **0/0/0** (UI/core/full:
 Latest isolated index 15.300 ms/500 visits/cached; bulk counts 500/1/1 each.
 The failed 80b4dfa first attempts remain recorded; the correction's new first CI attempt must
 pass before delivery. Do not rerun failed workflows or merge; owner review remains pending.
+
+M09c test-author correction: the new action-order browser counter originally subscribed before moving
+focus from Derived to Source, so it counted Derived blur plus the edit (2 patches). Focus Source before
+subscribing; the assertion remains exactly one patch for one edit. No expected count or product behavior
+was relaxed. The earlier 18-pass/3-fail log is retained. Combined calculation tests additionally cover
+the owner's active/inactive/override/forgery cases in Node and the three browsers.

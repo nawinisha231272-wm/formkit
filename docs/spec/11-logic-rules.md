@@ -114,12 +114,30 @@ Targets are component ids; a container target applies to the whole subtree (show
    overlapping conditions) are compile warnings shown in the builder.
 7. **Hidden by rule** behaves exactly like hidden by `visibleWhen`: excluded from validation,
    `clearOnHide` applies.
-8. **Parity:** `validateSubmission` evaluates the same rules on the submitted data (load trigger, then
-   submit phase and final state) to enforce requiredness, visibility and authoritative results.
-   State actions (show/hide/enable/disable/require/optional/readOnly/setProperty) are always enforced
-   server-side. Calculations and load/submit-triggered assignments are authoritative; disagreeing
-   authoritative results are rejected. Change/event setValue/clear remain user-editable and are not
-   forgery. Node does not infer prior client event history; ordinary canonical/unknown-key checks stay.
+8. **Parity (owner correction, 2026-11-11):** load-triggered setValue/clear are one-time initializers,
+   editable afterwards like change/event writes. Node never replays or enforces these assignments.
+   It does evaluate load-rule derived state from final submitted data. State actions
+   (show/hide/enable/disable/require/optional/readOnly/setProperty) are always enforced server-side.
+   Non-overridable continuous calculations and submit-triggered assignments are authoritative;
+   disagreeing results are rejected. Browser submit runs submit-triggered rules before capturing
+   its payload; calculations are already current. No additional canonicalization/effect replay.
+   setValue/clear targeting a field whose calculate has allowOverride:false (also the omitted default)
+   is a compile error, logic-calculation-conflict, naming rule and field and surfaced in Issues/Logic.
+   A root continuous calculate target is likewise protected unless the field explicitly allows overrides. With allowOverride:true, assignments
+   are ordinary editable values, not enforced calculations. Node does not infer prior client events;
+   canonical/unknown-key checks remain. Acceptance: source A copied to target at load, later source B,
+   browser submits target A and Node accepts; a change rule assigning 99 to non-overridable calculate
+   2 is rejected at compile. Load state requiredness must still be enforced on final data.
+
+9. **Calculation contributions (owner decision, 2026-11-11):** a field's own calculate is the
+   position-zero contribution. Active root calculate actions fold over it in rule order; the last
+   active contribution wins. With no active root calculation the field formula applies again.
+   Revert must not clear a calculated target to null while a preceding writer exists. The field's
+   allowOverride setting applies to the combined result: false (default) is authoritative in Node;
+   true permits user overrides and Node does not enforce the derived result. Requiredness, canonical
+   types and ordinary validation constraints still apply to the submitted override. Without a field
+   formula, keep the existing otherwise/revert behavior: clear the rule-set value unless the user
+   edited it afterwards. No new form JSON or extra submission canonicalization.
 
 ## Builder: Logic mode (approved screen 3)
 

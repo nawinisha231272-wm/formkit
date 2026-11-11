@@ -1,0 +1,77 @@
+{
+  "definition": {
+    "$formVersion": "1.0",
+    "id": "two-calculations",
+    "display": "form",
+    "components": [
+      {
+        "id": "source",
+        "key": "source",
+        "type": "text",
+        "defaultValue": "yes"
+      },
+      {
+        "id": "target",
+        "key": "target",
+        "type": "number",
+        "calculate": {
+          "expr": 2,
+          "allowOverride": false
+        }
+      }
+    ],
+    "logic": [
+      {
+        "id": "conditional-calculation",
+        "trigger": {
+          "on": "change",
+          "refs": ["source"]
+        },
+        "when": [
+          "eq",
+          {
+            "ref": "source"
+          },
+          "yes"
+        ],
+        "then": [
+          {
+            "action": "calculate",
+            "target": "target",
+            "expr": 3
+          }
+        ]
+      }
+    ]
+  },
+  "compile": true,
+  "diagnostics": [],
+  "initial": {
+    "source": "yes",
+    "target": 3
+  },
+  "edited": {
+    "source": "no",
+    "target": null
+  },
+  "client": {
+    "ok": true,
+    "data": {
+      "source": "no",
+      "target": null
+    }
+  },
+  "node": {
+    "valid": false,
+    "errors": [
+      {
+        "componentId": "target",
+        "path": ["target"],
+        "error": {
+          "code": "calculated",
+          "messageKey": "of.validation.calculated"
+        }
+      }
+    ]
+  }
+}

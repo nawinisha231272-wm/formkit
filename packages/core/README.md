@@ -152,9 +152,27 @@ accepts a nonempty name and optional safe-JSON payload (no new expression payloa
 provenance is optional `FieldState.logic: {ruleId,authoritative}`. Dynamic diagnostics appear on
 `StatePatch.diagnostics`; invalid cascades fail validation. `session.debug.logic` counts actual index
 reads, candidates, condition/action evaluations, cached writers, trigger edges, writes and cascades.
-Effects and setProperty currently produce `unsupported-logic-action` during compile; an unfinished
-root→legacy calculation→root scheduler combination gives `unsupported-logic-interleave` instead of
-using stale intermediate values. No successful compile silently ignores these gaps. They remain
-post-prototype work along with complete host delivery and dynamic submission-schema annotations.
+Affected rules are scheduled using compiled data dependencies, with legacy calculations settled
+between them. Trigger filtering compares actual values, so an unchanged derived value or a hidden
+write cleared back to its stored value does not create a value edge. Generated composite ids retain
+legacy reference validation. Rule work also counts source/value comparisons; baseline evolution rejects
+metric increases/removals. `toSubmissionSchema` annotates root rules and defers dynamic constraints to
+the shared runtime while preserving canonical types/static constraints. Effects and setProperty still
+produce `unsupported-logic-action`; complete host delivery and async lifecycle remain in development.
 This is not a completed/released M09c implementation. The owner approved 74,500 enabled builder
 full, 32,600 UI, 8,300 builder-core; matched no-logic 28,832 and opt-in increment 6,000 are enforced.
+
+`validateSubmission` uses the compiled opt-in program's `replay()` capability in a private session.
+The original compiled form/program is unchanged; normal browser sessions keep load initializers.
+Load setValue/clear initialize once and stay editable: replay derives load state without repeating
+value writes. Only non-overridable continuous calculations and submit assignments are authoritative.
+Root assignments to protected calculated targets fail with `logic-calculation-conflict` naming rule/field.
+Supplied allowOverride:true answers stay editable in root replay; omitted values still calculate.
+The trusted program prepares override state before legacy initialization; load rules run after legacy
+calculations. Reset retains the session's program policy. No environment probing or new host option.
+Browser submit performs no extra load or effect replay.
+
+Combined calculations use the field formula at position zero, with active root formulas folded in
+rule order. If no root formula is active, the field formula returns. Its allowOverride governs the
+combined result: allowed user overrides are accepted and validated in Node; protected results reject
+forgery. With no own formula, existing otherwise/revert clearing and later user edits are preserved.

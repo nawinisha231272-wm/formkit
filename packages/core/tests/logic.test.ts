@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { createEngine, compileExpression, type StatePatch } from "../src/index";
 import { createLogic } from "../src/logic/index";
@@ -326,7 +327,7 @@ test("cascade overflow is a runtime diagnostic and validates as an error without
   s.dispose();
 });
 
-test("failed authoritative normalization is diagnosed and submit cannot discard that error", async () => {
+test("failed load initialization is diagnosed and submit cannot discard that error", async () => {
   const e = createEngine({ logic: createLogic() }).register({
     ...text,
     value: {
@@ -433,7 +434,7 @@ test("trusted class registrations retain their compiler receiver and cannot lose
   expect(registration.calls).toBe(1);
 });
 
-test("clear-on-hide feedback cycles are diagnosed and unfinished interleaved scheduling fails explicitly", () => {
+test("clear-on-hide feedback cycles are diagnosed and interleaved rules use settled legacy calculations", () => {
   const e = make();
   const hidden = e.compile({
     ...form([field("source")]),
@@ -452,34 +453,44 @@ test("clear-on-hide feedback cycles are diagnosed and unfinished interleaved sch
       (d) => d.code === "cycle" && d.message.includes("hide"),
     ),
   ).toBe(true);
-  const interleaved = e.compile({
-    ...form([
-      field("source"),
-      field("bridge", { type: "number" }),
-      field("derived", {
-        type: "number",
-        calculate: { expr: ["mul", { ref: "bridge" }, 2] },
-      }),
-      field("target"),
-    ]),
-    logic: [
-      {
-        id: "first",
-        trigger: { on: "change", refs: ["source"] },
-        then: [{ action: "setValue", target: "bridge", value: 4 }],
-      },
-      {
-        id: "second",
-        trigger: { on: "change", refs: ["source"] },
-        when: ["eq", { ref: "derived" }, 8],
-        then: [{ action: "setValue", target: "target", value: "ready" }],
-      },
-    ],
-  });
-  expect(interleaved.ok).toBe(false);
-  expect(
-    interleaved.diagnostics.some(
-      (d) => d.code === "unsupported-logic-interleave",
+  const interleaved = e.compile(
+    JSON.parse(
+      readFileSync(
+        new URL(
+          "../../../fixtures/forms/logic/interleaved.json",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
     ),
-  ).toBe(true);
+  );
+  expect(interleaved.ok, JSON.stringify(interleaved.diagnostics)).toBe(true);
+  if (!interleaved.ok)
+    throw new Error("Expected interleaved rules to compile.");
+  for (const reverse of [false, true]) {
+    const input = interleaved.form.definition;
+    const compiled = reverse
+      ? e.compile({ ...input, logic: [...input.logic!].reverse() })
+      : interleaved;
+    if (!compiled.ok) throw new Error(JSON.stringify(compiled.diagnostics));
+    const session = e.createSession(compiled.form);
+    const patches: StatePatch[] = [];
+    session.subscribe((patch) => patches.push(patch));
+    session.setValue("source", "go", { source: "user" });
+    expect(session.getData()).toEqual({
+      source: "go",
+      bridge: 4,
+      derived: 8,
+      target: "ready",
+    });
+    expect(patches).toHaveLength(1);
+    expect(new Set(patches[0]!.changedFields)).toEqual(
+      new Set(["source", "bridge", "derived", "target"]),
+    );
+    expect(session.getFieldState("target").logic).toEqual({
+      ruleId: "second",
+      authoritative: false,
+    });
+    session.dispose();
+  }
 });

@@ -1,0 +1,24 @@
+import {chromium} from '@playwright/test';
+import {createServer} from 'node:http';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+const evidence=resolve('.git/ourform-m09c-completion-2026-11-11');
+const server=createServer((req,res)=>{try{const file=resolve(evidence,req.url.slice(1));if(!file.startsWith(evidence+'/bench-'))throw Error('outside');res.setHeader('Content-Type',file.endsWith('.js')?'application/javascript':'text/html');res.end(readFileSync(file));}catch{res.statusCode=404;res.end();}});
+await new Promise(r=>server.listen(0,'127.0.0.1',r));
+const browser=await chromium.launch();
+const port=server.address().port, pairs=[];
+try {
+ for(let pair=0;pair<5;pair++){
+  const result={pair,main:[],branch:[]};
+  for(const name of (pair%2?['branch','main']:['main','branch'])){
+   const page=await browser.newPage();await page.goto(`http://127.0.0.1:${port}/bench-${name}/index.html`);
+   for(const kind of ['plain','legacy'])for(const count of [100,500,1000])result[name].push(await page.evaluate(({count,kind})=>window.run(count,kind),{count,kind}));
+   await page.close();
+  }
+  pairs.push(result);console.log(JSON.stringify(result));
+ }
+ const median=a=>[...a].sort((a,b)=>a-b)[Math.floor(a.length/2)];
+ const summary=pairs[0].main.map((key,i)=>({kind:key.kind,count:key.count,main25Ms:median(pairs.map(p=>p.main[i].edit25Ms)),branch25Ms:median(pairs.map(p=>p.branch[i].edit25Ms)),medianPairedRatio:median(pairs.map(p=>p.branch[i].edit25Ms/p.main[i].edit25Ms))}));
+ const report={mainSHA:'cd6d0b679027da328da9f5e4f63480437d6c765b',branchBase:'2eb031278bc9473638cf9564d474b4345f37bdf3',branchDirty:true,platform:`${process.platform}-${process.arch}`,node:process.version,method:'Identical production esbuild consumer, one Chromium runner, 5 alternating pairs; 3 warmups + 9 measured samples per pair/fixture, 25 edits + forced layout; same assertions; no concurrent build/test workloads',pairs,summary};
+ writeFileSync(resolve(evidence,'combined-paired-timings.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({summary}));
+}finally{await browser.close();await new Promise(r=>server.close(r));}

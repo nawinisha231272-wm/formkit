@@ -55,6 +55,35 @@ export function checkAuthoringCountBaselineEvolution(previous, current) {
   if (previous && next.some((value, index) => value > values(previous)[index]))
     throw new Error("Cannot increase authoring count baseline");
 }
+/** Rule work includes filtering actual sources; an O(N) pre-index scan cannot hide in zero candidate counts. */
+export function checkLogicCountBaselineEvolution(previous, current) {
+  if (
+    current?.version !== 1 ||
+    JSON.stringify(current.fields) !== "[100,500,1000]" ||
+    current.rulesPerFixture !==
+      "fields - 1; the final field is unrelated to every rule"
+  )
+    throw new Error("Unsupported rule count workload");
+  for (const fixture of ["unrelatedEdit", "oneRuleEdit"]) {
+    const values = current[fixture];
+    if (
+      !values ||
+      !Object.keys(values).length ||
+      Object.values(values).some(
+        (value) => !Number.isSafeInteger(value) || value < 0,
+      )
+    )
+      throw new Error(`Invalid or missing rule counts: ${fixture}`);
+    for (const [metric, expected] of Object.entries(
+      previous?.[fixture] ?? {},
+    )) {
+      if (!Object.hasOwn(values, metric))
+        throw new Error(`Missing rule count: ${fixture}/${metric}`);
+      if (values[metric] > expected)
+        throw new Error(`Cannot increase rule count: ${fixture}/${metric}`);
+    }
+  }
+}
 if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
@@ -98,6 +127,23 @@ if (
   checkAuthoringCountBaselineEvolution(
     authoringPrevious,
     JSON.parse(readFileSync(authoringFile, "utf8")),
+  );
+  const ruleFile = "docs/performance/logic-work-counts.json";
+  const ruleExists = execFileSync(
+    "git",
+    ["ls-tree", "--name-only", reference, "--", ruleFile],
+    { encoding: "utf8" },
+  ).trim();
+  const rulePrevious = ruleExists
+    ? JSON.parse(
+        execFileSync("git", ["show", `${reference}:${ruleFile}`], {
+          encoding: "utf8",
+        }),
+      )
+    : null;
+  checkLogicCountBaselineEvolution(
+    rulePrevious,
+    JSON.parse(readFileSync(ruleFile, "utf8")),
   );
   console.log(
     previous
