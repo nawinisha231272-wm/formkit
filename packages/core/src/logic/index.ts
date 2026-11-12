@@ -1,3 +1,4 @@
+import { createEffects, logicMessage } from "./effects";
 import { orderGraph } from "../graph";
 import { compileCalculations } from "./calculations";
 import { snapshot, readPath, writePath, freeze } from "../paths";
@@ -18,10 +19,12 @@ import type {
   LogicSession,
   LogicState,
   LogicWorkCounts,
+  LogicEffectRequest,
 } from "../logic-contract";
 
 type StateKey = "visible" | "disabled" | "readOnly" | "required";
 type Action =
+  | { kind: "effect"; target: string; request: LogicEffectRequest }
   | { kind: "state"; target: string; key: StateKey; value: boolean }
   | {
       kind: "value" | "calculate";
@@ -53,12 +56,21 @@ const stateActions: Partial<
 };
 
 /** Opt-in root-rule prototype. No root-core import or global registry. */
-export function createLogic(): LogicRegistration {
-  return Object.freeze({ compile: compileLogic });
+export interface LogicOptions {
+  nodeCallTimeoutMs?: number;
+}
+export function createLogic(options: LogicOptions = {}): LogicRegistration {
+  const timeout = options.nodeCallTimeoutMs ?? 5000;
+  if (!Number.isFinite(timeout) || timeout <= 0)
+    throw new TypeError("nodeCallTimeoutMs must be positive and finite.");
+  return Object.freeze({
+    compile: (context: LogicCompileContext) => compileLogic(context, timeout),
+  });
 }
 
 function compileLogic(
   context: LogicCompileContext,
+  timeout: number,
 ): ReturnType<LogicRegistration["compile"]> {
   const diagnostics = validateDefinition(context.definition).filter(
     (d) => d.code !== "bad-ref",
@@ -122,9 +134,55 @@ function compileLogic(
     const actions = (list: LogicAction[]): Action[] =>
       list.flatMap((action): Action[] => {
         if (
-          !("target" in action) ||
-          ["setProperty", "refreshOptions", "focus"].includes(action.action)
+          action.action === "focus" ||
+          action.action === "refreshOptions" ||
+          action.action === "emit" ||
+          action.action === "call"
         ) {
+          const target = "target" in action ? action.target : "";
+          const name =
+            action.action === "call"
+              ? action.function
+              : action.action === "emit"
+                ? action.name
+                : "";
+          if (target && !context.byId[target])
+            fail(
+              "bad-ref",
+              `Rule ${wire.id}: unknown target ${target}.`,
+              target,
+            );
+          if (
+            action.action === "call" &&
+            !Object.hasOwn(context.functions, name)
+          )
+            fail(
+              "unknown-function",
+              `Rule ${wire.id}: unknown function ${name}.`,
+            );
+          const raw =
+            action.action === "call"
+              ? (action.args ?? [])
+              : action.action === "emit" && action.payload !== undefined
+                ? [action.payload]
+                : [];
+          return [
+            {
+              kind: "effect",
+              target,
+              request: {
+                action: action.action,
+                target,
+                name,
+                expressions: raw.flatMap((value) => {
+                  const compiled = expression(value);
+                  return compiled ? [compiled] : [];
+                }),
+              },
+            },
+          ];
+        }
+        if (!("target" in action) || action.action === "setProperty") {
           fail(
             "unsupported-logic-action",
             `Rule ${wire.id}: ${action.action} is not implemented in this runtime prototype.`,
@@ -213,6 +271,7 @@ function compileLogic(
       reads.forEach((id) => add(index, id, number));
       triggers.forEach((id) => add(triggerIndex, id, number));
       for (const action of [...then, ...otherwise]) {
+        if (action.kind === "effect") continue;
         if (action.kind === "calculate")
           add(overrideIndex, action.target, number);
         const clears =
@@ -288,6 +347,7 @@ function compileLogic(
   const conflicts = new Map<string, Map<string, Set<number>>>();
   rules.forEach((rule, number) => {
     for (const action of [...rule.then, ...rule.otherwise]) {
+      if (action.kind === "effect") continue;
       if (!conflicts.has(action.target))
         conflicts.set(action.target, new Map());
       const properties = conflicts.get(action.target)!;
@@ -311,6 +371,8 @@ function compileLogic(
     createSessionRuntime(
       session,
       submission,
+      context.functions,
+      timeout,
       dependents,
       makeCalculations,
       rules,
@@ -322,6 +384,16 @@ function compileLogic(
       priorities,
     );
   const program: LogicProgram = Object.freeze({
+    message: logicMessage,
+    deliver(
+      patch: Parameters<LogicProgram["deliver"]>[0],
+      host: Parameters<LogicProgram["deliver"]>[1],
+    ) {
+      for (const effect of patch.effects ?? []) {
+        if (effect.action === "focus") host.focus(effect.target);
+        host.notify(effect);
+      }
+    },
     replay: () => Object.freeze({ ...program, create: create(true) }),
     dependents,
     edges,
@@ -391,7 +463,16 @@ function createRuntime(
   phaseIndex: ReadonlyMap<string, ReadonlySet<number>>,
   overrideIndex: ReadonlyMap<string, ReadonlySet<number>>,
   priorities: readonly number[],
-): Omit<LogicRuntime, "diagnostics" | "validationErrors" | "run" | "patch"> & {
+): Omit<
+  LogicRuntime,
+  | "diagnostics"
+  | "validationErrors"
+  | "run"
+  | "patch"
+  | "event"
+  | "settle"
+  | "dispose"
+> & {
   run(trigger: LogicTrigger, changed?: readonly string[]): void;
 } {
   const counts: LogicWorkCounts = {
@@ -588,6 +669,10 @@ function createRuntime(
                 (!edge || (host.submission && rule.wire.trigger.on === "load")))
             )
               continue;
+            if (action.kind === "effect") {
+              if (edge) host.effect(rule.wire.id, action.request);
+              continue;
+            }
             if (action.expression) counts.actionExpressions++;
             write(
               i,
@@ -616,6 +701,8 @@ function createRuntime(
 function createSessionRuntime(
   session: LogicSession,
   submission: boolean,
+  functions: LogicCompileContext["functions"],
+  timeout: number,
   dependents: LogicProgram["dependents"],
   makeCalculations: ReturnType<typeof compileCalculations>,
   ...plans: Parameters<typeof createRuntime> extends [LogicHost, ...infer Plans]
@@ -656,6 +743,14 @@ function createSessionRuntime(
       }),
   );
   let previousData = session.data();
+  const effects = createEffects(
+    session,
+    submission,
+    functions,
+    timeout,
+    () => runtime.counts,
+    diagnostics,
+  );
   const runtime = createRuntime(
     {
       submission,
@@ -669,6 +764,7 @@ function createSessionRuntime(
       },
       empty: (id) => session.form.byId[id]!.model.value!.empty(),
       diagnostic: (diagnostic) => diagnostics.push(diagnostic),
+      effect: effects.enqueue,
       write: (id, raw, provenance, dirty) => {
         const entry = session.form.byId[id]!;
         const editable = entry.node.calculate?.allowOverride === true;
@@ -738,16 +834,44 @@ function createSessionRuntime(
     },
     ...plans,
   );
-  return {
+  const api: LogicRuntime = {
     ...runtime,
     diagnostics,
+    event(name, payload) {
+      const changed = api.run({ on: "event", name }, [], payload);
+      if (changed.length || diagnostics.length || effects.hasEffects)
+        session.publish(changed);
+    },
+    async settle(validation) {
+      const result = await validation;
+      await effects.settle();
+      const errors = [...result.errors];
+      for (const diagnostic of diagnostics)
+        if (
+          diagnostic.severity === "error" &&
+          !errors.some((error) => error.error.code === diagnostic.code)
+        )
+          errors.push({
+            path: [],
+            componentId: diagnostic.componentId ?? session.form.definition.id,
+            error: {
+              code: diagnostic.code,
+              messageKey: `of.logic.${diagnostic.code}`,
+            },
+          });
+      return { valid: result.valid && !errors.length, errors };
+    },
+    dispose: effects.dispose,
     state(id) {
       const calculation = calculations.state(id);
       return calculation
         ? { ...runtime.state(id), ...calculation }
         : runtime.state(id);
     },
-    patch: () => (diagnostics.length ? { diagnostics: [...diagnostics] } : {}),
+    patch: () => ({
+      ...effects.patch(),
+      ...(diagnostics.length ? { diagnostics: [...diagnostics] } : {}),
+    }),
     edited(id) {
       runtime.edited(id);
       calculations.edited(id);
@@ -763,7 +887,8 @@ function createSessionRuntime(
           componentId: d.componentId ?? session.form.definition.id,
           error: { code: d.code, messageKey: `of.logic.${d.code}` },
         })),
-    run(trigger, sources) {
+    run(trigger, sources, payload) {
+      effects.begin(trigger, payload);
       changed.clear();
       if (trigger.on !== "submit") diagnostics.length = 0;
       const actual = sources?.filter((id) => {
@@ -781,8 +906,10 @@ function createSessionRuntime(
           session.overrides.delete(id);
         }
       runtime.run(trigger, actual);
+      if (trigger.on === "load") effects.deferLoad();
       previousData = session.data();
       return [...changed];
     },
   };
+  return api;
 }

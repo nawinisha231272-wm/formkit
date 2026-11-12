@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "scope": "M09c effects/async/cancellation/legacy Button compatibility checkpoint; NOT completed M09c",
+  "completedAt": "2026-11-12T15:16:57.910392+00:00",
+  "command": "caffeinate -diu node node_modules/pnpm/bin/pnpm.cjs verify",
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "platform": "darwin-arm64",
+  "exitCode": 0,
+  "unitTests": 410,
+  "unitFiles": 69,
+  "browserTests": 1656,
+  "browserProjects": ["chromium", "firefox", "webkit"],
+  "runtimeCountTests": 9,
+  "packageSizeBudgets": 17,
+  "allConsumerAndLazyGates": "PASS",
+  "actual": {
+    "ui": 31780,
+    "builderCore": 7129,
+    "logicEnabledBuilderFull": 74437,
+    "matchedNoLogic": 28897,
+    "matchedIncrement": 5396
+  },
+  "limits": {
+    "ui": 32600,
+    "builderCore": 8300,
+    "logicEnabledBuilderFull": 75700,
+    "matchedNoLogic": 28897,
+    "matchedIncrement": 6000
+  },
+  "correctnessOnlyUnusedMaximum": {
+    "noLogic": 29000,
+    "newFeaturesMayUse": false
+  },
+  "sourceSha256Before": "7bcb56a2846782fbe81017fff4f1849c0513bfc64130ee6c939be388a029c968",
+  "sourceSha256After": "7bcb56a2846782fbe81017fff4f1849c0513bfc64130ee6c939be388a029c968",
+  "sourceUnchangedDuringVerify": true,
+  "log": "final-full-pinned-verify.log.gz",
+  "logSha256": "5b86092970a4accffe88c8172eff145f36b43e516169aa375adcbc4d5c93d40d",
+  "power": {
+    "lowpowermode": 0,
+    "recordedInLog": true,
+    "caffeinate": "command lifetime -diu"
+  },
+  "baselinesChanged": 0,
+  "ci": "New-head push CI pending; no implementation PR or milestone delivery claim.",
+  "postVerifyChanges": "Documentation and generated evidence only. No product/test/fixture/script change after frozen proof.",
+  "knownRemainingCorrectnessIssue": "Pre-existing at exact0ac and draft: invalid continuous-calculation diagnostics disappear after an unrelated edit, causing browser/Node mismatch. Reproduction retained; fix next before M09c GO. No effects regression.",
+  "remaining": "Property overlays; commands/locks; Build badges; real lazy Logic/map; dedicated React/Angular effect lifecycle; paired edit timing; all-host/CSP/offline; author trial and screenshots; complete PR CI/delivery.",
+  "packagingAudit": {
+    "testedFiles": 2712,
+    "missingSource": [],
+    "untracked": [],
+    "allTestedSourceIncludedInIndex": true,
+    "evidence": "packaging-audit.json"
+  }
+}

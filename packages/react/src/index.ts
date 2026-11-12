@@ -144,6 +144,7 @@ export const Form = forwardRef<FormController, FormProps>(
         onChange: (patch) => current.current.onChange?.(patch),
         onSubmit: (result) => current.current.onSubmit?.(result),
         onAction: (event) => current.current.onAction?.(event),
+        onLogicEffect: (effect) => current.current.onLogicEffect?.(effect),
       });
       controller.current = next;
       setHandle(next);

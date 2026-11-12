@@ -85,3 +85,10 @@ The builder host exposes independent `settingsPreload`, `planningPreload` and `d
 options (`'idle'` by default, `'none'` to load only on activation). `preload` controls only
 Logic/JSON and defaults to `'none'`. Set all four to `'none'` for a no-background-import host.
 Angular uses inputs, React uses props, and the builder custom element uses properties.
+
+### M09c typed effect delivery (prototype)
+
+`FormProps.onLogicEffect?: (effect: LogicEffect) => void` receives typed requests after the renderer
+applies the state patch and handles focus. Register core/logic on the supplied engine. Like onAction,
+the callback always uses the latest prop without rebuilding the session. Option refresh remains
+host-owned; unmount disposes the controller/session and aborts pending calls.

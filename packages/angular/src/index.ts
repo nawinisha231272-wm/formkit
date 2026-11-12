@@ -229,6 +229,9 @@ export class OurFormComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Output() readonly dataChange = new EventEmitter<unknown>();
   @Output() readonly changed = new EventEmitter<StatePatch>();
   @Output() readonly submitted = new EventEmitter<SubmitResult>();
+  @Output() readonly logicEffect = new EventEmitter<
+    import("@ourform/core").LogicEffect
+  >();
   @Output() readonly ready = new EventEmitter<FormController>();
   readonly #element = inject<ElementRef<HTMLElement>>(ElementRef);
   readonly #environment = inject(EnvironmentInjector);
@@ -274,6 +277,10 @@ export class OurFormComponent implements AfterViewInit, OnChanges, OnDestroy {
         this.#element.nativeElement.querySelector(".our-form-mount")!,
         {
           ...this.#options,
+          onLogicEffect: (effect) => {
+            this.#options.onLogicEffect?.(effect);
+            this.logicEffect.emit(effect);
+          },
           schema: this.schema,
           data:
             this.data ??

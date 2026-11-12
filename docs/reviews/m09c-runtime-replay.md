@@ -1,6 +1,8 @@
 # M09c — scheduling, replay and combined calculations checkpoint
 
-Status: full pinned verify PASS (exit 0); new-head CI pending. M09c remains open.
+Status: full pinned verify PASS (exit 0); corrected pushed head 0ac02419b086089c79b096f52c22d1fbe17c66de
+[Linux Verify PASS, attempt 1](https://github.com/nawinisha231272-wm/formkit/actions/runs/43103737774).
+This evidence covers the runtime/replay checkpoint, not the subsequent unpushed effects draft. M09c remains open.
 No implementation PR, owner screenshot approval, merge or M09d claim.
 
 ## Accepted contracts and implementation

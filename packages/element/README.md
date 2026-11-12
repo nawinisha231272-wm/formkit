@@ -108,3 +108,11 @@ The builder host exposes independent `settingsPreload`, `planningPreload` and `d
 options (`'idle'` by default, `'none'` to load only on activation). `preload` controls only
 Logic/JSON and defaults to `'none'`. Set all four to `'none'` for a no-background-import host.
 Angular uses inputs, React uses props, and the builder custom element uses properties.
+
+### M09c typed effect delivery (prototype)
+
+`renderForm` forwards `HostOptions.onLogicEffect` and emits bubbling, composed `of-effect` events
+with `LogicEffect` as their detail. `<our-form>` uses the same bridge in light and shadow DOM;
+listen on the element or an ancestor. Its supplied engine must explicitly register core/logic.
+Focus requests run after the state update; option refresh is a host request, never SDK networking.
+Disconnect disposes its session and aborts running calls; reconnect creates an independent session.

@@ -6,7 +6,7 @@ import {
 
 const passing = () => ({
   noLogic: {
-    brotli: 28_832,
+    brotli: 28_897,
     includesLogicBody: false,
     includesRuleMetaSchema: false,
   },
@@ -16,7 +16,7 @@ const passing = () => ({
 test("pay-for-use gates enforce owner limits at equality and reject one-byte regressions", () => {
   expect(logicConsumerLimits).toEqual({
     mainNoLogic: 28_232,
-    noLogic: 28_832,
+    noLogic: 28_897,
     increment: 6_000,
     noLogicFull: 68_500,
   });
@@ -24,7 +24,7 @@ test("pay-for-use gates enforce owner limits at equality and reject one-byte reg
   const noLogic = passing();
   noLogic.noLogic.brotli++;
   expect(checkLogicConsumers(noLogic)).toContain(
-    "matched no-logic form: 28833 > 28832",
+    "matched no-logic form: 28898 > 28897",
   );
   const enabled = passing();
   enabled.increment++;

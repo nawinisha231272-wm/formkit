@@ -270,41 +270,41 @@ export class Engine {
     };
     visit(snapshot(expanded.components), []);
     for (const entry of nodes) {
-      if (!entry.parentId && entry.node.slot !== undefined)
+      const { node, model } = entry;
+      const children = componentChildren(node);
+      if (!entry.parentId && node.slot !== undefined)
         error(
           "invalid-slot",
           "Root components cannot select a parent slot.",
-          entry.node.id,
+          node.id,
         );
-      if (entry.parentId && entry.model.builder?.rootOnly)
+      if (entry.parentId && model.builder?.rootOnly)
         error(
           "root-only",
           "This component can only be placed at the form root.",
-          entry.node.id,
+          node.id,
         );
-      if (entry.node.columns && entry.model.kind !== "layout")
+      if (node.columns && model.kind !== "layout")
         error(
           "invalid-columns",
           "Only layout components may own columns.",
-          entry.node.id,
+          node.id,
         );
-      if (!entry.model.slots && !componentChildren(entry.node).length) continue;
+      if (!model.slots && !children.length) continue;
       try {
-        const slots = resolveSlots(entry.model, entry.node);
+        const slots = resolveSlots(model, node);
         // Fixed composite children are expanded by the model, not author-editable slots.
-        if (entry.model.kind === "composite" && !entry.model.slots) continue;
+        if (model.kind === "composite" && !model.slots) continue;
         if (
           !slots.length &&
-          !entry.model.slots &&
-          !entry.model.value &&
-          !componentChildren(entry.node).some(
-            (child) => child.slot !== undefined,
-          )
+          !model.slots &&
+          !model.value &&
+          !children.some((child) => child.slot !== undefined)
         )
           continue;
         const counts = new Map<string, number>();
-        for (const child of componentChildren(entry.node)) {
-          const name = childSlot(entry.node, child) ?? slots[0]?.name;
+        for (const child of children) {
+          const name = childSlot(node, child) ?? slots[0]?.name;
           const slot = slots.find((s) => s.name === name);
           if (!slot) {
             error(
@@ -337,7 +337,7 @@ export class Engine {
         error(
           "invalid-slot",
           cause instanceof Error ? cause.message : "Invalid slot metadata.",
-          entry.node.id,
+          node.id,
         );
       }
     }
@@ -352,6 +352,15 @@ export class Engine {
                 target.path.every((k, i) => k === n.path[i]),
             )
             .map((n) => n.node.id);
+    const expression = (raw: Parameters<typeof compileExpression>[0]) =>
+      compileExpression(raw, {
+        byRef: (id) => (byId[id] ? dependenciesFor(byId[id]) : undefined),
+        byPath: (path) =>
+          byPath[pathKey(path)]
+            ? dependenciesFor(byPath[pathKey(path)]!)
+            : undefined,
+        functions: this.functions,
+      });
     for (const entry of nodes) {
       if (entry.parentId) dependents[entry.parentId]!.push(entry.node.id);
       const expressions: CompiledNode["expressions"] = {};
@@ -363,14 +372,7 @@ export class Engine {
         const raw =
           kind === "calculate" ? entry.node.calculate?.expr : entry.node[kind];
         if (raw === undefined) continue;
-        const result = compileExpression(raw, {
-          byRef: (id) => (byId[id] ? dependenciesFor(byId[id]) : undefined),
-          byPath: (path) =>
-            byPath[pathKey(path)]
-              ? dependenciesFor(byPath[pathKey(path)]!)
-              : undefined,
-          functions: this.functions,
-        });
+        const result = expression(raw);
         diagnostics.push(
           ...result.diagnostics.map((d) => ({
             ...d,
@@ -409,14 +411,7 @@ export class Engine {
         for (const [key, expr] of Object.entries(
           "args" in rule ? (rule.args ?? {}) : {},
         )) {
-          const result = compileExpression(expr, {
-            byRef: (id) => (byId[id] ? dependenciesFor(byId[id]) : undefined),
-            byPath: (path) =>
-              byPath[pathKey(path)]
-                ? dependenciesFor(byPath[pathKey(path)]!)
-                : undefined,
-            functions: this.functions,
-          });
+          const result = expression(expr);
           diagnostics.push(
             ...result.diagnostics.map((d) => ({
               ...d,
@@ -441,20 +436,12 @@ export class Engine {
       definition.logic === undefined
         ? undefined
         : this.#logic!.compile({
+            functions: this.functions,
             definition,
             nodes,
             byId,
             dependents,
-            expression: (raw) =>
-              compileExpression(raw, {
-                byRef: (id) =>
-                  byId[id] ? dependenciesFor(byId[id]) : undefined,
-                byPath: (path) =>
-                  byPath[pathKey(path)]
-                    ? dependenciesFor(byPath[pathKey(path)]!)
-                    : undefined,
-                functions: this.functions,
-              }),
+            expression,
           });
     diagnostics.push(...(logicResult?.diagnostics ?? []));
     const logic = logicResult?.program;

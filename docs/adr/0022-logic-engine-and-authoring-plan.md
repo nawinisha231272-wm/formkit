@@ -1,8 +1,46 @@
 # ADR-0022 — Logic engine placement, lazy authoring and M09c allowances
 
-Status: **accepted by the owner on 2026-11-10; budget amendment accepted 2026-11-11**
+Status: **accepted by the owner on 2026-11-10; budget amendments accepted 2026-11-11 and 2026-11-12**
 Date: 2026-11-09
 Milestone: M09c (accepted plan; implementation evidence remains pending)
+
+## Owner Button-event/correctness amendment — 2026-11-12
+
+Accept matched no-logic **28,897** (+45 from 28,852) for the regression fix preserving valid empty
+custom Button events. The new logic bridge must not throw before existing onAction/of-action
+callbacks. The public named-session-event API still rejects an empty name. Three-browser repro
+and correction evidence are retained, along with rejected compactions.
+
+Standing permission for the rest of M09c: correctness/regression fixes may raise the measured
+no-logic ceiling as needed up to **29,000** (immutable main 28,232 +768), without another question.
+Record every rise and its cause in progress.md. **New features may not use this margin.** Enforce
+28,897 now, not the unspent correctness maximum. Above 29,000, stop with measured options. UI
+32,600, builder-core 8,300, enabled full 75,700 for remaining runtime, opt-in increment 6,000,
+package/lazy/count/correctness and edit-ratio requirements remain unchanged.
+
+Final current effects/compatibility sample: UI **31,780**, builder-core **7,129**, enabled full
+**74,437**, no-logic **28,897**, opt-in increment **5,396**. The compatibility guard increases the
+actual full closure by **6** versus the prior 74,431 sample; no full growth beyond the preceding
+74,500 ceiling has yet been used. Marginal Brotli figures are not additive. Old measurements and
+failed/interrupted local proofs remain historical evidence, never overwritten as green.
+
+## Owner effects-budget amendment — 2026-11-12
+
+The owner accepts the measured matched no-logic form ceiling **28,852** (+620 over immutable
+main 28,232; +20 over the prior 28,832 ceiling). The effects draft measured exactly 28,852.
+The enabled builder closure may grow as needed for remaining M09c runtime (setProperty, async
+calls, Node timeout and effects) up to **75,700**, without another question. Enforce that maximum;
+above it, stop with measured options. Builder UI **32,600**, builder-core **8,300**, matched
+opt-in increment **6,000**, package/lazy limits and all correctness/count/edit-ratio requirements
+remain unchanged. No-logic must stay at or below 28,852; the ≤1.10 plain/legacy runtime edit ratios
+still apply. This is a scoped owner amendment, not an automatic allowance for later milestones.
+
+Current effects draft: UI/core/full **31,780 / 7,180 / 74,431**; matched no-logic **28,852**,
+opt-in increment **5,284**. Full growth from pushed replay checkpoint 73,221 is **+1,210** for
+immutable effect outboxes/context, trusted async dispatch, Node timeout/cancellation, English
+fallbacks and host delivery. It still fits the preceding 74,500 ceiling. Any subsequent actual
+rise and its cause must be recorded here and in progress.md before shipping. Keep all historical
+failed measurements; the owner's amendment resolves their gate failure without rewriting history.
 
 ## Context
 
@@ -164,12 +202,12 @@ All numbers are **Brotli bytes** under the established production consumer metho
 chunks once. They are allowances, not measured implementation PASS results. Keep the original
 M09b+ measurement artifacts/failed probes and disclose any moved code on both sides.
 
-| Scope                                       | M09b+ baseline / prior gate                      | Accepted M09c ceiling or next gate                                                            |
-| ------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| Builder UI initial (excludes builder-core)  | 31,769 / 31,800                                  | **32,600 maximum**                                                                            |
-| Builder-core marginal consumer contribution | 7,120 / 7,300                                    | **8,300 maximum**                                                                             |
-| No-logic consumer full initial closure      | Historical full baseline 67,674 / prior 67,700   | **68,500**, at most **+826** against that historical full baseline                            |
-| Logic-enabled consumer full initial closure | Prototype 71,036; final review before completion | **74,500 enabled full**; matched form opt-in increment **≤6,000** (owner approved 2026-11-11) |
+| Scope                                       | M09b+ baseline / prior gate                      | Accepted M09c ceiling or next gate                                                                      |
+| ------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Builder UI initial (excludes builder-core)  | 31,769 / 31,800                                  | **32,600 maximum**                                                                                      |
+| Builder-core marginal consumer contribution | 7,120 / 7,300                                    | **8,300 maximum**                                                                                       |
+| No-logic consumer full initial closure      | Historical full baseline 67,674 / prior 67,700   | **68,500**, at most **+826** against that historical full baseline                                      |
+| Logic-enabled consumer full initial closure | Prototype 71,036; final review before completion | **75,700 enabled full** (scoped runtime amendment 2026-11-12); matched form opt-in increment **≤6,000** |
 
 A no-logic consumer imports/registers **no root-rule runtime**; absence of root rules in its current
 JSON is insufficient if the runtime is still bundled. A builder always registers root logic, so its
@@ -364,3 +402,19 @@ existing LogicState lookup; they do not move rule execution into root core. Comp
 and writer grouping stay opt-in. Test active=3, inactive=2, allowed user override accepted in Node and
 non-overridable forgery rejected, including browser checks. Existing budgets, legacy no-logic behavior,
 canonical validation and all correctness thresholds remain unchanged.
+
+### Effects implementation checkpoint — 2026-11-12 (unreleased)
+
+Implement the accepted typed optional StatePatch.effects and session event bridge through the
+opt-in program. A session-local outbox publishes frozen requests first; host calls start in a
+microtask afterwards. Optional HostFunction.effect receives cancellable typed context; existing
+pure/legacy run arguments do not change. Node waits only availableInNode calls, with default
+5,000 ms/configured timeout and diagnostics. Reset/dispose cancels queued/running calls and prevents
+late publication; interrupted Node submission fails rather than reporting stale success.
+
+The shared renderer exposes onLogicEffect and applies focus after the state update. The Element
+adapter owns of-effect DOM events, React forwards the latest callback and Angular exposes a typed
+logicEffect output. Keeping DOM event construction in Element avoids charging every form host for
+that adapter. No root execution or rule meta-schema enters the no-logic consumer. Remaining property
+overlays, authoring/map, full host/performance/size/visual/author evidence are still open. Accepted
+ceilings remain unchanged; a failing draft measurement cannot be pushed or treated as delivery.

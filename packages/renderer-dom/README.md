@@ -122,3 +122,17 @@ CSS ordering; switching themes preserves the shell DOM and focused control ident
 second argument selects a theme in the same atomic update (otherwise the active theme stays selected).
 Resolve before updating: unknown names throw an Error with `code: "unknown-theme"`; the old view and
 registry remain active. Values, touched/errors, control identity, focus and caret survive valid changes.
+
+### M09c typed effect delivery (prototype)
+
+With an engine explicitly registering `@ourform/core/logic`, `RenderOptions`/`HostOptions` accepts
+`onLogicEffect?: (effect: LogicEffect) => void`. The renderer updates named fields first, then
+focuses a focus request (including opening ancestor tabs) and forwards each typed request to the
+callback. `refreshOptions` is delivered to the host; the renderer does not fetch options. Custom
+Button actions call `session.triggerLogicEvent(name, { componentId })` while retaining existing
+`onAction`/`of-action` behavior. Destroy prevents further view delivery; a controller also disposes
+its owned session and cancels calls. Low-level `mount` retains host-owned session lifetime, so
+call `session.dispose()` when its owner is destroyed. No logic execution body is imported here.
+
+Legacy custom Button actions with an empty name still reach onAction/of-action. They do not invoke
+a named logic event; the public session API still rejects empty names. No form migration is needed.

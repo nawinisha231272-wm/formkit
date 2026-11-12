@@ -1,0 +1,39 @@
+{
+  "$formVersion": "1.0",
+  "id": "logic-effects",
+  "display": "form",
+  "components": [
+    { "id": "source", "type": "text", "key": "source", "label": "Source" },
+    { "id": "target", "type": "text", "key": "target", "label": "Target" },
+    {
+      "id": "run",
+      "type": "button",
+      "properties": {
+        "action": "custom",
+        "text": "Run lookup",
+        "event": "lookup"
+      }
+    }
+  ],
+  "logic": [
+    {
+      "id": "lookup-rule",
+      "trigger": { "on": "event", "name": "lookup" },
+      "then": [
+        { "action": "setValue", "target": "target", "value": "copied" },
+        { "action": "focus", "target": "target" },
+        {
+          "action": "emit",
+          "name": "lookup-ready",
+          "payload": { "ref": "source" }
+        },
+        { "action": "refreshOptions", "target": "target" },
+        {
+          "action": "call",
+          "function": "lookup",
+          "args": [{ "ref": "source" }]
+        }
+      ]
+    }
+  ]
+}

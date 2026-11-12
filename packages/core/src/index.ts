@@ -48,6 +48,8 @@ export { resolveSlots } from "./slots";
 
 export type {
   LogicRegistration,
+  LogicEffect,
+  LogicCallContext,
   LogicProvenance,
   LogicWorkCounts,
 } from "./logic-contract";

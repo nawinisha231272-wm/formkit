@@ -6,6 +6,104 @@ deviations from spec, open questions.
 
 ## Current state
 
+## M09c effects checkpoint — full pinned PASS, 2026-11-12
+
+Frozen-source `pnpm verify` exits **0**: **410 units / 1,656 browser / 17 package and all consumer/lazy
+size gates / nine runtime counts**. Source fingerprint unchanged before/after. Current consumer
+UI/core/enabled full **31,780 / 7,129 / 74,437**; matched no-logic **28,897**, opt-in **5,396**.
+All approved gates pass, with correctness-only unused maximum 29,000 reserved from new features.
+[Complete checkpoint/proof](reviews/m09c-effects-checkpoint.md); failed/interrupted local runs and
+all rejected probes remain preserved. No baseline changed. Commit packaging audit and push/first
+new-head CI follow; this is not completed M09c or a PR/delivery/merge approval.
+
+Next correctness fix is already reproduced on exact pushed 0ac and current source: invalid
+continuous-calculation diagnostics disappear after an unrelated edit, allowing browser submit while
+Node rejects. Keep that error until recovery/inactive calculation/allowed override, with per-target
+cached state and no unrelated rule work. Then property overlays and all authoring/map work remain.
+Dedicated React/Angular effect lifecycle and fresh effects-source edit A/B timing remain pending.
+
+## M09c compatibility gate resolved; final effects proof — 2026-11-12
+
+Owner approved matched no-logic **28,897** (+45 for the empty custom Button regression). Enforce
+that measured ceiling. Standing permission permits correctness/regression fixes only to raise it
+as needed up to **29,000** (main +768), recording every cause; **new features cannot use this
+margin**. Above 29,000 stop with measured options. All other gates stay unchanged, including
+75,700 full for remaining runtime and ≤1.10 edit ratios.
+
+Current final sample: UI/core/enabled full **31,780 / 7,129 / 74,437**; no-logic **28,897**;
+opt-in **5,396**. The guard is +45 no-logic/+6 full versus the approved effects sample; no enabled
+full growth above the former 74,500 has yet been used. Final focused proof PASS: **171 units / 51
+browser checks** (all three browsers; includes the preserved empty-event behavior). The policy
+constant and equality/+1 rejection test track the owner's exact 28,897 limit, retaining every
+assertion. Full pinned verification begins afresh on the frozen source before commit/push.
+
+## M09c legacy empty-Button compatibility — 2026-11-12 (historical size stop, resolved above)
+
+The owner-approved 28,852/75,700 limits are enforced, with the one-byte policy-test guard retained.
+The restarted full proof passed **410 units** before an independently identified compatibility bug
+caused a deliberate interruption (273 browser passes, one interrupted, exit 130). A valid custom
+Button event may be empty; the new bridge threw before legacy of-action delivery. A new three-browser
+reproduction failed identically with "Logic event requires a nonempty name"; the corrected bridge
+skips only the empty name and retains the public API's strict guard. No wire/expectation changed.
+
+Best corrected measurement: UI **31,780/32,600**, builder-core **7,129/8,300**, enabled full
+**74,437/75,700**, no-logic **28,897/28,852** (+45), opt-in **5,396/6,000**. Full +6 versus the approved
+effects sample is the compatibility guard (all marginal Brotli figures, not additive). All other
+measured gates pass. Rejected compactions (node alias, submit capture, context reuse, opt-in Button
+routing and opt-in event snapshot) are restored and retained in the evidence. No failing source was
+committed/pushed, no CI rerun or M09c completion is claimed. Final targeted compatibility proof is
+being collected; the exact no-logic decision is pending below. Do not increase any ceiling implicitly.
+
+## M09c effects gate resolved by owner — 2026-11-12
+
+Owner approved matched no-logic **28,852** (+20), and preapproved enabled builder full growth up to
+**75,700** for remaining M09c runtime. Enforce both; UI **32,600**, builder-core **8,300**, matched
+opt-in **6,000**, package/lazy/count/correctness and edit ratios stay unchanged. Current actual full
+**74,431** remains under the former 74,500; its +1,210 versus pushed 73,221 comes from effects,
+immutable snapshots, async/Node timeout/cancellation, messages and host delivery. Future actual rises
+and causes will be recorded, with a stop above 75,700. See ADR-0022; historical failed probes remain.
+
+Disclosed policy-test correction: the first full local proof passed 409 checks but failed the limit
+constant assertion because it still expected 28,832. Update only owner-approved equality to 28,852
+and one-byte rejection to 28,853; the one-byte regression/implementation-leak assertions remain.
+The failed local log is retained; no push or CI rerun. Full verification starts afresh after this fix.
+
+Continue: full pinned verify the coherent effects checkpoint → include every tested source/fixture
+in the commit and push → property overlays and remaining runtime → commands/locks and lazy authoring/map
+→ all-host/performance/author/visual delivery. The size stop below is historical and resolved by this
+explicit owner decision. M09c remains open; no implementation PR/merge/M09d claim.
+
+## M09c effects consumer-size stop — 2026-11-12 (unpushed draft)
+
+**BLOCKED at the matched no-logic gate:** final proven consumer set is UI **31,780/32,600**,
+builder-core **7,180/8,300**, enabled builder full **74,431/74,500**, matched no-logic
+**28,852/28,832** (+20), opt-in increment **5,284/6,000**. No ceiling changed. Kept normal
+compactions share expression bindings, move event bookkeeping into opt-in runtime, place DOM events
+in Element and cache child traversal; all size-growing probes were discarded. Complete ledger and
+[measured stop/evidence](reviews/m09c-effects-size-stop.md) include rejected probes and failed test logs.
+
+The effects draft implements immutable batches, trusted async calls after publication, default/custom
+Node timeouts, reset/dispose cancellation, typed host delivery and Button events. Final targeted checks
+PASS: 169 core/validation units, 48 three-browser effects/parity checks, 27 build/45 typecheck tasks,
+lint and 17 package budgets. DOM five-theme and Element light/shadow lifecycle are tested; dedicated
+React/Angular effects lifecycle, property overlays and authoring/map remain pending. No full pinned
+verify, draft commit/push/CI, delivery or screenshot PASS is claimed. Pushed checkpoint 0ac0241 remains
+green on first-attempt Linux Verify. Await the size decision below before further implementation.
+
+## M09c effects/lifecycle — 2026-11-12 (plan and implementation in progress)
+
+Prior runtime checkpoint **0ac02419b086089c79b096f52c22d1fbe17c66de** is green on Linux,
+[Verify 43103737774](https://github.com/nawinisha231272-wm/formkit/actions/runs/43103737774),
+**attempt 1**, success. The incomplete 561050f run remains cancelled, not a success/rerun.
+
+Next ordered tasks: typed effect batches and trusted function dispatch; defer invocation until state
+publication; immutable invocation data/args/event payload; reset/dispose cancellation; Node-only
+availability and default 5 s timeout with diagnostics; host focus/emit/refresh delivery and browser
+regressions. Then property overlays, commands/locks/history and lazy Logic/map authoring. Measure
+matched no-logic and opt-in/full closures after the coherent effect prototype before shipping.
+No ceilings, existing assertions, form JSON, pure expression calling convention or legacy path change.
+Full pinned verify precedes each push; compare all tested files with the index before committing.
+
 ## M09c scheduling and owner-corrected replay — 2026-11-11 (working checkpoint)
 
 **Push packaging correction:** checkpoint 561050f accidentally omitted four new JSON fixtures that
@@ -296,6 +394,18 @@ Owner follow-up (2026-11-09), cc05111 not approved to merge: preserve context-cl
   [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 delivery PR #5 is merged; the gate closure is recorded below under the revised owner decision.
 
 ## Open questions
+
+**Resolved M09c empty-Button compatibility size — owner approval, 2026-11-12.** The necessary legacy
+compatibility guard leaves a proven corrected candidate at no-logic 28,897, +45 over the newly
+approved 28,852. The owner approved 28,897 and a correctness-only measured maximum of 29,000; new features cannot
+use this margin. Enabled full 74,437 is below the preapproved 75,700; UI/core/opt-in also pass. Do not
+reuse the pre-fix 28,852 measurement to approve the corrected source. No other ceiling changed.
+
+**Resolved M09c effects consumer size — owner approval, 2026-11-12.** Current proven draft is
+28,852 matched no-logic bytes, +620 over immutable main and 20 over the approved 28,832 limit.
+The owner approved 28,852 and preapproved enabled builder full up to 75,700 for remaining runtime. UI/core/opt-in and performance gates remain unchanged. Historical other gates passed at 74,431 full. See the exact
+[measurements/options](reviews/m09c-effects-size-stop.md): a measured +20 ceiling amendment, or
+retain the ceiling and use a further unmeasured internal bridge refactor. The subsequent explicit approval above resolves this question; no lower-bound claim, test/deadline/behavior relaxation or failing push is inferred.
 
 **Resolved M09c competing calculations — owner, 2026-11-11.** Keep the field calculate at position
 zero; active root formulas fold over it in rule order and fall back to it when inactive. Revert must

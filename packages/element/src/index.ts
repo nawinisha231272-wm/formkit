@@ -78,6 +78,16 @@ export function renderForm(
   if (!target) throw new Error(`Form container not found: ${root}`);
   return createFormController(target, {
     ...options,
+    onLogicEffect: (effect) => {
+      options.onLogicEffect?.(effect);
+      target.dispatchEvent(
+        new CustomEvent("of-effect", {
+          detail: effect,
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    },
     adapter: "element",
     nativeHost,
     fields: [...builtins, ...(options.fields ?? [])],

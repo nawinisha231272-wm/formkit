@@ -97,3 +97,19 @@ unavailable probe is explicitly unknown, never reported as off. Other platforms 
 The snapshot and warnings stay in the normal verify log so timeout investigations can compare host
 conditions. The preflight never changes system settings, test deadlines, retries or check outcomes;
 a warning is evidence, not a substitute for passing verification.
+
+## M09c scoped runtime allowance (owner amendment, 2026-11-12)
+
+ADR-0022 supersedes the historical M09b+ initial limits for M09c only: builder UI initial
+(excludes builder-core) 32,600; builder-core marginal consumer contribution 8,300; actual
+logic-enabled builder closure maximum 75,700 for remaining runtime; matched no-logic form 28,897
+(immutable main 28,232 +665); matched opt-in increment 6,000. Preserve all package/lazy budgets,
+consumer accounting and hard work-count/correctness checks. Record actual full growth and causes;
+stop above these limits with measurements. Plain and legacy 100/500/1,000-field edit delivery
+ratios must remain ≤1.10 against immutable merged main; CI timings retain advisory status.
+No allowance is automatically granted to a later milestone.
+
+For the rest of M09c only, owner-approved correctness/regression fixes may increase the enforced
+matched no-logic ceiling up to **29,000** (main +768), recording every measured rise and its cause.
+**New features cannot use that margin.** Current enforced ceiling is 28,897 for the empty Button
+event compatibility fix; above 29,000 stop with measured options. Other ceilings remain unchanged.

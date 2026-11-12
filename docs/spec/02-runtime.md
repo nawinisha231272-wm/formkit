@@ -253,9 +253,9 @@ These are accepted M09c contracts, not APIs implemented by the plan PR.
 
 ### Runtime acceptance and initial cost
 
-Owner amendment (2026-11-11): enforce **74,500 logic-enabled builder full / 32,600 builder UI /
-8,300 builder-core**. The identical matched no-logic form consumer is at most **28,832** (main
-28,232 +600), and opt-in logic adds at most **6,000**. No-logic full remains 68,500; all package
+Owner amendment (2026-11-12): enforce **75,700 logic-enabled builder full / 32,600 builder UI /
+8,300 builder-core** for remaining M09c runtime. The identical matched no-logic form consumer is at most **28,897** (main
+28,232 +665), and opt-in logic adds at most **6,000**. No-logic full remains 68,500; all package
 and lazy ceilings remain. Earlier prototype-pending text below is historical and superseded.
 
 The no-logic compiler uses schema `validateStructure`/`migrateStructure` primitives and detects a
@@ -287,7 +287,8 @@ edit removes that provenance; authoritative calculations are recomputed. Optiona
 `StatePatch.diagnostics` reports root runtime diagnostics, including cascade limit. Prototype
 `session.debug.logic` counts real index reads, candidate rules, conditions, action expressions,
 cached writers, trigger edges, actual writes, cascade rounds and effects. These are not timing gates.
-The prototype rejects unfinished effects/property overlays explicitly; their acceptance remains open.
+The prototype rejects unfinished property overlays explicitly. Effect delivery is implemented as
+described below; complete host and delivery acceptance remains open.
 
 ### M09c scheduling and work-count implementation
 
@@ -313,3 +314,27 @@ Allowed submitted overrides are validated directly, not recalculated/enforced. W
 existing otherwise/revert applies. Opt-in compiled calculation overlays reuse the affected-node
 processor and finalize immutable provenance; they never mutate the wire/registered model. Legacy
 no-logic sessions retain their prior calculation path.
+
+### M09c effect lifecycle implementation (prototype)
+
+Core exports readonly LogicEffect/LogicCallContext types. StatePatch.effects is optional; no-effect
+patches retain their shape. Effects include ruleId and a frozen invocation data snapshot. Calls
+include readonly evaluated args; emit carries an optional safe-JSON payload. triggerLogicEvent
+snapshots the payload, exposing it only to the trusted call context, not a new expression path.
+The outbox starts calls in a microtask after subscribers receive the state patch. Load effects are
+published after construction so synchronously attached subscribers can receive them. Returns never
+write data. Optional HostFunction.effect(args, context) receives an AbortSignal; its absence falls
+back to unchanged run(...args), while pure expressions always retain run's convention.
+
+Node skips focus/emit and calls unavailable in Node. It waits allowed calls during submit/validation;
+createLogic({nodeCallTimeoutMs}) accepts a positive finite timeout, default 5000. Failures produce
+logic-call-unavailable, expiry logic-call-timeout, invalid argument data invalid-logic-effect.
+Reset/dispose aborts queued/running calls; interrupted Node submit reports logic-call-aborted, and
+late completion cannot publish. English message defaults live in the opt-in runtime and can be
+replaced by the engine localization provider. Host refreshOptions delivery performs no SDK network
+request. See spec 06 for renderer/callback/adapter channels and session ownership.
+
+The named-event bridge preserves valid legacy Button custom events with an empty name: they still
+emit the existing action callback/DOM event and do not trigger root logic. Public
+session.triggerLogicEvent still requires a nonempty name and rejects programmer misuse. This does
+not change Button configuration, expression syntax or form JSON.

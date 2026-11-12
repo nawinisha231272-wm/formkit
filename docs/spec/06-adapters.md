@@ -151,3 +151,20 @@ Builder wrappers expose the approved independent `planningPreload` and `dataPrel
 alongside `settingsPreload` (each defaults to `idle`). `preload` remains the Logic/JSON policy
 (default `none`). Changing a preload policy rebuilds the builder with the current schema.
 Set every policy to `none` for no background feature requests.
+
+## M09c typed logic effects (prototype)
+
+The common renderer's optional `onLogicEffect(effect: LogicEffect)` is inherited by HostOptions.
+Apply StatePatch field updates before focusing a requested target or notifying the host. Focus
+opens ancestor tabs through the existing focus path; refreshOptions is only a host request.
+Custom Button events trigger the matching session event with `{ componentId }` and retain the
+existing action callback/event. Calls execute in the headless opt-in runtime after publication,
+not once again in an adapter. No adapter imports the root-rule execution body.
+
+React FormProps exposes the callback and forwards its latest value without remount. Angular
+OurFormComponent adds the typed `logicEffect` output; provider onLogicEffect runs before that
+output. Element renderForm and custom elements forward the optional callback and emit composed,
+bubbling `of-effect` with the typed request as detail, including light/shadow hosts. Controllers
+own/dispose their sessions; low-level mounted views do not. Disconnect, unmount and destroy cancel
+owned-session calls and prevent stale view delivery. All-host lifecycle evidence remains required
+before M09c delivery; the prototype alone does not mark that acceptance PASS.

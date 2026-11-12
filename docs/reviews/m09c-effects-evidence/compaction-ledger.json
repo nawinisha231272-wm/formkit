@@ -1,0 +1,110 @@
+[
+  {
+    "stage": "effects",
+    "ui": 31780,
+    "builderCore": 7196,
+    "full": 74236,
+    "noLogic": 28886,
+    "increment": 5115,
+    "disposition": "Early effects only; before English catalog/host delivery"
+  },
+  {
+    "stage": "shared-expression",
+    "ui": 31780,
+    "builderCore": 7148,
+    "full": 74200,
+    "noLogic": 28844,
+    "increment": 5130,
+    "disposition": "KEEP shared expression bindings; vs preceding row no-logic -42, full -36"
+  },
+  {
+    "stage": "host",
+    "ui": 31780,
+    "builderCore": 7278,
+    "full": 74500,
+    "noLogic": 28946,
+    "increment": 5278,
+    "disposition": "Catalog and initial host bridge added; not a compaction comparison"
+  },
+  {
+    "stage": "event-compact",
+    "ui": 31780,
+    "builderCore": 7188,
+    "full": 74438,
+    "noLogic": 28915,
+    "increment": 5267,
+    "disposition": "KEEP move event publication bookkeeping opt-in; vs host no-logic -31, full -62"
+  },
+  {
+    "stage": "adapter-notification",
+    "ui": 31780,
+    "builderCore": 7193,
+    "full": 74433,
+    "noLogic": 28895,
+    "increment": 5291,
+    "disposition": "KEEP Element-owned DOM event bridge; vs preceding row no-logic -20, full -5"
+  },
+  {
+    "stage": "slot-alias",
+    "ui": 31780,
+    "builderCore": 7180,
+    "full": 74431,
+    "noLogic": 28852,
+    "increment": 5284,
+    "disposition": "KEEP cached child traversal/node aliases; vs preceding row no-logic -43, full -2; FINAL"
+  },
+  {
+    "stage": "ref-lookup",
+    "ui": 31780,
+    "builderCore": 7167,
+    "full": 74440,
+    "noLogic": 28882,
+    "increment": 5349,
+    "disposition": "DISCARD, vs final no-logic +30/full +9"
+  },
+  {
+    "stage": "unique-validation",
+    "ui": 31780,
+    "builderCore": 7095,
+    "full": 74412,
+    "noLogic": 28925,
+    "increment": 5274,
+    "disposition": "DISCARD, vs final no-logic +73/full -19"
+  },
+  {
+    "stage": "path-key",
+    "ui": 31780,
+    "builderCore": 7186,
+    "full": 74446,
+    "noLogic": 28930,
+    "increment": 5284,
+    "disposition": "DISCARD, vs final no-logic +78/full +15"
+  },
+  {
+    "stage": "delivery-args",
+    "ui": 31780,
+    "builderCore": 7136,
+    "full": 74404,
+    "noLogic": 28879,
+    "increment": 5326,
+    "disposition": "DISCARD, vs final no-logic +27/full -27"
+  },
+  {
+    "stage": "diagnostic-share",
+    "ui": 31780,
+    "builderCore": 7212,
+    "full": 74432,
+    "noLogic": 28909,
+    "increment": 5286,
+    "disposition": "DISCARD, vs final no-logic +57/full +1"
+  },
+  {
+    "stage": "event-payload",
+    "ui": 31780,
+    "builderCore": 7238,
+    "full": 74489,
+    "noLogic": 28914,
+    "increment": 5360,
+    "disposition": "DISCARD, vs final no-logic +62/full +58"
+  }
+]

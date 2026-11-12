@@ -157,10 +157,11 @@ between them. Trigger filtering compares actual values, so an unchanged derived 
 write cleared back to its stored value does not create a value edge. Generated composite ids retain
 legacy reference validation. Rule work also counts source/value comparisons; baseline evolution rejects
 metric increases/removals. `toSubmissionSchema` annotates root rules and defers dynamic constraints to
-the shared runtime while preserving canonical types/static constraints. Effects and setProperty still
-produce `unsupported-logic-action`; complete host delivery and async lifecycle remain in development.
-This is not a completed/released M09c implementation. The owner approved 74,500 enabled builder
-full, 32,600 UI, 8,300 builder-core; matched no-logic 28,832 and opt-in increment 6,000 are enforced.
+the shared runtime while preserving canonical types/static constraints. `setProperty` still produces `unsupported-logic-action`; property overlays and complete all-host
+delivery acceptance remain in development. Effects are described below.
+This is not a completed/released M09c implementation. The owner approved 75,700 enabled builder
+full for remaining M09c runtime, 32,600 UI, 8,300 builder-core; matched no-logic 28,897 and opt-in
+increment 6,000 are enforced (2026-11-12 amendment).
 
 `validateSubmission` uses the compiled opt-in program's `replay()` capability in a private session.
 The original compiled form/program is unchanged; normal browser sessions keep load initializers.
@@ -176,3 +177,50 @@ Combined calculations use the field formula at position zero, with active root f
 rule order. If no root formula is active, the field formula returns. Its allowOverride governs the
 combined result: allowed user overrides are accepted and validated in Node; protected results reject
 forgery. With no own formula, existing otherwise/revert clearing and later user edits are preserved.
+
+## M09c effect prototype (unreleased)
+
+Root-rule `focus`, `emit`, `refreshOptions` and `call` produce optional readonly
+`StatePatch.effects: readonly LogicEffect[]`. Each request includes its rule id and frozen data
+snapshot; emit includes a safe-JSON payload, call includes evaluated frozen arguments. A batch is
+published after the state transaction. A call begins in a microtask after subscribers receive it;
+its result is ignored, and it never silently writes an answer. Later explicit session writes are
+separate transactions. Load effects are delivered to subscribers attached synchronously after
+session construction. `session.triggerLogicEvent(name, payload?)` snapshots safe JSON and triggers
+only that named event; it adds no expression syntax or payload reference path.
+
+```ts
+import { createEngine } from "@ourform/core";
+import { createLogic } from "@ourform/core/logic";
+
+const engine = createEngine({
+  logic: createLogic({ nodeCallTimeoutMs: 5000 }),
+  functions: {
+    lookup: {
+      pure: false,
+      availableInNode: true,
+      run: (...args: unknown[]) => lookupFromHost(args),
+      effect: (args, { signal, data, event, ruleId }) =>
+        lookupFromHost(args, { signal, data, event, ruleId }),
+    },
+  },
+});
+```
+
+`lookupFromHost` is application code, not an SDK network provider. Optional `HostFunction.effect`
+receives readonly arguments and `LogicCallContext` (`signal`, `ruleId`, frozen `data`, optional
+frozen named `event`). Existing `run(...args)` remains required and unchanged; it is the fallback
+when no effect handler exists and receives exactly the declared arguments, with no injected context.
+Pure expression calls continue to use `run`, never `effect`.
+
+Customer Node validation skips focus/emit and functions without `availableInNode`. It awaits
+permitted calls with a positive finite `nodeCallTimeoutMs` (default 5000), returning
+`logic-call-timeout` on expiry or `logic-call-unavailable` on failure. Invalid evaluated effect data
+returns `invalid-logic-effect`. These diagnostics fail submission with translatable English defaults.
+Reset/dispose aborts pending invocations; a Node submit interrupted this way fails
+`logic-call-aborted`, rather than returning stale success. Uncooperative late results cannot publish.
+Reset also discards queued calls that have not started. Separate engines and sessions share no queues.
+`refreshOptions` is only a typed host request; providers remain application-owned.
+
+This prototype does not complete M09c: property overlays, authoring/map UI and final all-host,
+performance, size, screenshot and independent-author delivery checks remain open.

@@ -2,7 +2,12 @@ import { resolveView, nativeSlot } from "./native";
 import type { NativeHost } from "./native";
 export { resolveView } from "./native";
 export type { NativeHost, NativeUnit } from "./native";
-import type { Engine, FormSession, CompiledNode } from "@ourform/core";
+import type {
+  Engine,
+  FormSession,
+  CompiledNode,
+  LogicEffect,
+} from "@ourform/core";
 import {
   defaultMessage,
   escapeHtml,
@@ -38,6 +43,8 @@ export interface RenderOptions extends ThemeOptions {
   adapter?: string;
   nativeHost?: NativeHost;
   onSubmit?: (result: Awaited<ReturnType<FormSession["submit"]>>) => void;
+  /** Typed runtime requests; refreshOptions is delivered only to the host, never networked by the SDK. */
+  onLogicEffect?: (effect: LogicEffect) => void;
   onAction?: (event: {
     name: string;
     componentId: string;
@@ -356,6 +363,7 @@ function mountForm(
     },
     reset: () => reset(),
     emit: (name: string) => {
+      if (name !== "") session.triggerLogicEvent(name, { componentId });
       const detail = { name, componentId, data: session.getData() };
       options.onAction?.(detail);
       root.dispatchEvent(
@@ -463,6 +471,15 @@ function mountForm(
     unsubscribe = session.subscribe((patch) => {
       patch.changedFields.forEach((id) => pending.add(id));
       flush();
+      session.form.logic?.deliver(patch, {
+        focus: (id) => {
+          if (!destroyed) focus(id);
+        },
+        notify(effect) {
+          if (destroyed) return;
+          options.onLogicEffect?.(effect);
+        },
+      });
     });
   } catch (error) {
     destroy();

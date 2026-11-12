@@ -756,3 +756,13 @@ Non-overridable calculated/submit values and derived state are enforced server-s
 remain editable. All five themes/hosts keep the same control, accessibility and state contracts.
 Form.io import is post-1.0 backlog, not an SDK addition in M09c. This section describes the accepted
 implementation target; no new API implementation ships in the plan PR.
+
+### M09c effect prototype API
+
+`HostFunction` retains `run(...args)` for pure expressions and legacy registrations. Optional
+`effect(args, context)` is used only for root `call`; `LogicCallContext` carries AbortSignal,
+ruleId, frozen invocation data and optional frozen named event/payload. Without it, call invokes
+run with exactly its evaluated arguments. No implicit session write or expression signature change.
+Core root exports the `LogicEffect`/`LogicCallContext` types only. `createLogic` and its positive
+finite `nodeCallTimeoutMs` option are exported only by `@ourform/core/logic`. Hosts receive typed
+requests as documented in spec 06; portable custom Button actions retain the existing action API.

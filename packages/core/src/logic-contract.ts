@@ -12,8 +12,23 @@ import type {
   CompiledForm,
   FieldState,
   ValidationResult,
+  FunctionMap,
+  StatePatch,
 } from "./types";
 
+export interface LogicCallContext {
+  readonly signal: AbortSignal;
+  readonly ruleId: string;
+  readonly data: Readonly<Record<string, unknown>>;
+  readonly event?: { readonly name: string; readonly payload?: unknown };
+}
+export type LogicEffect = Readonly<
+  { ruleId: string; data: Readonly<Record<string, unknown>> } & (
+    | { action: "focus" | "refreshOptions"; target: string }
+    | { action: "emit"; name: string; payload?: unknown }
+    | { action: "call"; function: string; args: readonly unknown[] }
+  )
+>;
 export interface LogicProvenance {
   ruleId: string;
   authoritative: boolean;
@@ -59,6 +74,14 @@ export interface LogicHost {
     changed: ReadonlySet<string>,
   ): readonly string[];
   diagnostic(diagnostic: Diagnostic): void;
+  effect(ruleId: string, effect: LogicEffectRequest): void;
+}
+/** Compiled, trusted request; never serialized into form JSON. */
+export interface LogicEffectRequest {
+  readonly action: "focus" | "refreshOptions" | "emit" | "call";
+  readonly target: string;
+  readonly name: string;
+  readonly expressions: readonly CompiledExpression[];
 }
 export interface LogicSession {
   readonly initialData: Record<string, unknown>;
@@ -67,6 +90,7 @@ export interface LogicSession {
   readonly states: Map<string, FieldState>;
   context(): ExpressionContext;
   data(): Record<string, unknown>;
+  publish(ids?: readonly string[]): void;
   updateData(data: Record<string, unknown>): void;
   affected(ids: readonly string[]): readonly string[];
   stateChanged(before: FieldState, after: FieldState): boolean;
@@ -75,13 +99,25 @@ export interface LogicSession {
 export interface LogicRuntime {
   readonly counts: LogicWorkCounts;
   readonly diagnostics: Diagnostic[];
-  patch(): { diagnostics?: Diagnostic[] };
+  event(name: string, payload: unknown): void;
+  patch(): Pick<StatePatch, "diagnostics" | "effects">;
+  settle(validation: Promise<ValidationResult>): Promise<ValidationResult>;
+  dispose(): void;
   validationErrors(): ValidationResult["errors"];
   state(id: string): Readonly<LogicState> | undefined;
   edited(id: string): void;
-  run(trigger: LogicTrigger, changed?: readonly string[]): readonly string[];
+  run(
+    trigger: LogicTrigger,
+    changed?: readonly string[],
+    payload?: unknown,
+  ): readonly string[];
 }
 export interface LogicProgram {
+  message(key: string): string | undefined;
+  deliver(
+    patch: StatePatch,
+    host: { focus(id: string): void; notify(effect: LogicEffect): void },
+  ): void;
   replay(): LogicProgram;
   submissionSchema(
     build: (source: SubmissionSchemaSource) => JSONSchema,
@@ -92,6 +128,7 @@ export interface LogicProgram {
   create(session: LogicSession): LogicRuntime;
 }
 export interface LogicCompileContext {
+  functions: FunctionMap;
   definition: FormDefinition;
   nodes: readonly CompiledNode[];
   byId: Readonly<Record<string, CompiledNode>>;

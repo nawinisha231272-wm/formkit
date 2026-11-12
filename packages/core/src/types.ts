@@ -3,7 +3,12 @@ import type {
   Diagnostic,
   FormDefinition,
 } from "@ourform/schema";
-import type { LogicProgram, LogicProvenance } from "./logic-contract";
+import type {
+  LogicProgram,
+  LogicProvenance,
+  LogicEffect,
+  LogicCallContext,
+} from "./logic-contract";
 import type { ComponentModel } from "./model";
 import type { CompiledValidator } from "./validators";
 import type { CompiledExpression } from "./expressions";
@@ -30,6 +35,7 @@ export interface FieldState {
   logic?: LogicProvenance;
 }
 export interface StatePatch {
+  effects?: readonly LogicEffect[];
   diagnostics?: readonly Diagnostic[];
   changedPaths: Path[];
   changedFields: string[];
@@ -46,6 +52,8 @@ export interface HostFunction {
   pure: boolean;
   availableInNode: boolean;
   run: (...args: unknown[]) => unknown;
+  /** Cancellable root-rule call; legacy/pure run(...args) retains its exact arguments. */
+  effect?: (args: readonly unknown[], context: LogicCallContext) => unknown;
 }
 export type FunctionMap = Record<string, HostFunction>;
 export interface CompiledNode {

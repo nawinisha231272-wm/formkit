@@ -1,0 +1,61 @@
+{
+  "status": "BLOCKED",
+  "scope": "Uncommitted effects prototype; NOT completed M09c, NOT full pinned verify",
+  "baseHead": "0ac02419b086089c79b096f52c22d1fbe17c66de",
+  "recordedAt": "2026-11-12T14:16:27.571875+00:00",
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "platform": "darwin-arm64",
+  "build": {
+    "tasks": 27,
+    "exitCode": 0,
+    "log": "proven-candidate-build.log.gz"
+  },
+  "typecheck": {
+    "tasks": 45,
+    "exitCode": 0,
+    "log": "proven-typecheck.log.gz"
+  },
+  "targetedUnit": {
+    "tests": 169,
+    "files": 19,
+    "exitCode": 0,
+    "log": "final-proven-core-validation.log.gz"
+  },
+  "targetedBrowser": {
+    "tests": 48,
+    "projects": ["chromium", "firefox", "webkit"],
+    "exitCode": 0,
+    "log": "final-proven-browser.log.gz"
+  },
+  "lint": {
+    "exitCode": 0,
+    "log": "final-lint.log.gz"
+  },
+  "packageSizes": {
+    "budgets": 17,
+    "exitCode": 0,
+    "log": "proven-package-sizes.log.gz"
+  },
+  "consumerSize": {
+    "exitCode": 1,
+    "ui": 31780,
+    "uiCeiling": 32600,
+    "builderCore": 7180,
+    "builderCoreCeiling": 8300,
+    "full": 74431,
+    "fullCeiling": 74500,
+    "noLogic": 28852,
+    "noLogicCeiling": 28832,
+    "noLogicOver": 20,
+    "enabledMatchedForm": 34136,
+    "increment": 5284,
+    "incrementCeiling": 6000,
+    "log": "final-proven-gates.json.gz",
+    "stderr": "final-proven-gates.stderr.gz"
+  },
+  "fullVerify": "NOT RUN on effects draft; consumer size gate fails. No commit/push/PR/CI for draft.",
+  "currentTiming": "NOT rerun on effects draft; preceding checkpoint A/B is not this evidence.",
+  "baselinesChanged": 0,
+  "allHostEffectAcceptance": "DOM + Element light/shadow tested; React/Angular callback wiring typechecked, specific lifecycle evidence remains pending."
+}

@@ -23,7 +23,7 @@
     "caffeinate": "command lifetime -diu"
   },
   "baselinesChanged": 0,
-  "ci": "new-head first-attempt push CI pending",
+  "ci": "PASS on corrected pushed checkpoint 0ac02419b086089c79b096f52c22d1fbe17c66de; attempt 1, run 43103737774. Does not cover the unpushed effects draft.",
   "postVerifyChanges": "documentation and generated verification evidence only; implementation/test sources unchanged",
   "packagingCorrection": {
     "status": "PASS",
@@ -48,6 +48,11 @@
       "run_attempt": 1,
       "reason": "Four tested JSON fixtures were inadvertently omitted from the first checkpoint commit; cancelled before test results, no rerun."
     },
-    "correctedHeadCi": "pending new push; no success inferred"
+    "correctedHeadCi": {
+      "head": "0ac02419b086089c79b096f52c22d1fbe17c66de",
+      "url": "https://github.com/nawinisha231272-wm/formkit/actions/runs/43103737774",
+      "run_attempt": 1,
+      "conclusion": "success"
+    }
   }
 }

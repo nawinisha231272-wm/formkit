@@ -236,7 +236,7 @@ test("load/submit/event assignments fire in their phases and unrelated named eve
   expect(() => s.triggerLogicEvent("lookup")).toThrow("disposed");
 });
 
-test("cycles name rule and component ids; bad refs, duplicate ids and unfinished actions fail explicitly", () => {
+test("cycles name rule and component ids; bad refs, duplicate ids and unknown effect functions fail explicitly", () => {
   const e = make();
   for (const [rules, code] of [
     [
@@ -264,7 +264,7 @@ test("cycles name rule and component ids; bad refs, duplicate ids and unfinished
           then: [{ action: "call", function: "host", args: [] }],
         },
       ],
-      "unsupported-logic-action",
+      "unknown-function",
     ],
   ] as const) {
     const compiled = e.compile({

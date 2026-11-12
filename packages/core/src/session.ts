@@ -109,6 +109,7 @@ export class FormSession {
       this.debug.processorRuns[entry.node.id] = 0;
     }
     this.#logic = this.form.logic?.create({
+      publish: (ids = []) => this.emit(ids),
       initialData: data,
       overrides: this.#overrides,
       form: this.form,
@@ -164,9 +165,8 @@ export class FormSession {
     this.assertActive();
     if (typeof name !== "string" || !name)
       throw new TypeError("Logic event requires a nonempty name.");
-    if (payload !== undefined) snapshot(payload);
-    const changed = this.applyLogic({ on: "event", name }, []);
-    if (changed.length || this.#logic?.diagnostics.length) this.emit(changed);
+    const safe = payload === undefined ? undefined : snapshot(payload);
+    this.#logic?.event(name, safe);
   }
   private context() {
     return {
@@ -490,6 +490,7 @@ export class FormSession {
     return { errors: [...errors, ...custom.errors], pending: true, wait };
   }
   private cancelAll(): void {
+    this.#logic?.dispose();
     for (const run of this.#runs.values()) run.abort();
     this.#runs.clear();
   }
@@ -503,14 +504,17 @@ export class FormSession {
         key,
         params,
         this.schema.settings?.locale ?? "en",
-      ) ?? fallback(key, params)
+      ) ??
+      this.form.logic?.message(key) ??
+      fallback(key, params)
     );
   }
   async submit(): Promise<SubmitResult> {
     this.assertActive();
     this.applyLogic({ on: "submit" }, []);
     const submittedData = this.#data;
-    const result = await this.validate();
+    const result = await (this.#logic?.settle(this.validate()) ??
+      this.validate());
     if (!result.valid) return { ok: false, errors: result.errors };
     let data = submittedData;
     for (const entry of this.form.nodes) {
