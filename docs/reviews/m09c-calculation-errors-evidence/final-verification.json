@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "scope": "Calculation-error correctness and React/Angular effects lifecycle checkpoint; M09c remains open",
+  "completedAt": "2026-11-12T19:46:55.983022+00:00",
+  "command": "caffeinate -diu node node_modules/pnpm/bin/pnpm.cjs verify",
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "platform": "darwin-arm64",
+  "exitCode": 0,
+  "unitTests": 414,
+  "unitFiles": 70,
+  "browserTests": 1692,
+  "browserProjects": ["chromium", "firefox", "webkit"],
+  "runtimeCountTests": 9,
+  "packageSizeBudgets": 17,
+  "allConsumerAndLazyGates": "PASS",
+  "actual": {
+    "ui": 31780,
+    "builderCore": 7168,
+    "logicEnabledBuilderFull": 74525,
+    "matchedNoLogic": 28897,
+    "matchedIncrement": 5376
+  },
+  "limits": {
+    "ui": 32600,
+    "builderCore": 8300,
+    "logicEnabledBuilderFull": 75700,
+    "matchedNoLogic": 28897,
+    "matchedIncrement": 6000
+  },
+  "ceilingsChanged": false,
+  "sourceSha256Before": "7870b98e9f4c68d5715e30ee49c5d09aa43ccd71d356af671d73cfd53f412bfd",
+  "sourceSha256After": "7870b98e9f4c68d5715e30ee49c5d09aa43ccd71d356af671d73cfd53f412bfd",
+  "sourceUnchanged": true,
+  "sourceFileCount": 2799,
+  "logSha256": "7d04562148052153247fa92bfeea0c6144d235ab0f1c1ce05a8ace4bc2b2308e",
+  "previousPush": {
+    "head": "4c0964cbd41139f5af146201a1cbda9d9fd77b6c",
+    "run": "https://github.com/nawinisha231272-wm/formkit/actions/runs/43246771450",
+    "conclusion": "success",
+    "run_attempt": 1
+  },
+  "newHeadCi": "pending push; no result inferred",
+  "timings": {
+    "original25Edits": "two >1.10; retained, not called PASS",
+    "extended250Edits": "all six paired medians <=1.10; not a product fix and does not establish earlier cause",
+    "finalM09cPerformance": "pending final runtime source"
+  },
+  "screenshots": {
+    "changed": 0,
+    "new": 0
+  },
+  "apiAdditions": []
+}

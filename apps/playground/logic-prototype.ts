@@ -1,3 +1,5 @@
+import { strictNumber } from "./strict-number";
+import calculationErrors from "../../fixtures/forms/logic/calculation-errors.json";
 import type { LogicCallContext, LogicEffect } from "@ourform/core";
 import effectsDefinition from "../../fixtures/forms/logic/effects.json";
 import { bootstrap4Theme } from "@ourform/themes/bootstrap4";
@@ -19,35 +21,50 @@ import loadInitializer from "../../fixtures/forms/logic/load-initializer.json";
 import actionOrder from "../../fixtures/forms/logic/action-order.json";
 import calculationPrecedence from "../../fixtures/forms/logic/calculation-precedence.json";
 const query = new URLSearchParams(location.search);
-const definition = query.has("effects")
-  ? effectsDefinition
-  : query.has("precedence")
-    ? {
-        ...calculationPrecedence,
-        components: calculationPrecedence.components.map((node) =>
-          node.calculate
-            ? {
-                ...node,
-                calculate: {
-                  ...node.calculate,
-                  allowOverride: query.has("allow-override"),
-                },
-              }
-            : node,
-        ),
-      }
-    : query.has("actions")
-      ? actionOrder
-      : query.has("load-initializer")
-        ? loadInitializer
-        : query.has("interleaved")
+const definition = query.has("calculation-errors")
+  ? {
+      ...calculationErrors,
+      components: calculationErrors.components.map((node) =>
+        node.calculate
           ? {
-              ...interleaved,
-              logic: query.has("reverse")
-                ? [...interleaved.logic].reverse()
-                : interleaved.logic,
+              ...node,
+              calculate: {
+                ...node.calculate,
+                allowOverride: query.has("allow-override"),
+              },
             }
-          : schema;
+          : node,
+      ),
+    }
+  : query.has("effects")
+    ? effectsDefinition
+    : query.has("precedence")
+      ? {
+          ...calculationPrecedence,
+          components: calculationPrecedence.components.map((node) =>
+            node.calculate
+              ? {
+                  ...node,
+                  calculate: {
+                    ...node.calculate,
+                    allowOverride: query.has("allow-override"),
+                  },
+                }
+              : node,
+          ),
+        }
+      : query.has("actions")
+        ? actionOrder
+        : query.has("load-initializer")
+          ? loadInitializer
+          : query.has("interleaved")
+            ? {
+                ...interleaved,
+                logic: query.has("reverse")
+                  ? [...interleaved.logic].reverse()
+                  : interleaved.logic,
+              }
+            : schema;
 const effects: LogicEffect[] = [];
 const calls: {
   args: readonly unknown[];
@@ -80,10 +97,13 @@ const host = createFormController(document.querySelector("#form")!, {
   schema: definition,
   engine: engine(),
   onLogicEffect: (effect) => effects.push(effect),
-  fields: builtinFields,
+  fields: query.has("calculation-errors")
+    ? [...builtinFields, strictNumber]
+    : builtinFields,
   themes,
   theme: query.get("theme") ?? "base",
   data:
+    query.has("calculation-errors") ||
     query.has("effects") ||
     query.has("precedence") ||
     query.has("interleaved") ||

@@ -224,3 +224,12 @@ Reset also discards queued calls that have not started. Separate engines and ses
 
 This prototype does not complete M09c: property overlays, authoring/map UI and final all-host,
 performance, size, screenshot and independent-author delivery checks remain open.
+
+### Persistent calculation diagnostics (M09c correctness)
+
+Invalid active root-calculation values retain an `invalid-logic-value` diagnostic across unrelated
+edits and block browser submission. Re-evaluate only affected contributions; do not clear the error
+because another field changed. Clear the affected error when its contribution recovers/deactivates,
+on an allowed explicit override, or on reset. Errors are isolated by target and session. Node still
+accepts supplied canonical `allowOverride:true` values because it cannot infer client edit history;
+protected calculations remain authoritative and reject invalid/forged results.

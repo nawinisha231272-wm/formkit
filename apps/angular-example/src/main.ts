@@ -1,3 +1,5 @@
+import { createLogicEffectsDemo } from "../../shared/logic-effects";
+import effectsSchema from "../../../fixtures/forms/logic/effects.json";
 import protectedSchema from "../../../fixtures/forms/native/protected-writes.json";
 import "@angular/compiler";
 import {
@@ -33,11 +35,17 @@ const themes = [
   materialTheme,
 ];
 const query = new URLSearchParams(location.search);
-const schema = query.has("protected")
-  ? protectedSchema
-  : query.has("onboarding")
-    ? onboardingSchema
-    : nativeSchema;
+const logicEffects = query.has("effects")
+  ? createLogicEffectsDemo()
+  : undefined;
+if (logicEffects) window.logicEffectsDemo = logicEffects;
+const schema = query.has("effects")
+  ? effectsSchema
+  : query.has("protected")
+    ? protectedSchema
+    : query.has("onboarding")
+      ? onboardingSchema
+      : nativeSchema;
 const initialData = query.has("protected")
   ? {
       name: "stored",
@@ -155,6 +163,10 @@ Component({ selector: "employee-object", standalone: true, inputs, template })(
 );
 class App {
   registeredThemes = signal(themes);
+  effect(effect: import("@ourform/core").LogicEffect) {
+    logicEffects?.outputs.push(effect);
+    logicEffects?.deliveryOrder.push("output");
+  }
   schema = schema;
   data: unknown = initialData;
   defaultData = initialData;
@@ -184,14 +196,26 @@ Component({
   imports: [OurFormComponent],
   providers: [{ provide: HOST_CONTEXT, useValue: "Angular host context" }],
   template:
-    '<our-form [themes]="registeredThemes()" [schema]="schema" [data]="controlled ? data : undefined" [defaultData]="defaultData" [readOnly]="readOnly" (dataChange)="data=$event" (ready)="ready($event)" (submitted)="submitted($event)" /><button id="submit" (click)="submit()">Submit</button><pre id="result">{{result}}</pre>',
+    '<our-form [themes]="registeredThemes()" [schema]="schema" [data]="controlled ? data : undefined" [defaultData]="defaultData" [readOnly]="readOnly" (logicEffect)="effect($event)" (dataChange)="data=$event" (ready)="ready($event)" (submitted)="submitted($event)" /><button id="submit" (click)="submit()">Submit</button><pre id="result">{{result}}</pre>',
 })(App);
 const host = document.createElement("host-app");
 document.querySelector("#app")!.replaceChildren(host);
 const application = await bootstrapApplication(App, {
   providers: [
     provideZonelessChangeDetection(),
-    provideOurForm({ themes, theme: "base" }),
+    provideOurForm({
+      themes,
+      theme: query.get("theme") ?? "base",
+      ...(logicEffects
+        ? {
+            engine: logicEffects.engine,
+            onLogicEffect: (effect) => {
+              logicEffects.effects.push(effect);
+              logicEffects.deliveryOrder.push("provider");
+            },
+          }
+        : {}),
+    }),
     provideFormField("employee", EmployeeLookup),
     provideFormField("employeeObject", EmployeeObject, {
       value: employeeValue,

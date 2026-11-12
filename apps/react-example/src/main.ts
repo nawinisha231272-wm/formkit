@@ -1,3 +1,5 @@
+import { createLogicEffectsDemo } from "../../shared/logic-effects";
+import effectsSchema from "../../../fixtures/forms/logic/effects.json";
 import protectedSchema from "../../../fixtures/forms/native/protected-writes.json";
 import {
   StrictMode,
@@ -33,11 +35,17 @@ const themes = [
   materialTheme,
 ];
 const query = new URLSearchParams(location.search);
-const schema = query.has("protected")
-  ? protectedSchema
-  : query.has("onboarding")
-    ? onboardingSchema
-    : nativeSchema;
+const logicEffects = query.has("effects")
+  ? createLogicEffectsDemo()
+  : undefined;
+if (logicEffects) window.logicEffectsDemo = logicEffects;
+const schema = query.has("effects")
+  ? effectsSchema
+  : query.has("protected")
+    ? protectedSchema
+    : query.has("onboarding")
+      ? onboardingSchema
+      : nativeSchema;
 const initialData = query.has("protected")
   ? {
       name: "stored",
@@ -147,25 +155,30 @@ function App() {
   const ref = useRef<FormController>(null);
   const [data, setData] = useState<unknown>(initialData);
   const [result, setResult] = useState<unknown>();
+  const [listener, setListener] = useState(0);
   const [registeredThemes, setThemes] = useState(themes);
   return el(
     HostContext.Provider,
     { value: "React host context" },
     el(
       OurFormProvider,
-      { fields },
+      { fields, ...(logicEffects ? { engine: logicEffects.engine } : {}) },
       el(
         Form,
         {
           ref,
           schema,
           themes: registeredThemes,
-          theme: "base",
+          theme: query.get("theme") ?? "base",
           data: query.has("uncontrolled") ? undefined : data,
           defaultData: initialData,
           readOnly: new URLSearchParams(location.search).has("readonly"),
           onChange: (patch) => setData(patch.data),
           onSubmit: setResult,
+          onLogicEffect: (effect) => {
+            logicEffects?.effects.push(effect);
+            logicEffects?.listeners.push(listener);
+          },
           onReady: (form) => {
             window.hostDemo = {
               form,
@@ -188,6 +201,16 @@ function App() {
       "Submit",
     ),
     el("pre", { id: "result" }, JSON.stringify(result)),
+    logicEffects
+      ? el(
+          "button",
+          {
+            id: "replace-effect-listener",
+            onClick: () => setListener((value) => value + 1),
+          },
+          "Replace effect listener",
+        )
+      : null,
   );
 }
 const root = createRoot(document.querySelector("#app")!);

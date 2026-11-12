@@ -36,7 +36,7 @@ export function compileCalculations(
   return (
     context: () => ExpressionContext,
     counts: () => LogicWorkCounts,
-    invalid: (id: string, ruleId: string) => void,
+    invalid: (id: string, ruleId?: string) => void,
   ) => {
     const owners = new Map<
       string,
@@ -71,6 +71,7 @@ export function compileCalculations(
               if (action.kind === "calculate" && action.target === id)
                 selected = { rule, action };
           }
+          if (!selected) invalid(id);
           const previous = owners.get(id);
           if (
             !selected &&
@@ -101,6 +102,7 @@ export function compileCalculations(
                   invalid(id, selected.rule.wire.id);
                   return context.getRef(id);
                 }
+                invalid(id);
                 const authoritative =
                   entry.node.calculate?.allowOverride !== true;
                 const old = owners.get(id);
@@ -166,11 +168,14 @@ export function compileCalculations(
     return {
       state: (id: string) => states.get(id),
       edited: (id: string) => {
+        invalid(id);
         owners.delete(id);
       },
       written: (id: string, provenance: LogicProvenance) => {
-        if (groups.has(id))
+        if (groups.has(id)) {
+          invalid(id);
           owners.set(id, { provenance, calculated: false, revert: false });
+        }
       },
     };
   };

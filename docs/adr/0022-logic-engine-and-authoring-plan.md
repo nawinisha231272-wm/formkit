@@ -4,6 +4,19 @@ Status: **accepted by the owner on 2026-11-10; budget amendments accepted 2026-1
 Date: 2026-11-09
 Milestone: M09c (accepted plan; implementation evidence remains pending)
 
+## Recorded runtime allowance use — persistent calculation diagnostics, 2026-11-12
+
+The corrected opt-in runtime retains an invalid active calculation diagnostic across unrelated edits,
+without re-evaluating unrelated rules. Recovery, inactive contributions, allowed explicit overrides
+and reset remove the affected cached error. Supplied overrideable values remain accepted by Node,
+which cannot infer client edit history. This is a correctness fix, not a new wire/API contract.
+
+Consumer build: UI **31,780**, builder-core **7,168**, enabled full **74,525**, matched no-logic
+**28,897**, opt-in increment **5,376**. Full +88 versus effects checkpoint 74,437 is attributable to
+persistent per-target errors/recovery, first exceeding the historical 74,500 by 25 within the owner's
+preapproved 75,700 remaining-runtime maximum. No-logic is unchanged; no new feature consumes its
+correctness-only margin. All enforced ceilings remain unchanged; marginal Brotli deltas are not additive.
+
 ## Owner Button-event/correctness amendment — 2026-11-12
 
 Accept matched no-logic **28,897** (+45 from 28,852) for the regression fix preserving valid empty

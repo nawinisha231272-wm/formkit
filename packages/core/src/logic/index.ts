@@ -731,16 +731,30 @@ function createSessionRuntime(
       (a, b) => session.form.ranks[a]! - session.form.ranks[b]!,
     );
   };
+  // Invalid continuous contributions remain invalid until that target recovers,
+  // even when the next edit visits no rule that can recompute it.
+  const calculationErrors = new Map<string, Diagnostic>();
   const calculations = makeCalculations(
     session.context,
     () => runtime.counts,
-    (id, ruleId) =>
-      diagnostics.push({
-        severity: "error",
-        code: "invalid-logic-value",
-        componentId: id,
-        message: `Rule ${ruleId}: invalid value for ${id}.`,
-      }),
+    (id, ruleId) => {
+      const previous = calculationErrors.get(id);
+      if (previous) {
+        const index = diagnostics.indexOf(previous);
+        if (index >= 0) diagnostics.splice(index, 1);
+        calculationErrors.delete(id);
+      }
+      if (ruleId !== undefined) {
+        const diagnostic: Diagnostic = {
+          severity: "error",
+          code: "invalid-logic-value",
+          componentId: id,
+          message: `Rule ${ruleId}: invalid value for ${id}.`,
+        };
+        calculationErrors.set(id, diagnostic);
+        diagnostics.push(diagnostic);
+      }
+    },
   );
   let previousData = session.data();
   const effects = createEffects(
@@ -890,7 +904,10 @@ function createSessionRuntime(
     run(trigger, sources, payload) {
       effects.begin(trigger, payload);
       changed.clear();
-      if (trigger.on !== "submit") diagnostics.length = 0;
+      if (trigger.on !== "submit") {
+        diagnostics.length = 0;
+        diagnostics.push(...calculationErrors.values());
+      }
       const actual = sources?.filter((id) => {
         runtime.counts.sourceChecks++;
         const entry = session.form.byId[id]!;

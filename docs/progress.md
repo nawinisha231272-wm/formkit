@@ -6,6 +6,67 @@ deviations from spec, open questions.
 
 ## Current state
 
+## M09c correctness/lifecycle checkpoint — full pinned PASS, 2026-11-12
+
+Frozen `pnpm verify` exits0: **414 units / 1,692 browsers / all size gates / nine counts**.
+UI/core/enabled full **31,780 / 7,168 / 74,525**; no-logic **28,897**, opt-in **5,376**.
+No ceiling, baseline, assertion intent or deadline changed. Persistent calculation-error regressions
+and all-host effects lifecycle now pass; [full proof/disclosed failures/timings](reviews/m09c-calculation-errors-checkpoint.md).
+The old25-edit exceedances and longer250-edit diagnostic remain retained separately; final-source
+performance delivery still pending. Package/index audit and first new-head CI follow before any
+completion claim. Next: property overlays, commands/locks, real lazy Logic/map and final delivery.
+
+## M09c framework effect lifecycle — focused PASS, 2026-11-12
+
+Plan: use the same effects fixture through real React/Angular form adapters; assert current callback,
+Angular provider/output parity, after-update focus, retained input, immutable invocation data and
+destroy cancellation in all five themes/all three browsers. Preserve ordinary example behavior.
+**30 focused browser checks PASS**, including React StrictMode/latest-callback and Angular output.
+New tests and self-hosted `?effects&theme=<name>` example paths; no new public API or baseline change.
+The shared fixture is example-only and excluded from the consumer gates. Typecheck PASS (45 tasks).
+The earlier strict-number demo spread and new heterogeneous registration loop exposed TypeScript
+errors, corrected without changing assertions; the first full run stopped at typecheck and is not
+claimed green. Full frozen verification follows the combined correctness/lifecycle source.
+
+Effects checkpoint `4c0964cbd41139f5af146201a1cbda9d9fd77b6c`: Linux push Verify **success,
+attempt 1**, [run 43246771450](https://github.com/nawinisha231272-wm/formkit/actions/runs/43246771450).
+This result applies only to that pushed SHA; the current correctness/lifecycle draft is unpushed.
+
+Fresh five-pair production edit timing on the calculation-error source retains all original results:
+plain 100/500/1,000 ratios **1.0000 / 1.1121 / 1.0139**, legacy **1.1049 / 1.0079 / 1.0175**.
+The two above 1.10 are **not a performance PASS**. No assertions, processor counts or deadline changed.
+An extended 250-edit batch comparison is investigating the short-sample observations; final performance
+acceptance remains open, separate from correctness CI. No prior measurement is relabeled current green.
+Extended 250-edit comparison completed: plain 100/500/1,000 paired median ratios
+**0.9958 / 1.0027 / 0.9861**; legacy **1.0901 / 0.9982 / 0.9850**. All are ≤1.10 on the
+same frozen runtime, without a product change between experiments. This longer-batch diagnostic
+reduces short-sample sensitivity; it does not erase the two original exceedances or establish their
+cause. Preserve absolute times and every pair; final M09c delivery timing must be refreshed again.
+
+## M09c persistent calculation errors — correctness checkpoint, 2026-11-12
+
+Plan: retain invalid active calculation diagnostics per target/session, clear only on recovery,
+inactive contribution, allowed explicit override or reset; prove zero unrelated evaluation and
+protected-value browser/Node rejection. Then resume property overlays and authoring. The strict
+numeric-adapter reproduction fails on exact pushed 0ac and effects head, without changing an adapter
+contract. An unrelated edit previously erased the error and allowed browser submission.
+
+The fix stays entirely inside opt-in core/logic. Four new unit regressions pass; all 173 targeted
+core/validation tests pass. The new browser test initially assumed Node could infer the absence of a
+prior client override. That **new assertion was wrong** under the accepted allowOverride policy:
+Node accepts supplied canonical overrideable values, while the browser retains its known failed
+calculation until an actual override/recovery. Corrected only that new Node assertion to the accepted
+policy; retained protected-value rejection, browser failure, input identity and all recovery checks.
+Original failed logs are retained. No existing test assertion, threshold or deadline changed.
+
+Current measured consumer set: UI **31,780/32,600**, builder-core **7,168/8,300**, enabled full
+**74,525/75,700**, matched no-logic **28,897/28,897**, opt-in **5,376/6,000**. Versus effects head:
+UI +0, core +39, full +88, no-logic +0, opt-in -20 (marginal Brotli figures are not additive).
+The **74,525** full measurement first uses the owner's preapproved remaining-runtime allowance above
+74,500, for persistent calculation diagnostics/recovery; no ceiling was changed. The unused no-logic
+correctness margin remains unused. Targeted/full verification and commit evidence follow; this entry
+claims no completed M09c or delivery approval. No visual baseline changed.
+
 ## M09c effects checkpoint — full pinned PASS, 2026-11-12
 
 Frozen-source `pnpm verify` exits **0**: **410 units / 1,656 browser / 17 package and all consumer/lazy

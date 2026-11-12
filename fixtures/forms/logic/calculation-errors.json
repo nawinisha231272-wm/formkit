@@ -1,0 +1,30 @@
+{
+  "$formVersion": "1.0",
+  "id": "calculation-errors",
+  "display": "form",
+  "components": [
+    { "id": "source", "type": "text", "key": "source", "label": "Source" },
+    { "id": "other", "type": "text", "key": "other", "label": "Other" },
+    {
+      "id": "target",
+      "type": "strict-number",
+      "key": "target",
+      "label": "Derived",
+      "calculate": { "expr": 2, "allowOverride": false }
+    }
+  ],
+  "logic": [
+    {
+      "id": "derive",
+      "trigger": { "on": "change" },
+      "when": ["neq", { "ref": "source" }, "off"],
+      "then": [
+        {
+          "action": "calculate",
+          "target": "target",
+          "expr": ["if", ["eq", { "ref": "source" }, "bad"], "invalid", 3]
+        }
+      ]
+    }
+  ]
+}

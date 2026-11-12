@@ -338,3 +338,12 @@ The named-event bridge preserves valid legacy Button custom events with an empty
 emit the existing action callback/DOM event and do not trigger root logic. Public
 session.triggerLogicEvent still requires a nonempty name and rejects programmer misuse. This does
 not change Button configuration, expression syntax or form JSON.
+
+### Persistent calculation diagnostics (M09c correctness)
+
+Invalid active root-calculation values retain an `invalid-logic-value` diagnostic across unrelated
+edits and block browser submission. Re-evaluate only affected contributions; do not clear the error
+because another field changed. Clear the affected error when its contribution recovers/deactivates,
+on an allowed explicit override, or on reset. Errors are isolated by target and session. Node still
+accepts supplied canonical `allowOverride:true` values because it cannot infer client edit history;
+protected calculations remain authoritative and reject invalid/forged results.
