@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "edits": 25,
+  "baselineSHA": "cd6d0b679027da328da9f5e4f63480437d6c765b",
+  "scope": "getFieldState calls per edit after mount; matched plain/legacy 100/500/1000 plus onboarding; same 25-edit fixtures",
+  "cases": {
+    "plain100": 202,
+    "plain500": 1002,
+    "plain1000": 2002,
+    "legacy100": 252,
+    "legacy500": 1052,
+    "legacy1000": 2052,
+    "onboarding": 158
+  }
+}

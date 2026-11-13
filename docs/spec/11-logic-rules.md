@@ -214,3 +214,11 @@ because another field changed. Clear the affected error when its contribution re
 on an allowed explicit override, or on reset. Errors are isolated by target and session. Node still
 accepts supplied canonical `allowOverride:true` values because it cannot infer client edit history;
 protected calculations remain authoritative and reject invalid/forged results.
+
+### Final M09c remaining-runtime envelope (owner, 2026-11-12)
+
+ADR-0022's final amendment supersedes historical size figures above: UI initial **32,600**,
+builder-core **8,300**, enabled builder full **76,200**, matched no-logic form **29,200**, matched
+opt-in increment **7,000**. Preserve no-logic full 68,500, package/lazy budgets and ≤1.10 edit ratios.
+Record every actual rise and its cause; above any maximum STOP with measured options. These
+allowances cover remaining runtime work only; they do not grant later-milestone budgets.

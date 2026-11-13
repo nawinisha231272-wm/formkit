@@ -157,11 +157,12 @@ between them. Trigger filtering compares actual values, so an unchanged derived 
 write cleared back to its stored value does not create a value edge. Generated composite ids retain
 legacy reference validation. Rule work also counts source/value comparisons; baseline evolution rejects
 metric increases/removals. `toSubmissionSchema` annotates root rules and defers dynamic constraints to
-the shared runtime while preserving canonical types/static constraints. `setProperty` still produces `unsupported-logic-action`; property overlays and complete all-host
-delivery acceptance remain in development. Effects are described below.
-This is not a completed/released M09c implementation. The owner approved 75,700 enabled builder
-full for remaining M09c runtime, 32,600 UI, 8,300 builder-core; matched no-logic 28,897 and opt-in
-increment 6,000 are enforced (2026-11-12 amendment).
+the shared runtime while preserving canonical types/static constraints. An unshipped `setProperty` prototype now derives safe, explicitly marked properties through immutable
+session overlays. The owner accepted its measured costs and final runtime envelope; [historical budget review](../../docs/reviews/m09c-property-budget-question.md)
+is resolved. Complete all-host delivery remains in development. Effects are described below.
+This is not a completed/released M09c implementation. The owner approved 76,200 enabled builder
+full for remaining M09c runtime, 32,600 UI, 8,300 builder-core; matched no-logic 29,200 and opt-in
+increment 7,000 are enforced (2026-11-12 amendment).
 
 `validateSubmission` uses the compiled opt-in program's `replay()` capability in a private session.
 The original compiled form/program is unchanged; normal browser sessions keep load initializers.
@@ -233,3 +234,18 @@ because another field changed. Clear the affected error when its contribution re
 on an allowed explicit override, or on reset. Errors are isolated by target and session. Node still
 accepts supplied canonical `allowOverride:true` values because it cannot infer client edit history;
 protected calculations remain authoritative and reject invalid/forged results.
+
+### Property overlay prototype (unreleased; budget review pending)
+
+`ComponentModel.logicSettable?: readonly LogicPropertyPath[]` grants safe canonical wire properties
+such as `label`, `description`, `validation.min`, or declared config `properties.hint`.
+`PropertyDefinition.logicSettable: true` alternatively grants that config member; grants accumulate.
+An absent/false flag grants nothing. Identity/type/key/child/slot/prototype writes are always refused.
+Config names must be declared by the model. Canonical names disambiguate config from validation;
+short aliases work only when uniquely resolvable (e.g. `validation.max` versus `properties.max`).
+
+`FieldState.resolvedNode` is an optional frozen runtime overlay. It never changes the wire definition
+or registered model. Node validation reads the same derived constraints/config; views resolve the
+same node without replacing keyed controls. Last active contribution wins, revert reveals the prior
+contribution/base, invalid active property results persist until recovery/deactivation/reset and
+block submission. This prototype has not passed final browser/CSP/performance/full verification.

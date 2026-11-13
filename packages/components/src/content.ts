@@ -126,7 +126,11 @@ export const contentField = defineDisplay({
   type: "content",
   title: "Content",
   properties: {
-    html: stringProperty({ label: "of.content.html", default: "" }),
+    html: stringProperty({
+      label: "of.content.html",
+      default: "",
+      logicSettable: true,
+    }),
   },
   control: (p) => sanitizeContent(p.config.html),
 });

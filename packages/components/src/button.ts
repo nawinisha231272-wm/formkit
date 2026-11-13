@@ -12,7 +12,11 @@ export const buttonField = defineDisplay({
         { value: "custom", label: "of.button.custom" },
       ],
     }),
-    text: stringProperty({ label: "of.button.label", default: "" }),
+    text: stringProperty({
+      label: "of.button.label",
+      default: "",
+      logicSettable: true,
+    }),
     event: stringProperty({ label: "of.button.event", default: "action" }),
   },
   control: (p) =>

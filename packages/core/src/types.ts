@@ -20,6 +20,8 @@ export interface FieldError {
   params?: Record<string, unknown>;
 }
 export interface FieldState {
+  /** Immutable runtime presentation/config overlay; the wire definition stays unchanged. */
+  resolvedNode?: ComponentNode;
   componentId: string;
   path: Path;
   rowId?: string;

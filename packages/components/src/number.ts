@@ -1,6 +1,8 @@
+import { numberLogicProperties } from "./logic-properties";
 import { defineField, h, controlAttributes, numberValue } from "@ourform/sdk";
 export const numberField = defineField({
   type: "number",
+  logicSettable: numberLogicProperties,
   title: "Number",
   value: numberValue({ empty: null }),
   control: (p) =>

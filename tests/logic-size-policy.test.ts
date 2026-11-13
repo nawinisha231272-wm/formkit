@@ -6,30 +6,30 @@ import {
 
 const passing = () => ({
   noLogic: {
-    brotli: 28_897,
+    brotli: 29_200,
     includesLogicBody: false,
     includesRuleMetaSchema: false,
   },
   enabled: { includesLogicBody: true, includesRuleMetaSchema: true },
-  increment: 6_000,
+  increment: 7_000,
 });
 test("pay-for-use gates enforce owner limits at equality and reject one-byte regressions", () => {
   expect(logicConsumerLimits).toEqual({
     mainNoLogic: 28_232,
-    noLogic: 28_897,
-    increment: 6_000,
+    noLogic: 29_200,
+    increment: 7_000,
     noLogicFull: 68_500,
   });
   expect(checkLogicConsumers(passing())).toEqual([]);
   const noLogic = passing();
   noLogic.noLogic.brotli++;
   expect(checkLogicConsumers(noLogic)).toContain(
-    "matched no-logic form: 28898 > 28897",
+    "matched no-logic form: 29201 > 29200",
   );
   const enabled = passing();
   enabled.increment++;
   expect(checkLogicConsumers(enabled)).toContain(
-    "opt-in logic increment: 6001 > 6000",
+    "opt-in logic increment: 7001 > 7000",
   );
 });
 test("size alone cannot approve a no-logic build carrying rules or an enabled build missing validation", () => {

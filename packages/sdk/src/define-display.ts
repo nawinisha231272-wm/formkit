@@ -5,6 +5,7 @@ import { stringValue } from "./value";
 export function defineDisplay<P extends PropertyMap>(spec: {
   type: string;
   title: string;
+  logicSettable?: ComponentModel["logicSettable"];
   properties: P;
   control: PortableControl<unknown, ConfigOf<P>>;
 }) {

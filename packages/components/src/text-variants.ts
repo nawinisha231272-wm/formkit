@@ -1,3 +1,4 @@
+import { textLogicProperties } from "./logic-properties";
 import { defineField, h, controlAttributes, stringValue } from "@ourform/sdk";
 import type { FieldControlProps } from "@ourform/sdk";
 const inputProps = (p: FieldControlProps<string, object>) => ({
@@ -10,12 +11,14 @@ const inputProps = (p: FieldControlProps<string, object>) => ({
 });
 export const textareaField = defineField({
   type: "textarea",
+  logicSettable: textLogicProperties,
   title: "Textarea",
   value: stringValue(),
   control: (p) => h("textarea", { ...inputProps(p), rows: 3 }, p.value),
 });
 export const emailField = defineField({
   type: "email",
+  logicSettable: textLogicProperties,
   title: "Email",
   value: stringValue(),
   validators: ["email"],
@@ -24,6 +27,7 @@ export const emailField = defineField({
 });
 export const passwordField = defineField({
   type: "password",
+  logicSettable: textLogicProperties,
   title: "Password",
   value: stringValue(),
   control: (p) =>
@@ -35,6 +39,7 @@ export const passwordField = defineField({
 });
 export const hiddenField = defineField({
   type: "hidden",
+  logicSettable: textLogicProperties,
   title: "Hidden",
   value: stringValue(),
   shell: "none",

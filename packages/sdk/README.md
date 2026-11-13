@@ -161,3 +161,47 @@ by theme-base; form and builder themes are independent. See spec 10 and ADR-0016
 `defineField` and `defineLayout` accept `caption`, a builder property path defaulting to `label`.
 Use `caption: false` to opt out. Inline editing is available only for a visibly rendered caption.
 Panel and Fieldset use `node.label`; translation-key labels open Settings.
+
+### Root-rule property capabilities (unshipped M09c prototype)
+
+`defineField`, `defineDisplay` and `defineLayout` optionally accept `logicSettable`, a readonly list
+of `LogicPropertyPath` grants. Safe wire paths include `label`, `description`, `placeholder` and
+`validation.min`/`validation.max`; declared config paths use `properties.<name>`.
+A property helper's `logicSettable: true` alternatively grants that config member. Unmarked properties
+and structural/identity/prototype paths are refused. Both declarations are cloned/frozen per model.
+Canonical paths disambiguate configuration from wire validation (Rating uses `properties.max`
+for star count and `validation.max` for a response constraint). Nothing executes from metadata.
+
+```ts
+import {
+  defineField,
+  stringValue,
+  stringProperty,
+  controlAttributes,
+  h,
+} from "@ourform/sdk";
+
+export const code = defineField({
+  type: "acme.code",
+  title: "Code",
+  value: stringValue(),
+  logicSettable: ["label", "description"],
+  properties: {
+    hint: stringProperty({ label: "Hint", default: "", logicSettable: true }),
+  },
+  control: (p) =>
+    h("input", {
+      ...controlAttributes(p),
+      value: p.value,
+      class: p.theme.classFor("control"),
+      placeholder: p.config.hint,
+      oninput: (event: Event) =>
+        p.setValue((event.target as HTMLInputElement).value),
+      onblur: p.onBlur,
+    }),
+});
+```
+
+The common renderer and Node validation consume immutable per-session resolved config; authored
+JSON and model metadata remain unchanged. This prototype is not shipped: its accepted size envelope and
+remaining browser/CSP/full acceptance are recorded in docs/reviews/m09c-property-budget-question.md.

@@ -766,3 +766,17 @@ run with exactly its evaluated arguments. No implicit session write or expressio
 Core root exports the `LogicEffect`/`LogicCallContext` types only. `createLogic` and its positive
 finite `nodeCallTimeoutMs` option are exported only by `@ourform/core/logic`. Hosts receive typed
 requests as documented in spec 06; portable custom Button actions retain the existing action API.
+
+### M09c property prototype representation (unshipped; runtime envelope approved)
+
+The additive model/defineField/defineDisplay/defineLayout option is
+`logicSettable?: readonly LogicPropertyPath[]`. Paths are safe display wire members, `validation`
+scalar constraints, or declared `properties.<name>` config entries. A property's optional boolean
+`logicSettable:true` grants the same config capability. Grants accumulate; absent/false contributes
+none. Structural/identity/key/type/children/slot/prototype paths are never granted. Prefer canonical
+paths; config/bound short aliases must resolve uniquely. Metadata is cloned/frozen per registration.
+Root rules derive an optional frozen `FieldState.resolvedNode`; renderer and Node validation resolve
+that same node/config, retaining original definition/model and keyed control identity.
+This representation implements the accepted capability contract within the owner-approved runtime
+envelope. The historical [size proposal](../reviews/m09c-property-budget-question.md) is resolved;
+complete browser/full verification and delivery review remain pending.

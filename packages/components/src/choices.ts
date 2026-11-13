@@ -1,3 +1,4 @@
+import { textLogicProperties } from "./logic-properties";
 import {
   defineField,
   h,
@@ -6,10 +7,15 @@ import {
   optionsProperty,
 } from "@ourform/sdk";
 const properties = {
-  options: optionsProperty({ label: "of.options", default: [] }),
+  options: optionsProperty({
+    label: "of.options",
+    default: [],
+    logicSettable: true,
+  }),
 };
 export const selectField = defineField({
   type: "select",
+  logicSettable: textLogicProperties,
   title: "Select",
   value: stringValue(),
   validators: ["options"],
@@ -46,6 +52,7 @@ export const selectField = defineField({
 });
 export const radioField = defineField({
   type: "radio",
+  logicSettable: textLogicProperties,
   title: "Radio",
   value: stringValue(),
   validators: ["options"],

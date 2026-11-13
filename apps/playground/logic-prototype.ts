@@ -1,3 +1,5 @@
+import propertiesDefinition from "../../fixtures/forms/logic/properties.json";
+import { createLogicPropertiesEngine } from "../shared/logic-properties";
 import { strictNumber } from "./strict-number";
 import calculationErrors from "../../fixtures/forms/logic/calculation-errors.json";
 import type { LogicCallContext, LogicEffect } from "@ourform/core";
@@ -9,7 +11,7 @@ import { materialTheme } from "@ourform/themes/material";
 import { defineOurFormElement, type OurFormElement } from "@ourform/element";
 import { createEngine } from "@ourform/core";
 import { createLogic } from "@ourform/core/logic";
-import { builtinFields } from "@ourform/components";
+import { builtinFields, builtinComponents } from "@ourform/components";
 import {
   createFormController,
   type FormController,
@@ -21,50 +23,52 @@ import loadInitializer from "../../fixtures/forms/logic/load-initializer.json";
 import actionOrder from "../../fixtures/forms/logic/action-order.json";
 import calculationPrecedence from "../../fixtures/forms/logic/calculation-precedence.json";
 const query = new URLSearchParams(location.search);
-const definition = query.has("calculation-errors")
-  ? {
-      ...calculationErrors,
-      components: calculationErrors.components.map((node) =>
-        node.calculate
-          ? {
-              ...node,
-              calculate: {
-                ...node.calculate,
-                allowOverride: query.has("allow-override"),
-              },
-            }
-          : node,
-      ),
-    }
-  : query.has("effects")
-    ? effectsDefinition
-    : query.has("precedence")
-      ? {
-          ...calculationPrecedence,
-          components: calculationPrecedence.components.map((node) =>
-            node.calculate
-              ? {
-                  ...node,
-                  calculate: {
-                    ...node.calculate,
-                    allowOverride: query.has("allow-override"),
-                  },
-                }
-              : node,
-          ),
-        }
-      : query.has("actions")
-        ? actionOrder
-        : query.has("load-initializer")
-          ? loadInitializer
-          : query.has("interleaved")
+const definition = query.has("properties")
+  ? propertiesDefinition
+  : query.has("calculation-errors")
+    ? {
+        ...calculationErrors,
+        components: calculationErrors.components.map((node) =>
+          node.calculate
             ? {
-                ...interleaved,
-                logic: query.has("reverse")
-                  ? [...interleaved.logic].reverse()
-                  : interleaved.logic,
+                ...node,
+                calculate: {
+                  ...node.calculate,
+                  allowOverride: query.has("allow-override"),
+                },
               }
-            : schema;
+            : node,
+        ),
+      }
+    : query.has("effects")
+      ? effectsDefinition
+      : query.has("precedence")
+        ? {
+            ...calculationPrecedence,
+            components: calculationPrecedence.components.map((node) =>
+              node.calculate
+                ? {
+                    ...node,
+                    calculate: {
+                      ...node.calculate,
+                      allowOverride: query.has("allow-override"),
+                    },
+                  }
+                : node,
+            ),
+          }
+        : query.has("actions")
+          ? actionOrder
+          : query.has("load-initializer")
+            ? loadInitializer
+            : query.has("interleaved")
+              ? {
+                  ...interleaved,
+                  logic: query.has("reverse")
+                    ? [...interleaved.logic].reverse()
+                    : interleaved.logic,
+                }
+              : schema;
 const effects: LogicEffect[] = [];
 const calls: {
   args: readonly unknown[];
@@ -72,20 +76,22 @@ const calls: {
   complete(): void;
 }[] = [];
 const engine = () =>
-  createEngine({
-    logic: createLogic(),
-    functions: {
-      lookup: {
-        pure: false,
-        availableInNode: true,
-        run: () => {},
-        effect: (args, context) =>
-          new Promise<void>((resolve) => {
-            calls.push({ args, context, complete: resolve });
-          }),
-      },
-    },
-  });
+  query.has("properties")
+    ? createLogicPropertiesEngine()
+    : createEngine({
+        logic: createLogic(),
+        functions: {
+          lookup: {
+            pure: false,
+            availableInNode: true,
+            run: () => {},
+            effect: (args, context) =>
+              new Promise<void>((resolve) => {
+                calls.push({ args, context, complete: resolve });
+              }),
+          },
+        },
+      });
 const themes = [
   baseTheme,
   bootstrap4Theme,
@@ -95,14 +101,18 @@ const themes = [
 ];
 const host = createFormController(document.querySelector("#form")!, {
   schema: definition,
+  styleNonce: "property-test",
   engine: engine(),
   onLogicEffect: (effect) => effects.push(effect),
   fields: query.has("calculation-errors")
     ? [...builtinFields, strictNumber]
-    : builtinFields,
+    : query.has("properties")
+      ? builtinComponents
+      : builtinFields,
   themes,
   theme: query.get("theme") ?? "base",
   data:
+    query.has("properties") ||
     query.has("calculation-errors") ||
     query.has("effects") ||
     query.has("precedence") ||
@@ -132,7 +142,9 @@ window.ourformEffects = {
     element.engine = engine();
     element.themes = themes;
     element.theme = query.get("theme") ?? "base";
-    element.schema = effectsDefinition;
+    element.schema = query.has("properties")
+      ? propertiesDefinition
+      : effectsDefinition;
     document.body.append(element);
     return element;
   },

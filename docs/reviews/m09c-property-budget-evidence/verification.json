@@ -1,0 +1,35 @@
+{
+  "status": "BLOCKED",
+  "scope": "Uncommitted property-overlay prototype; no delivery/merge claim",
+  "baseHead": "420879478568a1717efc928badd34774040ecbab",
+  "pushed": false,
+  "actual": {
+    "ui": 31780,
+    "builderCore": 7167,
+    "full": 75493,
+    "noLogic": 29061,
+    "increment": 6300
+  },
+  "limits": {
+    "ui": 32600,
+    "builderCore": 8300,
+    "full": 75700,
+    "noLogic": 28897,
+    "increment": 6000
+  },
+  "gaps": {
+    "noLogic": 164,
+    "increment": 300
+  },
+  "buildTasks": 27,
+  "typecheckTasks": 45,
+  "targetedTests": 225,
+  "packageBudgets": 17,
+  "browserVerification": "pending on prototype",
+  "fullPinnedVerify": "not run on known-over-budget prototype; pushed checkpoint proof is separate",
+  "ceilingsChanged": false,
+  "compactions": "four measured probes restored for growth",
+  "existingAssertionsChanged": false,
+  "screenshotsChanged": 0,
+  "decision": "approve measured feature limits29061/6300, or retain limits and review deeper capability/bridge plan"
+}

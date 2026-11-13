@@ -9,6 +9,7 @@ export type {
 } from "./expressions";
 export type {
   ComponentModel,
+  LogicPropertyPath,
   ComponentSlot,
   ConfigOf,
   PropertyDefinition,

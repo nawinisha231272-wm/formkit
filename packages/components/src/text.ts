@@ -1,6 +1,8 @@
+import { textLogicProperties } from "./logic-properties";
 import { defineField, h, controlAttributes, stringValue } from "@ourform/sdk";
 export const textField = defineField({
   type: "text",
+  logicSettable: textLogicProperties,
   title: "Text",
   value: stringValue(),
   control: (p) =>

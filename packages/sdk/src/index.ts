@@ -1,5 +1,6 @@
 export type {
   ComponentModel,
+  LogicPropertyPath,
   ComponentSlot,
   PropertyDefinition,
   PropertyMap,

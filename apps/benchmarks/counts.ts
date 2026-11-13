@@ -7,6 +7,7 @@ import onboarding from "../../fixtures/forms/onboarding/customer.json";
 import onboardingData from "../../fixtures/forms/onboarding/customer.data.json";
 
 export interface WorkCounts {
+  fieldStateReadsPerEdit: number;
   processorsPerEdit: number;
   domCreatedPerEdit: number;
   domReplacedPerEdit: number;
@@ -75,6 +76,7 @@ export function observeDomWork(root: Node, action: () => void) {
 }
 export function measureWorkCounts(
   fixture: "100" | "500" | "1000" | "onboarding",
+  legacy = true,
 ): WorkCounts[] {
   const count = Number(fixture);
   const definition: FormDefinition =
@@ -90,7 +92,7 @@ export function measureWorkCounts(
             key: `field${index}`,
             type: "text",
             label: `Field ${index + 1}`,
-            ...(index > 0 && index <= 25
+            ...(legacy && index > 0 && index <= 25
               ? {
                   calculate: {
                     expr: ["concat", { ref: "field-0" }, `-${index}`] as const,
@@ -141,17 +143,25 @@ export function measureWorkCounts(
   const input = root.querySelector<HTMLInputElement>("input")!;
   input.focus();
   const results: WorkCounts[] = [];
+  const getState = session.getFieldState.bind(session);
+  let fieldStateReads = 0;
+  session.getFieldState = (id) => {
+    fieldStateReads++;
+    return getState(id);
+  };
   const processors = () =>
     Object.values(session.debug.processorRuns).reduce((a, b) => a + b, 0);
   try {
     for (let edit = 0; edit < 25; edit++) {
       const initial = processors();
+      fieldStateReads = 0;
       patchRenders = [];
       const dom = observeDomWork(root, () =>
         session.setValue(path, `Edit ${edit}`),
       );
       results.push({
         ...dom,
+        fieldStateReadsPerEdit: fieldStateReads,
         processorsPerEdit: processors() - initial,
         statePatchesPerEdit: patchRenders.length,
         rendersPerStatePatch: patchRenders,

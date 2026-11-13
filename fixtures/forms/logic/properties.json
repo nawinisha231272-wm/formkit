@@ -1,0 +1,104 @@
+{
+  "$formVersion": "1.0",
+  "id": "logic-properties",
+  "display": "form",
+  "settings": { "validateOn": "change" },
+  "components": [
+    { "id": "source", "type": "text", "key": "source", "label": "Source" },
+    { "id": "other", "type": "text", "key": "other", "label": "Unrelated" },
+    {
+      "id": "amount",
+      "type": "number",
+      "key": "amount",
+      "label": "Amount",
+      "defaultValue": 3,
+      "validation": { "min": 1 }
+    },
+    {
+      "id": "choice",
+      "type": "select",
+      "key": "choice",
+      "label": "Choice",
+      "properties": { "options": [{ "value": "old", "label": "Original" }] }
+    },
+    {
+      "id": "code",
+      "type": "text",
+      "key": "code",
+      "label": "Code",
+      "defaultValue": "aa",
+      "validation": { "pattern": "^[a-z]+$" }
+    },
+    {
+      "id": "group",
+      "type": "panel",
+      "label": "Original panel",
+      "components": [
+        { "id": "child", "type": "text", "key": "child", "label": "Child" }
+      ]
+    }
+  ],
+  "logic": [
+    {
+      "id": "details",
+      "trigger": { "on": "change" },
+      "when": ["eq", { "ref": "source" }, "yes"],
+      "then": [
+        {
+          "action": "setProperty",
+          "target": "amount",
+          "property": "label",
+          "value": "Adjusted amount"
+        },
+        {
+          "action": "setProperty",
+          "target": "amount",
+          "property": "description",
+          "value": "At least five"
+        },
+        {
+          "action": "setProperty",
+          "target": "amount",
+          "property": "prefix",
+          "value": "USD"
+        },
+        {
+          "action": "setProperty",
+          "target": "amount",
+          "property": "suffix",
+          "value": "net"
+        },
+        {
+          "action": "setProperty",
+          "target": "amount",
+          "property": "validation.min",
+          "value": 5
+        },
+        {
+          "action": "setProperty",
+          "target": "code",
+          "property": "validation.pattern",
+          "value": "^[A-Z]+$"
+        },
+        {
+          "action": "setProperty",
+          "target": "code",
+          "property": "placeholder",
+          "value": "Uppercase code"
+        },
+        {
+          "action": "setProperty",
+          "target": "choice",
+          "property": "options",
+          "value": ["call", "propertyOptions"]
+        },
+        {
+          "action": "setProperty",
+          "target": "group",
+          "property": "label",
+          "value": "Changed panel"
+        }
+      ]
+    }
+  ]
+}

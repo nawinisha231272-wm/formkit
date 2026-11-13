@@ -4,6 +4,87 @@ Status: **accepted by the owner on 2026-11-10; budget amendments accepted 2026-1
 Date: 2026-11-09
 Milestone: M09c (accepted plan; implementation evidence remains pending)
 
+## State-read fix — full pinned verification and production comparison PASS, 2026-11-13
+
+The corrected first five-pair production comparison passes all ≤1.10 edit gates: plain
+100/500/1,000 ratios **1.0000/0.9935/0.9952**, legacy **0.9919/1.0051/1.0062**. Main and branch
+use identical 250-edit fixtures (three warmups/nine samples), alternating order on one runner;
+all processor, identity/focus and control-count checks hold. The original failed comparison is
+retained separately; this follows a proven code fix, not a timing retry without a change.
+Seven new exact main-derived state-read count checks and the original nine pass. Both WebKit cases
+from an overlapped rebuild pass in isolation, then all 78 property browser cases pass in serial.
+The failed overlap log contains disappearing dist modules/TS2307; no assertion/deadline changed.
+[Complete corrected performance, counts, disclosure and full proof](../reviews/m09c-property-read-fix.md).
+The corrected frozen pinned run now exits **0**: **446 units / 74 files / 1,770 browsers / 17 package
+budgets / all consumer/lazy gates / 16 count checks**. Its coherent UI/core/full/no-logic/increment
+measurements are **31,780 / 7,188 / 75,619 / 29,111 / 6,318**, with every ceiling unchanged.
+Before/after source fingerprint is identical:
+`9af7d44e8a03d14fb25dfcd268ecd9b9b1ea94fe2696620db5d7efd5ea4547f1`.
+Only documentation/evidence is finalized afterwards. All tested/new non-document files must match the
+verified manifest in the index before commit/push; new-head CI is pending. This is a runtime
+checkpoint, not M09c completion: rule authoring, dependency map, fresh author exercise and delivery
+screenshots still follow.
+
+## State-read correctness fix measurement — 2026-11-13
+
+Reusing one state snapshot restores immutable main's exact state-read counts: plain100/500/1,000
+**202/1,002/2,002**, legacy **252/1,052/2,052**, onboarding **158**, on each of 25 edits. Seven
+new hard count checks and the original nine all pass. A red/green unit retains derived captions and
+errors while requiring one lookup. The original failed five-pair timing experiment is preserved.
+
+Corrected consumer sample: UI **31,780/32,600**, builder-core **7,188/8,300**, enabled full
+**75,619/76,200**, no-logic **29,111/29,200**, matched increment **6,318/7,000**. The correctness
+fix changes no-logic by **+50** and enabled full by **+81** relative to 29,061/75,538 within the
+owner's final remaining-runtime envelope; Brotli symbol/layout changes are non-additive. It does
+not move behavior or code outside accounting. All ceilings stay unchanged. Fresh paired timings
+and full pinned verification remain required; nothing from this draft has been pushed.
+
+## Property-overlay hardening measurement — 2026-11-12
+
+Coherent consumer build: UI **31,780/32,600**, builder-core **7,145/8,300**, enabled full
+**75,538/76,200**, matched no-logic **29,061/29,200**, opt-in **6,395/7,000**. Relative to the
+owner-reviewed prototype 75,493/6,300, full rises **45** and opt-in **95** for property-only
+processor invalidation, repeated scalar/pattern parsing reuse and preservation of static submission
+constraints under display-only rules. No-logic/UI remain unchanged; marginal compression deltas are
+not additive. All protected behavior and package/lazy ceilings stay unchanged. Three added
+100/500/1,000-field property-rule work checks retain the original state-rule assertions and expect
+one property expression, bounded indexed work and zero unrelated rules. A regression proves no
+reprocessing of unchanged legacy value dependants. Invalid-property recovery, safe config/metadata
+isolation and stale async validator cancellation have targeted tests; complete verification follows.
+
+## Owner final M09c runtime envelope — accepted 2026-11-12
+
+The owner accepted the property prototype's measured feature costs: matched no-logic **29,061**
+(+164 from 28,897), opt-in increment **6,300** (+924 from the preceding 5,376 sample), enabled
+builder full **75,493** (+968), UI **31,780**, builder-core **7,167**. Brotli deltas are not additive.
+The root FormSession validation path must read an optional resolved compiled entry, and the generic
+renderer shell/error-label path must read optional `FieldState.resolvedNode`, so the same renderer
+supports legacy and logic-enabled sessions. Trusted built-in capability declarations are retained.
+No-logic consumers still contain no root-rule execution or rule meta-schema; only bounded optional
+dispatch and trusted model metadata remain. Four rejected compaction probes remain recorded.
+
+Final preapproved **remaining-runtime** envelope: matched no-logic **29,200**, matched opt-in
+increment **7,000**, logic-enabled builder full **76,200**, builder UI **32,600**, builder-core
+**8,300**. These cover remaining setProperty/effects/async-call/Node timeout/cancellation work,
+superseding the earlier feature/correctness-only caps below. Record each actual rise and cause;
+above any maximum STOP with measured options. Package/lazy limits, no-logic full 68,500 and all
+correctness, deterministic work-count and ≤1.10 plain/legacy edit-ratio gates remain unchanged.
+The equality/+1-byte policy tests retain their intent and now test these explicit owner limits.
+This approval resolves the size STOP; browser/CSP/performance/full verification and delivery remain
+pending. No unverified feature source has been pushed, and M09c remains open.
+
+## Historical property-overlay prototype — proposal accepted above, 2026-11-12
+
+Historical record of the request **before** the owner answer. Its pending/STOP wording below is
+retained as evidence and is superseded by the accepted final envelope above.
+
+No change to accepted limits. The uncommitted coherent feature measures UI31,780/core7,167/
+full75,493, matched no-logic29,061 and opt-in6,300. No-logic exceeds28,897 by164 and opt-in
+exceeds6,000 by300. The correctness-only margin cannot fund new features. Four measured normal
+compactions were discarded for growth. [Owner decision/evidence](../reviews/m09c-property-budget-question.md)
+proposes exact feature limits29,061/6,300, retaining every other ceiling; these are **not accepted**
+or applied in code. STOP instead of shipping over budget. Broader feature acceptance is still pending.
+
 ## Recorded runtime allowance use — persistent calculation diagnostics, 2026-11-12
 
 The corrected opt-in runtime retains an invalid active calculation diagnostic across unrelated edits,
@@ -215,12 +296,13 @@ All numbers are **Brotli bytes** under the established production consumer metho
 chunks once. They are allowances, not measured implementation PASS results. Keep the original
 M09b+ measurement artifacts/failed probes and disclose any moved code on both sides.
 
-| Scope                                       | M09b+ baseline / prior gate                      | Accepted M09c ceiling or next gate                                                                      |
-| ------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Builder UI initial (excludes builder-core)  | 31,769 / 31,800                                  | **32,600 maximum**                                                                                      |
-| Builder-core marginal consumer contribution | 7,120 / 7,300                                    | **8,300 maximum**                                                                                       |
-| No-logic consumer full initial closure      | Historical full baseline 67,674 / prior 67,700   | **68,500**, at most **+826** against that historical full baseline                                      |
-| Logic-enabled consumer full initial closure | Prototype 71,036; final review before completion | **75,700 enabled full** (scoped runtime amendment 2026-11-12); matched form opt-in increment **≤6,000** |
+| Scope                                       | M09b+ baseline / prior gate                      | Accepted M09c ceiling or next gate                                                                    |
+| ------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Builder UI initial (excludes builder-core)  | 31,769 / 31,800                                  | **32,600 maximum**                                                                                    |
+| Builder-core marginal consumer contribution | 7,120 / 7,300                                    | **8,300 maximum**                                                                                     |
+| No-logic consumer full initial closure      | Historical full baseline 67,674 / prior 67,700   | **68,500**, at most **+826** against that historical full baseline                                    |
+| Logic-enabled consumer full initial closure | Prototype 71,036; final review before completion | **76,200 enabled full** (final runtime envelope 2026-11-12); matched form opt-in increment **≤7,000** |
+| Matched no-logic form                       | Immutable main 28,232                            | **29,200** (final remaining-runtime envelope)                                                         |
 
 A no-logic consumer imports/registers **no root-rule runtime**; absence of root rules in its current
 JSON is insufficient if the runtime is still bundled. A builder always registers root logic, so its

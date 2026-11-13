@@ -45,6 +45,7 @@
     "FormDefinition",
     "FormField",
     "LayoutView",
+    "LogicPropertyPath",
     "NativeFieldOptions",
     "NativeRegistrationArgs",
     "NativeView",

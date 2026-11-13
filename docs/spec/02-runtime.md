@@ -270,8 +270,8 @@ retains generic optional dispatch, protected writes and its unchanged legacy pro
 No-logic and legacy-condition/calculation fixtures each stay ≤1.10 paired edit ratio versus immutable
 merged main at 100/500/1,000 fields. Exact rule-index/condition/action/writer/write/effect/cascade work
 counts are hard gates; timings remain advisory CI but a delivery GO requires the ≤10% evidence.
-No-logic full ceiling is 68,500 Brotli bytes; the logic-enabled consumer closure needs a measured
-prototype and separate owner-approved ceiling (expected ≤6,000 incremental) before shipping. Existing
+No-logic full ceiling is 68,500 Brotli bytes; the final owner-approved remaining-runtime envelope
+is enabled builder full 76,200, matched no-logic form 29,200 and matched opt-in increment 7,000. Existing
 runtime package budgets remain unchanged. Actual builder closures are logic-enabled because builder
 always registers the runtime; report them rather than externalizing required code from a full build.
 
@@ -287,8 +287,8 @@ edit removes that provenance; authoritative calculations are recomputed. Optiona
 `StatePatch.diagnostics` reports root runtime diagnostics, including cascade limit. Prototype
 `session.debug.logic` counts real index reads, candidate rules, conditions, action expressions,
 cached writers, trigger edges, actual writes, cascade rounds and effects. These are not timing gates.
-The prototype rejects unfinished property overlays explicitly. Effect delivery is implemented as
-described below; complete host and delivery acceptance remains open.
+The property prototype resolves only explicitly granted trusted capabilities, as described below.
+Effect delivery is implemented; complete host and delivery acceptance remains open.
 
 ### M09c scheduling and work-count implementation
 
@@ -347,3 +347,12 @@ because another field changed. Clear the affected error when its contribution re
 on an allowed explicit override, or on reset. Errors are isolated by target and session. Node still
 accepts supplied canonical `allowOverride:true` values because it cannot infer client edit history;
 protected calculations remain authoritative and reject invalid/forged results.
+
+### Unshipped property-overlay prototype
+
+The current draft derives permitted config/display/validation properties through frozen resolved
+nodes exposed as optional `FieldState.resolvedNode`. Per-target wire-order folding restores earlier
+writers/base on revert. Per-writer invalid-property diagnostics persist across unrelated edits and
+clear on recovery/deactivation/reset. Both session and Node validation consume the same resolved
+constraints/config. Unmarked/unsafe/structural targets fail compilation. No wire/model mutation or
+whole-form recompile is used per edit. The runtime envelope is approved; browser/full verification remains pending; see the SDK prototype representation.

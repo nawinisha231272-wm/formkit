@@ -1,3 +1,4 @@
+import { layoutLogicProperties } from "./logic-properties";
 import { defineLayout, optionsProperty, resolveConfig } from "@ourform/sdk";
 const properties = {
   tabs: optionsProperty({
@@ -11,6 +12,7 @@ const properties = {
 /** Slot names are stable option values; editing captions does not move children. */
 export const tabsLayout = defineLayout({
   type: "tabs",
+  logicSettable: layoutLogicProperties,
   title: "Tabs",
   tabs: true,
   properties,

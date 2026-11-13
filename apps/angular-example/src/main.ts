@@ -1,3 +1,5 @@
+import propertiesSchema from "../../../fixtures/forms/logic/properties.json";
+import { createLogicPropertiesEngine } from "../../shared/logic-properties";
 import { createLogicEffectsDemo } from "../../shared/logic-effects";
 import effectsSchema from "../../../fixtures/forms/logic/effects.json";
 import protectedSchema from "../../../fixtures/forms/native/protected-writes.json";
@@ -39,25 +41,29 @@ const logicEffects = query.has("effects")
   ? createLogicEffectsDemo()
   : undefined;
 if (logicEffects) window.logicEffectsDemo = logicEffects;
-const schema = query.has("effects")
-  ? effectsSchema
+const schema = query.has("properties")
+  ? propertiesSchema
+  : query.has("effects")
+    ? effectsSchema
+    : query.has("protected")
+      ? protectedSchema
+      : query.has("onboarding")
+        ? onboardingSchema
+        : nativeSchema;
+const initialData = query.has("properties")
+  ? { amount: 3, code: "aa" }
   : query.has("protected")
-    ? protectedSchema
-    : query.has("onboarding")
-      ? onboardingSchema
-      : nativeSchema;
-const initialData = query.has("protected")
-  ? {
-      name: "stored",
-      locked: false,
-      staticReadOnly: "stored",
-      staticDisabled: "stored",
-    }
-  : query.has("readonly") && query.has("onboarding")
-    ? onboardingData
-    : query.has("onboarding")
-      ? { preferences: { reference: "web-onboarding" } }
-      : {};
+    ? {
+        name: "stored",
+        locked: false,
+        staticReadOnly: "stored",
+        staticDisabled: "stored",
+      }
+    : query.has("readonly") && query.has("onboarding")
+      ? onboardingData
+      : query.has("onboarding")
+        ? { preferences: { reference: "web-onboarding" } }
+        : {};
 import { employees, employeeValue } from "../../vanilla-example/src/data";
 import type { Employee } from "../../vanilla-example/src/data";
 const HOST_CONTEXT = new InjectionToken<string>("Example host context");
@@ -206,12 +212,14 @@ const application = await bootstrapApplication(App, {
     provideOurForm({
       themes,
       theme: query.get("theme") ?? "base",
-      ...(logicEffects
+      ...(logicEffects || query.has("properties")
         ? {
-            engine: logicEffects.engine,
+            engine: query.has("properties")
+              ? createLogicPropertiesEngine()
+              : logicEffects!.engine,
             onLogicEffect: (effect) => {
-              logicEffects.effects.push(effect);
-              logicEffects.deliveryOrder.push("provider");
+              logicEffects?.effects.push(effect);
+              logicEffects?.deliveryOrder.push("provider");
             },
           }
         : {}),

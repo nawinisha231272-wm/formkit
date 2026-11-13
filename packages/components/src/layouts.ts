@@ -1,12 +1,15 @@
+import { layoutLogicProperties } from "./logic-properties";
 import { defineLayout } from "@ourform/sdk";
 import { tabsLayout } from "./tabs";
 export const panelLayout = defineLayout({
   type: "panel",
+  logicSettable: layoutLogicProperties,
   title: "Panel",
   tag: "section",
 });
 export const columnsLayout = defineLayout({
   type: "columns",
+  logicSettable: layoutLogicProperties,
   title: "Columns",
   columns: true,
   slots: (node) =>
@@ -18,11 +21,13 @@ export const columnsLayout = defineLayout({
 });
 export const fieldsetLayout = defineLayout({
   type: "fieldset",
+  logicSettable: layoutLogicProperties,
   title: "Fieldset",
   tag: "fieldset",
 });
 export const containerLayout = defineLayout({
   type: "container",
+  logicSettable: layoutLogicProperties,
   title: "Container",
   dataScope: "object",
 });

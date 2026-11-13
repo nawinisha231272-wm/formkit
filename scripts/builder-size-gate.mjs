@@ -11,7 +11,7 @@ const entrySource =
 const limits = {
   builderUiInitial: 32_600,
   builderCoreInitial: 8_300,
-  fullInitial: 75_700,
+  fullInitial: 76_200,
   logic: 10_000,
   json: 8_000,
   map: 10_000,

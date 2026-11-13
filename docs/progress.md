@@ -6,6 +6,155 @@ deviations from spec, open questions.
 
 ## Current state
 
+## State-read fix — full pinned verification and production comparison PASS, 2026-11-13
+
+The corrected first five-pair production comparison passes all ≤1.10 edit gates: plain
+100/500/1,000 ratios **1.0000/0.9935/0.9952**, legacy **0.9919/1.0051/1.0062**. Main and branch
+use identical 250-edit fixtures (three warmups/nine samples), alternating order on one runner;
+all processor, identity/focus and control-count checks hold. The original failed comparison is
+retained separately; this follows a proven code fix, not a timing retry without a change.
+Seven new exact main-derived state-read count checks and the original nine pass. Both WebKit cases
+from an overlapped rebuild pass in isolation, then all 78 property browser cases pass in serial.
+The failed overlap log contains disappearing dist modules/TS2307; no assertion/deadline changed.
+[Complete corrected performance, counts, disclosure and full proof](reviews/m09c-property-read-fix.md).
+The corrected frozen pinned run now exits **0**: **446 units / 74 files / 1,770 browsers / 17 package
+budgets / all consumer/lazy gates / 16 count checks**. Its coherent UI/core/full/no-logic/increment
+measurements are **31,780 / 7,188 / 75,619 / 29,111 / 6,318**, with every ceiling unchanged.
+Before/after source fingerprint is identical:
+`9af7d44e8a03d14fb25dfcd268ecd9b9b1ea94fe2696620db5d7efd5ea4547f1`.
+Only documentation/evidence is finalized afterwards. All tested/new non-document files must match the
+verified manifest in the index before commit/push; new-head CI is pending. This is a runtime
+checkpoint, not M09c completion: rule authoring, dependency map, fresh author exercise and delivery
+screenshots still follow.
+
+## State-read correctness fix measurement — 2026-11-13
+
+Reusing one state snapshot restores immutable main's exact state-read counts: plain100/500/1,000
+**202/1,002/2,002**, legacy **252/1,052/2,052**, onboarding **158**, on each of 25 edits. Seven
+new hard count checks and the original nine all pass. A red/green unit retains derived captions and
+errors while requiring one lookup. The original failed five-pair timing experiment is preserved.
+
+Corrected consumer sample: UI **31,780/32,600**, builder-core **7,188/8,300**, enabled full
+**75,619/76,200**, no-logic **29,111/29,200**, matched increment **6,318/7,000**. The correctness
+fix changes no-logic by **+50** and enabled full by **+81** relative to 29,061/75,538 within the
+owner's final remaining-runtime envelope; Brotli symbol/layout changes are non-additive. It does
+not move behavior or code outside accounting. All ceilings stay unchanged. Fresh paired timings
+and full pinned verification remain required; nothing from this draft has been pushed.
+
+## M09c plain-edit regression — fixing before push, 2026-11-13
+
+The frozen pre-fix candidate passed correctness verify (444 units/1,770 browsers/all sizes/nine
+counts), but its first production A/B fails plain 100/500/1,000 edit ratios **1.1639/1.2760/1.2726**.
+Legacy ratios **1.0123/1.0714/1.0372** pass. The candidate is **not pushed**. [All timings/absolute ms,
+proven cause and retained failure evidence](reviews/m09c-property-overlays-checkpoint.md).
+fieldErrors fetched state twice for both resolved caption and errors during the live-region scan,
+causing 50% extra reads. A new red/green unit verifies one snapshot; seven new browser work-count
+cases use immutable main's exact plain/legacy/onboarding read budgets. The original count tests,
+performance limit and every other assertion/deadline stay unchanged. Corrected timings and full
+verification must pass before commit/push. Other Logic authoring/map/author exercise work remains.
+
+## M09c property overlays — full pinned checkpoint PASS, 2026-11-12
+
+Frozen source verification exits 0: **444 units / 1,770 browsers / all size gates / nine browser
+counts**. UI/core/full **31,780 / 7,145 / 75,538**, no-logic **29,061**, opt-in **6,395**, within
+the final approved runtime envelope. All 75 five-host/theme/three-browser property cases plus three
+production strict-CSP/offline cases pass; no screenshot baseline changes. The SDK inventory omission
+and fixture/typecheck failures are retained/disclosed; no test assertion was weakened. [Full proof,
+API additions, rejected probes and remaining delivery](reviews/m09c-property-overlays-checkpoint.md).
+Next: isolated production timings, index/fixture audit, verified commit/push and new-head first CI.
+M09c remains open; Logic authoring/map, final performance/visuals and author exercise still follow.
+
+## M09c pushed checkpoint CI — PASS, 2026-11-12
+
+Checkpoint `420879478568a1717efc928badd34774040ecbab` passed Linux Verify on **attempt 1**,
+[run 43293940523](https://github.com/nawinisha231272-wm/formkit/actions/runs/43293940523).
+This evidence applies only to the pushed checkpoint, not the unpushed property prototype.
+
+## Property checkpoint verification disclosure — 2026-11-12
+
+The first full local run stopped at `SDK 0.x export inventory matches ADR-0003`: the additive
+`LogicPropertyPath` type was exported/documented but missing from docs/api/sdk-0.x.json. **443 other
+unit tests passed**. Add exactly that type to the inventory under ADR-0003's additive-API policy;
+no test source, assertion, runtime export, threshold or deadline changes. The failed log is retained.
+Focused fixture failures also remain recorded: Node Playwright needs explicit JSON loading; the
+DOM fixture needed layout registration; React needed one stable engine plus explicit controlled
+initial data. Corrected fixture setup only; all 75 host/theme/three-browser property checks and
+three production CSP/offline checks pass. Full verification restarts on the corrected inventory.
+
+## Property-overlay hardening measurement — 2026-11-12
+
+Coherent consumer build: UI **31,780/32,600**, builder-core **7,145/8,300**, enabled full
+**75,538/76,200**, matched no-logic **29,061/29,200**, opt-in **6,395/7,000**. Relative to the
+owner-reviewed prototype 75,493/6,300, full rises **45** and opt-in **95** for property-only
+processor invalidation, repeated scalar/pattern parsing reuse and preservation of static submission
+constraints under display-only rules. No-logic/UI remain unchanged; marginal compression deltas are
+not additive. All protected behavior and package/lazy ceilings stay unchanged. Three added
+100/500/1,000-field property-rule work checks retain the original state-rule assertions and expect
+one property expression, bounded indexed work and zero unrelated rules. A regression proves no
+reprocessing of unchanged legacy value dependants. Invalid-property recovery, safe config/metadata
+isolation and stale async validator cancellation have targeted tests; complete verification follows.
+
+## Owner final M09c runtime envelope — accepted 2026-11-12
+
+The owner accepted the property prototype's measured feature costs: matched no-logic **29,061**
+(+164 from 28,897), opt-in increment **6,300** (+924 from the preceding 5,376 sample), enabled
+builder full **75,493** (+968), UI **31,780**, builder-core **7,167**. Brotli deltas are not additive.
+The root FormSession validation path must read an optional resolved compiled entry, and the generic
+renderer shell/error-label path must read optional `FieldState.resolvedNode`, so the same renderer
+supports legacy and logic-enabled sessions. Trusted built-in capability declarations are retained.
+No-logic consumers still contain no root-rule execution or rule meta-schema; only bounded optional
+dispatch and trusted model metadata remain. Four rejected compaction probes remain recorded.
+
+Final preapproved **remaining-runtime** envelope: matched no-logic **29,200**, matched opt-in
+increment **7,000**, logic-enabled builder full **76,200**, builder UI **32,600**, builder-core
+**8,300**. These cover remaining setProperty/effects/async-call/Node timeout/cancellation work,
+superseding the earlier feature/correctness-only caps below. Record each actual rise and cause;
+above any maximum STOP with measured options. Package/lazy limits, no-logic full 68,500 and all
+correctness, deterministic work-count and ≤1.10 plain/legacy edit-ratio gates remain unchanged.
+The equality/+1-byte policy tests retain their intent and now test these explicit owner limits.
+This approval resolves the size STOP; browser/CSP/performance/full verification and delivery remain
+pending. No unverified feature source has been pushed, and M09c remains open.
+
+## Historical M09c property prototype — resolved size STOP, 2026-11-12 (uncommitted)
+
+This historical request is resolved by the owner approval above; its original STOP wording remains
+for audit, not as an outstanding blocker.
+
+The coherent draft passes **225 targeted unit/conformance tests**, including the new property
+security, immutable/revert/priority, unrelated-work and browser-session/Node-validation tests.
+No existing assertion was changed. Rating initially exceeded its authoring-line check; shared
+explicit capability metadata plus local config destructuring restore **29** meaningful lines and
+preserve its controls, messages/ARIA and unchanged test. No feature source has been pushed.
+
+Best measured UI/core/full **31,780 / 7,167 / 75,493** pass 32,600 / 8,300 / 75,700. Matched
+no-logic **29,061/28,897** is **+164** over; opt-in increment **6,300/6,000** is **+300** over.
+This is a new feature, so it cannot use the correctness-only reserve, and it is also above the
+owner's 29,000 maximum. Four measured normal compactions grew no-logic or enabled bytes and were
+restored; no CSS, selector, ARIA, message, test or behavior was removed. No ceiling changed.
+[Concrete proposal, all deltas and rejected probes](reviews/m09c-property-budget-question.md).
+
+STOP for owner decision: approve the measured new-feature ceilings 29,061 and 6,300 (all other
+ceilings unchanged), or keep existing limits and review a deeper opt-in capability/bridge redesign
+before implementation. The latter has not been prototyped or assigned invented byte figures.
+The draft still needs additional metadata/browser/CSP/performance and full verification; no M09c
+READY or PR/merge approval is claimed. Last pushed verified checkpoint remains `4208794`.
+
+## M09c property overlay prototype — plan, 2026-11-12
+
+Next ordered work: optional trusted model/config logicSettable metadata and safe canonical property
+bindings → indexed immutable per-session property contributions/revert/error retention → shared
+browser/Node validation and renderer/native resolved configuration → exact work/identity/security
+regressions and consumer measurement before delivery. Reuse existing wire actions/Expr; no form JSON
+change, structural/prototype writes, executable metadata, implicit network or model mutation.
+
+The new feature must fit no-logic **28,897** (cannot use correctness-only margin), opt-in **6,000**,
+UI **32,600**, builder-core **8,300**, enabled full **75,700**, and unchanged package/lazy ceilings.
+Current actuals are 31,780 / 7,168 / 74,525; matched no-logic 28,897, opt-in 5,376. Measure a coherent
+prototype, compact normally if needed, and stop with measured options if the contract cannot fit.
+Pushed correctness/lifecycle checkpoint is `420879478568a1717efc928badd34774040ecbab`; its first CI
+[run 43293940523](https://github.com/nawinisha231272-wm/formkit/actions/runs/43293940523) is pending.
+This plan makes no implementation PASS claim. No additional feature is pushed without pinned verify.
+
 ## M09c correctness/lifecycle checkpoint — full pinned PASS, 2026-11-12
 
 Frozen `pnpm verify` exits0: **414 units / 1,692 browsers / all size gates / nine counts**.
@@ -455,6 +604,11 @@ Owner follow-up (2026-11-09), cc05111 not approved to merge: preserve context-cl
   [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 delivery PR #5 is merged; the gate closure is recorded below under the revised owner decision.
 
 ## Open questions
+
+**Resolved M09c property budget — owner approval, 2026-11-12.** Accept measured feature costs
+29,061 no-logic / 6,300 opt-in. Final remaining-runtime envelope 29,200 / 7,000 / 76,200;
+UI32,600/core8,300 unchanged. Record each rise/cause; correctness and performance unchanged.
+[Historical measured proposal](reviews/m09c-property-budget-question.md).
 
 **Resolved M09c empty-Button compatibility size — owner approval, 2026-11-12.** The necessary legacy
 compatibility guard leaves a proven corrected candidate at no-logic 28,897, +45 over the newly

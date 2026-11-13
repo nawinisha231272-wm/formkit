@@ -9,7 +9,7 @@ import type { CompiledNode } from "../types";
 import { freeze, snapshot } from "../paths";
 
 interface CalculationAction {
-  kind: "state" | "value" | "calculate" | "effect";
+  kind: "state" | "value" | "calculate" | "effect" | "property";
   target: string;
   expression?: CompiledExpression;
 }

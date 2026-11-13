@@ -16,6 +16,8 @@ export type PropertyGroup =
   | "Accessibility"
   | (string & {});
 export interface PropertyDefinition<T = unknown> {
+  /** Explicit permission for root rules to derive this registered config value. */
+  logicSettable?: boolean;
   kind: PropertyKind;
   label: string;
   default: T;
@@ -27,6 +29,17 @@ export interface PropertyDefinition<T = unknown> {
   visibleWhen?: Expr;
   editor?: string;
 }
+export type LogicPropertyPath =
+  | `properties.${string}`
+  | "label"
+  | "labelKey"
+  | "description"
+  | "placeholder"
+  | "tooltip"
+  | "prefix"
+  | "suffix"
+  | "ariaLabel"
+  | `validation.${"min" | "max" | "minLength" | "maxLength" | "minItems" | "maxItems" | "pattern"}`;
 export type PropertyMap = Record<string, PropertyDefinition>;
 export type ConfigOf<P extends PropertyMap> = {
   [K in keyof P]: P[K] extends PropertyDefinition<infer T> ? T : never;
@@ -40,6 +53,8 @@ export interface ValueAdapter<T> {
   jsonSchema?: (config: unknown) => object;
 }
 export interface ComponentModel<T = unknown> {
+  /** Safe wire-property capabilities; omitted means no wire-property permission. */
+  logicSettable?: readonly LogicPropertyPath[];
   type: string;
   title: string;
   kind?: "field" | "layout" | "composite";

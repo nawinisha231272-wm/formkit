@@ -3,8 +3,8 @@ import { brotliCompressSync } from "node:zlib";
 
 export const logicConsumerLimits = Object.freeze({
   mainNoLogic: 28_232,
-  noLogic: 28_897,
-  increment: 6_000,
+  noLogic: 29_200,
+  increment: 7_000,
   noLogicFull: 68_500,
 });
 

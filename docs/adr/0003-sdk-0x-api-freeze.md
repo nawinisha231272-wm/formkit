@@ -97,3 +97,11 @@ M09 additive extension (ADR-0014): ComponentSlot/resolveSlots, ComponentModel.sl
 DefineLayoutOptions slots/tabs/rootOnly and LayoutView.tabs extend container authoring without changing
 existing field/value/translation contracts. `docs/api/sdk-0.x.json` records the updated inventory. Existing
 required native state mapping is additionally asserted by conformance; no mapping contract is removed.
+
+## M09c additive capability metadata
+
+ADR-0022/spec 04 add the `LogicPropertyPath` type and optional `logicSettable` metadata. The SDK
+export inventory now includes this one type; runtime exports are unchanged. This is an additive
+0.x API under the policy above, not a relaxation of the exact-inventory test. The first local
+property checkpoint verify exposed the omitted inventory entry (443 other unit tests passed);
+the test and all its assertions remain unchanged. Complete verification must run again.

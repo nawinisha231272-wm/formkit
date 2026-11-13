@@ -12,6 +12,8 @@ import { freeze, snapshot } from "../paths";
 const messages: Readonly<Record<string, string>> = Object.freeze({
   "of.logic.logic-cascade-limit": "Logic exceeded the safe cascade limit.",
   "of.logic.invalid-logic-value": "A rule produced an invalid field value.",
+  "of.logic.invalid-logic-property":
+    "A rule produced an invalid component property.",
   "of.logic.invalid-logic-effect": "A rule produced invalid effect data.",
   "of.logic.logic-call-aborted": "The rule call was cancelled. Submit again.",
   "of.logic.logic-call-timeout": "The rule call timed out. Try again.",

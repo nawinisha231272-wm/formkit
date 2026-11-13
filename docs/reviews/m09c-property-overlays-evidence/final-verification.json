@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "scope": "Historical pre-read-fix candidate correctness proof only; performance failed and candidate was not pushed",
+  "completedAt": "2026-11-12T21:23:20.274001+00:00",
+  "command": "caffeinate -diu node node_modules/pnpm/bin/pnpm.cjs verify",
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "platform": "darwin-arm64",
+  "exitCode": 0,
+  "unitTests": 444,
+  "unitFiles": 72,
+  "browserTests": 1770,
+  "browserProjects": ["chromium", "firefox", "webkit"],
+  "runtimeCountTests": 9,
+  "ruleWorkScales": [100, 500, 1000],
+  "propertyCountChecks": 3,
+  "packageSizeBudgets": 17,
+  "allConsumerAndLazyGates": "PASS",
+  "actual": {
+    "ui": 31780,
+    "builderCore": 7145,
+    "logicEnabledBuilderFull": 75538,
+    "matchedNoLogic": 29061,
+    "matchedIncrement": 6395
+  },
+  "limits": {
+    "ui": 32600,
+    "builderCore": 8300,
+    "logicEnabledBuilderFull": 76200,
+    "matchedNoLogic": 29200,
+    "matchedIncrement": 7000
+  },
+  "ceilingsChanged": "Owner final remaining-runtime envelope, 2026-11-12; no unapproved change",
+  "sourceSha256Before": "3c4dcd0d153411f0a63109325efc0eca3368920e1bf3cabf3fdbbf74bc393220",
+  "sourceSha256After": "3c4dcd0d153411f0a63109325efc0eca3368920e1bf3cabf3fdbbf74bc393220",
+  "sourceUnchanged": true,
+  "sourceFileCount": 2830,
+  "logSha256": "ff051a98fe042a44502b44b6e25260a3cc82ee2b7f287dc1a1ef7c5d4ea1cb02",
+  "previousPush": {
+    "head": "420879478568a1717efc928badd34774040ecbab",
+    "run": "https://github.com/nawinisha231272-wm/formkit/actions/runs/43293940523",
+    "conclusion": "success",
+    "run_attempt": 1
+  },
+  "newHeadCi": "Not pushed: performance regression. Current read-fix source requires fresh full verification.",
+  "timings": "Plain median ratios 1.1639/1.2760/1.2726 FAIL; legacy 1.0123/1.0714/1.0372 PASS. Duplicate state-read fix and full re-verification pending.",
+  "screenshots": {
+    "changed": 0,
+    "new": 0
+  },
+  "apiAdditions": [
+    "LogicPropertyPath type",
+    "optional ComponentModel/defineField/defineDisplay/defineLayout.logicSettable",
+    "optional PropertyDefinition.logicSettable",
+    "optional FieldState.resolvedNode"
+  ],
+  "failedLocalRun": "property-full-pinned-verify.log: 443 pass, SDK inventory omitted new type; unchanged exact test now uses amended approved inventory"
+}

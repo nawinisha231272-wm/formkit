@@ -1,0 +1,116 @@
+{
+  "status": "PASS",
+  "scope": "M09c property overlays and proven duplicate-state-read correction; M09c remains open",
+  "completedAt": "2026-11-13T14:30:13.517636+00:00",
+  "command": "caffeinate -diu node node_modules/pnpm/bin/pnpm.cjs verify",
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "platform": "darwin-arm64",
+  "exitCode": 0,
+  "unitTests": 446,
+  "unitFiles": 74,
+  "browserTests": 1770,
+  "browserProjects": ["chromium", "firefox", "webkit"],
+  "runtimeCountTests": 16,
+  "ruleWorkScales": [100, 500, 1000],
+  "propertyCountChecks": 3,
+  "packageSizeBudgets": 17,
+  "allConsumerAndLazyGates": "PASS",
+  "actual": {
+    "ui": 31780,
+    "builderCore": 7188,
+    "logicEnabledBuilderFull": 75619,
+    "matchedNoLogic": 29111,
+    "matchedIncrement": 6318
+  },
+  "limits": {
+    "ui": 32600,
+    "builderCore": 8300,
+    "logicEnabledBuilderFull": 76200,
+    "matchedNoLogic": 29200,
+    "matchedIncrement": 7000
+  },
+  "ceilingsChanged": "Owner final remaining-runtime envelope, 2026-11-12; no unapproved change",
+  "sourceSha256Before": "9af7d44e8a03d14fb25dfcd268ecd9b9b1ea94fe2696620db5d7efd5ea4547f1",
+  "sourceSha256After": "9af7d44e8a03d14fb25dfcd268ecd9b9b1ea94fe2696620db5d7efd5ea4547f1",
+  "sourceUnchanged": true,
+  "sourceFileCount": 2874,
+  "logSha256": "9f0ca66d3bcbb0cb5a1baa0678087b05a22401bbe25d9842900285c8a5748ca4",
+  "previousPush": {
+    "head": "420879478568a1717efc928badd34774040ecbab",
+    "run": "https://github.com/nawinisha231272-wm/formkit/actions/runs/43293940523",
+    "conclusion": "success",
+    "run_attempt": 1
+  },
+  "newHeadCi": "pending verified commit/push; no result inferred",
+  "timings": [
+    {
+      "kind": "plain",
+      "count": 100,
+      "main250Ms": 23.299999713897705,
+      "branch250Ms": 23.300000190734863,
+      "medianPairedRatio": 1.0000000204651143
+    },
+    {
+      "kind": "plain",
+      "count": 500,
+      "main250Ms": 107.59999990463257,
+      "branch250Ms": 106.30000019073486,
+      "medianPairedRatio": 0.9934944255586844
+    },
+    {
+      "kind": "plain",
+      "count": 1000,
+      "main250Ms": 230.2999997138977,
+      "branch250Ms": 231.59999990463257,
+      "medianPairedRatio": 0.9952236238421105
+    },
+    {
+      "kind": "legacy",
+      "count": 100,
+      "main250Ms": 238,
+      "branch250Ms": 234.80000019073486,
+      "medianPairedRatio": 0.9919045606302754
+    },
+    {
+      "kind": "legacy",
+      "count": 500,
+      "main250Ms": 572.4000000953674,
+      "branch250Ms": 575.2999997138977,
+      "medianPairedRatio": 1.0050663864745757
+    },
+    {
+      "kind": "legacy",
+      "count": 1000,
+      "main250Ms": 1398.1999998092651,
+      "branch250Ms": 1391.3999996185303,
+      "medianPairedRatio": 1.0062373077338576
+    }
+  ],
+  "newStateReadCases": 7,
+  "stateReadBaseline": "immutable main, same per-edit counts restored",
+  "screenshots": {
+    "changed": 0,
+    "new": 0
+  },
+  "apiAdditions": [
+    "LogicPropertyPath type",
+    "optional ComponentModel/defineField/defineDisplay/defineLayout.logicSettable",
+    "optional PropertyDefinition.logicSettable",
+    "optional FieldState.resolvedNode"
+  ],
+  "failedLocalRuns": [
+    {
+      "log": "property-full-pinned-verify.log",
+      "cause": "SDK inventory omitted additive type; amended approved inventory only; assertions unchanged"
+    },
+    {
+      "log": "property-read-browser.log",
+      "cause": "Accidental typecheck rebuild overlapped browser tests; missing dist modules caused two WebKit failures; both isolation and serial 78-case suite pass with assertions/deadlines unchanged"
+    },
+    {
+      "log": "property-paired-timings.json",
+      "cause": "Original production comparison fails plain edit gates; proven duplicate field-state reads fixed before corrected comparison"
+    }
+  ]
+}

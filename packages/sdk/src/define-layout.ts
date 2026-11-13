@@ -8,6 +8,7 @@ export function defineLayout(spec: {
   type: string;
   title: string;
   caption?: string | false;
+  logicSettable?: ComponentModel["logicSettable"];
   dataScope?: "none" | "object";
   tag?: LayoutView["tag"];
   columns?: boolean;
@@ -19,6 +20,7 @@ export function defineLayout(spec: {
   const metadata = defineDisplay({
     type: spec.type,
     title: spec.title,
+    ...(spec.logicSettable ? { logicSettable: spec.logicSettable } : {}),
     properties: spec.properties ?? {},
     control: () => h("div", null),
   });

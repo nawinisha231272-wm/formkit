@@ -74,3 +74,10 @@ positional column_0/column_1 slots and no redundant child.slot. Legacy flat Colu
 migrate without mutation; multi-row spans retain order through nested transparent rows. Ordinary layout
 components/slot semantics and submission scopes remain. Builder palette eligibility requires an explicit
 nonblank builder title. The current UI is a harness; spec 10/M09b replaces its interactions.
+
+M09c's unshipped property prototype marks explicit safe display/constraint capabilities on built-in
+models. Select/Radio options, Rating max/half steps, Button text and sanitized Content HTML also
+have explicit config grants. Rating distinguishes `properties.max` (stars) from `validation.max`
+(response constraint); ambiguous short aliases are refused. Tabs' structural options remain unmarked.
+The existing schema/controls stay unchanged until rules derive an overlay. Runtime size approval and
+full property-delivery checks are pending; see docs/reviews/m09c-property-budget-question.md.

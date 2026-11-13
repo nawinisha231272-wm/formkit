@@ -1,3 +1,4 @@
+import { checkStateReadBaselineEvolution } from "./state-read-baseline.mjs";
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
@@ -127,6 +128,22 @@ if (
   checkAuthoringCountBaselineEvolution(
     authoringPrevious,
     JSON.parse(readFileSync(authoringFile, "utf8")),
+  );
+  const readFile = "docs/performance/renderer-state-read-counts.json";
+  const readExists = execFileSync(
+    "git",
+    ["ls-tree", "--name-only", reference, "--", readFile],
+    { encoding: "utf8" },
+  ).trim();
+  checkStateReadBaselineEvolution(
+    readExists
+      ? JSON.parse(
+          execFileSync("git", ["show", `${reference}:${readFile}`], {
+            encoding: "utf8",
+          }),
+        )
+      : null,
+    JSON.parse(readFileSync(readFile, "utf8")),
   );
   const ruleFile = "docs/performance/logic-work-counts.json";
   const ruleExists = execFileSync(

@@ -49,6 +49,7 @@ export interface LogicWorkCounts {
   effects: number;
 }
 export interface LogicState {
+  entry?: CompiledNode;
   calculate?: CompiledExpression | undefined;
   finalize?: (state: FieldState) => FieldState;
   visible?: boolean;
@@ -67,13 +68,20 @@ export interface LogicHost {
     dirty: boolean,
   ): boolean | undefined;
   empty(id: string): unknown;
-  /** Reprocess only these targets and their legacy dependants; return actual value changes. */
+  /** Property-only targets do not invalidate legacy value dependants. Return actual value changes. */
   process(
     ids: readonly string[],
     skipCalculate: ReadonlySet<string>,
     changed: ReadonlySet<string>,
+    propertiesOnly: ReadonlySet<string>,
   ): readonly string[];
   diagnostic(diagnostic: Diagnostic): void;
+  propertyError(
+    key: object,
+    id: string,
+    property: string,
+    ruleId?: string,
+  ): void;
   effect(ruleId: string, effect: LogicEffectRequest): void;
 }
 /** Compiled, trusted request; never serialized into form JSON. */

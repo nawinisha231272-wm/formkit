@@ -270,3 +270,11 @@ raw declaration string per mounted field rule; theme/mode/registry updates still
 The 100/500/1,000-field and onboarding edit fixtures additionally assert zero redundant declaration
 writes across the same 25 edits, alongside the unchanged exact processor/DOM/StatePatch/render counts.
 This is renderer work, independent of builder commands and theme selection UI.
+
+### M09c property overlay prototype (unshipped)
+
+An optional frozen `FieldState.resolvedNode` supplies derived display/config properties to the same
+shell/layout/native configuration path. Keep the compiled wire/model unchanged, update only named
+StatePatch fields and retain focused control identity. Required/error/ARIA/localization and themes
+still use their existing helpers. The prototype is blocked on its recorded runtime-size decision;
+this note does not claim complete browser/CSP/host/visual acceptance.

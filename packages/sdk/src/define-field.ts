@@ -37,6 +37,7 @@ export function defineField<
   group?: string;
   icon?: string;
   caption?: string | false;
+  logicSettable?: ComponentModel["logicSettable"];
   value: ValueAdapter<V>;
   validators?: readonly string[];
   properties?: P;
@@ -70,6 +71,9 @@ export function defineField<
       ? { validators: Object.freeze([...spec.validators]) }
       : {}),
     properties: copy,
+    ...(spec.logicSettable
+      ? { logicSettable: Object.freeze([...spec.logicSettable]) }
+      : {}),
     builder,
   });
   return Object.freeze({

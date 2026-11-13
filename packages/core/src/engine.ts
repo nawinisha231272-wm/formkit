@@ -35,6 +35,9 @@ export class Registry {
       model.type,
       Object.freeze({
         ...model,
+        ...(model.logicSettable
+          ? { logicSettable: snapshot(model.logicSettable) }
+          : {}),
         ...(model.value ? { value: Object.freeze({ ...model.value }) } : {}),
         ...(model.properties ? { properties: snapshot(model.properties) } : {}),
         ...(model.builder ? { builder: snapshot(model.builder) } : {}),

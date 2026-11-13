@@ -1,3 +1,5 @@
+import propertiesSchema from "../../../fixtures/forms/logic/properties.json";
+import { createLogicPropertiesEngine } from "../../shared/logic-properties";
 import { createLogicEffectsDemo } from "../../shared/logic-effects";
 import effectsSchema from "../../../fixtures/forms/logic/effects.json";
 import protectedSchema from "../../../fixtures/forms/native/protected-writes.json";
@@ -35,29 +37,36 @@ const themes = [
   materialTheme,
 ];
 const query = new URLSearchParams(location.search);
+const propertiesEngine = query.has("properties")
+  ? createLogicPropertiesEngine()
+  : undefined;
 const logicEffects = query.has("effects")
   ? createLogicEffectsDemo()
   : undefined;
 if (logicEffects) window.logicEffectsDemo = logicEffects;
-const schema = query.has("effects")
-  ? effectsSchema
+const schema = query.has("properties")
+  ? propertiesSchema
+  : query.has("effects")
+    ? effectsSchema
+    : query.has("protected")
+      ? protectedSchema
+      : query.has("onboarding")
+        ? onboardingSchema
+        : nativeSchema;
+const initialData = query.has("properties")
+  ? { amount: 3, code: "aa" }
   : query.has("protected")
-    ? protectedSchema
-    : query.has("onboarding")
-      ? onboardingSchema
-      : nativeSchema;
-const initialData = query.has("protected")
-  ? {
-      name: "stored",
-      locked: false,
-      staticReadOnly: "stored",
-      staticDisabled: "stored",
-    }
-  : query.has("readonly") && query.has("onboarding")
-    ? onboardingData
-    : query.has("onboarding")
-      ? { preferences: { reference: "web-onboarding" } }
-      : {};
+    ? {
+        name: "stored",
+        locked: false,
+        staticReadOnly: "stored",
+        staticDisabled: "stored",
+      }
+    : query.has("readonly") && query.has("onboarding")
+      ? onboardingData
+      : query.has("onboarding")
+        ? { preferences: { reference: "web-onboarding" } }
+        : {};
 import { employees, employeeValue } from "../../vanilla-example/src/data";
 import type { Employee } from "../../vanilla-example/src/data";
 const HostContext = createContext("missing-context");
@@ -162,7 +171,14 @@ function App() {
     { value: "React host context" },
     el(
       OurFormProvider,
-      { fields, ...(logicEffects ? { engine: logicEffects.engine } : {}) },
+      {
+        fields,
+        ...(logicEffects || propertiesEngine
+          ? {
+              engine: propertiesEngine ?? logicEffects!.engine,
+            }
+          : {}),
+      },
       el(
         Form,
         {

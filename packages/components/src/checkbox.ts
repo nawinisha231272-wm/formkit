@@ -1,6 +1,8 @@
+import { fieldLogicProperties } from "./logic-properties";
 import { defineField, h, controlAttributes, booleanValue } from "@ourform/sdk";
 export const checkboxField = defineField({
   type: "checkbox",
+  logicSettable: fieldLogicProperties,
   title: "Checkbox",
   value: booleanValue(),
   shell: "inline",

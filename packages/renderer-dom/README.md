@@ -136,3 +136,13 @@ call `session.dispose()` when its owner is destroyed. No logic execution body is
 
 Legacy custom Button actions with an empty name still reach onAction/of-action. They do not invoke
 a named logic event; the public session API still rejects empty names. No form migration is needed.
+
+M09c's unshipped property prototype reads optional `FieldState.resolvedNode` before resolving shell,
+layout and control configuration. Authored definitions/models remain unchanged; keyed controls retain
+identity and use ordinary resolved props. Node validation consumes the same overlay. No additional
+host option or root-rule auto-registration is added. Runtime budget approval is recorded in ADR-0022; complete property
+browser/host/CSP delivery proof remains pending.
+
+Error rendering reuses one FieldState snapshot for both resolved captions and errors. The ordinary
+no-logic live-region scan must not add a second per-field read; exact main-derived state-read budgets
+are checked at 100/500/1,000 plain/legacy fields and onboarding.

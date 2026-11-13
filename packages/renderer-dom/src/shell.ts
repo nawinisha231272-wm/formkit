@@ -23,14 +23,16 @@ export function fieldErrors(
   t: typeof defaultMessage,
   label?: string,
 ): string[] {
-  return session.getFieldState(entry.node.id).errors.map((error) =>
+  const state = session.getFieldState(entry.node.id);
+  const node = state.resolvedNode ?? entry.node;
+  return state.errors.map((error) =>
     t(
       error.code === "required" && error.messageKey === "of.validation.required"
         ? "of.required"
         : error.messageKey,
       {
         ...error.params,
-        label: label ?? entry.node.label ?? entry.node.key ?? entry.node.id,
+        label: label ?? node.label ?? node.key ?? node.id,
       },
     ),
   );
@@ -49,6 +51,8 @@ export function shellVNode(
   layoutInteraction: LayoutInteraction = {},
   styleClass?: (key: string, declarations: string) => string,
 ): VNode {
+  const state = session.getFieldState(entry.node.id);
+  if (state.resolvedNode) entry = { ...entry, node: state.resolvedNode };
   presentation = {
     ...presentation,
     ...(presentation.prefix === undefined && entry.node.prefix
@@ -59,7 +63,6 @@ export function shellVNode(
       : {}),
   };
   const design = layoutInteraction.mode === "design";
-  const state = session.getFieldState(entry.node.id);
   const view = views.get(entry.node.type);
   const variant: ShellVariant = entry.model.value
     ? (view?.shell ?? "field")

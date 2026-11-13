@@ -427,11 +427,9 @@ export class FormSession {
     const id = entry.node.id;
     this.#runs.get(id)?.abort();
     this.#runs.delete(id);
-    const errors = validateValue(
-      entry,
-      value,
-      this.#logic?.state(id)?.required,
-    );
+    const logic = this.#logic?.state(id);
+    entry = logic?.entry ?? entry;
+    const errors = validateValue(entry, value, logic?.required);
     if (
       !entry.model.value ||
       entry.model.value.isEmpty(value) ||

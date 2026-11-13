@@ -1,6 +1,8 @@
 import { createEffects, logicMessage } from "./effects";
 import { orderGraph } from "../graph";
 import { compileCalculations } from "./calculations";
+import { compileProperty } from "./properties";
+import type { CompiledProperty, PropertyValue } from "./properties";
 import { snapshot, readPath, writePath, freeze } from "../paths";
 import { validateDefinition } from "@ourform/schema";
 import type {
@@ -24,6 +26,12 @@ import type {
 
 type StateKey = "visible" | "disabled" | "readOnly" | "required";
 type Action =
+  | {
+      kind: "property";
+      target: string;
+      property: CompiledProperty;
+      expression: CompiledExpression;
+    }
   | { kind: "effect"; target: string; request: LogicEffectRequest }
   | { kind: "state"; target: string; key: StateKey; value: boolean }
   | {
@@ -34,7 +42,7 @@ type Action =
 interface Writer {
   rule: number;
   active: boolean;
-  action: Extract<Action, { kind: "state" }>;
+  action: Extract<Action, { kind: "state" | "property" }>;
 }
 interface Rule {
   wire: LogicRule;
@@ -182,13 +190,6 @@ function compileLogic(
             },
           ];
         }
-        if (!("target" in action) || action.action === "setProperty") {
-          fail(
-            "unsupported-logic-action",
-            `Rule ${wire.id}: ${action.action} is not implemented in this runtime prototype.`,
-          );
-          return [];
-        }
         const target = context.byId[action.target];
         if (!target) {
           fail(
@@ -197,6 +198,28 @@ function compileLogic(
             action.target,
           );
           return [];
+        }
+        if (action.action === "setProperty") {
+          const property = compileProperty(target, action.property);
+          if (!property) {
+            fail(
+              "unsupported-logic-action",
+              `Rule ${wire.id}: property ${action.property} is not declared logicSettable or is ambiguous/unsafe.`,
+              action.target,
+            );
+            return [];
+          }
+          const compiled = expression(action.value);
+          return compiled
+            ? [
+                {
+                  kind: "property",
+                  target: action.target,
+                  property,
+                  expression: compiled,
+                },
+              ]
+            : [];
         }
         const state = stateActions[action.action];
         if (state || action.action === "setReadOnly") {
@@ -255,7 +278,7 @@ function compileLogic(
       [false, otherwise],
     ] as const)
       for (const action of plans)
-        if (action.kind === "state") {
+        if (action.kind === "state" || action.kind === "property") {
           if (!writers.has(action.target)) writers.set(action.target, []);
           writers.get(action.target)!.push({ rule: number, active, action });
         }
@@ -290,7 +313,7 @@ function compileLogic(
               if (ancestor.node.id === action.target) return true;
             return false;
           });
-        if (action.kind !== "state" || clears)
+        if ((action.kind !== "state" && action.kind !== "property") || clears)
           for (const source of new Set([
             ...(when?.dependencies ?? []),
             ...triggers,
@@ -351,7 +374,12 @@ function compileLogic(
       if (!conflicts.has(action.target))
         conflicts.set(action.target, new Map());
       const properties = conflicts.get(action.target)!;
-      const property = action.kind === "state" ? action.key : "value";
+      const property =
+        action.kind === "state"
+          ? action.key
+          : action.kind === "property"
+            ? action.property.name
+            : "value";
       if (!properties.has(property)) properties.set(property, new Set());
       properties.get(property)!.add(number);
     }
@@ -412,9 +440,12 @@ function compileLogic(
           if (action.action === "show" || action.action === "hide")
             hidden.add(action.target);
           if (
-            ["require", "optional", "calculate", "setProperty"].includes(
-              action.action,
-            ) ||
+            ["require", "optional", "calculate"].includes(action.action) ||
+            (action.action === "setProperty" &&
+              !!compileProperty(
+                context.byId[action.target]!,
+                action.property,
+              )?.name.includes(".")) ||
             ((action.action === "setValue" || action.action === "clear") &&
               rule.wire.trigger.on === "submit")
           )
@@ -492,6 +523,11 @@ function createRuntime(
   };
   const matches = new Map<number, boolean>();
   const states = new Map<string, LogicState>();
+  const propertyValues = new Map<Action, PropertyValue>();
+  const resolvedProperties = new Map<
+    string,
+    { signature: string; entry: CompiledProperty["base"] }
+  >();
   const revisions = new Map<string, number>();
   const owned = new Map<string, { rule: number; revision: number }>();
   const selection = (rule: Rule, active: boolean) =>
@@ -556,6 +592,7 @@ function createRuntime(
           return;
         }
         const targets = new Set<string>(),
+          stateTargets = new Set<string>(),
           written = new Set<string>(),
           pendingValues = new Set<string>(),
           direct = new Set<string>();
@@ -588,6 +625,7 @@ function createRuntime(
             pendingValues.add(target);
           }
           targets.add(target);
+          stateTargets.add(target);
           written.add(target);
           owned.set(target, { rule: i, revision: revisions.get(target) ?? 0 });
         };
@@ -595,6 +633,10 @@ function createRuntime(
           if (!targets.size) return;
           for (const target of targets) {
             const state: LogicState = {};
+            const properties = new Map<
+              string,
+              { property: CompiledProperty; value: PropertyValue }
+            >();
             for (const writer of writers.get(target) ?? []) {
               counts.writers++;
               if (
@@ -602,14 +644,43 @@ function createRuntime(
                 matches.get(writer.rule) !== writer.active
               )
                 continue;
-              state[writer.action.key] = writer.action.value;
+              if (writer.action.kind === "state")
+                state[writer.action.key] = writer.action.value;
+              else {
+                const value = propertyValues.get(writer.action);
+                if (value)
+                  properties.set(writer.action.property.name, {
+                    property: writer.action.property,
+                    value,
+                  });
+              }
             }
+            if (properties.size) {
+              const signature = JSON.stringify(
+                [...properties].map(([name, { value }]) => [name, value.value]),
+              );
+              let resolved = resolvedProperties.get(target);
+              if (resolved?.signature !== signature) {
+                let entry: CompiledProperty["base"] | undefined;
+                for (const { property, value } of properties.values())
+                  entry = property.apply(entry ?? property.base, value);
+                resolved = { signature, entry: entry! };
+                resolvedProperties.set(target, resolved);
+              }
+              state.entry = resolved.entry;
+            } else resolvedProperties.delete(target);
             states.set(target, state);
           }
           host
-            .process([...targets], written, pendingValues)
+            .process(
+              [...targets],
+              written,
+              pendingValues,
+              new Set([...targets].filter((id) => !stateTargets.has(id))),
+            )
             .forEach((id) => direct.add(id));
           targets.clear();
+          stateTargets.clear();
           written.clear();
           pendingValues.clear();
         };
@@ -630,9 +701,24 @@ function createRuntime(
             sources ?? new Set(),
           );
           if (edge) counts.edges++;
-          for (const action of [...rule.then, ...rule.otherwise])
-            if (action.kind === "state" || action.kind === "calculate")
-              targets.add(action.target);
+          for (const [selected, actions] of [
+            [active, rule.then],
+            [!active, rule.otherwise],
+          ] as const)
+            for (const action of actions) {
+              if (
+                action.kind === "state" ||
+                action.kind === "calculate" ||
+                action.kind === "property"
+              ) {
+                targets.add(action.target);
+                if (action.kind !== "property") stateTargets.add(action.target);
+              }
+              if (action.kind === "property" && !selected) {
+                propertyValues.delete(action);
+                host.propertyError(action, action.target, action.property.name);
+              }
+            }
           if (
             !active &&
             (rule.wire.otherwise === undefined ||
@@ -662,6 +748,30 @@ function createRuntime(
               }
             }
           for (const action of selection(rule, active)) {
+            if (action.kind === "property") {
+              counts.actionExpressions++;
+              try {
+                const raw = action.expression.evaluate(host.context());
+                const previous = propertyValues.get(action);
+                propertyValues.set(
+                  action,
+                  previous && Object.is(previous.value, raw)
+                    ? previous
+                    : action.property.parse(raw),
+                );
+                host.propertyError(action, action.target, action.property.name);
+              } catch {
+                propertyValues.delete(action);
+                host.propertyError(
+                  action,
+                  action.target,
+                  action.property.name,
+                  rule.wire.id,
+                );
+              }
+              targets.add(action.target);
+              continue;
+            }
             if (
               action.kind === "state" ||
               action.kind === "calculate" ||
@@ -733,28 +843,34 @@ function createSessionRuntime(
   };
   // Invalid continuous contributions remain invalid until that target recovers,
   // even when the next edit visits no rule that can recompute it.
-  const calculationErrors = new Map<string, Diagnostic>();
+  const derivedErrors = new Map<unknown, Diagnostic>();
+  const recordError = (
+    key: unknown,
+    id: string,
+    ruleId?: string,
+    property?: string,
+  ) => {
+    const previous = derivedErrors.get(key);
+    if (previous) {
+      const index = diagnostics.indexOf(previous);
+      if (index >= 0) diagnostics.splice(index, 1);
+      derivedErrors.delete(key);
+    }
+    if (ruleId !== undefined) {
+      const diagnostic: Diagnostic = {
+        severity: "error",
+        code: property ? "invalid-logic-property" : "invalid-logic-value",
+        componentId: id,
+        message: `Rule ${ruleId}: invalid ${property ? `property ${property}` : "value"} for ${id}.`,
+      };
+      derivedErrors.set(key, diagnostic);
+      diagnostics.push(diagnostic);
+    }
+  };
   const calculations = makeCalculations(
     session.context,
     () => runtime.counts,
-    (id, ruleId) => {
-      const previous = calculationErrors.get(id);
-      if (previous) {
-        const index = diagnostics.indexOf(previous);
-        if (index >= 0) diagnostics.splice(index, 1);
-        calculationErrors.delete(id);
-      }
-      if (ruleId !== undefined) {
-        const diagnostic: Diagnostic = {
-          severity: "error",
-          code: "invalid-logic-value",
-          componentId: id,
-          message: `Rule ${ruleId}: invalid value for ${id}.`,
-        };
-        calculationErrors.set(id, diagnostic);
-        diagnostics.push(diagnostic);
-      }
-    },
+    (id, ruleId) => recordError(id, id, ruleId),
   );
   let previousData = session.data();
   const effects = createEffects(
@@ -778,6 +894,8 @@ function createSessionRuntime(
       },
       empty: (id) => session.form.byId[id]!.model.value!.empty(),
       diagnostic: (diagnostic) => diagnostics.push(diagnostic),
+      propertyError: (key, id, property, ruleId) =>
+        recordError(key, id, ruleId, property),
       effect: effects.enqueue,
       write: (id, raw, provenance, dirty) => {
         const entry = session.form.byId[id]!;
@@ -819,14 +937,17 @@ function createSessionRuntime(
         );
         return differs;
       },
-      process: (ids, written, changedValues) => {
+      process: (ids, written, changedValues, propertiesOnly) => {
         const values: string[] = [];
         const invalidated = new Set(affected([...changedValues]));
         const invalidate = (id: string) => {
           runtime.counts.overrideInvalidations++;
           session.overrides.delete(id);
         };
-        for (const id of affected(ids)) {
+        for (const id of new Set([
+          ...affected(ids.filter((id) => !propertiesOnly.has(id))),
+          ...propertiesOnly,
+        ])) {
           if (invalidated.has(id) && !written.has(id)) invalidate(id);
           const before = session.states.get(id)!;
           session.process(id, written.has(id));
@@ -841,7 +962,11 @@ function createSessionRuntime(
             )
               invalidate(id);
           }
-          if (session.stateChanged(before, after)) changed.add(id);
+          if (
+            before.resolvedNode !== after.resolvedNode ||
+            session.stateChanged(before, after)
+          )
+            changed.add(id);
         }
         return values;
       },
@@ -878,9 +1003,19 @@ function createSessionRuntime(
     dispose: effects.dispose,
     state(id) {
       const calculation = calculations.state(id);
-      return calculation
+      const derived = calculation
         ? { ...runtime.state(id), ...calculation }
         : runtime.state(id);
+      if (!derived?.entry && !session.states.get(id)?.resolvedNode)
+        return derived;
+      return {
+        ...derived,
+        finalize(state) {
+          if (derived?.entry) state.resolvedNode = derived.entry.node;
+          else delete state.resolvedNode;
+          return (derived?.finalize ?? freeze)(state);
+        },
+      };
     },
     patch: () => ({
       ...effects.patch(),
@@ -906,7 +1041,7 @@ function createSessionRuntime(
       changed.clear();
       if (trigger.on !== "submit") {
         diagnostics.length = 0;
-        diagnostics.push(...calculationErrors.values());
+        diagnostics.push(...derivedErrors.values());
       }
       const actual = sources?.filter((id) => {
         runtime.counts.sourceChecks++;
