@@ -4,6 +4,20 @@ Status: **accepted by the owner on 2026-11-10; budget amendments accepted 2026-1
 Date: 2026-11-09
 Milestone: M09c (accepted plan; implementation evidence remains pending)
 
+## Atomic authoring implementation — measured 2026-11-13
+
+One additive `UpdateLogic(rules, label?)` command covers root Add/Edit/Remove/reorder/duplicate with
+one `/logic` patch and history step, preserving selection and successful subject metadata. Central
+locks compare relevant contributions (including subtree/inherited state), allowing reads and
+unrelated actions; JSON and history use the same enforcement. This implements the accepted command
+contract without redundant command classes or any form-JSON change.
+
+Focused typecheck and 96 builder-core tests pass. Consumer UI/core/full **31,814 / 7,419 / 75,839**,
+no-logic **29,111**, opt-in **6,318**; deltas from c7e6013 **+34 / +231 / +220 / 0 / 0** for rule-lock
+protection and localized subjects. No accounting transfer/deferral/ceiling change. Full pinned
+verification now exits 0 (**456 units / 1,770 browsers / all sizes / 16 counts**) with the exact same
+measurements and unchanged before/after source; [scope and retained evidence](../reviews/m09c-logic-commands.md).
+
 ## State-read fix — full pinned verification and production comparison PASS, 2026-11-13
 
 The corrected first five-pair production comparison passes all ≤1.10 edit gates: plain

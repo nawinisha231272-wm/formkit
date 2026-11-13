@@ -362,6 +362,15 @@ produce one atomic JSON Patch/history entry per edit and preserve selection/focu
 chips remain initial, use compiled summaries and never lay out a graph or validate a whole form per
 render. Component read/target-rule lists and Add logic stay in the generated lazy Settings Logic tab.
 
+`UpdateLogic(rules, label?)` snapshots the resulting root rule list and emits one `/logic`
+add/replace patch, preserving selection and one history step for Add/Edit/Remove/reorder/duplicate.
+Compile errors and locks refuse the complete change without publication or history. No-op edits
+retain redo. Command subjects survive undo/redo. `all` locks also compare root contributions affecting
+the frozen target/subtree, including ancestor visibility/disabled/read-only propagation, relative
+rule priority, trigger/condition and otherwise. Reading locked sources and editing unrelated actions
+in mixed-target rules is allowed; key/structure locks allow logic edits. Apply the same checks to
+JSON imports and history replay. No new schema member or lock policy is introduced.
+
 Root Logic list/editor, nested sentence/expression controls and isolated test panel are lazy.
 **After Logic mounts and becomes interactive, automatically fetch the separate dependency-map
 entry**, with a loading state in the right pane. The map does not block editing; failure shows reason/

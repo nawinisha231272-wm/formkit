@@ -228,7 +228,8 @@ export function createBuilder(
       labels.set(command, {
         action: command.type,
         label:
-          (command.type === "AtomicCommand" &&
+          ((command.type === "AtomicCommand" ||
+            command.type === "UpdateLogic") &&
           "label" in command &&
           typeof command.label === "string"
             ? command.label

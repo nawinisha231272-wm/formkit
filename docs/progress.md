@@ -6,6 +6,30 @@ deviations from spec, open questions.
 
 ## Current state
 
+## M09c command/lock authoring checkpoint — full pinned PASS, 2026-11-13
+
+Property checkpoint `c7e6013c5537682b59f8015c51977a1f6f9afbfe` is committed/pushed after full
+pinned verify and an exact index audit of **1,068 non-document files**. Its first Linux Verify is
+[run 43443567262](https://github.com/nawinisha231272-wm/formkit/actions/runs/43443567262), attempt 1,
+currently pending; no result is inferred.
+
+Next sequence: one immutable `UpdateLogic` rule-list command (Add/Edit/Remove/reorder/duplicate,
+one `/logic` patch/history step); root-rule lock comparisons covering `all` targets/subtrees and
+inherited state, allowing reads/unrelated actions; measure before UI integration; compiled graph
+summaries, lazy editor/map/test pane and host/loading/visual/author proof. Commands preserve selection,
+rollback on invalid references/cycles, stable command subjects and byte-identical undo/redo. New lock
+regressions reproduce the missing protection (three failures/two passes) before the fix. No existing
+test intent, schema format or ceiling changes.
+
+Full frozen pinned verify now exits **0**: **456 units / 76 files / 1,770 browsers / 17 package
+budgets / all consumer/lazy gates / 16 count checks**. Final UI/core/full **31,814 / 7,419 / 75,839**;
+no-logic **29,111**, opt-in **6,318**, every ceiling unchanged. The **71 runtime source files** match
+c7e6013, retaining its ≤1.10 production comparison. Source fingerprint is byte-identical before/after:
+`c7cb385646d1c8bd64048ca9fb3724a49956ae81a2cd5650cc676ee5fd026f9f`.
+[Proof and retained red/green evidence](reviews/m09c-logic-commands.md). Non-document index audit,
+commit/push and new-head CI follow; no result is inferred. Rule editor/map/Build summaries, author
+exercise and delivery remain open.
+
 ## State-read fix — full pinned verification and production comparison PASS, 2026-11-13
 
 The corrected first five-pair production comparison passes all ≤1.10 edit gates: plain

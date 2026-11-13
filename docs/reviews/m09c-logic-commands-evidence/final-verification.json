@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "scope": "M09c headless rule commands and locks; UI/map/delivery still open",
+  "completedAt": "2026-11-13T15:09:36.359363+00:00",
+  "command": "caffeinate -diu node node_modules/pnpm/bin/pnpm.cjs verify",
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "platform": "darwin-arm64",
+  "exitCode": 0,
+  "unitTests": 456,
+  "unitFiles": 76,
+  "browserTests": 1770,
+  "countChecks": 16,
+  "packageSizeBudgets": 17,
+  "allConsumerAndLazyGates": "PASS",
+  "actual": {
+    "ui": 31814,
+    "builderCore": 7419,
+    "full": 75839,
+    "noLogic": 29111,
+    "increment": 6318
+  },
+  "limits": {
+    "ui": 32600,
+    "builderCore": 8300,
+    "full": 76200,
+    "noLogic": 29200,
+    "increment": 7000
+  },
+  "ceilingsChanged": false,
+  "sourceSha256Before": "c7cb385646d1c8bd64048ca9fb3724a49956ae81a2cd5650cc676ee5fd026f9f",
+  "sourceSha256After": "c7cb385646d1c8bd64048ca9fb3724a49956ae81a2cd5650cc676ee5fd026f9f",
+  "sourceUnchanged": true,
+  "logSha256": "1f23dc0a00d346f4d4f60c142e7b023dfb4e647f859aca1cf42a1d98b331c4af",
+  "performance": {
+    "runtimeSourceIdenticalTo": "c7e6013c5537682b59f8015c51977a1f6f9afbfe",
+    "filesChecked": 71,
+    "evidence": "../m09c-property-read-fix-evidence/final-verification.json",
+    "plainRatios": [1.0, 0.9935, 0.9952],
+    "legacyRatios": [0.9919, 1.0051, 1.0062]
+  },
+  "apiAdditions": [
+    "UpdateLogic(rules, label?) command",
+    "UpdateLogic Command.type variant"
+  ],
+  "newHeadCi": "pending commit/push; no result inferred",
+  "screenshots": {
+    "changed": 0,
+    "new": 0
+  },
+  "retainedRegression": "logic-locks-red.log: 3 new tests fail, 2 pass before fix; no existing test changed"
+}

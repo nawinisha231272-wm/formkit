@@ -62,6 +62,8 @@ const english: Readonly<Record<string, string>> = {
   "ofb.deselected": "Deselected {label}",
   "ofb.did.AtomicCommand": "{label}",
   "ofb.history.AtomicCommand": "{label}",
+  "ofb.did.UpdateLogic": "Updated logic: {label}",
+  "ofb.history.UpdateLogic": "logic for {label}",
   "ofb.commands": "Commands",
   "ofb.bulk": "Edit selected components",
   "ofb.renamed": "Renamed {before} to {after}",

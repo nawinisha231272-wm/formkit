@@ -1,6 +1,7 @@
 import type { FormField } from "@ourform/schema";
 import type { ComponentModel, PropertyDefinition } from "@ourform/core";
 export { createBuilder } from "./builder";
+export { UpdateLogic } from "./logic-command";
 export type {
   Builder,
   BuilderOptions,

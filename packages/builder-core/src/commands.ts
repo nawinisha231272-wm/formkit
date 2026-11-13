@@ -43,6 +43,7 @@ export interface Command {
     | "WrapInLayout"
     | "Unwrap"
     | "ReplaceDefinition"
+    | "UpdateLogic"
     | "AtomicCommand";
   apply(state: BuilderState, ctx: BuilderContext): CommandResult;
   invert(before: BuilderState): Command;

@@ -3,6 +3,7 @@ import type {
   ComponentNode,
   FormDefinition,
   Diagnostic,
+  LogicAction,
 } from "@ourform/schema";
 import type { Engine } from "@ourform/core";
 import { entries, locate, destinationScope } from "./structure";
@@ -46,6 +47,38 @@ export function createLocks(options: LockOptions = {}) {
   };
 }
 type Locks = ReturnType<typeof createLocks>;
+/** Compare only contributions that can affect the frozen component/subtree. Reads remain editable. */
+function protectedRules(definition: FormDefinition, id: string): unknown[] {
+  const root = locate(definition, id)!;
+  const targets = new Set<string>();
+  const visit = (node: ComponentNode) => {
+    targets.add(node.id);
+    componentChildren(node).forEach(visit);
+  };
+  visit(root.node);
+  const ancestors = new Set<string>();
+  let current = root;
+  while (current.parentId) {
+    ancestors.add(current.parentId);
+    current = locate(definition, current.parentId)!;
+  }
+  const related = (action: LogicAction) =>
+    "target" in action &&
+    (targets.has(action.target) ||
+      (ancestors.has(action.target) &&
+        ["show", "hide", "enable", "disable", "setReadOnly"].includes(
+          action.action,
+        )));
+  return (definition.logic ?? []).flatMap((rule) => {
+    const then = rule.then.filter(related);
+    const otherwise = Array.isArray(rule.otherwise)
+      ? rule.otherwise.filter(related)
+      : (rule.otherwise ?? "revert");
+    if (!then.length && (!Array.isArray(otherwise) || !otherwise.length))
+      return [];
+    return [[rule.id, rule.enabled, rule.trigger, rule.when, then, otherwise]];
+  });
+}
 const refusal = (node: ComponentNode, action: string): Diagnostic => ({
   severity: "error",
   code: "locked-component",
@@ -121,6 +154,13 @@ export function checkLocks(
         JSON.stringify(placement(after, entry.node.id, common))
     )
       action = "move this component";
+    else if (
+      level === "all" &&
+      before.logic !== after.logic &&
+      JSON.stringify(protectedRules(before, entry.node.id)) !==
+        JSON.stringify(protectedRules(after, entry.node.id))
+    )
+      action = "change logic for this component";
     // key-only locks do not prevent deletion: there is no surviving key to rename.
     if (action && !(level === "key" && !current))
       diagnostics.push(refusal(entry.node, action));

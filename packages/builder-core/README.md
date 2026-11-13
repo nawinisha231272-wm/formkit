@@ -153,3 +153,24 @@ live text. Failed commands do not acquire a successful captured subject.
 and no patch on a child error. Dispatch validates the final definition and host locks once, publishes
 one patch sequence, and records one snapshot-based undo/redo step. Structural normalization and
 property selection are the caller's responsibility under ADR-0021.
+
+## Root-rule authoring (M09c)
+
+`new UpdateLogic(rules, label?)` snapshots a safe JSON rule list. Add, edit, duplicate, reorder or
+remove a rule by supplying the resulting list. Dispatch validates the entire definition and locks
+before publishing one `/logic` add/replace patch and one history step; selection is preserved.
+Undo/redo restores every definition byte and original selection. Invalid references/cycles and
+failed locks leave schema, selection, history and redo intact; a no-op emits no patch/history.
+`commandLabel` captures the supplied localized subject, falling back to the form title.
+
+```ts
+import { UpdateLogic } from "@ourform/builder-core";
+builder.dispatch(new UpdateLogic(nextRules, "Business customers"));
+```
+
+Root rules require `createLogic()` registered on the engine as documented in core. `all` locks
+also protect rule contributions targeting the component/subtree and show/hide/enable/disable/readOnly
+state inherited from ancestors. Central checks cover rule commands, JSON replacement and undo/redo.
+Rule conditions/triggers/priority/otherwise cannot bypass the lock. Reading a locked source to drive
+an editable target remains allowed, as do unrelated actions in a mixed-target rule. Key/structure
+locks continue to permit logic edits. Locks do not modify form JSON.
