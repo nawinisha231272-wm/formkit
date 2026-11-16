@@ -310,3 +310,22 @@ before compiling definitions. Existing host registration is preserved; it is nev
 runtime inclusion is initial even while the Logic/map authoring screens are closed. Their new UI is
 not delivered by the runtime prototype. Owner-approved consumer gates are enforced; the enabled full
 ceiling is 74,500, builder UI 32,600 and builder-core 8,300. Delivery review remains pending.
+
+### M09c Build influence metadata
+
+Build's Controls count includes unique value fields reached through the compiled data graph and
+active root-rule state/property relationships. Visibility/disabled/read-only actions on a layout
+include its field subtree. A label-only layout property does not control its children, and changing
+a field caption does not control unchanged legacy value dependants. Disabled rules do not contribute.
+Legal self-reading state rules count their own field without creating a data cycle. Per-form metadata
+and count results are cached; no raw expression is reparsed on a canvas render or ordinary form edit.
+
+Root-rule visibility info chips use the position-zero legacy condition, later matching show/hide
+contributions, explicit otherwise actions and ancestor visibility. The display expression is cached;
+it never changes the saved definition or evaluates a rule itself. Forms without relevant root
+visibility keep their previous legacy chip behavior. Disabled rules do not change the chip.
+
+Try the root-rule badges and inherited visibility chips in the playground at
+`http://127.0.0.1:4173/builder.html?signals&theme=material` (all five registered themes work).
+The shared `fixtures/forms/logic/build-signals.json` drives the demo, unit and browser proof.
+No Logic/map UI request is needed for these initial Build signals.

@@ -1,0 +1,146 @@
+[
+  {
+    "probe": "project-targets",
+    "description": "Pre-index root targets",
+    "ui": 32419,
+    "builderCore": 7376,
+    "full": 76382,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "headless",
+    "description": "Move both helpers to builder-core (rejected)",
+    "ui": 31744,
+    "builderCore": 8125,
+    "full": 76520,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "indexed",
+    "description": "Index affected descendants; Set traversal",
+    "ui": 32479,
+    "builderCore": 7311,
+    "full": 76323,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "shared-lists",
+    "description": "Array reader lists; boolean fold",
+    "ui": 32382,
+    "builderCore": 7426,
+    "full": 76391,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "tuples",
+    "description": "Compact branch tuples and single caption formatting",
+    "ui": 32354,
+    "builderCore": 7378,
+    "full": 76348,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "fold",
+    "description": "Fold root branches while indexing",
+    "ui": 32398,
+    "builderCore": 7398,
+    "full": 76346,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "shared-fold",
+    "description": "Share parent/root boolean fold",
+    "ui": 32360,
+    "builderCore": 7402,
+    "full": 76335,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "records",
+    "description": "Null-prototype private indexes (rejected)",
+    "ui": 32329,
+    "builderCore": 7410,
+    "full": 76377,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "opt-in",
+    "description": "Opt-in compiled visibility metadata (rejected)",
+    "ui": 32130,
+    "builderCore": 7361,
+    "full": 76404,
+    "noLogic": 29111,
+    "increment": 6686
+  },
+  {
+    "probe": "private",
+    "description": "Private cache member compaction",
+    "ui": 32363,
+    "builderCore": 7373,
+    "full": 76320,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "eager",
+    "description": "Eager affected condition cache (rejected)",
+    "ui": 32346,
+    "builderCore": 7372,
+    "full": 76342,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "all-lists",
+    "description": "Shared array-index initialization (rejected)",
+    "ui": 32317,
+    "builderCore": 7409,
+    "full": 76356,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "closures",
+    "description": "Closure-based cached summaries (rejected)",
+    "ui": 32408,
+    "builderCore": 7360,
+    "full": 76367,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "projection",
+    "description": "Shared canvas/sidebar presentation (rejected)",
+    "ui": 32367,
+    "builderCore": 7466,
+    "full": 76396,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "schema-tree",
+    "description": "Reuse schema child traversal (retained)",
+    "ui": 32329,
+    "builderCore": 7418,
+    "full": 76316,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  {
+    "probe": "canvas-glue",
+    "description": "Deduplicate canvas decoration glue (rejected)",
+    "ui": 32326,
+    "builderCore": 7498,
+    "full": 76417,
+    "noLogic": 29111,
+    "increment": 6362
+  }
+]

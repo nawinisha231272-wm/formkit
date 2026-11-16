@@ -356,3 +356,15 @@ writers/base on revert. Per-writer invalid-property diagnostics persist across u
 clear on recovery/deactivation/reset. Both session and Node validation consume the same resolved
 constraints/config. Unmarked/unsafe/structural targets fail compilation. No wire/model mutation or
 whole-form recompile is used per edit. The runtime envelope is approved; browser/full verification remains pending; see the SDK prototype representation.
+
+### M09c compiled rule-read metadata
+
+The standard opt-in compiled program exposes optional readonly `ruleReads`, keyed by rule id,
+containing the union of condition/action/otherwise expression dependencies and explicit trigger
+refs, expanded to leaf ids by the same compiler. Disabled rules retain metadata for authoring;
+active influence respects enabled state. This is additive to trusted LogicRegistration, not a new
+wire property. Map/Build authoring consumes these summaries without reparsing raw expressions.
+
+The summary is distinct from data-cycle `edges` and `dependents`: legal self-reading state/property
+rules do not become data cycles. Graph arrays/records and summaries are deeply frozen across
+sessions/replay. No runtime graph layout or additional per-edit rule-list scanning is introduced.

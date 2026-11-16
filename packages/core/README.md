@@ -249,3 +249,18 @@ or registered model. Node validation reads the same derived constraints/config; 
 same node without replacing keyed controls. Last active contribution wins, revert reveals the prior
 contribution/base, invalid active property results persist until recovery/deactivation/reset and
 block submission. This prototype has not passed final browser/CSP/performance/full verification.
+
+### Compiled root-rule graph for authoring
+
+The standard opt-in entry supplies `compiled.logic.ruleReads`: a frozen record from stable rule id
+to the union of compiled condition/action/otherwise reads and explicit change-trigger dependencies.
+Object references expand to the compiler's leaf ids. Disabled rules retain their metadata for editor
+inspection; consumers use the wire rule's enabled flag when showing active influence. This optional
+metadata adds no requirement to existing trusted LogicRegistration implementations.
+
+Read summaries include non-clearing derived state and property rules, including legal self-reads.
+They are separate from `edges`/`dependents`, whose data-cycle semantics stay unchanged. Do not treat
+every visual relationship as a data cycle. The standard compiled program's summary, data-edge and
+dependant records/arrays are deeply frozen and shared safely across sessions and Node replay.
+No graph layout or authoring UI ships in the runtime, no rule scans are added to ordinary edits,
+and no field or form JSON changes.

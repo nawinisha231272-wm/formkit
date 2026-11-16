@@ -1,0 +1,48 @@
+{
+  "status": "BLOCKED",
+  "reason": "Full initial closure exceeds unchanged owner cap by 116 bytes after authorized targeted refactoring",
+  "scope": "Compiled authoring graph and Build signals only; not M09c delivery",
+  "head": "1bfc0e79c879cf5246315abbacb3ff4e11748512",
+  "draftCommitted": false,
+  "draftPushed": false,
+  "actual": {
+    "builderUiInitial": 32329,
+    "builderCore": 7418,
+    "fullInitial": 76316,
+    "noLogicForm": 29111,
+    "optInIncrement": 6362
+  },
+  "ceilings": {
+    "builderUiInitial": 32600,
+    "builderCore": 8300,
+    "fullInitial": 76200,
+    "noLogicForm": 29200,
+    "optInIncrement": 7000
+  },
+  "unitTests": 332,
+  "unitFiles": 38,
+  "typecheckTasks": 45,
+  "lint": "PASS",
+  "standaloneBudgets": 17,
+  "otherConsumerAndLazyGates": "PASS",
+  "fullPinnedVerify": "NOT RUN on draft: known hard size failure",
+  "draftBrowsersAndTimings": "NOT RUN; no inherited pass is claimed for new source",
+  "newScreenshots": 0,
+  "changedScreenshots": 0,
+  "ci": {
+    "sha": "1bfc0e79c879cf5246315abbacb3ff4e11748512",
+    "url": "https://github.com/nawinisha231272-wm/formkit/actions/runs/43450039622",
+    "conclusion": "success",
+    "attempt": 1,
+    "scope": "last pushed checkpoint only"
+  },
+  "retainedRecovery": 90,
+  "refactorProbes": 16,
+  "codeMovedBetweenBoundaries": false,
+  "temporaryVisibilityMetadataApiRemoved": true,
+  "testIntentChanges": false,
+  "deadlineChanges": false,
+  "styleOrAriaRemoval": false,
+  "sourceSha256": "4bed4fca1857c5460070644409a915a21ceec84a632806655cff2d9cb2cea941",
+  "sourceFileCount": 1016
+}

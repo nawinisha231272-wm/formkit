@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "scope": "M09c compiled authoring metadata and initial Build signals checkpoint; editor/map/final delivery still open",
+  "completedAt": "2026-11-16T18:59:24.059539+00:00",
+  "command": "caffeinate -diu node node_modules/pnpm/bin/pnpm.cjs verify",
+  "node": "22.22.3",
+  "pnpm": "10.10.0",
+  "platform": "darwin-arm64",
+  "exitCode": 0,
+  "unitTests": 469,
+  "unitFiles": 78,
+  "browserTests": 1785,
+  "newSignalsBrowserTests": 15,
+  "themes": ["base", "bootstrap4", "bootstrap5", "tailwind", "material"],
+  "browserProjects": ["chromium", "firefox", "webkit"],
+  "countChecks": 16,
+  "packageSizeBudgets": 17,
+  "allConsumerAndLazyGates": "PASS",
+  "actual": {
+    "ui": 32329,
+    "builderCore": 7418,
+    "full": 76316,
+    "noLogic": 29111,
+    "increment": 6362
+  },
+  "limits": {
+    "ui": 32600,
+    "builderCore": 8300,
+    "full": 76400,
+    "noLogic": 29200,
+    "increment": 7000
+  },
+  "ownerBudgetApproval": "2026-11-16 retained full76400; next-stage final full77000 after measuring hooks first; all other caps unchanged",
+  "sourceSha256Before": "d555867a918502e9c2b715388f007c3257bc9c5d7c271207d9cd944314655194",
+  "sourceSha256After": "d555867a918502e9c2b715388f007c3257bc9c5d7c271207d9cd944314655194",
+  "sourceUnchanged": true,
+  "logSha256": "c7fc38028753b7d58c32b71578e73b16594ec1a2613249f39a6e3783bf9a1f2e",
+  "apiAdditions": ["Optional readonly LogicProgram.ruleReads"],
+  "screenshots": {
+    "changed": 0,
+    "new": 0
+  },
+  "newHeadCi": "pending commit/push; no result inferred",
+  "performance": "Existing exact count gates pass; final-source paired timing proof remains part of M09c delivery",
+  "testIntentChanges": false,
+  "retainedRefactorRecovery": 90,
+  "refactorProbes": 16,
+  "codeMovedBetweenBoundaries": false,
+  "fixture": "fixtures/forms/logic/build-signals.json",
+  "playground": "http://127.0.0.1:4173/builder.html?signals&theme=material"
+}

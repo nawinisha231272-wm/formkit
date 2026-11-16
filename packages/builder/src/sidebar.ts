@@ -5,7 +5,11 @@ import type { Diagnostic } from "@ourform/schema";
 import { builderIssues } from "./issues";
 import { element, componentTitle } from "./types";
 import { actionButton, tabs } from "./primitives";
-import { describeExpression, controlledFields } from "./signals";
+import {
+  describeExpression,
+  controlledFields,
+  visibilityCondition,
+} from "./signals";
 import { mountIssues } from "./features/secondary-tools";
 
 interface Context {
@@ -124,11 +128,12 @@ export function sidebar({ host, outline, ui, features }: Context) {
       "ofb.required",
       ui.t(entry.node.validation?.required ? "ofb.yes" : "ofb.no"),
     );
+    const condition = visibilityCondition(form!, entry.node.id);
     line(
       "ofb.visible",
-      entry.node.visibleWhen === undefined
+      condition === undefined
         ? ui.t("ofb.always")
-        : describeExpression(entry.node.visibleWhen, form!, ui.t),
+        : describeExpression(condition, form!, ui.t),
     );
     const controlled = entry.model.value
       ? controlledFields(form!, entry.node.id)

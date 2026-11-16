@@ -411,7 +411,13 @@ function compileLogic(
       overrideIndex,
       priorities,
     );
-  const program: LogicProgram = Object.freeze({
+  const program: LogicProgram = freeze({
+    ruleReads: Object.fromEntries(
+      rules.map((rule) => [
+        rule.wire.id,
+        [...new Set([...rule.reads, ...rule.triggers])],
+      ]),
+    ),
     message: logicMessage,
     deliver(
       patch: Parameters<LogicProgram["deliver"]>[0],

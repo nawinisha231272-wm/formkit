@@ -371,6 +371,17 @@ rule priority, trigger/condition and otherwise. Reading locked sources and editi
 in mixed-target rules is allowed; key/structure locks allow logic edits. Apply the same checks to
 JSON imports and history replay. No new schema member or lock policy is introduced.
 
+Build influence counts unique value fields reachable through compiled data edges and active root
+state/property relations. Inherited visibility/disabled/read-only actions include the target's field
+subtree; caption-only layout properties do not. Caption-only field updates do not control unchanged
+legacy value dependants. Disabled rules are omitted. Cache per compiled form/source; use compiled
+read summaries and never reparse raw expressions per canvas render or ordinary form edit.
+
+Root visibility info chips reflect the legacy fallback, ordered enabled show/hide contributions,
+explicit otherwise actions and ancestor visibility. They are cached display expressions only, never
+new saved expressions or runtime evaluation. Forms without relevant root visibility retain legacy
+chip behavior. The component summary and canvas use the same condition.
+
 Root Logic list/editor, nested sentence/expression controls and isolated test panel are lazy.
 **After Logic mounts and becomes interactive, automatically fetch the separate dependency-map
 entry**, with a loading state in the right pane. The map does not block editing; failure shows reason/
@@ -378,6 +389,10 @@ Retry locally, without losing focus, state or history. Once loaded the split mat
 Idle preload imports Logic/JSON only and must never fetch the map; importing a module does not mount
 its UI. Test initial/idle/first-open ordering, retry, stale navigation, destroy and isolated builders
 in all browsers/hosts under strict CSP, local/offline assets and custom assetBase.
+
+Owner amendment 2026-11-16: enabled full **76,400** for retained Build signals, then **77,000**
+for all remaining M09c initial work after measuring the activation/Settings hooks first. No further
+compaction campaigns for sub200-byte gaps; ordinary compaction is allowed.
 
 UI initial maximum **32,600**; builder-core consumer contribution **8,300**. No-logic full consumer
 maximum **68,500**; builder always registers logic, so its real closure is **logic-enabled**, measured

@@ -121,6 +121,8 @@ export interface LogicRuntime {
   ): readonly string[];
 }
 export interface LogicProgram {
+  /** Compiled reads for authoring, including disabled rules; separate from data-cycle edges. */
+  readonly ruleReads?: Readonly<Record<string, readonly string[]>>;
   message(key: string): string | undefined;
   deliver(
     patch: StatePatch,

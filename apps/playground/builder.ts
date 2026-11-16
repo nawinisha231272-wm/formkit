@@ -20,44 +20,47 @@ import { tailwindBuilderTheme } from "@ourform/builder/themes/tailwind";
 import { materialBuilderTheme } from "@ourform/builder/themes/material";
 import { defineLayout } from "@ourform/sdk";
 import { customerReference } from "./builder-fields";
+import signals from "../../fixtures/forms/logic/build-signals.json";
 import approved from "../../fixtures/forms/builder-ux/customer-onboarding.json";
 import approvedData from "../../fixtures/forms/builder-ux/customer-onboarding.data.json";
 import feedback from "../../fixtures/forms/feedback.json";
 import nested from "../../fixtures/forms/nested-tabs/customer.json";
 import { employeeFields } from "../vanilla-example/src/employee-fields";
 const query = new URLSearchParams(location.search);
-const schema = query.has("empty")
-  ? { $formVersion: "1.0", id: "new-form", display: "form", components: [] }
-  : query.has("large")
-    ? {
-        $formVersion: "1.0",
-        id: "large-builder",
-        display: "form",
-        components: Array.from({ length: 500 }, (_, i) => ({
-          id: `field_${i}`,
-          type: "text",
-          key: `field${i}`,
-          label: `Field ${i + 1}`,
-        })),
-      }
-    : query.has("approved")
-      ? approved
-      : query.has("fixture")
-        ? nested
-        : query.has("locks")
-          ? {
-              ...feedback,
-              components: [
-                ...feedback.components,
-                {
-                  id: "cmp_comment",
-                  type: "textarea",
-                  key: "comment",
-                  label: "Comment",
-                },
-              ],
-            }
-          : feedback;
+const schema = query.has("signals")
+  ? signals
+  : query.has("empty")
+    ? { $formVersion: "1.0", id: "new-form", display: "form", components: [] }
+    : query.has("large")
+      ? {
+          $formVersion: "1.0",
+          id: "large-builder",
+          display: "form",
+          components: Array.from({ length: 500 }, (_, i) => ({
+            id: `field_${i}`,
+            type: "text",
+            key: `field${i}`,
+            label: `Field ${i + 1}`,
+          })),
+        }
+      : query.has("approved")
+        ? approved
+        : query.has("fixture")
+          ? nested
+          : query.has("locks")
+            ? {
+                ...feedback,
+                components: [
+                  ...feedback.components,
+                  {
+                    id: "cmp_comment",
+                    type: "textarea",
+                    key: "comment",
+                    label: "Comment",
+                  },
+                ],
+              }
+            : feedback;
 const card = defineLayout({
   type: "acme.card",
   title: "SDK card",
@@ -214,7 +217,8 @@ document.getElementById("builder")!.addEventListener("of-save", () => {
   if (!query.has("manual-save"))
     window.setTimeout(() => controller.markSaved(), 500);
 });
-if (query.has("approved")) controller.builder.select("email");
+if (query.has("signals")) controller.builder.select("source");
+else if (query.has("approved")) controller.builder.select("email");
 else if (!query.has("empty") && !query.has("fixture") && !query.has("large"))
   controller.builder.select(query.has("locks") ? "cmp_name" : "cmp_rating");
 window.miniBuilder = {

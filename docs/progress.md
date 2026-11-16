@@ -6,6 +6,105 @@ deviations from spec, open questions.
 
 ## Current state
 
+## M09c Build-signals checkpoint — full pinned PASS, 2026-11-16
+
+Frozen Node22.22.3/pnpm10.10.0 `caffeinate -diu pnpm verify` exits **0**: **469 units / 78 files /
+1,785 browser checks / 17 package budgets / all consumer/lazy gates / 16 exact work counts**.
+One coherent final measurement set: UI **32,329/32,600**, builder-core **7,418/8,300**, full
+**76,316/76,400**, matched no-logic **29,111/29,200**, opt-in **6,362/7,000**. All ceilings are the
+owner-approved values; no accounting move or assertion/deadline/style/ARIA/message removal.
+The new15 browser cases cover root badges, inherited visibility, unchanged saved definitions,
+control identity, no Logic/map UI requests and axe in all five themes × Chromium/Firefox/WebKit.
+Shared fixture/demo: `builder.html?signals&theme=material`.
+
+Source fingerprint is identical before/after: `d555867a918502e9c2b715388f007c3257bc9c5d7c271207d9cd944314655194`.
+[Machine proof, complete log and final gates](reviews/m09c-build-signals-budget.md).
+The optional public addition is readonly `LogicProgram.ruleReads`; graph children are deeply frozen.
+All prior failed measurements remain retained. Packaging/index audit and commit/push/first CI follow;
+no CI result is inferred. This is a checkpoint, not M09c READY: measure initial Logic/Settings hooks
+against final full77,000 first, then real lazy Logic/test/map, parity/CSP/offline, final performance,
+fresh author exercise and screenshots. No new compaction campaign for sub200-byte gaps.
+
+## Owner final M09c initial allowance — accepted 2026-11-16
+
+The owner approves enabled builder full **76,400** for the retained Build-signals checkpoint
+(actual76,316). Enforce that cap for this checkpoint's pinned verify/commit/push and first-attempt
+CI. Next, measure the remaining initial Logic activation and Settings Logic-tab hooks first against
+the final **77,000 full** allowance for all remaining M09c initial work. If every gate fits, continue
+without another question. UI **32,600**, builder-core **8,300**, matched no-logic **29,200**, matched
+opt-in increment **7,000**, and Logic/map lazy **10,000 each** stay unchanged, as do all other
+package/lazy/union, correctness, pixel, count and ≤1.10 edit-ratio gates. No accounting boundary moves.
+
+Exceeding any maximum is a STOP with measured options. No more compaction campaigns for gaps under
+200 bytes; ordinary behavior-preserving compaction during feature work remains allowed. Retain the
+old failures/probes. This approval resolves the116-byte size STOP; it does not claim editor/map,
+all-host/CSP/offline/author/visual/performance/full verification or delivery acceptance. Continue
+through those tasks and first-attempt CI to owner review; do not merge or start M09d.
+
+## M09c authorized summary refactor — size STOP persists, 2026-11-16
+
+Sixteen measured, behavior-preserving probes recover **90 of 206 bytes**. Retained coherent gates:
+UI **32,329/32,600**, builder-core **7,418/8,300**, full **76,316/76,200 (FAIL +116)**,
+no-logic **29,111/29,200**, opt-in **6,362/7,000**. No accounting transfer, ceiling/test/deadline/style/
+ARIA/message change. Reuse the existing schema child traversal and cached root-branch projections;
+headless relocation and other growth probes are restored. [All measurements and retained failures](reviews/m09c-build-signals-budget.md).
+Final retained source: **332 units / 38 files, 45 typecheck tasks, lint and all17 standalone budgets PASS**.
+The consumer gate repeats the same numbers and fails only full. No new-source browser/full verify
+pass is claimed. The owner authorized focused refactoring, not an increased cap; the hard full gate still prevents
+shipping. Current-stage 76,400 is a proposal only; remaining initial Logic/Settings hooks are still
+unmeasured. No commit/push, no new CI or screenshots; M09c stays open.
+
+## Owner retains the M09c envelope — 2026-11-16
+
+The owner selected **Option 1**, authorizing targeted behavior-preserving Build-summary refactoring
+(including measured shared headless helpers) to recover the prototype's **206-byte** overage.
+Every ceiling remains unchanged: UI **32,600**, builder-core **8,300**, enabled full **76,200**,
+matched no-logic **29,200**, opt-in increment **7,000**. The alternative 76,500 proposal was not
+accepted. Preserve every CSS rule, selector, ARIA attribute, message, behavior and assertion; disclose
+moved code and all gates. Sequence: refactor and measure, targeted tests, real lazy Logic/map and
+Settings links, final parity/loading/author/visual/full proof. M09c remains open.
+
+The last pushed command checkpoint **1bfc0e79c879cf5246315abbacb3ff4e11748512** has first-attempt
+[Linux Verify success, 43450039622](https://github.com/nawinisha231272-wm/formkit/actions/runs/43450039622).
+This evidence applies to that SHA only, not the unpushed graph/Build draft. No CI re-run or merge.
+
+## M09c Build signals — size STOP, 2026-11-13
+
+New-source coherent gates: UI **32,422/32,600**, builder-core **7,393/8,300**, enabled full
+**76,406/76,200 (FAIL +206)**, no-logic **29,111/29,200**, opt-in **6,362/7,000**. Root-rule
+visibility fallback/priority/otherwise/inheritance crosses the full gate; metadata-only 75,827 and
+count-only 76,086 pass. All other consumer/lazy/aggregate and all 17 package budgets pass. No ceiling
+or accounting changed; no code moved. The new prototype is uncommitted/unpushed; implementation
+stops under the owner's explicit final envelope. **182 core + nine signal units** and typecheck pass;
+no new-source browser/full verify or screenshot pass is claimed. [Measured options/raw evidence](reviews/m09c-build-signals-budget.md).
+
+Owner decision needed: retain all caps and authorize focused behavior-preserving summary refactoring/
+compaction (including a measured headless helper placement, without accounting escape), or approve
+76,500 full for this measured stage only. The latter is a proposal, not an applied ceiling, and
+remaining Logic activation/Settings links are not measured yet. All other M09c delivery stays open.
+
+## Property checkpoint first CI — PASS, 2026-11-13
+
+`c7e6013c5537682b59f8015c51977a1f6f9afbfe` Linux Verify
+[43443567262](https://github.com/nawinisha231272-wm/formkit/actions/runs/43443567262) is **success,
+attempt 1**. Applies only to that checkpoint. The later command checkpoint `1bfc0e7` has its own
+first run 43450039622 pending; M09c is not complete and no merge is authorized.
+
+## M09c compiled authoring graph — in progress, 2026-11-13
+
+Atomic rule commands/locks checkpoint `1bfc0e79c879cf5246315abbacb3ff4e11748512` is committed/pushed
+following full pinned verify (456 units/1,770 browsers/all sizes/16 counts) and an exact **1,072-file**
+non-document index audit. First Verify: [43450039622](https://github.com/nawinisha231272-wm/formkit/actions/runs/43450039622),
+attempt 1, currently pending. The preceding property checkpoint's first CI43443567262 is also pending;
+neither status is claimed green.
+
+Next: expose optional frozen compiled `ruleReads` summaries for Logic/map/Build authoring, retaining
+disabled-rule reads and expanded object refs without polluting data-cycle edges; freeze the root
+program's graph children (the former shallow freeze left edge/dependant arrays mutable). Four new
+regressions reproduce the missing summaries and mutable graph. Then Build summaries/visibility
+chips and immediate Logic frame with lazy body/auto map, measuring every coherent stage against
+unchanged ceilings. Private UI drafts are not applied or acceptance evidence; M09c remains open.
+
 ## M09c command/lock authoring checkpoint — full pinned PASS, 2026-11-13
 
 Property checkpoint `c7e6013c5537682b59f8015c51977a1f6f9afbfe` is committed/pushed after full
@@ -628,6 +727,8 @@ Owner follow-up (2026-11-09), cc05111 not approved to merge: preserve context-cl
   [ci-linux-baseline PR #2](https://github.com/nawinisha231272-wm/formkit/pull/2). M08 delivery PR #5 is merged; the gate closure is recorded below under the revised owner decision.
 
 ## Open questions
+
+- Resolved 2026-11-16: owner approves retained Build-signals full76,400 and final remaining M09c initial77,000; all other gates unchanged. Measure remaining hooks first; no further sub200-byte compaction campaigns. [Original failures retained](reviews/m09c-build-signals-budget.md).
 
 **Resolved M09c property budget — owner approval, 2026-11-12.** Accept measured feature costs
 29,061 no-logic / 6,300 opt-in. Final remaining-runtime envelope 29,200 / 7,000 / 76,200;

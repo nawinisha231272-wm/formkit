@@ -1,8 +1,46 @@
 # ADR-0022 — Logic engine placement, lazy authoring and M09c allowances
 
-Status: **accepted by the owner on 2026-11-10; budget amendments accepted 2026-11-11 and 2026-11-12**
+Status: **accepted by the owner on 2026-11-10; budget amendments accepted 2026-11-11, 2026-11-12 and 2026-11-16**
 Date: 2026-11-09
 Milestone: M09c (accepted plan; implementation evidence remains pending)
+
+## Owner final M09c initial allowance — accepted 2026-11-16
+
+The owner approves enabled builder full **76,400** for the retained Build-signals checkpoint
+(actual76,316). Enforce that cap for this checkpoint's pinned verify/commit/push and first-attempt
+CI. Next, measure the remaining initial Logic activation and Settings Logic-tab hooks first against
+the final **77,000 full** allowance for all remaining M09c initial work. If every gate fits, continue
+without another question. UI **32,600**, builder-core **8,300**, matched no-logic **29,200**, matched
+opt-in increment **7,000**, and Logic/map lazy **10,000 each** stay unchanged, as do all other
+package/lazy/union, correctness, pixel, count and ≤1.10 edit-ratio gates. No accounting boundary moves.
+
+Exceeding any maximum is a STOP with measured options. No more compaction campaigns for gaps under
+200 bytes; ordinary behavior-preserving compaction during feature work remains allowed. Retain the
+old failures/probes. This approval resolves the116-byte size STOP; it does not claim editor/map,
+all-host/CSP/offline/author/visual/performance/full verification or delivery acceptance. Continue
+through those tasks and first-attempt CI to owner review; do not merge or start M09d.
+
+## Authorized refactor result — 2026-11-16, still above full cap
+
+After sixteen targeted probes, retain UI **32,329**, marginal builder-core **7,418**, full **76,316**,
+matched no-logic **29,111**, opt-in **6,362**. Full remains **116 over 76,200**; recovery is90 bytes.
+No code moved between boundaries; compaction shares existing schema child traversal, indexed root
+branches and private cache bookkeeping. Headless relocation, compiled visibility metadata and other
+growth probes are restored. All ceilings/behavior/styles/ARIA/messages/assertions remain unchanged.
+[Exact per-probe measurements and options](../reviews/m09c-build-signals-budget.md). The draft is not
+pushed. A 76,400 current-stage alternative is proposed only, with remaining activation/Settings hooks
+still unmeasured; the owner has not accepted it. M09c delivery is open.
+
+## Owner Build-summary refactor authorization — 2026-11-16
+
+The owner selected Option 1 after the graph/Build prototype measured UI **32,422**, builder-core
+**7,393**, full **76,406** (+206 over 76,200), matched no-logic **29,111**, opt-in **6,362**.
+Targeted behavior-preserving summary refactoring, including measured shared headless helper
+placement, is authorized. **All ceilings are retained**; 76,500 was an unaccepted alternative.
+No accounting relabel or removal of required behavior, styles, ARIA, messages or tests. Report every
+moved helper's contribution at both boundaries and the full consumer, whose cap remains 76,200.
+[Original measured STOP and evidence](../reviews/m09c-build-signals-budget.md). This resolves the
+request for permission to refactor; final size, verification and M09c delivery remain open.
 
 ## Atomic authoring implementation — measured 2026-11-13
 
@@ -310,13 +348,13 @@ All numbers are **Brotli bytes** under the established production consumer metho
 chunks once. They are allowances, not measured implementation PASS results. Keep the original
 M09b+ measurement artifacts/failed probes and disclose any moved code on both sides.
 
-| Scope                                       | M09b+ baseline / prior gate                      | Accepted M09c ceiling or next gate                                                                    |
-| ------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| Builder UI initial (excludes builder-core)  | 31,769 / 31,800                                  | **32,600 maximum**                                                                                    |
-| Builder-core marginal consumer contribution | 7,120 / 7,300                                    | **8,300 maximum**                                                                                     |
-| No-logic consumer full initial closure      | Historical full baseline 67,674 / prior 67,700   | **68,500**, at most **+826** against that historical full baseline                                    |
-| Logic-enabled consumer full initial closure | Prototype 71,036; final review before completion | **76,200 enabled full** (final runtime envelope 2026-11-12); matched form opt-in increment **≤7,000** |
-| Matched no-logic form                       | Immutable main 28,232                            | **29,200** (final remaining-runtime envelope)                                                         |
+| Scope                                       | M09b+ baseline / prior gate                      | Accepted M09c ceiling or next gate                                                                               |
+| ------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| Builder UI initial (excludes builder-core)  | 31,769 / 31,800                                  | **32,600 maximum**                                                                                               |
+| Builder-core marginal consumer contribution | 7,120 / 7,300                                    | **8,300 maximum**                                                                                                |
+| No-logic consumer full initial closure      | Historical full baseline 67,674 / prior 67,700   | **68,500**, at most **+826** against that historical full baseline                                               |
+| Logic-enabled consumer full initial closure | Prototype 71,036; final review before completion | **76,400 retained checkpoint; 77,000 final M09c initial** (2026-11-16); matched form opt-in increment **≤7,000** |
+| Matched no-logic form                       | Immutable main 28,232                            | **29,200** (final remaining-runtime envelope)                                                                    |
 
 A no-logic consumer imports/registers **no root-rule runtime**; absence of root rules in its current
 JSON is insufficient if the runtime is still bundled. A builder always registers root logic, so its

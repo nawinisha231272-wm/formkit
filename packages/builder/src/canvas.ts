@@ -22,7 +22,11 @@ import { PointerDrag } from "./pointer";
 import { ComponentActions } from "./component-actions";
 import { icon, componentIcon } from "./icons";
 import { paletteGroups } from "./palette";
-import { describeExpression, controlledFields } from "./signals";
+import {
+  describeExpression,
+  controlledFields,
+  visibilityCondition,
+} from "./signals";
 import {
   chip,
   placeSelection,
@@ -766,16 +770,13 @@ export class Canvas {
           row.append(
             chip(context, this._ofbUi.t("ofb.controls", { count }), "logic"),
           );
-        if (node.visibleWhen !== undefined && node.visibleWhen !== true)
+        const condition = visibilityCondition(form, node.id);
+        if (condition !== undefined && condition !== true)
           row.append(
             chip(
               context,
               this._ofbUi.t("ofb.shownWhen", {
-                condition: describeExpression(
-                  node.visibleWhen,
-                  form,
-                  this._ofbUi.t,
-                ),
+                condition: describeExpression(condition, form, this._ofbUi.t),
               }),
               "info",
             ),

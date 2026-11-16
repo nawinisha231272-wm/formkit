@@ -1,0 +1,72 @@
+{
+  "$formVersion": "1.0",
+  "id": "build-signals",
+  "title": "Business customers \u2014 Build signals",
+  "display": "form",
+  "components": [
+    {
+      "id": "source",
+      "type": "text",
+      "key": "source",
+      "label": "Customer type"
+    },
+    {
+      "id": "panel",
+      "type": "panel",
+      "label": "Company details",
+      "visibleWhen": false,
+      "components": [
+        {
+          "id": "a",
+          "type": "text",
+          "key": "a",
+          "label": "Company name"
+        },
+        {
+          "id": "b",
+          "type": "text",
+          "key": "b",
+          "label": "Company reference"
+        }
+      ]
+    },
+    {
+      "id": "invoice",
+      "type": "text",
+      "key": "invoice",
+      "label": "Invoice type"
+    }
+  ],
+  "logic": [
+    {
+      "id": "business",
+      "name": "Business customers",
+      "trigger": {
+        "on": "change",
+        "refs": ["source"]
+      },
+      "when": [
+        "eq",
+        {
+          "ref": "source"
+        },
+        "business"
+      ],
+      "then": [
+        {
+          "action": "show",
+          "target": "panel"
+        },
+        {
+          "action": "require",
+          "target": "a"
+        },
+        {
+          "action": "setValue",
+          "target": "invoice",
+          "value": "company"
+        }
+      ]
+    }
+  ]
+}
